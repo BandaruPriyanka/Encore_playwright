@@ -1,0 +1,27 @@
+{
+  "name": "encore_playwright",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "ios": "npx playwright test --project=Mobile_Safari",
+    "mobile_chrome": "npx playwright test --project=Mobile_Chrome",
+    "ui": "npx playwright test --project=chromium",
+    "allure:generate": "allure generate allure-results --clean",
+    "allure:open": "allure open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.47.1",
+    "@types/node": "^22.5.5",
+    "allure-commandline": "^2.30.0",
+    "allure-playwright": "^2.15.1",
+      "axios": "^1.7.7"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+     "atob": "^2.1.2"
+  }
+}
