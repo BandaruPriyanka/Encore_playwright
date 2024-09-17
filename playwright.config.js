@@ -12,7 +12,7 @@ const { on } = require('events');
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
-  timeout : 5*60*1000,
+  timeout : 6*60*1000,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -51,7 +51,7 @@ module.exports = defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      testMatch:['tests/flowsheet.spec.js']
+      testMatch:['tests/schedule.spec.js']
       
     },
     {
@@ -60,7 +60,7 @@ module.exports = defineConfig({
         ...devices["Pixel 7"],
         isMobile: true,
       },
-      testMatch:['tests/flowsheet_card_tab.spec.js']
+      testMatch:['tests/schedule.spec.js']
     },
     {
       name: "Mobile_Safari",

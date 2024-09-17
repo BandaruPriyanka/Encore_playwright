@@ -52,7 +52,7 @@ test.describe("LightHouse Operations", () => {
     await flowsheetSearch.sorting();
   });
 
-  test.only("Test_C56886	Flowsheets calendar", async ({ page }) => {
+  test("Test_C56886	Flowsheets calendar", async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetSearch.calendarDiv);
     await assertElementVisible(flowsheetSearch.nextweekIcon);
