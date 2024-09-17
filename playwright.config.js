@@ -51,7 +51,7 @@ module.exports = defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      testMatch:['tests/flowsheet_card_tab.spec.js']
+      testMatch:['tests/flowsheet.spec.js']
       
     },
     {
