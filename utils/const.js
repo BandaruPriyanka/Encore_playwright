@@ -17,8 +17,13 @@ const NavigatorConsts = {
     moodIconText : "text-gray-500",
     happyLogMsg : "Happy Room Mood",
     neutralLogMsg : "Neutral Room Mood",
-    angryLogMsg : "Dissatisfied Room Mood"
-
+    angryLogMsg : "Dissatisfied Room Mood",
+    Equipment : "Equipment",
+    Notes : "Notes",
+    Log : "Log",
+    Contacts : "Contacts",
+    Add_Ons : "Add Ons",
+    Labor : "Labor"
 }
 
 exports.Const = NavigatorConsts;
