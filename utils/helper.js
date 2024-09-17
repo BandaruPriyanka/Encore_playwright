@@ -74,7 +74,6 @@ async function scrollElement(element, scrollTo) {
 
 // Check if an element is visible
 async function assertElementVisible(element) {
-  await expect(element).not.toBeNull();
   await expect(element).toBeVisible();
 }
 
@@ -200,6 +199,11 @@ async function readFileSync(filePath) {
 function appendFileSync(filePath, content) {
   fs.appendFileSync(filePath, content, "utf8");
 }
+async function assertIsNumber(value) {
+  const numberValue = Number(value);
+  expect(typeof numberValue).toBe('number');  // Assert that it is of type 'number'
+  expect(!isNaN(numberValue)).toBe(true);   // Ensure it is not NaN
+}
 
 module.exports = {
   getTodayDate,
@@ -230,5 +234,6 @@ module.exports = {
   writeFileSync,
   readFileSync,
   appendFileSync,
-  assertEqualValues
+  assertEqualValues,
+  assertIsNumber
 };
