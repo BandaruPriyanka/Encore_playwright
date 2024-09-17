@@ -60,7 +60,7 @@ module.exports = defineConfig({
         ...devices["Pixel 7"],
         isMobile: true,
       },
-      testMatch:['tests/flowsheet.spec.js']
+      testMatch:['tests/flowsheet_card_tab.spec.js']
     },
     {
       name: "Mobile_Safari",
@@ -68,7 +68,7 @@ module.exports = defineConfig({
         ...devices["iPhone 12"],
         isMobile: true,
       },
-      testMatch:['tests/flowsheet.spec.js']
+      testMatch:['tests/flowsheet_card_tab.spec.js']
     },
     // {
     //   name: 'firefox',

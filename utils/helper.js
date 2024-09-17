@@ -95,9 +95,15 @@ async function assertTextPresent(page, text) {
 }
 
 // Check if an element contains specific text
-async function assertElementContainsText(page, selector, text) {
+async function assertElementHaveText(page, selector, text) {
   const element = await page.locator(selector);
   await expect(element).toHaveText(text);
+}
+
+// Check if an element contains  text
+async function assertElementContainsText(element,text) {
+  // const element = await page.locator(selector);
+  await expect(element).toContainText(text);
 }
 
 // Check if the URL contains a specific substring
@@ -217,6 +223,7 @@ module.exports = {
   assertElementVisible,
   assertElementHidden,
   assertTextPresent,
+  assertElementHaveText,
   assertElementContainsText,
   assertUrlContains,
   screenshotElement,
