@@ -2,5 +2,14 @@
     "locationId" : "1137",
     "invalidText" : "abd",
     "neutralComment" : "I am in neutral mood",
-    "angryComment" : "I am in angry mood"
+    "angryComment" : "I am in angry mood",
+    "flowsheetTabs" : [
+        "Equipment",
+        "Notes",
+        "Log",
+        "Contacts",
+        "Add Ons",
+        "Labor"
+    ],
+    "modalText" : "This person has no contact information."
 }
