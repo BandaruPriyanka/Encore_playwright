@@ -12,7 +12,7 @@ const { on } = require('events');
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
-  timeout : 5*60*1000,
+  timeout : 6*60*1000,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -27,7 +27,7 @@ module.exports = defineConfig({
     {
       detail: true,
       outputFolder: "allure-results",
-      suiteTitle: true,
+      suiteTitle:false,
       environmentInfo: {
         framework: "playwright",
       },
@@ -42,16 +42,25 @@ module.exports = defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    actionTimeout:120000,
     headless:false,
-    video:'on'
+    video:'on',
+    logLevel: 'error',
+    screenshot:'only-on-failure'
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'create_data',
+      use: { ...devices['Desktop Chrome'] },
+       testMatch:['tests/create_data.spec.js']
+      
+    },
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      testMatch:['tests/flowsheet.spec.js']
+       testMatch:['tests/flowsheet.spec.js','tests/flowsheet_card_tab.spec.js','tests/schedule.spec.js']
       
     },
     {
@@ -60,7 +69,7 @@ module.exports = defineConfig({
         ...devices["Pixel 7"],
         isMobile: true,
       },
-      testMatch:['tests/flowsheet_card_tab.spec.js']
+      testMatch:['tests/flowsheet.spec.js','tests/flowsheet_card_tab.spec.js','tests/schedule.spec.js']
     },
     {
       name: "Mobile_Safari",
@@ -68,7 +77,7 @@ module.exports = defineConfig({
         ...devices["iPhone 12"],
         isMobile: true,
       },
-      testMatch:['tests/flowsheet_card_tab.spec.js']
+      testMatch:['tests/flowsheet.spec.js','tests/flowsheet_card_tab.spec.js','tests/schedule.spec.js']
     },
     // {
     //   name: 'firefox',
