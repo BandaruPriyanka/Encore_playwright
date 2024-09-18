@@ -42,6 +42,7 @@ module.exports = defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    actionTimeout:120000,
     headless:false,
     video:'on',
     logLevel: 'error',
@@ -53,7 +54,7 @@ module.exports = defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      testMatch:['tests/schedule.spec.js','tests/flowsheet_card_tab.spec.js','tests/flowsheet.spec.js']
+       testMatch:['tests/flowsheet.spec.js','tests/flowsheet_card_tab.spec.js','tests/schedule.spec.js']
       
     },
     {
@@ -62,9 +63,7 @@ module.exports = defineConfig({
         ...devices["Pixel 7"],
         isMobile: true,
       },
-      // testMatch:['tests/schedule.spec.js','tests/flowsheet_card_tab.spec.js','tests/flowsheet.spec.js']
-        testMatch:['tests/schedule.spec.js']
-      
+      testMatch:['tests/flowsheet.spec.js','tests/flowsheet_card_tab.spec.js','tests/schedule.spec.js']
     },
     {
       name: "Mobile_Safari",
@@ -72,7 +71,7 @@ module.exports = defineConfig({
         ...devices["iPhone 12"],
         isMobile: true,
       },
-      testMatch:['tests/schedule.spec.js','tests/flowsheet_card_tab.spec.js','tests/flowsheet.spec.js']
+      testMatch:['tests/flowsheet.spec.js','tests/flowsheet_card_tab.spec.js','tests/schedule.spec.js']
     },
     // {
     //   name: 'firefox',

@@ -4,11 +4,13 @@
   "main": "index.js",
   "scripts": {
     "clean:allure-results": "rimraf allure-results", 
-    "ios": "npm run clean:allure-results && npx playwright test --project=Mobile_Safari",
-    "mobile_chrome": "npm run clean:allure-results && npx playwright test --project=Mobile_Chrome",
-    "ui": "npm run clean:allure-results && npx playwright test --project=chromium",
+    "ios": "npx playwright test --project=Mobile_Safari",
+    "mobile_chrome": "npx playwright test --project=Mobile_Chrome",
+    "ui": "npx playwright test --project=chromium",
+    "clean-results":"npm run clean:allure-results",
     "allure:generate": "allure generate allure-results --clean",
-    "allure:open": "allure open"
+    "allure:open": "allure open",
+    "all":"npm run clean:allure-results & npm run ui & npm run mobile_chrome & npm run ios"
   },
   "keywords": [],
   "author": "",
