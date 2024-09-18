@@ -17,6 +17,6 @@
     "individualProduct" : "Laptop",
     "packageProduct" : "PKG",
     "invalidQuantity" : "9",
-    "validQuantity" : "1"
+    "validQuantity" : "1",
     "scheduleErrorMsg":" users who have a valid EmployeeId "
 }
