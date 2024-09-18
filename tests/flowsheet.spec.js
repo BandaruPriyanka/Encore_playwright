@@ -6,7 +6,6 @@ const {
   assertIsNumber,
 } = require("../utils/helper");
 const atob = require("atob");
-const { assert } = require("console");
 require("dotenv").config();
 
 test.describe("LightHouse Operations", () => {

@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "ios": "npx playwright test --project=Mobile_Safari",
-    "mobile_chrome": "npx playwright test --project=Mobile_Chrome",
-    "ui": "npx playwright test --project=chromium",
+    "clean:allure-results": "rimraf allure-results", 
+    "ios": "npm run clean:allure-results && npx playwright test --project=Mobile_Safari",
+    "mobile_chrome": "npm run clean:allure-results && npx playwright test --project=Mobile_Chrome",
+    "ui": "npm run clean:allure-results && npx playwright test --project=chromium",
     "allure:generate": "allure generate allure-results --clean",
     "allure:open": "allure open"
   },
@@ -18,10 +19,11 @@
     "@types/node": "^22.5.5",
     "allure-commandline": "^2.30.0",
     "allure-playwright": "^2.15.1",
-      "axios": "^1.7.7"
+    "axios": "^1.7.7",
+    "rimraf": "^6.0.1"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-     "atob": "^2.1.2"
+    "atob": "^2.1.2",
+    "dotenv": "^16.4.5"
   }
 }

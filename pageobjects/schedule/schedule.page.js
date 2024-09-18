@@ -11,6 +11,7 @@ exports.SchedulePage = class SchedulePage {
       this.errorMessage=this.page.locator("//span[contains(text(),' Open Shifts is only available with users who have a valid EmployeeId ')]");
     }
     async actionsOnSchedule(){
+        await assertElementVisible(this.scheduleTab)
         await executeStep(this.scheduleTab, "click", "click on schedule tab", []);
         await executeStep(this.myScheduleTab, "click", "click on my schedule button", []);
         await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));

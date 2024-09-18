@@ -43,7 +43,9 @@ module.exports = defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     headless:false,
-    video:'on'
+    video:'on',
+    logLevel: 'error',
+    screenshot:'only-on-failure'
   },
 
   /* Configure projects for major browsers */
@@ -51,7 +53,7 @@ module.exports = defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      testMatch:['tests/schedule.spec.js']
+      testMatch:['tests/schedule.spec.js','tests/flowsheet_card_tab.spec.js','tests/flowsheet.spec.js']
       
     },
     {
@@ -60,7 +62,9 @@ module.exports = defineConfig({
         ...devices["Pixel 7"],
         isMobile: true,
       },
-      testMatch:['tests/schedule.spec.js']
+      // testMatch:['tests/schedule.spec.js','tests/flowsheet_card_tab.spec.js','tests/flowsheet.spec.js']
+        testMatch:['tests/schedule.spec.js']
+      
     },
     {
       name: "Mobile_Safari",
@@ -68,7 +72,7 @@ module.exports = defineConfig({
         ...devices["iPhone 12"],
         isMobile: true,
       },
-      testMatch:['tests/flowsheet_card_tab.spec.js']
+      testMatch:['tests/schedule.spec.js','tests/flowsheet_card_tab.spec.js','tests/flowsheet.spec.js']
     },
     // {
     //   name: 'firefox',
