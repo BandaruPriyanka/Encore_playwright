@@ -12,5 +12,5 @@
         "Labor"
     ],
     "modalText" : "This person has no contact information.",
-    "scheduleErrorMsg":" Open Shifts is only available with users who have a valid EmployeeId "
+    "scheduleErrorMsg":" users who have a valid EmployeeId "
 }
