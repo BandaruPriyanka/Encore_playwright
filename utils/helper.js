@@ -35,6 +35,7 @@ async function lighthouseApi() {
 
 function startDate() {
   const today = new Date();
+  today.setHours(0, 0, 0, 0); 
   const year = today.getFullYear();
   const month = (today.getMonth() + 1).toString().padStart(2, "0");
   const startDay = today.getDate().toString().padStart(2, "0");
@@ -44,8 +45,9 @@ function startDate() {
 
 function endDate() {
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const endDateObj = new Date(today);
-  endDateObj.setDate(today.getDate() + 8);
+  endDateObj.setDate(today.getDate() + 8); // Add 8 days
   const endYear = endDateObj.getFullYear();
   const endMonth = (endDateObj.getMonth() + 1).toString().padStart(2, "0");
   const endDay = endDateObj.getDate().toString().padStart(2, "0");
@@ -64,6 +66,29 @@ function nextDayDate() {
   today.setDate(today.getDate() + 1);
   const nextDayDate = today.getDate();
   return nextDayDate;
+}
+
+// random number between 1 and 25
+function validDiscountGenerator() {
+    const randomNumber = Math.floor(Math.random() * 25) + 1; 
+    return randomNumber.toString(); 
+}
+
+// random number between 26 and 80
+function invalidDiscountGenerator() {
+  const randomNumber = Math.floor(Math.random() * (80 - 26 + 1)) + 26; 
+    return randomNumber.toString(); 
+}
+
+//calculate the amount after discount
+function calculateTotalAmountAfterDiscount(originalPrice, discountPercentage) {
+  const discountAmount = (discountPercentage / 100) * originalPrice;
+  const totalAmount = originalPrice - discountAmount;
+  return totalAmount;
+}
+
+function formatCurrency(amount) {
+  return `$${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 async function scrollElement(element, scrollTo) {
@@ -219,6 +244,10 @@ module.exports = {
   endDate,
   todayDate,
   nextDayDate,
+  validDiscountGenerator,
+  invalidDiscountGenerator,
+  calculateTotalAmountAfterDiscount,
+  formatCurrency,
   scrollElement,
   assertElementVisible,
   assertElementHidden,

@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const indexPage = require("../utils/index.page");
-const {assertElementVisible,assertEqualValues,assertElementContainsText}=require("../utils/helper")
+const {assertElementVisible,assertEqualValues,assertElementContainsText,invalidDiscountGenerator,validDiscountGenerator}=require("../utils/helper")
 const utilConst = require('../utils/const')
 const atob = require("atob");
 require("dotenv").config();
@@ -33,7 +33,13 @@ test.describe('LightHouse Flowsheet card and tab operations' , () => {
         await assertElementVisible(flowsheetCardAndTab.flowsheetTabElement(utilConst.Const.Contacts));
         await flowsheetCardAndTab.clickOnContactAndValidate();
         await page.waitForTimeout(parseInt(process.env.small_timeout))
-        await assertElementContainsText(flowsheetCardAndTab.textInModal,indexPage.lighthouse_data.modalText);
+        await assertElementContainsText(flowsheetCardAndTab.textInModal,indexPage.lighthouse_data.contactModalText);
+    })
+
+    test.skip('Test_C56895 Add-on creation (Docusign disabled)' , async({ page }) => {
+        await flowsheetCardAndTab.verifyDocusignStatus(indexPage.lighthouse_data.docusignOff,indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+        await flowsheetCardAndTab.addOnFunction(indexPage.lighthouse_data.requestedBy,indexPage.lighthouse_data.individualProduct,indexPage.lighthouse_data.packageProduct,indexPage.lighthouse_data.invalidQuantity,indexPage.lighthouse_data.validQuantity,invalidDiscountGenerator());
+        await flowsheetCardAndTab.discountChecking(validDiscountGenerator());
     })
       
 })

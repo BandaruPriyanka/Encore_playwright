@@ -11,5 +11,11 @@
         "Add Ons",
         "Labor"
     ],
-    "modalText" : "This person has no contact information."
+    "contactModalText" : "This person has no contact information.",
+    "docusignOff" : "Off",
+    "requestedBy" : "Tommy Hilfiger",
+    "individualProduct" : "Laptop",
+    "packageProduct" : "PKG",
+    "invalidQuantity" : "9",
+    "validQuantity" : "1"
 }
