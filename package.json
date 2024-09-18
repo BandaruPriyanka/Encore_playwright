@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "createdata":"npx playwright test --project=create_data",
     "clean:allure-results": "rimraf allure-results", 
     "ios": "npx playwright test --project=Mobile_Safari",
     "mobile_chrome": "npx playwright test --project=Mobile_Chrome",
