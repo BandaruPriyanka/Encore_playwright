@@ -27,7 +27,7 @@ module.exports = defineConfig({
     {
       detail: true,
       outputFolder: "allure-results",
-      suiteTitle: true,
+      suiteTitle:false,
       environmentInfo: {
         framework: "playwright",
       },
@@ -51,6 +51,12 @@ module.exports = defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    {
+      name: 'create_data',
+      use: { ...devices['Desktop Chrome'] },
+       testMatch:['tests/create_data.spec.js']
+      
+    },
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },

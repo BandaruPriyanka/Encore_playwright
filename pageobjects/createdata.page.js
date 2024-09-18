@@ -77,11 +77,17 @@ exports.CreateData = class CreateData {
             await this.page.waitForTimeout(parseInt(process.env.small_timeout));
             const eventName = generateRandString(3);
             await executeStep(this.inputAttribute(utilConst.Const.EventName),"fill","Enter the event name",[eventName]);
-            await executeStep(this.inputAttribute(utilConst.Const.EventStartDate),"fill","Enter the start date",[startDate()]);
+            await executeStep(this.inputAttribute(utilConst.Const.EventStartDate), "click", "click on start date input");
             await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-            await executeStep(this.inputAttribute(utilConst.Const.EventEndDate),"click","click on end date input");
+            await executeStep(this.inputAttribute(utilConst.Const.EventStartDate), "fill", "clear the start date", [""]);
             await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-            await executeStep(this.inputAttribute(utilConst.Const.EventEndDate),"fill","Enter the end date",[endDate()]);
+            await executeStep(this.inputAttribute(utilConst.Const.EventStartDate), "fill", "Enter the start date", [startDate()]);
+            await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+            await executeStep(this.inputAttribute(utilConst.Const.EventEndDate), "click", "click on end date input");
+            await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+            await executeStep(this.inputAttribute(utilConst.Const.EventEndDate), "fill", "clear the end date", [""]);
+            await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+            await executeStep(this.inputAttribute(utilConst.Const.EventEndDate), "fill", "Enter the end date", [endDate()]);
             await executeStep(this.buttonAttribute(utilConst.Const.NewOrExisting),"click","click on new")
             await executeStep(this.selectNewOption,"click","click new from the dropdown");
             await executeStep(this.inputAttribute(utilConst.Const.EstRevenue),"click","click estimated revenue input");
@@ -214,7 +220,5 @@ exports.CreateData = class CreateData {
             await executeStep(this.saveBtn,"click","click on save button")
             await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
           }
-
-
       
 }
