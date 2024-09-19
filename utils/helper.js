@@ -54,6 +54,34 @@ function endDate() {
   return endDate;
 }
 
+function todayDateFullFormate() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString();
+  const startDay = today.getDate().toString();
+  const startDate = `${month}/${startDay}/${year}`;
+  return startDate;
+}
+
+function nextWeekDate() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const nextWeekDayObj = new Date(today);
+  nextWeekDayObj.setDate(today.getDate() + 7); // Add 7 days
+  const nextWeekDay = nextWeekDayObj.getDate().toString().padStart(2, '0');
+  return nextWeekDay;
+}
+
+function previousWeekDate() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const previousWeekDateObj = new Date(today);
+  previousWeekDateObj.setDate(today.getDate() - 7); // subtract 7 days
+  const previousWeekDay = previousWeekDateObj.getDate().toString().padStart(2, '0');
+  return previousWeekDay;
+}
+
 function todayDate() {
   const today = new Date();
   const todayDate = today.getDate().toString();
@@ -104,6 +132,11 @@ async function assertElementVisible(element) {
 // Assert that two values are equal (case insensitive)
 async function assertEqualValues(value1, value2) {
   await expect(value1).toEqual(value2);
+}
+
+// Assert that two values are not equal (case insensitive)
+async function assertNotEqualValues(value1, value2) {
+  await expect(value1.toLowerCase()).not.toEqual(value2.toLowerCase());
 }
 
 // Check if an element is hidden
@@ -242,6 +275,9 @@ module.exports = {
   lighthouseApi,
   startDate,
   endDate,
+  todayDateFullFormate,
+  nextWeekDate,
+  previousWeekDate,
   todayDate,
   nextDayDate,
   validDiscountGenerator,
@@ -271,6 +307,7 @@ module.exports = {
   readFileSync,
   appendFileSync,
   assertEqualValues,
+  assertNotEqualValues,
   assertIsNumber,
   assertElementAttributeContains
 };
