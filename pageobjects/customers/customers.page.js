@@ -52,7 +52,9 @@ exports.CustomersPage = class CustomersPage {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const inputValueAfterDateChange = await this.customerSearchInput.inputValue();
     await assertEqualValues(inputValueBeforeDateChange, inputValueAfterDateChange);
-    await executeStep(this.dateSpan(todayDate()), 'click', 'click today date');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    // await executeStep(this.dateSpan(todayDate()), 'click', 'click today date');
+    // await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 
   async scrollAction() {
@@ -69,6 +71,7 @@ exports.CustomersPage = class CustomersPage {
     await this.search(indexPage.opportunity_data.userContactName);
     await assertElementVisible(this.customerLi);
     await this.dateChangeChecking();
+    await executeStep(this.dateSpan(todayDate()), 'click', 'click today date');
     await executeStep(this.crossIcon, 'click', 'clear the search input');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const afterCustomerCount = await this.listOfCustomers.count();
