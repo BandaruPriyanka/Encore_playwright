@@ -9,10 +9,9 @@ test.beforeEach(async ({ page }) => {
     lighthouseLogin = new indexPage.LoginPage(page);
     customersPage = new indexPage.CustomersPage(page);
     await page.goto(process.env.lighthouseUrl, {
-      timeout: parseInt(process.env.pageload_timeout),
+        timeout: parseInt(process.env.pageload_timeout)
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
-    await lighthouseLogin.login(atob(process.env.lighthouseEmail),atob(process.env.lighthousePassword));
 });
 
 test('Test_C56920 Verify customer search', async({ page }) => {
