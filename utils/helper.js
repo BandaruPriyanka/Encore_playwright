@@ -158,9 +158,13 @@ async function assertElementAttribute(page, selector, attribute, value) {
   const attributeValue = await element.getAttribute(attribute);
   expect(attributeValue).toBe(value);
 }
+async function assertElementAttributeContains(locator, attribute, value) {
+  const attributeValue = await locator.getAttribute(attribute);
+  expect(attributeValue).toContain(value);
+}
+
 // Check if an element is enabled
-async function assertElementEnabled(page, selector) {
-  const element = await page.locator(selector);
+async function assertElementEnabled(element) {
   const isEnabled = await element.isEnabled();
   expect(isEnabled).toBe(true);
 }
@@ -267,5 +271,6 @@ module.exports = {
   readFileSync,
   appendFileSync,
   assertEqualValues,
-  assertIsNumber
+  assertIsNumber,
+  assertElementAttributeContains
 };
