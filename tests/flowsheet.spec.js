@@ -43,7 +43,7 @@ test.describe('LightHouse Operations', () => {
     await flowsheetSearch.assertCalendarHasDates();
   });
 
-  test.only('Test_C56888 Flowsheets calendar widget', async({ page }) => {
+  test('Test_C56888 Flowsheets calendar widget', async({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetSearch.calendarDiv);
     await flowsheetSearch.asserRoomsWhileDateChange();
