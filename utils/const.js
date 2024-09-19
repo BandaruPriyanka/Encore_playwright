@@ -23,7 +23,8 @@ const NavigatorConsts = {
   Log: 'Log',
   Contacts: 'Contacts',
   Add_Ons: 'Add Ons',
-  Labor: 'Labor'
+  Labor: 'Labor',
+  tabNames:['Details', 'Contacts', 'Touchpoints', 'Rooms', 'Previous Events']
 };
 
 exports.Const = NavigatorConsts;
