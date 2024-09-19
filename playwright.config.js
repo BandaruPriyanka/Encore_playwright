@@ -12,7 +12,7 @@ const { on } = require('events');
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
-  timeout : 6*60*1000,
+  timeout: 6 * 60 * 1000,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -23,62 +23,81 @@ module.exports = defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html'], ["allure-playwright",
-    {
-      detail: true,
-      outputFolder: "allure-results",
-      suiteTitle:false,
-      environmentInfo: {
-        framework: "playwright",
-      },
-    },
-  ]
-],
+  reporter: [
+    ['html'],
+    [
+      'allure-playwright',
+      {
+        detail: true,
+        outputFolder: 'allure-results',
+        suiteTitle: false,
+        environmentInfo: {
+          framework: 'playwright'
+        }
+      }
+    ]
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  
+
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    actionTimeout:120000,
-    headless:false,
-    video:'on',
+    actionTimeout: 120000,
+    headless: false,
+    video: 'on',
     logLevel: 'error',
-    screenshot:'only-on-failure'
+    screenshot: 'only-on-failure',
+    storageState: './data/storageState.json'
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'global_setup',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: ['tests/global_setup.spec.js']
+    },
+    {
       name: 'create_data',
       use: { ...devices['Desktop Chrome'] },
-       testMatch:['tests/create_data.spec.js']
-      
+      testMatch: ['tests/create_data.spec.js']
     },
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-       testMatch:['tests/flowsheet.spec.js','tests/flowsheet_card_tab.spec.js','tests/schedule.spec.js']
-      
+      testMatch: [
+        'tests/flowsheet.spec.js',
+        'tests/flowsheet_card_tab.spec.js',
+        'tests/schedule.spec.js'
+      ]
     },
     {
-      name: "Mobile_Chrome",
+      name: 'Mobile_Chrome',
       use: {
-        ...devices["Pixel 7"],
-        isMobile: true,
+        ...devices['Pixel 7'],
+        isMobile: true
       },
-      testMatch:['tests/flowsheet.spec.js','tests/flowsheet_card_tab.spec.js','tests/schedule.spec.js']
+      testMatch: [
+        'tests/flowsheet.spec.js',
+        'tests/flowsheet_card_tab.spec.js',
+        'tests/schedule.spec.js'
+      ]
     },
     {
-      name: "Mobile_Safari",
+      name: 'Mobile_Safari',
       use: {
-        ...devices["iPhone 12"],
-        isMobile: true,
+        ...devices['iPhone 12'],
+        isMobile: true
       },
-      testMatch:['tests/flowsheet.spec.js','tests/flowsheet_card_tab.spec.js','tests/schedule.spec.js']
-    },
+      testMatch: [
+        'tests/flowsheet.spec.js',
+        'tests/flowsheet_card_tab.spec.js',
+        'tests/schedule.spec.js'
+      ]
+    }
     // {
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'] },
@@ -98,7 +117,7 @@ module.exports = defineConfig({
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
-  ],
+  ]
 
   /* Run your local dev server before starting the tests */
   // webServer: {
@@ -107,4 +126,3 @@ module.exports = defineConfig({
   //   reuseExistingServer: !process.env.CI,
   // },
 });
-

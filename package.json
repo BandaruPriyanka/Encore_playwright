@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "createdata":"npx playwright test --project=create_data",
-    "clean:allure-results": "rimraf allure-results", 
+    "createdata": "npx playwright test --project=create_data",
+    "global_setup": "npx playwright test --project=global_setup",
+    "clean:allure-results": "rimraf allure-results",
     "ios": "npx playwright test --project=Mobile_Safari",
     "mobile_chrome": "npx playwright test --project=Mobile_Chrome",
     "ui": "npx playwright test --project=chromium",
-    "clean-results":"npm run clean:allure-results",
+    "clean-results": "npm run clean:allure-results",
     "allure:generate": "allure generate allure-results --clean",
     "allure:open": "allure open",
-    "all":"npm run clean:allure-results & npm run ui & npm run mobile_chrome & npm run ios"
+    "all": "npm run clean:allure-results & npm run ui & npm run mobile_chrome & npm run ios"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "allure-commandline": "^2.30.0",
     "allure-playwright": "^2.15.1",
     "axios": "^1.7.7",
+    "prettier": "^3.3.3",
     "rimraf": "^6.0.1"
   },
   "dependencies": {
