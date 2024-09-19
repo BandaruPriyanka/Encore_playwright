@@ -1,57 +1,39 @@
-const { test, expect } = require("@playwright/test");
-const indexPage = require("../utils/index.page");
-const {
-  assertElementVisible,
-  assertEqualValues,
-  assertIsNumber,
-} = require("../utils/helper");
-const atob = require("atob");
-require("dotenv").config();
+const { test, expect } = require('@playwright/test');
+const indexPage = require('../utils/index.page');
+const { assertElementVisible, assertEqualValues, assertIsNumber } = require('../utils/helper');
+const atob = require('atob');
+require('dotenv').config();
 
-test.describe("LightHouse Operations", () => {
-  let lighthouseLogin,
-    flowsheetSearch,
-    filtercount_before_pagereload,
-    filtercount_after_pagereload;
+test.describe('LightHouse Operations', () => {
+  let lighthouseLogin, flowsheetSearch, filtercount_before_pagereload, filtercount_after_pagereload;
 
   test.beforeEach(async ({ page }) => {
     lighthouseLogin = new indexPage.LoginPage(page);
     flowsheetSearch = new indexPage.FlowSheetPage(page);
     await page.goto(process.env.lighthouseUrl, {
-      timeout: parseInt(process.env.pageload_timeout),
+      timeout: parseInt(process.env.pageload_timeout)
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
-    await lighthouseLogin.login(
-      atob(process.env.lighthouseEmail),
-      atob(process.env.lighthousePassword)
-    );
   });
 
-  test("Test_C56882 Verify lighthouse flowsheet search functionality", async ({
-    page,
-  }) => {
+  test('Test_C56882 Verify lighthouse flowsheet search functionality', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.large_timeout));
     await assertElementVisible(flowsheetSearch.searchInput);
     await flowsheetSearch.checkingSearchFunctionality();
   });
 
-  test("Test_C56885	,Flowsheets filtering", async ({ page }) => {
+  test('Test_C56885	,Flowsheets filtering', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetSearch.filterIcon);
     await flowsheetSearch.flowsheetFilter();
-    filtercount_before_pagereload =
-      await flowsheetSearch.filterCount.textContent();
+    filtercount_before_pagereload = await flowsheetSearch.filterCount.textContent();
     await page.reload();
-    filtercount_after_pagereload =
-      await flowsheetSearch.filterCount.textContent();
-    await assertEqualValues(
-      filtercount_before_pagereload,
-      filtercount_after_pagereload
-    );
+    filtercount_after_pagereload = await flowsheetSearch.filterCount.textContent();
+    await assertEqualValues(filtercount_before_pagereload, filtercount_after_pagereload);
     await flowsheetSearch.sorting();
   });
 
-  test("Test_C56886	Flowsheets calendar", async ({ page }) => {
+  test('Test_C56886	Flowsheets calendar', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetSearch.calendarDiv);
     await assertElementVisible(flowsheetSearch.nextweekIcon);
