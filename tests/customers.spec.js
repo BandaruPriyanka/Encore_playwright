@@ -36,3 +36,9 @@ test('Test_C5692 ,Customers calendar', async ({ page }) => {
   await assertElementEnabled(customersPage.previousweekIcon);
   await customersPage.assertCalendarHasDates();
 });
+test.only('Test_C56924 ,verify test data on customer card', async ({ page }) => {
+    await page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await customersPage.clickOnCustomerIcon();
+    await customersPage.verifyCustomerCardContent();
+    await customersPage.assertTabNames();
+  });
