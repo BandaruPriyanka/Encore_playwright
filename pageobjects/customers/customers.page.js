@@ -73,8 +73,10 @@ exports.CustomersPage = class CustomersPage {
   }
 
   async searchFunctionality() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const beforeCustomerCount = await this.listOfCustomers.count();
     await this.search(indexPage.lighthouse_data.invalidText);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(this.noDataPlaceholder);
     await this.search(indexPage.opportunity_data.userContactName);
     await assertElementVisible(this.customerLi);
