@@ -48,7 +48,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     );
   });
 
-  test('Test_C56895 Add-on creation (Docusign disabled)', async ({ page }) => {
+  test.only('Test_C56895 Add-on creation (Docusign disabled)', async ({ page }) => {
     await flowsheetCardAndTab.verifyDocusignStatus(
       indexPage.lighthouse_data.docusignOff,
       indexPage.navigator_data.second_job_no,
@@ -59,9 +59,21 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.lighthouse_data.individualProduct,
       indexPage.lighthouse_data.packageProduct,
       indexPage.lighthouse_data.invalidQuantity,
-      indexPage.lighthouse_data.validQuantity,
-      invalidDiscountGenerator()
+      indexPage.lighthouse_data.validQuantity
     );
-    await flowsheetCardAndTab.discountChecking(validDiscountGenerator());
+    await flowsheetCardAndTab.discountChecking(invalidDiscountGenerator(),validDiscountGenerator());
+    await flowsheetCardAndTab.dateSelectModalChecking();
   });
+
+  test('Test_C56892 Test Comparison with previous jobs logic' , async() => {
+    await flowsheetCardAndTab.assertComparisonIcon(indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no,
+      indexPage.lighthouse_data.requestedBy,
+      indexPage.lighthouse_data.individualProduct,
+      indexPage.lighthouse_data.packageProduct,
+      indexPage.lighthouse_data.invalidQuantity,
+      indexPage.lighthouse_data.validQuantity
+    );
+    await flowsheetCardAndTab.comparisonIconFunctionality();
+  })
 });
