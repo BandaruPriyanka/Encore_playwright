@@ -169,6 +169,11 @@ async function assertUrlContains(page, substring) {
   expect(url).toContain(substring);
 }
 
+// Assert that value1 is greater than value2
+async function assertGreaterThan(value1, value2) {
+  await expect(value1).toBeGreaterThan(value2);
+}
+
 // Take a screenshot of an element
 async function screenshotElement(page, selector, path) {
   const element = await page.locator(selector);
@@ -302,6 +307,7 @@ module.exports = {
   assertCheckboxChecked,
   assertCheckboxUnchecked,
   assertElementInnerHtml,
+  assertGreaterThan,
   waitForElementClass,
   writeFileSync,
   readFileSync,

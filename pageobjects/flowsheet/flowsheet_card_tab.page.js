@@ -3,11 +3,13 @@ const {
   assertElementVisible,
   assertElementContainsText,
   calculateTotalAmountAfterDiscount,
-  formatCurrency
+  assertGreaterThan,
+  formatCurrency,
+  assertEqualValues
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
-let beforeRoomCount;
+let beforeRoomCount,afterRoomCount,discountPrice;
 exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   constructor(page) {
     this.page = page;
@@ -77,6 +79,18 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       "//mat-tooltip-component//div[text()='Discount allowed values 1-25']"
     );
     this.moneyElement = this.page.locator("//span[text()='Estimated Daily']/parent::p");
+    this.listOfProducts  = this.page.locator("//div[@formarrayname='AddOnItems']/li");
+    this.listOfDeleteIcon = this.page.locator("//icon[@name='trah_bin_line']");
+    this.noResultSpan = this.page.locator("//span[contains(text(),'No Results Found')]");
+    this.productCrossLine = this.page.locator("//input[@placeholder='Product search...']/../icon[@name='cross_line']");
+    this.nextButton =  this.page.locator("//span[text()='Next']");
+    this.dateSelectionModalText = this.page.locator("//strong[contains(text(),'Add On Request - what days?')]");
+    this.arrowLineIcon = this.page.locator("//strong[contains(text(),'Add On Request - what days?')]/..//icon");
+    this.reviewOrderBtn = this.page.locator("//span[text()='Review Order']");
+    this.selectOneDateErrorMsg = this.page.locator("//div[contains(text(),'Select at least one date.')]");
+    this.selectDate = this.page.locator("//form//ul/div/li[1]//span[contains(text(),'select')]");
+    this.sendToNavigatorBtn = this.page.locator("//span[text()='Send to Navigator']");
+    this.addOnRequestsList = this.page.locator("//app-add-ons/ul/div/li");
   }
 
   // C56890
@@ -120,6 +134,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.locationProfile, 'click', 'click location profile in menu');
     await assertElementContainsText(this.docusignValue, docusign);
     await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     beforeRoomCount = await this.roomsCount.textContent();
     await this.searchFunction(searchText);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -184,10 +199,38 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     const estimatedMoneyBeforeDiscount = await this.moneyElement.textContent();
     const originalPrice = parseFloat(estimatedMoneyBeforeDiscount.replace(/[^0-9.]/g, ''));
     await executeStep(this.discountInput, 'fill', 'enter the valid discount', [validDiscount]);
-    const discountPrice = formatCurrency(
+    discountPrice = formatCurrency(
       calculateTotalAmountAfterDiscount(originalPrice, validDiscount)
     );
     await assertElementContainsText(this.moneyElement, discountPrice);
     //add complimentary code
+    const addedProductsCount = await this.listOfProducts.count();
+    const deleteIconCount = await this.listOfDeleteIcon.count();
+    assertEqualValues(addedProductsCount,deleteIconCount);
+    await executeStep(this.searchProductInput,"fill","enter the invalid text",[indexPage.lighthouse_data.invalidText]);
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await assertElementVisible(this.noResultSpan);
+    await executeStep(this.productCrossLine,"click","click on cross button");
+    await executeStep(this.nextButton,"click","click on next button");
+  }
+
+  async dateSelectModalChecking() {
+    await assertElementVisible(this.dateSelectionModalText);
+    await executeStep(this.arrowLineIcon,"click","click on arrow button");
+    await assertElementVisible(this.addOnModalText);
+    await executeStep(this.nextButton,"click","click on next button");
+    await executeStep(this.reviewOrderBtn,"click","click on review order button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.selectOneDateErrorMsg);
+    await executeStep(this.selectDate,"click","select today date");
+    await executeStep(this.reviewOrderBtn,"click","click on review order button");
+    await assertElementVisible(this.sendToNavigatorBtn);
+    await executeStep(this.sendToNavigatorBtn,"click","click on send to navigator button");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await assertGreaterThan(await this.addOnRequestsList.count(),0);
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    afterRoomCount = await this.roomsCount.textContent();
+    assertEqualValues(parseInt(afterRoomCount),parseInt(beforeRoomCount)+1);
   }
 };
