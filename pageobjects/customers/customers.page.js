@@ -25,7 +25,7 @@ exports.CustomersPage = class CustomersPage {
     this.customerSearchInput = this.page.locator("//input[@placeholder='Search Customers']");
     this.noDataPlaceholder = this.page.locator("//span[contains(text(),'No data found')]");
     this.customerDiv = this.page.locator("//div[@class='flex']/child::div[1]");
-    this.customerLi = this.page.locator("//div[text()='Angelina Wood']");
+    this.customerList= this.page.locator("//div[text()='Angelina Wood']");
     this.dateSpan = date => this.page.locator(`//span[text()='` + date + `']`);
     this.crossIcon = this.page.locator("//icon[@name='cross_line']");
     this.calendarDiv = this.page.locator('app-date-selector');
@@ -43,17 +43,19 @@ exports.CustomersPage = class CustomersPage {
         this.page.locator(`
       ((//div[@role='tab']//span)[2]//div[normalize-space()='${tabName}'])[2]`
       );
+      this.businessCustomer=this.page.locator("(//app-customer-card)[2]");
+      this.customerCardBusiness=this.page.locator("(//app-customer-card)[2]");
+      this.customerCardOpportunity=this.page.locator("//app-customer-card[2]//div[@role='region']/div");
+      this.customerTab=this.page.locator("(//div[@role='tab']//span//div[normalize-space()='Contacts'])[2]")
+      this.noDataFoundEle=this.page.locator("//span[contains(normalize-space(),'No data found')]")
   }
-
+    
   async search(searchText) {
     await executeStep(this.customerSearchInput, 'fill', 'enter the customer name', [searchText]);
   }
-
-  //C56920
   async clickOnCustomerIcon() {
     await executeStep(this.customersIcon, 'click', 'click customer icon');
   }
-
   async dateChangeChecking() {
     const inputValueBeforeDateChange = await this.customerSearchInput.inputValue();
     await executeStep(this.dateSpan(nextDayDate()), 'click', 'click next day');
@@ -61,8 +63,6 @@ exports.CustomersPage = class CustomersPage {
     const inputValueAfterDateChange = await this.customerSearchInput.inputValue();
     await assertEqualValues(inputValueBeforeDateChange, inputValueAfterDateChange);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    // await executeStep(this.dateSpan(todayDate()), 'click', 'click today date');
-    // await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 
   async scrollAction() {
@@ -79,7 +79,7 @@ exports.CustomersPage = class CustomersPage {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(this.noDataPlaceholder);
     await this.search(indexPage.opportunity_data.userContactName);
-    await assertElementVisible(this.customerLi);
+    await assertElementVisible(this.customerList);
     await this.dateChangeChecking();
     await executeStep(this.dateSpan(todayDate()), 'click', 'click today date');
     await executeStep(this.crossIcon, 'click', 'clear the search input');
@@ -150,5 +150,11 @@ exports.CustomersPage = class CustomersPage {
           console.log(`${tabName} is not displayed`);
         }
       }
+  }
+  async checkNoContactsDisplayed(){
+    await executeStep(this.customerCardBusiness, 'click', 'click on customer card from that list', []);
+    await executeStep(this.customerCardOpportunity, 'click', 'select one opportunity from that list', []);
+    await executeStep(this.customerTab, 'click', 'click on customer card from that list');
+    await assertElementVisible(this.noDataFoundEle)
   }
 };

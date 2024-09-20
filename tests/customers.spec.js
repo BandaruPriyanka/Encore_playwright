@@ -26,7 +26,7 @@ test('Test_C56920 Verify customer search', async ({ page }) => {
   await assertElementVisible(customersPage.customerSearchInput);
   await customersPage.searchFunctionality();
 });
-test('Test_C5692 ,Customers calendar', async ({ page }) => {
+test('Test_C5692 ,verify customers calendar', async ({ page }) => {
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await customersPage.clickOnCustomerIcon();
   await page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -36,9 +36,14 @@ test('Test_C5692 ,Customers calendar', async ({ page }) => {
   await assertElementEnabled(customersPage.previousweekIcon);
   await customersPage.assertCalendarHasDates();
 });
-test.only('Test_C56924 ,verify test data on customer card', async ({ page }) => {
+test('Test_C56924 ,verify test data on customer card', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await customersPage.clickOnCustomerIcon();
     await customersPage.verifyCustomerCardContent();
     await customersPage.assertTabNames();
+  });
+  test('Test_C56926,verify contacts tab', async ({ page }) => {
+    await page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await customersPage.clickOnCustomerIcon();
+    await customersPage.checkNoContactsDisplayed();
   });
