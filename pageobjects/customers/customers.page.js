@@ -5,13 +5,13 @@ const {
   nextDayDate,
   scrollElement,
   assertEqualValues,
-  assertElementAttributeContains
+  assertElementAttributeContains,
+  assertIsNumber
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
-const { waitForDebugger } = require('inspector');
 require('dotenv').config();
-
+let roomsqty;
 exports.CustomersPage = class CustomersPage {
   constructor(page) {
     this.page = page;
@@ -25,7 +25,7 @@ exports.CustomersPage = class CustomersPage {
     this.customerSearchInput = this.page.locator("//input[@placeholder='Search Customers']");
     this.noDataPlaceholder = this.page.locator("//span[contains(text(),'No data found')]");
     this.customerDiv = this.page.locator("//div[@class='flex']/child::div[1]");
-    this.customerList= this.page.locator("//div[text()='Angelina Wood']");
+    this.customerList = this.page.locator("//div[text()='Angelina Wood']");
     this.dateSpan = date => this.page.locator(`//span[text()='` + date + `']`);
     this.crossIcon = this.page.locator("//icon[@name='cross_line']");
     this.calendarDiv = this.page.locator('app-date-selector');
@@ -34,22 +34,36 @@ exports.CustomersPage = class CustomersPage {
     this.nextweekIcon = this.page.locator("//icon[@title='Next week']");
     this.previousweekIcon = this.page.locator("//icon[@title='Previous week']");
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
-    this.customerCard=this.page.locator("(//app-customer-card)[1]");
-    this.opportunityList=this.page.locator("(//div[@role='region']/div/div/div)[1]");
-    this.orderName=this.page.locator("//span[contains(@class,'e2e_opportunity_order_name')]");
-    this.customerName=this.page.locator("//span[contains(@class,'e2e_opportunity_bill_to_account_name')]");
-    this.opportunityDates=this.page.locator("//span[contains(@class,'e2e_opportunity_dates')]");
-    this.dynamicTabElement = (tabName) => 
-        this.page.locator(`
-      ((//div[@role='tab']//span)[2]//div[normalize-space()='${tabName}'])[2]`
-      );
-      this.businessCustomer=this.page.locator("(//app-customer-card)[2]");
-      this.customerCardBusiness=this.page.locator("(//app-customer-card)[2]");
-      this.customerCardOpportunity=this.page.locator("//app-customer-card[2]//div[@role='region']/div");
-      this.customerTab=this.page.locator("(//div[@role='tab']//span//div[normalize-space()='Contacts'])[2]")
-      this.noDataFoundEle=this.page.locator("//span[contains(normalize-space(),'No data found')]")
+    this.customerCard = this.page.locator('(//app-customer-card)[1]');
+    this.opportunityList = this.page.locator("(//div[@role='region']/div/div/div)[1]");
+    this.orderName = this.page.locator("//span[contains(@class,'e2e_opportunity_order_name')]");
+    this.customerName = this.page.locator(
+      "//span[contains(@class,'e2e_opportunity_bill_to_account_name')]"
+    );
+    this.opportunityDates = this.page.locator("//span[contains(@class,'e2e_opportunity_dates')]");
+    this.dynamicTabElement = tabName =>
+      this.page.locator(`
+    (//div[@role='tab']//span//div[contains(normalize-space(),'${tabName}')])[2]`);
+
+    this.businessCustomer = this.page.locator('(//app-customer-card)[2]');
+    this.customerCardBusiness = this.page.locator('(//app-customer-card)[2]');
+    this.customerCardOpportunity = this.page.locator(
+      "//app-customer-card[2]//div[@role='region']/div"
+    );
+    this.noDataFoundEle = this.page.locator("//span[contains(normalize-space(),'No data found')]");
+    this.roomCount = tabName =>
+      this.page.locator(`
+    (//div[@role='tab']//span//div[contains(normalize-space(),'${tabName}')]//div)[2]`);
+    this.roomList = this.page.locator('//app-room-list/../..');
+    this.selectRoom = this.page.locator('(//app-flowsheet-action-card//div)[1]');
+    this.flowsheetDetailsDiv = this.isMobile
+      ? this.page.locator('//app-flowsheet-detail/div[1]/div[2]')
+      : this.page.locator('//app-flowsheet-detail/child::div[1]');
+    this.flowsheetTab = this.page.locator(
+      "(//span[contains(normalize-space(),'Flowsheet')])[2]/parent::div"
+    );
   }
-    
+
   async search(searchText) {
     await executeStep(this.customerSearchInput, 'fill', 'enter the customer name', [searchText]);
   }
@@ -134,27 +148,64 @@ exports.CustomersPage = class CustomersPage {
     await this.dateChangeChecking();
     await this.backToTodayDate();
   }
-  async verifyCustomerCardContent(){
+  async verifyCustomerCardContent() {
     await executeStep(this.customerCard, 'click', 'click on customer card from that list', []);
     await executeStep(this.opportunityList, 'click', 'select one opportunity from that list', []);
     await assertElementVisible(this.orderName);
     await assertElementVisible(this.customerName);
     await assertElementVisible(this.opportunityDates);
   }
-  async assertTabNames(){
+  async assertTabNames() {
     for (let tabName of utilConst.Const.tabNames) {
-        const isVisible = await this.dynamicTabElement(tabName).isVisible();
-        if (isVisible) {
-          console.log(`${tabName} is displayed`);
-        } else {
-          console.log(`${tabName} is not displayed`);
-        }
+      const isVisible = await this.dynamicTabElement(tabName).isVisible();
+      if (isVisible) {
+        console.log(`${tabName} is displayed`);
+      } else {
+        console.log(`${tabName} is not displayed`);
       }
+    }
   }
-  async checkNoContactsDisplayed(){
-    await executeStep(this.customerCardBusiness, 'click', 'click on customer card from that list', []);
-    await executeStep(this.customerCardOpportunity, 'click', 'select one opportunity from that list', []);
-    await executeStep(this.customerTab, 'click', 'click on customer card from that list');
-    await assertElementVisible(this.noDataFoundEle)
+  async clickOnCustomerBusinessCard() {
+    await executeStep(
+      this.customerCardBusiness,
+      'click',
+      'click on customer card from that list',
+      []
+    );
+    await executeStep(
+      this.customerCardOpportunity,
+      'click',
+      'select one opportunity from that list',
+      []
+    );
+  }
+  async checkNoContactsDisplayed() {
+    await this.clickOnCustomerBusinessCard();
+    await executeStep(
+      this.dynamicTabElement(utilConst.Const.tabNames[1]),
+      'click',
+      'click on customer card from that list'
+    );
+    await assertElementVisible(this.noDataFoundEle);
+  }
+
+  async roomListScrollAction() {
+    const div = await this.roomList;
+    await scrollElement(div, 'bottom');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await scrollElement(div, 'top');
+  }
+  async verifyRoomTab() {
+    await this.clickOnCustomerBusinessCard();
+    await executeStep(
+      this.dynamicTabElement(utilConst.Const.tabNames[3]),
+      'click',
+      'click on room tab from that list'
+    );
+    roomsqty = await this.roomCount(utilConst.Const.tabNames[3]).textContent();
+  }
+  async selectRoomList() {
+    //await this.roomListScrollAction();
+    await executeStep(this.selectRoom, 'click', 'click one room from the list');
   }
 };

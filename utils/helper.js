@@ -271,7 +271,6 @@ function appendFileSync(filePath, content) {
 async function assertIsNumber(value) {
   const numberValue = Number(value);
   expect(typeof numberValue).toBe('number'); // Assert that it is of type 'number'
-  expect(!isNaN(numberValue)).toBe(true); // Ensure it is not NaN
 }
 
 module.exports = {

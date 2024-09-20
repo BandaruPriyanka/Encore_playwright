@@ -4,7 +4,8 @@ const {
   assertElementVisible,
   assertEqualValues,
   assertIsNumber,
-  assertElementEnabled
+  assertElementEnabled,
+  assertElementAttributeContains
 } = require('../utils/helper');
 const atob = require('atob');
 require('dotenv').config();
@@ -37,13 +38,22 @@ test('Test_C5692 ,verify customers calendar', async ({ page }) => {
   await customersPage.assertCalendarHasDates();
 });
 test('Test_C56924 ,verify test data on customer card', async ({ page }) => {
-    await page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await customersPage.clickOnCustomerIcon();
-    await customersPage.verifyCustomerCardContent();
-    await customersPage.assertTabNames();
-  });
-  test('Test_C56926,verify contacts tab', async ({ page }) => {
-    await page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await customersPage.clickOnCustomerIcon();
-    await customersPage.checkNoContactsDisplayed();
-  });
+  await page.waitForTimeout(parseInt(process.env.medium_timeout));
+  await customersPage.clickOnCustomerIcon();
+  await customersPage.verifyCustomerCardContent();
+  await customersPage.assertTabNames();
+});
+test('Test_C56926,verify contacts tab', async ({ page }) => {
+  await page.waitForTimeout(parseInt(process.env.medium_timeout));
+  await customersPage.clickOnCustomerIcon();
+  await customersPage.checkNoContactsDisplayed();
+});
+test.skip('Test_C56928, verify room list tab', async ({ page }) => {
+  await page.waitForTimeout(parseInt(process.env.medium_timeout));
+  await customersPage.clickOnCustomerIcon();
+  await customersPage.verifyRoomTab();
+  await assertIsNumber(customersPage.roomsqty);
+  await customersPage.selectRoomList();
+  await assertElementVisible(customersPage.flowsheetDetailsDiv);
+  await assertElementAttributeContains(customersPage.flowsheetTab, 'class', 'text-purple');
+});

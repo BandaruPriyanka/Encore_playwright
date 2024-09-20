@@ -43,8 +43,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.nextweekIcon = this.page.locator("//icon[@title='Next week']");
     this.previousweekIcon = this.page.locator("//icon[@title='Previous week']");
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
-    //C56888 
-    this.todayDateButton = (date) => this.page.locator(`//div[contains(text(),'`+date+`')]`) 
+    this.todayDateButton = date => this.page.locator(`//div[contains(text(),'` + date + `')]`);
   }
 
   async changeLocation(locationId) {
@@ -159,41 +158,45 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
   async asserRoomsWhileDateChange() {
     const todayRoomCount = await this.roomsCount.textContent();
-    await executeStep(this.dateElement(nextDayDate()),"click","click tomorrow date");
+    await executeStep(this.dateElement(nextDayDate()), 'click', 'click tomorrow date');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const nextDayRoomCount = await this.roomsCount.textContent();
-    assertNotEqualValues(todayRoomCount,nextDayRoomCount);
-    await executeStep(this.dateElement(todayDate()),"click","click today date");
+    assertNotEqualValues(todayRoomCount, nextDayRoomCount);
+    await executeStep(this.dateElement(todayDate()), 'click', 'click today date');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async assertDates() {
-    await executeStep(this.nextweekIcon,"click","click on next week icon");
+    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
     await assertElementVisible(this.dateElement(nextWeekDate()));
     await assertElementVisible(this.todayButton);
     await assertElementVisible(this.todayDateButton(todayDateFullFormate()));
-    await executeStep(this.todayButton,"click","click on today button");
-    await executeStep(this.previousweekIcon,"click","click on previous week icon");
+    await executeStep(this.todayButton, 'click', 'click on today button');
+    await executeStep(this.previousweekIcon, 'click', 'click on previous week icon');
     await assertElementVisible(this.dateElement(previousWeekDate()));
-    await executeStep(this.todayButton,"click","click today date");
+    await executeStep(this.todayButton, 'click', 'click today date');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async assertUrls() {
-    await executeStep(this.nextweekIcon,"click","click on next week icon");
-    await executeStep(this.todayButton,"click","click on today url");
+    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
+    await executeStep(this.todayButton, 'click', 'click on today url');
     await assertElementVisible(this.dateElement(todayDate()));
-    await executeStep(this.nextweekIcon,"click","click on next week icon");
-    await executeStep(this.todayDateButton(todayDateFullFormate()),"click","click on date url");
+    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
+    await executeStep(this.todayDateButton(todayDateFullFormate()), 'click', 'click on date url');
     await assertElementVisible(this.dateElement(todayDate()));
   }
 
   async validateDateFromPastAndFuture() {
-    await executeStep(this.nextweekIcon,"click","click on next week icon");
-    await executeStep(this.dateElement(nextWeekDate()),"click","click date from next week");
+    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
+    await executeStep(this.dateElement(nextWeekDate()), 'click', 'click date from next week');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(this.roomsCount);
-    await executeStep(this.todayButton,"click","click on today url");
-    await executeStep(this.previousweekIcon,"click","click on previous week icon");
-    await executeStep(this.dateElement(previousWeekDate()),"click","click date from previous week");
+    await executeStep(this.todayButton, 'click', 'click on today url');
+    await executeStep(this.previousweekIcon, 'click', 'click on previous week icon');
+    await executeStep(
+      this.dateElement(previousWeekDate()),
+      'click',
+      'click date from previous week'
+    );
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(this.roomsCount);
   }
