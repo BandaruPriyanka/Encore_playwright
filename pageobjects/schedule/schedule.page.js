@@ -28,7 +28,7 @@ exports.SchedulePage = class SchedulePage {
   async actionsOnSchedule() {
     await this.scheduleTab.waitFor({
       state: 'visible',
-      timeout: parseInt(process.env.medium_timeout)
+      timeout: parseInt(process.env.large_timeout)
     });
     await executeStep(this.scheduleTab, 'click', 'click on schedule tab', []);
     await this.myScheduleTab.waitFor({
