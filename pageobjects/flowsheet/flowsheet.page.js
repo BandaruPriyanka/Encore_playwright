@@ -163,6 +163,9 @@ exports.FlowSheetPage = class FlowSheetPage {
     const nextDayRoomCount = await this.roomsCount.textContent();
     assertNotEqualValues(todayRoomCount, nextDayRoomCount);
     await executeStep(this.dateElement(todayDate()), 'click', 'click today date');
+    assertNotEqualValues(parseInt(todayRoomCount),parseInt(nextDayRoomCount));
+    await executeStep(this.dateElement(todayDate()),"click","click today date");
+
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async assertDates() {

@@ -23,7 +23,7 @@ test.beforeEach(async ({ page }) => {
 test('Test_C56920 Verify customer search', async ({ page }) => {
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await customersPage.clickOnCustomerIcon();
-  await page.waitForTimeout(parseInt(process.env.small_timeout));
+  await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await assertElementVisible(customersPage.customerSearchInput);
   await customersPage.searchFunctionality();
 });

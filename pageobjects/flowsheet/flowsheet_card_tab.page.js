@@ -9,7 +9,7 @@ const {
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
-let beforeRoomCount, afterRoomCount, discountPrice;
+let beforeRoomCount,afterRoomCount,discountPrice;
 exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   constructor(page) {
     this.page = page;
@@ -48,11 +48,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
           '//app-flowsheet-detail/div[1]/div[1]/div/div/following-sibling::app-mood-pia-chart'
         );
     this.flowsheetTabElement = text => this.page.locator(`//div[contains(text(),'` + text + `')]`);
-    // C56910
     this.contactDiv = this.page.locator('//app-contact-list/ul/li');
     this.contactName = name => this.page.locator(`//span[text()='` + name + `']`);
     this.textInModal = this.page.locator('//mat-bottom-sheet-container//ul/li');
-    // C56895
     this.menuIcon = this.page.locator("//app-side-menu/div[1]//icon[@name='menu_line']");
     this.locationProfile = this.page.locator("//span[text()='Location Profile']");
     this.docusignValue = this.isMobile
@@ -98,10 +96,17 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
     this.selectDate = this.page.locator("//form//ul/div/li[1]//span[contains(text(),'select')]");
     this.sendToNavigatorBtn = this.page.locator("//span[text()='Send to Navigator']");
-    this.addOnRequestsList = this.page.locator('//app-add-ons/ul/div/li');
+    this.addOnRequestsList = this.page.locator("//app-add-ons/ul/div/li");
+    this.severalPriorMeetingsText = this.page.locator("//strong[text()='Several prior meetings were detected']");
+    this.selectFirstRowInAdditions = this.page.locator("//li[contains(@class,'e2e_job_comparison_job_list_row')][1]");
+    this.changesFromPreviousMeetingsText = this.page.locator("//strong[text()='Changes from Previous Meeting']");
+    this.additionsText = this.page.locator("//strong[text()='Additions']");
+    this.RemovalsText = this.page.locator("//strong[text()='Removals']");
+    this.closeButton = this.page.locator("//a[text()='Close']");
+    this.backArrowBtn = this.page.locator("//app-job-comparison//icon[@name='arrow_line']");
+    this.cancelButton = this.page.locator("//a[text()='Cancel']");
   }
 
-  // C56890
   async searchFunction(searchText) {
     await executeStep(this.searchInput, 'fill', 'enter the job id', [searchText]);
   }
@@ -125,7 +130,6 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await assertElementVisible(this.touchPointElement);
   }
 
-  //C56910
   async clickOnContactAndValidate() {
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Contacts),
@@ -136,7 +140,6 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.contactDiv, 'click', 'click on first div from the list');
   }
 
-  // C56895
   async verifyDocusignStatus(docusign, searchText, jobId) {
     await executeStep(this.menuIcon, 'click', 'click menu icon');
     await executeStep(this.locationProfile, 'click', 'click location profile in menu');
@@ -160,13 +163,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     individualProduct,
     packageProduct,
     invalidQuantity,
-    validQuantity,
-    invalidDiscount
+    validQuantity
   ) {
     await executeStep(this.newAddOnRequestBtn, 'click', 'click on new add-on request button');
     await assertElementVisible(this.addOnModalText);
     await executeStep(this.requestedByInput, 'fill', 'Enter the username', [requestedBy]);
-    // await executeStep(this.searchProductInput,"click","click search input");
     await executeStep(this.searchProductInput, 'fill', 'enter  the individual product', [
       individualProduct
     ]);
@@ -176,7 +177,6 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       'click',
       'select the first product from  individual products'
     );
-    // await executeStep(this.searchProductInput,"click","click search input");
     await executeStep(this.searchProductInput, 'fill', 'enter  the package product', [
       packageProduct
     ]);
@@ -192,16 +192,17 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await assertElementVisible(this.quantityInvalidMsg);
     } catch (error) {
       await executeStep(this.quantityInput, 'fill', 'clear the quantity', ['']);
-      await executeStep(this.quantityInput, 'fill', 'enter the invalid qunatity', [validQuantity]);
+      await executeStep(this.quantityInput, 'fill', 'enter the valid qunatity', [validQuantity]);
     }
+    
+  }
+
+  async discountChecking(invalidDiscount,validDiscount) {
     await executeStep(this.discountInput, 'fill', 'enter the discount percentage', [
       invalidDiscount
     ]);
     await this.discountInput.hover();
-    await assertElementVisible(this.discountInvalidMsg); //ui its working
-  }
-
-  async discountChecking(validDiscount) {
+    await assertElementVisible(this.discountInvalidMsg);
     await executeStep(this.discountInput, 'fill', 'clear the discount input', ['']);
     await executeStep(this.discountInput, 'fill', 'enter the valid discount', [validDiscount]);
     const estimatedMoneyBeforeDiscount = await this.moneyElement.textContent();
@@ -209,7 +210,6 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.discountInput, 'fill', 'enter the valid discount', [validDiscount]);
     discountPrice = formatCurrency(calculateTotalAmountAfterDiscount(originalPrice, validDiscount));
     await assertElementContainsText(this.moneyElement, discountPrice);
-    //add complimentary code
     const addedProductsCount = await this.listOfProducts.count();
     const deleteIconCount = await this.listOfDeleteIcon.count();
     assertEqualValues(addedProductsCount, deleteIconCount);
@@ -240,5 +240,55 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     afterRoomCount = await this.roomsCount.textContent();
     assertEqualValues(parseInt(afterRoomCount), parseInt(beforeRoomCount) + 1);
+  }
+
+  async assertComparisonIcon(searchText,jobId,requestedBy,individualProduct,packageProduct,invalidQuantity,validQuantity) {
+    await this.searchFunction(searchText);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.clickOnJob(jobId);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    try {
+      await assertElementVisible(this.comparisonIcon);
+    }catch(error) {
+      await assertElementVisible(this.greenColorCheckBox);
+      await executeStep(this.flowsheetTabElement(utilConst.Const.Add_Ons),'click','click on add ons in flowsheet tabs');
+      await this.addOnFunction( requestedBy,individualProduct,packageProduct,invalidQuantity,validQuantity);
+      await executeStep(this.nextButton,"click","click on next button");
+      await executeStep(this.selectDate,"click","select today date");
+      await executeStep(this.reviewOrderBtn,"click","click on review order button");
+      await assertElementVisible(this.sendToNavigatorBtn);
+      await executeStep(this.sendToNavigatorBtn,"click","click on send to navigator button");
+      await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+      await this.page.reload();
+      await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+      assertElementVisible(this.comparisonIcon);
+    }
+  }
+
+  async comparisonIconFunctionality() {
+    await executeStep(this.comparisonIcon,"click","click on comparision icon");
+    try {
+      await assertElementVisible(this.severalPriorMeetingsText);
+      await executeStep(this.selectFirstRowInAdditions,"click","select first element in the list");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await assertElementVisible(this.changesFromPreviousMeetingsText);
+      await assertElementVisible(this.additionsText);
+      await executeStep(this.RemovalsText,"scroll","scroll to the element if needed");
+      await assertElementVisible(this.RemovalsText);
+      await executeStep(this.backArrowBtn,"click","click back button");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await assertElementVisible(this.severalPriorMeetingsText);
+      await executeStep(this.selectFirstRowInAdditions,"click","select first element in the list");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await executeStep(this.closeButton,"click","click close button");
+      await executeStep(this.comparisonIcon,"click","click on comparision icon");
+      await executeStep(this.cancelButton,"click","click on cancel button");
+    }catch(error) {
+      await assertElementVisible(this.changesFromPreviousMeetingsText);
+      await assertElementVisible(this.additionsText);
+      await executeStep(this.RemovalsText,"scroll","scroll to the element if needed");
+      await assertElementVisible(this.RemovalsText);
+      await executeStep(this.closeButton,"click","click close button");
+    }
   }
 };
