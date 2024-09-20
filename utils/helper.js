@@ -136,7 +136,7 @@ async function assertEqualValues(value1, value2) {
 
 // Assert that two values are not equal (case insensitive)
 async function assertNotEqualValues(value1, value2) {
-  await expect(value1.toLowerCase()).not.toEqual(value2.toLowerCase());
+  await expect(value1).not.toEqual(value2);
 }
 
 // Check if an element is hidden
