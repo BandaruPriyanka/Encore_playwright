@@ -48,7 +48,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     );
   });
 
-  test.only('Test_C56895 Add-on creation (Docusign disabled)', async ({ page }) => {
+  test('Test_C56895 Add-on creation (Docusign disabled)', async ({ page }) => {
     await flowsheetCardAndTab.verifyDocusignStatus(
       indexPage.lighthouse_data.docusignOff,
       indexPage.navigator_data.second_job_no,
