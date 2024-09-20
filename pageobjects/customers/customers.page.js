@@ -28,13 +28,21 @@ exports.CustomersPage = class CustomersPage {
     this.customerLi = this.page.locator("//div[text()='Angelina Wood']");
     this.dateSpan = date => this.page.locator(`//span[text()='` + date + `']`);
     this.crossIcon = this.page.locator("//icon[@name='cross_line']");
-
     this.calendarDiv = this.page.locator('app-date-selector');
     this.dateElement = date => this.page.locator(`//span[text()='${date}']`);
     this.dateHighlighted = date => this.page.locator(`//span[text()='${date}']/parent::div`);
     this.nextweekIcon = this.page.locator("//icon[@title='Next week']");
     this.previousweekIcon = this.page.locator("//icon[@title='Previous week']");
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
+    this.customerCard=this.page.locator("(//app-customer-card)[1]");
+    this.opportunityList=this.page.locator("(//div[@role='region']/div/div/div)[1]");
+    this.orderName=this.page.locator("//span[contains(@class,'e2e_opportunity_order_name')]");
+    this.customerName=this.page.locator("//span[contains(@class,'e2e_opportunity_bill_to_account_name')]");
+    this.opportunityDates=this.page.locator("//span[contains(@class,'e2e_opportunity_dates')]");
+    this.dynamicTabElement = (tabName) => 
+        this.page.locator(`
+      ((//div[@role='tab']//span)[2]//div[normalize-space()='${tabName}'])[2]`
+      );
   }
 
   async search(searchText) {
@@ -65,8 +73,10 @@ exports.CustomersPage = class CustomersPage {
   }
 
   async searchFunctionality() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const beforeCustomerCount = await this.listOfCustomers.count();
     await this.search(indexPage.lighthouse_data.invalidText);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(this.noDataPlaceholder);
     await this.search(indexPage.opportunity_data.userContactName);
     await assertElementVisible(this.customerLi);
@@ -123,5 +133,22 @@ exports.CustomersPage = class CustomersPage {
     await assertElementAttributeContains(dateLocatorHighlighted, 'class', 'bg-encore-accent-blue');
     await this.dateChangeChecking();
     await this.backToTodayDate();
+  }
+  async verifyCustomerCardContent(){
+    await executeStep(this.customerCard, 'click', 'click on customer card from that list', []);
+    await executeStep(this.opportunityList, 'click', 'select one opportunity from that list', []);
+    await assertElementVisible(this.orderName);
+    await assertElementVisible(this.customerName);
+    await assertElementVisible(this.opportunityDates);
+  }
+  async assertTabNames(){
+    for (let tabName of utilConst.Const.tabNames) {
+        const isVisible = await this.dynamicTabElement(tabName).isVisible();
+        if (isVisible) {
+          console.log(`${tabName} is displayed`);
+        } else {
+          console.log(`${tabName} is not displayed`);
+        }
+      }
   }
 };
