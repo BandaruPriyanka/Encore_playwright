@@ -5,7 +5,7 @@ const atob = require('atob');
 require('dotenv').config();
 
 test.describe('LightHouse Operations', () => {
-  let lighthouseLogin, flowsheetSearch, filtercount_before_pagereload, filtercount_after_pagereload;
+  let flowsheetSearch, filtercount_before_pagereload, filtercount_after_pagereload;
 
   test.beforeEach(async ({ page }) => {
     lighthouseLogin = new indexPage.LoginPage(page);
@@ -14,6 +14,24 @@ test.describe('LightHouse Operations', () => {
       timeout: parseInt(process.env.pageload_timeout)
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
+  });
+  test('Test_C56878 ,Flowsheet status', async ({ page }) => {
+    await flowsheetSearch.searchFunctionality();
+    assertElementVisible(flowsheetSearch.statusIcon);
+    assertElementVisible(flowsheetSearch.groupIcon);
+    await flowsheetSearch.setStatus();
+    await assertElementVisible(flowsheetSearch.carryOver);
+    await page.reload();
+    await flowsheetSearch.searchFunctionality();
+    await assertElementVisible(flowsheetSearch.carryOver);
+    await flowsheetSearch.changestatus();
+  });
+  test('Test_C56880 ,Flowsheet groups', async ({ page }) => {
+    await flowsheetSearch.searchFunctionality();
+    assertElementVisible(flowsheetSearch.statusIcon);
+    assertElementVisible(flowsheetSearch.groupIcon);
+    await flowsheetSearch.verifyGroup();
+    await flowsheetSearch.deleteGroupData();
   });
 
   test('Test_C56882 Verify lighthouse flowsheet search functionality', async ({ page }) => {
@@ -43,7 +61,7 @@ test.describe('LightHouse Operations', () => {
     await flowsheetSearch.assertCalendarHasDates();
   });
 
-  test('Test_C56888 Flowsheets calendar widget', async({ page }) => {
+  test('Test_C56888 Flowsheets calendar widget', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetSearch.calendarDiv);
     await flowsheetSearch.asserRoomsWhileDateChange();
@@ -51,5 +69,4 @@ test.describe('LightHouse Operations', () => {
     await flowsheetSearch.assertUrls();
     await flowsheetSearch.validateDateFromPastAndFuture();
   });
-
 });

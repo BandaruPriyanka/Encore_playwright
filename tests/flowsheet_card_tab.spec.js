@@ -61,7 +61,10 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.lighthouse_data.invalidQuantity,
       indexPage.lighthouse_data.validQuantity
     );
-    await flowsheetCardAndTab.discountChecking(invalidDiscountGenerator(),validDiscountGenerator());
+    await flowsheetCardAndTab.discountChecking(
+      invalidDiscountGenerator(),
+      validDiscountGenerator()
+    );
     await flowsheetCardAndTab.dateSelectModalChecking();
   });
 
@@ -75,13 +78,13 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.lighthouse_data.validQuantity
     );
     await flowsheetCardAndTab.comparisonIconFunctionality();
-  })
+  });
 
   test.skip('Test_C56891 Test Mood change logic', async () => {
     await flowsheetCardAndTab.assertMoodChangeHappyIcon(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.assertMoodChangeNeutralIcon(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.assertMoodChangeAngryIcon();
-  })
+  });
   
   test.skip('Test_C56909 Logs Tab', async () => {
     await flowsheetCardAndTab.asserMoodChnageLogMsg(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
@@ -92,5 +95,5 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.lighthouse_data.invalidQuantity,
       indexPage.lighthouse_data.validQuantity
     );
-  })
+  });
 });

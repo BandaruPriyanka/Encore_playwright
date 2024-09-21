@@ -43,8 +43,39 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.nextweekIcon = this.page.locator("//icon[@title='Next week']");
     this.previousweekIcon = this.page.locator("//icon[@title='Previous week']");
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
-    //C56888 
-    this.todayDateButton = (date) => this.page.locator(`//div[contains(text(),'`+date+`')]`) 
+    this.todayDateButton = date => this.page.locator(`//div[contains(text(),'` + date + `')]`);
+    this.flowsheetCard = this.page.locator(
+      "(//app-flowsheet-action-card[@class='e2e_flowsheet_action_card ng-star-inserted'])[1]"
+    );
+    this.statusIcon = this.page.locator('(//app-button-card//div//icon)[1]');
+    this.groupIcon = this.page.locator("(//div[normalize-space()='groups'])[4]");
+    this.clickOnLink = this.page.locator(
+      "//a[contains(normalize-space(),'tap or click right here')]"
+    );
+    this.placeholder = this.page.locator("//input[@placeholder='Add Group']");
+    this.createButton = this.page.locator("//span[normalize-space()='Create']//parent::button");
+    this.flowsheetButton = this.page.locator("//span[normalize-space()='Flowsheet']");
+    this.selectGroup = this.page.locator("(//span[normalize-space()='select'])[1]");
+    this.applyButton = this.page.locator("//span[normalize-space()='Apply']//parent::a");
+    this.ungroup = this.page.locator("(//div[normalize-space()='ungroup'])[1]");
+    this.filterIcon = this.page.locator("//icon[@name='filter_bulk']");
+    this.selectGroupFilter = this.page.locator("//div[text()=' Groups ']");
+    this.selectCreatedGroup = this.page.locator("//div[@title='test']");
+    this.applyFilter = this.page.locator("//span[normalize-space()='Apply filters']");
+    this.iconMenu = this.page.locator("(//icon[@name='menu_line'])[1]");
+    this.clickOnLocationProfile = this.page.locator("//span[text()='Location Profile']");
+    this.flowsheetGroups = this.page.locator("(//span[text()='Flowsheet Groups'])[2]");
+    this.binLine = this.page.locator("//icon[@name='trah_bin_line']");
+    this.clickOnYes = this.page.locator("//span[text()='Yes']");
+    this.statusSetRefreshComplete = this.page.locator(
+      "//app-select-status-sheet//li[.//span[text()='Set Refresh - Complete']]"
+    );
+    this.cancelButton = this.page.locator("//span[text()=' Close ']");
+    this.timeLine = this.page.locator('app-flowsheet-action-timeline');
+    this.carryOver = this.page.locator("(//span[normalize-space()='Carry Over'])[2]");
+    this.statusSetRefresh = this.page.locator(
+      "//app-select-status-sheet//li[.//span[text()='Set Refresh']]"
+    );
   }
 
   async changeLocation(locationId) {
@@ -159,42 +190,99 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
   async asserRoomsWhileDateChange() {
     const todayRoomCount = await this.roomsCount.textContent();
-    await executeStep(this.dateElement(nextDayDate()),"click","click tomorrow date");
+    await executeStep(this.dateElement(nextDayDate()), 'click', 'click tomorrow date');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const nextDayRoomCount = await this.roomsCount.textContent();
-    assertNotEqualValues(parseInt(todayRoomCount),parseInt(nextDayRoomCount));
-    await executeStep(this.dateElement(todayDate()),"click","click today date");
+    assertNotEqualValues(todayRoomCount, nextDayRoomCount);
+    await executeStep(this.dateElement(todayDate()), 'click', 'click today date');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async assertDates() {
-    await executeStep(this.nextweekIcon,"click","click on next week icon");
+    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
     await assertElementVisible(this.dateElement(nextWeekDate()));
     await assertElementVisible(this.todayButton);
     await assertElementVisible(this.todayDateButton(todayDateFullFormate()));
-    await executeStep(this.todayButton,"click","click on today button");
-    await executeStep(this.previousweekIcon,"click","click on previous week icon");
+    await executeStep(this.todayButton, 'click', 'click on today button');
+    await executeStep(this.previousweekIcon, 'click', 'click on previous week icon');
     await assertElementVisible(this.dateElement(previousWeekDate()));
-    await executeStep(this.todayButton,"click","click today date");
+    await executeStep(this.todayButton, 'click', 'click today date');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async assertUrls() {
-    await executeStep(this.nextweekIcon,"click","click on next week icon");
-    await executeStep(this.todayButton,"click","click on today url");
+    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
+    await executeStep(this.todayButton, 'click', 'click on today url');
     await assertElementVisible(this.dateElement(todayDate()));
-    await executeStep(this.nextweekIcon,"click","click on next week icon");
-    await executeStep(this.todayDateButton(todayDateFullFormate()),"click","click on date url");
+    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
+    await executeStep(this.todayDateButton(todayDateFullFormate()), 'click', 'click on date url');
     await assertElementVisible(this.dateElement(todayDate()));
   }
 
   async validateDateFromPastAndFuture() {
-    await executeStep(this.nextweekIcon,"click","click on next week icon");
-    await executeStep(this.dateElement(nextWeekDate()),"click","click date from next week");
+    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
+    await executeStep(this.dateElement(nextWeekDate()), 'click', 'click date from next week');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(this.roomsCount);
-    await executeStep(this.todayButton,"click","click on today url");
-    await executeStep(this.previousweekIcon,"click","click on previous week icon");
-    await executeStep(this.dateElement(previousWeekDate()),"click","click date from previous week");
+    await executeStep(this.todayButton, 'click', 'click on today url');
+    await executeStep(this.previousweekIcon, 'click', 'click on previous week icon');
+    await executeStep(
+      this.dateElement(previousWeekDate()),
+      'click',
+      'click date from previous week'
+    );
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(this.roomsCount);
+  }
+
+  async searchFunctionality() {
+    await this.searchFunction(indexPage.navigator_data.second_job_no);
+    await this.flowsheetCard.hover();
+    await this.flowsheetCard.waitFor({ state: 'visible' });
+  }
+  async verifyGroup() {
+    await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.clickOnLink, 'click', 'Click on link', []);
+    await executeStep(this.placeholder, 'fill', 'fill the data', ['test']);
+    await executeStep(this.createButton, 'click', 'Click on create button', []);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.flowsheetButton, 'click', 'Click on create button', []);
+    await this.flowsheetCard.hover();
+    await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
+    await executeStep(this.selectGroup, 'click', 'select group', []);
+    await executeStep(this.applyButton, 'click', 'click on apply button', []);
+    await assertElementVisible(this.ungroup);
+    await executeStep(this.filterIcon, 'click', 'click on filter icon', []);
+    await executeStep(this.selectGroupFilter, 'click', 'select group filter', []);
+    await executeStep(this.selectCreatedGroup, 'click', 'select create group', []);
+    await executeStep(this.applyFilter, 'click', 'click on apply filter button', []);
+  }
+  async deleteGroupData() {
+    await executeStep(this.iconMenu, 'click', 'Click on icon menu', []);
+    await executeStep(this.clickOnLocationProfile, 'click', 'Click on groupIcon button', []);
+    await executeStep(this.flowsheetGroups, 'click', 'Click on location profile', []);
+    await executeStep(this.binLine, 'click', 'delete the group item', []);
+    await executeStep(this.clickOnYes, 'click', 'select yes to proceed', []);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+
+  async setStatus() {
+    await executeStep(this.timeLine, 'click', 'Click the status button', []);
+    const statusOption = await this.statusSetRefreshComplete.isVisible();
+    if (statusOption) {
+      await executeStep(
+        this.statusSetRefreshComplete,
+        'click',
+        'Click the statusSetRefreshComplete button',
+        []
+      );
+    } else {
+      await executeStep(this.cancelButton, 'click', 'Click the cancel button', []);
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.flowsheetCard.hover();
+  }
+  async changestatus() {
+    await executeStep(this.timeLine, 'click', 'Click the status button', []);
+    await executeStep(this.statusSetRefresh, 'click', 'Click the status set referesh button', []);
   }
 };
