@@ -5,7 +5,7 @@ const atob = require('atob');
 require('dotenv').config();
 
 test.describe('LightHouse Operations', () => {
-  let lighthouseLogin, flowsheetSearch, filtercount_before_pagereload, filtercount_after_pagereload;
+  let flowsheetSearch, filtercount_before_pagereload, filtercount_after_pagereload;
 
   test.beforeEach(async ({ page }) => {
     lighthouseLogin = new indexPage.LoginPage(page);
@@ -15,7 +15,18 @@ test.describe('LightHouse Operations', () => {
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
-  test.only('Test_C56880 ,Flowsheet groups', async ({ page }) => {
+  test('Test_C56878 ,Flowsheet status', async ({ page }) => {
+    await flowsheetSearch.searchFunctionality();
+    assertElementVisible(flowsheetSearch.statusIcon);
+    assertElementVisible(flowsheetSearch.groupIcon);
+    await flowsheetSearch.setStatus();
+    await assertElementVisible(flowsheetSearch.carryOver);
+    await page.reload();
+    await flowsheetSearch.searchFunctionality();
+    await assertElementVisible(flowsheetSearch.carryOver);
+    await flowsheetSearch.changestatus();
+  });
+  test('Test_C56880 ,Flowsheet groups', async ({ page }) => {
     await flowsheetSearch.searchFunctionality();
     assertElementVisible(flowsheetSearch.statusIcon);
     assertElementVisible(flowsheetSearch.groupIcon);
