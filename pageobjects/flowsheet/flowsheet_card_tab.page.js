@@ -388,7 +388,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.notificationCloseBtn,"click","click on cross button to close notificaton");
   }
 
-  async asserMoodChnageLogMsg(searchText,jobId) {
+  async asserMoodChangeLogMsg(searchText,jobId) {
     await this.performSearchFunction(searchText,jobId);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     assertElementVisible(this.flowsheetTabElement(utilConst.Const.Log));
@@ -412,7 +412,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await assertEqualValues(parseInt(countOfLogAfterComment) , parseInt(countOfLogBeforeComment)+1);
   }
 
-  async assertLogAferAddOn(requestedBy,individualProduct,packageProduct,invalidQuantity,validQuantity) {
+  async assertLogAfterAddOn(requestedBy,individualProduct,packageProduct,invalidQuantity,validQuantity) {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const countOfLogBeforeComment = await this.logMsgCount.textContent();
     await executeStep(this.flowsheetTabElement(utilConst.Const.Add_Ons),'click','click on add ons in flowsheet tabs');
@@ -428,6 +428,5 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     const countOfLogAfterComment = await this.logMsgCount.textContent();
     await assertEqualValues(parseInt(countOfLogAfterComment) , parseInt(countOfLogBeforeComment)+1);
   }
-
 
 };
