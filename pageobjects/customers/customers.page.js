@@ -206,6 +206,6 @@ exports.CustomersPage = class CustomersPage {
   }
   async selectRoomList() {
     //await this.roomListScrollAction();
-    await executeStep(this.selectRoom, 'click', 'click one room from the list',[]);
+    await executeStep(this.selectRoom, 'click', 'click one room from the list', []);
   }
 };
