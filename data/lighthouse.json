@@ -11,5 +11,6 @@
   "packageProduct": "PKG",
   "invalidQuantity": "9",
   "validQuantity": "1",
-  "scheduleErrorMsg": " users who have a valid EmployeeId "
+  "scheduleErrorMsg": " users who have a valid EmployeeId ",
+  "logCommentMsg" : "Testing comment section"
 }
