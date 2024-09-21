@@ -111,6 +111,18 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.closeButton = this.page.locator("//a[text()='Close']");
     this.backArrowBtn = this.page.locator("//app-job-comparison//icon[@name='arrow_line']");
     this.cancelButton = this.page.locator("//a[text()='Cancel']");
+    this.moodModalText = this.page.locator("//span[text()='Comment']");
+    this.moodChangeIconInModal = (icon) => this.page.locator(`//app-room-mood-chooser//app-mood-icon//icon[@class='`+icon+`']`);
+    this.submitButton = this.page.locator("//span[contains(text(),'Submit')]");
+    this.logMsg = (msg) => this.page.locator(`//div[contains(text(),'`+msg+`')]`);
+    this.commentBoxInput = this.page.locator("//span[text()='Comment']//following-sibling::textarea");
+    this.notificationIcon = this.page.locator("//icon[@name='bell_notification_line']");
+    this.backArrowBtnInPage = this.page.locator("//app-flowsheet-detail//icon[@name='arrow_line']");
+    this.notificationMsg = (msg) => this.page.locator(`//app-notification[1]//div[contains(text(),'`+msg+`')]`);
+    this.notificationCloseBtn = this.page.locator("//icon[@name='cross_line']");
+    this.logMsgCount = this.page.locator("//div[contains(text(),'Log')]/following-sibling::div");
+    this.logCommentInput = this.page.locator("//input[@name='add-note-field']");
+    this.commentSendBtn = this.page.locator("//icon[@name='location_line']");
   }
 
   async searchFunction(searchText) {
@@ -119,6 +131,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async clickOnJob(jobId) {
     await executeStep(this.jobIdElement(jobId), 'click', 'click the room div');
+  }
+
+  async performSearchFunction(searchText,jobId) {
+    await this.searchFunction(searchText);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.clickOnJob(jobId);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 
   async validateRoomCard(roomName, orderName, customerName) {
@@ -153,9 +172,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     beforeRoomCount = await this.roomsCount.textContent();
-    await this.searchFunction(searchText);
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await this.clickOnJob(jobId);
+    await this.performSearchFunction(searchText,jobId)
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Add_Ons),
       'click',
@@ -246,20 +263,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     afterRoomCount = await this.roomsCount.textContent();
     assertEqualValues(parseInt(afterRoomCount), parseInt(beforeRoomCount) + 1);
   }
-
-  async assertComparisonIcon(
-    searchText,
-    jobId,
-    requestedBy,
-    individualProduct,
-    packageProduct,
-    invalidQuantity,
-    validQuantity
-  ) {
-    await this.searchFunction(searchText);
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await this.clickOnJob(jobId);
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  
+  async assertComparisonIcon(searchText,jobId,requestedBy,individualProduct,packageProduct,invalidQuantity,validQuantity) {
+    await this.performSearchFunction(searchText,jobId);
     try {
       await assertElementVisible(this.comparisonIcon);
     } catch (error) {
@@ -322,4 +328,106 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await executeStep(this.closeButton, 'click', 'click close button');
     }
   }
+
+  async assertMoodChangeHappyIcon(searchText,jobId) {
+    await this.performSearchFunction(searchText,jobId);
+    await assertElementVisible(this.iconInPage(utilConst.Const.moodIconText));
+    await executeStep(this.iconInPage(utilConst.Const.moodIconText),"click","click on mood chnage icon");
+    await assertElementVisible(this.moodModalText);
+    await executeStep(this.moodChangeIconInModal(utilConst.Const.greenIconText),"click","click on happy icon in modal");
+    await executeStep(this.submitButton,"click","click submit button");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await assertElementVisible(this.iconInPage(utilConst.Const.greenIconText));
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await assertElementVisible(this.iconInPage(utilConst.Const.greenIconText));
+    await executeStep(this.flowsheetTabElement(utilConst.Const.Log),"click","click log in flowsheet tab");
+    await assertElementVisible(this.logMsg(utilConst.Const.happyLogMsg));
+  }
+
+  async assertMoodChangeNeutralIcon(searchText,jobId) {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.iconInPage(utilConst.Const.greenIconText),"click","click on happy icon in page");
+    await executeStep(this.moodChangeIconInModal(utilConst.Const.yellowIconText),"click","click neutral icon in modal");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.commentBoxInput,"fill","enter the comment for neutral mood",[indexPage.lighthouse_data.neutralComment]);
+    await executeStep(this.submitButton,"click","click on submit button");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await assertElementVisible(this.iconInPage(utilConst.Const.yellowIconText));
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await assertElementVisible(this.iconInPage(utilConst.Const.yellowIconText));
+    await executeStep(this.flowsheetTabElement(utilConst.Const.Log),"click","click on log in flowsheet tab");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.logMsg(utilConst.Const.neutralLogMsg));
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await executeStep(this.notificationIcon,"click","click on notification icon");
+    await assertElementVisible(this.notificationMsg(indexPage.lighthouse_data.neutralComment));
+    await executeStep(this.notificationCloseBtn,"click","click on cross button to close notificaton");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+  }
+
+  async assertMoodChangeAngryIcon() {
+    await executeStep(this.iconInPage(utilConst.Const.yellowIconText),"click","click on neutral icon");
+    await executeStep(this.moodChangeIconInModal(utilConst.Const.redIconText),"click","click on angry icon in modal");
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await executeStep(this.commentBoxInput,"fill","enter the comment for angry icon",[indexPage.lighthouse_data.angryComment]);
+    await executeStep(this.submitButton,"click","click on submit button");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await assertElementVisible(this.iconInPage(utilConst.Const.redIconText));
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await assertElementVisible(this.iconInPage(utilConst.Const.redIconText));
+    await executeStep(this.flowsheetTabElement(utilConst.Const.Log),"click","click on log in flowsheet tab");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.logMsg(utilConst.Const.angryLogMsg));
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await executeStep(this.notificationIcon,"click","click on notification button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.notificationMsg(indexPage.lighthouse_data.angryComment));
+    await executeStep(this.notificationCloseBtn,"click","click on cross button to close notificaton");
+  }
+
+  async asserMoodChnageLogMsg(searchText,jobId) {
+    await this.performSearchFunction(searchText,jobId);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    assertElementVisible(this.flowsheetTabElement(utilConst.Const.Log));
+    await executeStep(this.iconInPage(utilConst.Const.moodIconText),"click","click mood change icon in page");
+    await executeStep(this.moodChangeIconInModal(utilConst.Const.greenIconText),"click","click on happy icon in modal");
+    await executeStep(this.submitButton,"click","click on submit button in modal");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await executeStep(this.flowsheetTabElement(utilConst.Const.Log),"click","click on log in flowsheet tab");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.logMsg(utilConst.Const.happyLogMsg));
+  }
+
+  async assertCommentSectionInLOg() {
+    const countOfLogBeforeComment = await this.logMsgCount.textContent();
+    await executeStep(this.logCommentInput,"fill","Enter any msg in comment box",[indexPage.lighthouse_data.logCommentMsg]);
+    await executeStep(this.commentSendBtn,"click","click on send button");
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    const countOfLogAfterComment = await this.logMsgCount.textContent();
+    await assertEqualValues(parseInt(countOfLogAfterComment) , parseInt(countOfLogBeforeComment)+1);
+  }
+
+  async assertLogAferAddOn(requestedBy,individualProduct,packageProduct,invalidQuantity,validQuantity) {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const countOfLogBeforeComment = await this.logMsgCount.textContent();
+    await executeStep(this.flowsheetTabElement(utilConst.Const.Add_Ons),'click','click on add ons in flowsheet tabs');
+    await this.addOnFunction( requestedBy,individualProduct,packageProduct,invalidQuantity,validQuantity);
+    await executeStep(this.nextButton,"click","click on next button");
+    await executeStep(this.selectDate,"click","select today date");
+    await executeStep(this.reviewOrderBtn,"click","click on review order button");
+    await assertElementVisible(this.sendToNavigatorBtn);
+    await executeStep(this.sendToNavigatorBtn,"click","click on send to navigator button");
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    const countOfLogAfterComment = await this.logMsgCount.textContent();
+    await assertEqualValues(parseInt(countOfLogAfterComment) , parseInt(countOfLogBeforeComment)+1);
+  }
+
+
 };
