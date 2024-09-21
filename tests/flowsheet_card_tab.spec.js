@@ -61,12 +61,16 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.lighthouse_data.invalidQuantity,
       indexPage.lighthouse_data.validQuantity
     );
-    await flowsheetCardAndTab.discountChecking(invalidDiscountGenerator(),validDiscountGenerator());
+    await flowsheetCardAndTab.discountChecking(
+      invalidDiscountGenerator(),
+      validDiscountGenerator()
+    );
     await flowsheetCardAndTab.dateSelectModalChecking();
   });
 
-  test('Test_C56892 Test Comparison with previous jobs logic' , async() => {
-    await flowsheetCardAndTab.assertComparisonIcon(indexPage.navigator_data.second_job_no,
+  test('Test_C56892 Test Comparison with previous jobs logic', async () => {
+    await flowsheetCardAndTab.assertComparisonIcon(
+      indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no,
       indexPage.lighthouse_data.requestedBy,
       indexPage.lighthouse_data.individualProduct,
@@ -75,5 +79,5 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.lighthouse_data.validQuantity
     );
     await flowsheetCardAndTab.comparisonIconFunctionality();
-  })
+  });
 });

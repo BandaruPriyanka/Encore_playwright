@@ -44,7 +44,32 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.previousweekIcon = this.page.locator("//icon[@title='Previous week']");
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
     this.todayDateButton = date => this.page.locator(`//div[contains(text(),'` + date + `')]`);
-  }
+    this.flowsheetCard = this.page.locator(
+      "(//app-flowsheet-action-card[@class='e2e_flowsheet_action_card ng-star-inserted'])[1]"
+    );
+    this.statusIcon = this.page.locator(
+      "(//app-button-card[@class='e2e_flowsheet_action_status_button'])[1]/descendant::icon"
+    );
+    this.groupIcon = this.page.locator(
+      "(//div[normalize-space()='groups'])[4]"
+    );
+this.clickOnLink=this.page.locator("//a[contains(normalize-space(),'tap or click right here')]");
+this.placeholder=this.page.locator("//input[@placeholder='Add Group']");
+this.createButton=this.page.locator("//span[normalize-space()='Create']//parent::button");
+this.flowsheetButton=this.page.locator("//span[normalize-space()='Flowsheet']");
+this.selectGroup=this.page.locator("(//span[normalize-space()='select'])[1]");
+this.applyButton=this.page.locator("//span[normalize-space()='Apply']//parent::a");
+this.ungroup=this.page.locator("(//div[normalize-space()='ungroup'])[1]");
+this.filterIcon=this.page.locator("//icon[@name='filter_bulk']");
+this.selectGroupFilter=this.page.locator("//div[text()=' Groups ']");
+this.selectCreatedGroup=this.page.locator("//div[@title='test']");
+this.applyFilter=this.page.locator("//span[normalize-space()='Apply filters']");
+this.iconMenu=this.page.locator("(//icon[@name='menu_line'])[1]");
+this.clickOnLocationProfile=this.page.locator("//span[text()='Location Profile']");
+this.flowsheetGroups=this.page.locator("(//span[text()='Flowsheet Groups'])[2]");
+this.binLine=this.page.locator("//icon[@name='trah_bin_line']");
+this.clickOnYes=this.page.locator("//span[text()='Yes']");
+}
 
   async changeLocation(locationId) {
     await executeStep(this.locationDiv, 'click', 'Click the location div', []);
@@ -162,7 +187,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const nextDayRoomCount = await this.roomsCount.textContent();
     assertNotEqualValues(todayRoomCount, nextDayRoomCount);
-    await executeStep(this.dateElement(todayDate()),"click","click today date");
+    await executeStep(this.dateElement(todayDate()), 'click', 'click today date');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async assertDates() {
@@ -199,5 +224,37 @@ exports.FlowSheetPage = class FlowSheetPage {
     );
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(this.roomsCount);
+  }
+
+  async searchFunctionality() {
+    await this.searchFunction(indexPage.navigator_data.second_job_no);
+    await this.flowsheetCard.hover();
+    await this.flowsheetCard.waitFor({ state: 'visible' });
+  }
+  async verifyGroup() {
+    await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.clickOnLink, 'click', 'Click on link',[]);
+    await executeStep(this.placeholder, 'fill', 'fill the data', ['test']);
+    await executeStep(this.createButton, 'click', 'Click on create button', []);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.flowsheetButton, 'click', 'Click on create button', []);
+    await this.flowsheetCard.hover();
+    await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
+    await executeStep(this.selectGroup, 'click', 'select group', []);
+    await executeStep(this.applyButton, 'click', 'click on apply button', []);
+    await assertElementVisible(this.ungroup);
+    await executeStep(this.filterIcon, 'click', 'click on filter icon', []);
+    await executeStep(this.selectGroupFilter, 'click', 'select group filter', []);
+    await executeStep(this.selectCreatedGroup, 'click', 'select create group', []);
+    await executeStep(this.applyFilter, 'click', 'click on apply filter button', []);
+  }
+  async deleteGroupData(){
+    await executeStep(this.iconMenu, 'click', 'Click on groupIcon button', []);
+    await executeStep(this.clickOnLocationProfile, 'click', 'Click on groupIcon button', []);
+    await executeStep(this.flowsheetGroups, 'click', 'Click on groupIcon button', []);
+    await executeStep(this.binLine, 'click', 'Click on groupIcon button', []);
+    await executeStep(this.clickOnYes, 'click', 'Click on groupIcon button', []);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 };

@@ -15,6 +15,13 @@ test.describe('LightHouse Operations', () => {
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
+  test.only('Test_C56880 ,Flowsheet groups', async ({ page }) => {
+    await flowsheetSearch.searchFunctionality();
+    assertElementVisible(flowsheetSearch.statusIcon);
+    assertElementVisible(flowsheetSearch.groupIcon);
+    await flowsheetSearch.verifyGroup();
+    await flowsheetSearch.deleteGroupData();
+  });
 
   test('Test_C56882 Verify lighthouse flowsheet search functionality', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.large_timeout));
