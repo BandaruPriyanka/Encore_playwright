@@ -55,7 +55,7 @@ exports.CustomersPage = class CustomersPage {
       this.page.locator(`
     (//div[@role='tab']//span//div[contains(normalize-space(),'${tabName}')]//div)[2]`);
     this.roomList = this.page.locator('//app-room-list/../..');
-    this.selectRoom = this.page.locator('(//app-flowsheet-action-card//div)[1]');
+    this.selectRoom = this.page.locator('(//app-flowsheet-action-card//parent::div)[1]');
     this.flowsheetDetailsDiv = this.isMobile
       ? this.page.locator('//app-flowsheet-detail/div[1]/div[2]')
       : this.page.locator('//app-flowsheet-detail/child::div[1]');
@@ -206,6 +206,6 @@ exports.CustomersPage = class CustomersPage {
   }
   async selectRoomList() {
     //await this.roomListScrollAction();
-    await executeStep(this.selectRoom, 'click', 'click one room from the list');
+    await executeStep(this.selectRoom, 'click', 'click one room from the list',[]);
   }
 };
