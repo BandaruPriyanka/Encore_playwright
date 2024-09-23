@@ -48,7 +48,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     );
   });
 
-  test.skip('Test_C56895 Add-on creation (Docusign disabled)', async ({ page }) => {
+  test('Test_C56895 Add-on creation (Docusign disabled)', async ({ page }) => {
     await flowsheetCardAndTab.verifyDocusignStatus(
       indexPage.lighthouse_data.docusignOff,
       indexPage.navigator_data.second_job_no,
@@ -68,7 +68,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.dateSelectModalChecking();
   });
 
-  test.skip('Test_C56892 Test Comparison with previous jobs logic' , async() => {
+  test('Test_C56892 Test Comparison with previous jobs logic' , async() => {
     await flowsheetCardAndTab.assertComparisonIcon(indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no,
       indexPage.lighthouse_data.requestedBy,

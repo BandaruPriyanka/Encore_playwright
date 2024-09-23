@@ -5,7 +5,7 @@ const atob = require('atob');
 require('dotenv').config();
 
 test.describe('LightHouse Operations', () => {
-  let flowsheetSearch, filtercount_before_pagereload, filtercount_after_pagereload;
+  let lighthouseLogin,flowsheetSearch, filtercount_before_pagereload, filtercount_after_pagereload;
 
   test.beforeEach(async ({ page }) => {
     lighthouseLogin = new indexPage.LoginPage(page);
