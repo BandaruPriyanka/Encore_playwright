@@ -69,7 +69,7 @@ function nextWeekDate() {
   today.setHours(0, 0, 0, 0);
   const nextWeekDayObj = new Date(today);
   nextWeekDayObj.setDate(today.getDate() + 7); // Add 7 days
-  const nextWeekDay = nextWeekDayObj.getDate().toString().padStart(2, '0');
+  const nextWeekDay = nextWeekDayObj.getDate().toString();
   return nextWeekDay;
 }
 
@@ -78,7 +78,7 @@ function previousWeekDate() {
   today.setHours(0, 0, 0, 0);
   const previousWeekDateObj = new Date(today);
   previousWeekDateObj.setDate(today.getDate() - 7); // subtract 7 days
-  const previousWeekDay = previousWeekDateObj.getDate().toString().padStart(2, '0');
+  const previousWeekDay = previousWeekDateObj.getDate().toString();
   return previousWeekDay;
 }
 
@@ -127,6 +127,10 @@ async function scrollElement(element, scrollTo) {
 // Check if an element is visible
 async function assertElementVisible(element) {
   await expect(element).toBeVisible();
+}
+
+async function assertElementNotVisible(element) {
+  await expect(element).not.toBeVisible();
 }
 
 // Assert that two values are equal (case insensitive)
@@ -309,6 +313,7 @@ module.exports = {
   formatCurrency,
   scrollElement,
   assertElementVisible,
+  assertElementNotVisible,
   assertElementHidden,
   assertTextPresent,
   assertElementHaveText,
