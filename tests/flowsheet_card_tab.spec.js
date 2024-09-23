@@ -87,9 +87,8 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
   });
   
   test.skip('Test_C56909 Logs Tab', async () => {
-    await flowsheetCardAndTab.asserMoodChnageLogMsg(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
-    await flowsheetCardAndTab.assertCommentSectionInLOg();
-    await flowsheetCardAndTab.assertLogAferAddOn(indexPage.lighthouse_data.requestedBy,
+    await flowsheetCardAndTab.assertCommentSectionInLOg(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await flowsheetCardAndTab.assertLogAfterAddOn(indexPage.lighthouse_data.requestedBy,
       indexPage.lighthouse_data.individualProduct,
       indexPage.lighthouse_data.packageProduct,
       indexPage.lighthouse_data.invalidQuantity,
