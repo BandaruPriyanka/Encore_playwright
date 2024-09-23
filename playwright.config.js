@@ -72,7 +72,8 @@ module.exports = defineConfig({
         'tests/flowsheet.spec.js',
         'tests/flowsheet_card_tab.spec.js',
         'tests/schedule.spec.js',
-        'tests/customers.spec.js'
+        'tests/customers.spec.js',
+        'tests/chats.spec.js'
       ]
     },
     {
@@ -85,7 +86,8 @@ module.exports = defineConfig({
         'tests/flowsheet.spec.js',
         'tests/flowsheet_card_tab.spec.js',
         'tests/schedule.spec.js',
-        'tests/customers.spec.js'
+        'tests/customers.spec.js',
+        'tests/chats.spec.js'
       ]
     },
     {

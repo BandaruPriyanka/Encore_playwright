@@ -6,6 +6,7 @@ import { FlowSheetPage } from '../pageobjects/flowsheet/flowsheet.page';
 import { FlowsheetCardAndTab } from '../pageobjects/flowsheet/flowsheet_card_tab.page';
 import { SchedulePage } from '../pageobjects/schedule/schedule.page';
 import { CustomersPage } from '../pageobjects/customers/customers.page';
+import { ChatPage } from '../pageobjects/chats/chats.page';
 
 //datafile
 import api_data from '../data/apidata.json';
@@ -21,6 +22,7 @@ export {
   FlowsheetCardAndTab,
   SchedulePage,
   CustomersPage,
+  ChatPage,
   api_data,
   lighthouse_data,
   navigator_data,
