@@ -273,6 +273,25 @@ async function assertIsNumber(value) {
   expect(typeof numberValue).toBe('number'); // Assert that it is of type 'number'
 }
 
+async function checkVisibleElementColors(page, selector, expectedColor) {
+  // Get all elements matching the selector
+  const elements = await page.$$(selector);
+
+  let visibleElementCount = 0;
+  
+  // Check the color of each visible element
+  for (const element of elements) {
+    // Check if the element is visible
+    const isVisible = await element.isVisible();
+    
+    if (isVisible) {
+      const elementColor = await element.evaluate(el => getComputedStyle(el).fill || getComputedStyle(el).color);
+      expect(elementColor).toBe(expectedColor);
+      visibleElementCount++;
+    }
+  }
+}
+
 module.exports = {
   getTodayDate,
   generateRandString,
@@ -314,5 +333,6 @@ module.exports = {
   assertEqualValues,
   assertNotEqualValues,
   assertIsNumber,
-  assertElementAttributeContains
+  assertElementAttributeContains,
+  checkVisibleElementColors
 };

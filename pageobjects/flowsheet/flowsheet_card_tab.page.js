@@ -5,7 +5,8 @@ const {
   calculateTotalAmountAfterDiscount,
   assertGreaterThan,
   formatCurrency,
-  assertEqualValues
+  assertEqualValues,
+  checkVisibleElementColors
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
@@ -43,9 +44,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       ? this.page.locator("(//app-comparison-icon/icon[@class='text-green-500'])[2]")
       : this.page.locator("(//app-comparison-icon/icon[@class='text-green-500'])[1]");
     this.touchPointElement = this.isMobile
-      ? this.page.locator('//app-flowsheet-detail/div[1]/div[2]/div[1]/app-mood-pia-chart')
+      ? this.page.locator("(//app-flowsheet-detail//app-mood-pia-chart)[2]")
       : this.page.locator(
-          '//app-flowsheet-detail/div[1]/div[1]/div/div/following-sibling::app-mood-pia-chart'
+          "(//app-flowsheet-detail//app-mood-pia-chart)[1]"
         );
     this.flowsheetTabElement = text => this.page.locator(`//div[contains(text(),'` + text + `')]`);
     this.contactDiv = this.page.locator('//app-contact-list/ul/li');
@@ -123,6 +124,20 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.logMsgCount = this.page.locator("//div[contains(text(),'Log')]/following-sibling::div");
     this.logCommentInput = this.page.locator("//input[@name='add-note-field']");
     this.commentSendBtn = this.page.locator("//icon[@name='location_line']");
+    // C56894
+    this.touchPointModal = this.page.locator("//app-touchpoint-bottom-sheet");
+    this.happyIconInTouchPoint = this.page.locator("//span[contains(text(),'Happy')]");
+    this.saveButton = this.page.locator("//button[contains(text(),'Save')]");
+    this.touchPointItems = (index) => `app-mood-pia-chart > svg > path:nth-of-type(`+index+`)`;
+    this.neutralIconInTouchPoint = this.page.locator("//span[contains(text(),'Neutral')]");
+    this.noteRequiresMsgInModal = this.page.locator("//span[contains(text(),'Note is required for Neutral and Angry mood.')]");
+    this.noteInput = this.page.locator("//label[text()='Note']/following-sibling::textarea");
+    this.angryIconInTouchPoint = this.page.locator("//span[contains(text(),'Angry')]");
+    this.touchPointLimitMsg = this.page.locator("//span[contains(text(),'The maximum number of touchpoints for today have been reached')]");
+    this.backBtnInMobile = this.page.locator("//icon[contains(@class,'e2e_flowsheet_detail_back')]");
+    this.touchPointAfterClickingCustomer =(customerName) => this.page.locator(`//span[contains(text(),'`+customerName+`')]/parent::div/preceding-sibling::app-mood-pia-chart`);
+    this.firstTouchPointIcon = "//span[contains(text(),'First Touchpoint')]/ancestor::div/preceding-sibling::app-mood-icon/icon";
+    this.secondTouchPointIcon = "//span[contains(text(),'Second Touchpoint')]/ancestor::div/preceding-sibling::app-mood-icon/icon"
   }
 
   async searchFunction(searchText) {
@@ -429,4 +444,76 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await assertEqualValues(parseInt(countOfLogAfterComment) , parseInt(countOfLogBeforeComment)+1);
   }
 
+  async assertTouchPointIndicator(searchText,jobId) {
+    await this.performSearchFunction(searchText,jobId)
+    await assertElementVisible(this.touchPointElement);
+    await executeStep(this.touchPointElement,"click","click the touch point in flowsheet details");
+    await assertElementVisible(this.touchPointModal);
+    await executeStep(this.happyIconInTouchPoint,"click","click on happy icon in modal");
+    await executeStep(this.saveButton,"click","click on save button")
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    if(this.isMobile) {
+      await executeStep(this.backBtnInMobile,"click","click on back button");
+    }
+    await this.searchFunction(indexPage.navigator_data.order_name.trim());
+    if(this.isMobile) {
+      this.performSearchFunction(searchText,jobId);
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await checkVisibleElementColors(this.page,this.touchPointItems(1),'rgb(23, 181, 57)');
+  }
+
+  async assertSecondItemInTouchPoint() {
+    await executeStep(this.touchPointElement,"click","click the touch point in flowsheet details");
+    await assertElementVisible(this.touchPointModal);
+    await executeStep(this.neutralIconInTouchPoint,"click","click the neutral icon in modal");
+    await executeStep(this.saveButton,"click","click on save button");
+    await assertElementVisible(this.noteRequiresMsgInModal);
+    await executeStep(this.noteInput,"fill","enter the msg in note input",[indexPage.lighthouse_data.neutralComment]);
+    await executeStep(this.saveButton,"click","click on save button");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    if(this.isMobile) {
+      await executeStep(this.backBtnInMobile,"click","click on back button");
+    }
+    await this.searchFunction(indexPage.navigator_data.order_name.trim());
+    if(this.isMobile) {
+      this.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no)
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await checkVisibleElementColors(this.page,this.touchPointItems(2),'rgb(244, 235, 0)');
+  }
+
+  async assertRemainingItemsInTouchPoint() {
+    let isItem = true
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    while(isItem) {
+      await executeStep(this.touchPointElement,"click","click the touch point in flowsheet details");
+
+      try {
+        await assertElementVisible(this.touchPointModal);
+        await executeStep(this.angryIconInTouchPoint,"click","click the angry icon in modal");
+        await executeStep(this.noteInput,"fill","enter the msg in note input",[indexPage.lighthouse_data.angryComment]);
+        await executeStep(this.saveButton,"click","click on save button");
+      } catch(error) {
+        await assertElementVisible(this.touchPointLimitMsg);
+        isItem = false;
+      }
+    }
+  }
+
+  async assertCustomerUrl() {
+    if(this.isMobile) {
+      await executeStep(this.orderNameSpan,"click","click order name")
+    }else {
+      await executeStep(this.customerNameSpan,"click","click customer name");
+    }
+    await assertElementVisible(this.touchPointAfterClickingCustomer(indexPage.opportunity_data.endUserAccount));
+    await executeStep(this.flowsheetTabElement(utilConst.Const.tabNames[3]),"click","click touchpoint in tab");
+    await checkVisibleElementColors(this.page,this.firstTouchPointIcon,'rgb(23, 181, 57)');
+    await checkVisibleElementColors(this.page,this.secondTouchPointIcon,'rgb(244, 235, 0)');
+  }
 };
