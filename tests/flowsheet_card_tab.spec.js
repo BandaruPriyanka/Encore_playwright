@@ -96,4 +96,11 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.lighthouse_data.validQuantity
     );
   });
+  
+  test.skip('Test_C56894 Test Touchpoint adding' , async () => {
+    await flowsheetCardAndTab.assertTouchPointIndicator(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await flowsheetCardAndTab.assertSecondItemInTouchPoint();
+    await flowsheetCardAndTab.assertRemainingItemsInTouchPoint();
+    await flowsheetCardAndTab.assertCustomerUrl();
+  })
 });
