@@ -80,13 +80,13 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.comparisonIconFunctionality();
   });
 
-  test.skip('Test_C56891 Test Mood change logic', async () => {
+  test('Test_C56891 Test Mood change logic', async () => {
     await flowsheetCardAndTab.assertMoodChangeHappyIcon(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.assertMoodChangeNeutralIcon(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.assertMoodChangeAngryIcon();
   });
   
-  test.skip('Test_C56909 Logs Tab', async () => {
+  test('Test_C56909 Logs Tab', async () => {
     await flowsheetCardAndTab.assertCommentSectionInLOg(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.assertLogAfterAddOn(indexPage.lighthouse_data.requestedBy,
       indexPage.lighthouse_data.individualProduct,
@@ -96,7 +96,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     );
   });
   
-  test.skip('Test_C56894 Test Touchpoint adding' , async () => {
+  test('Test_C56894 Test Touchpoint adding' , async () => {
     await flowsheetCardAndTab.assertTouchPointIndicator(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.assertSecondItemInTouchPoint();
     await flowsheetCardAndTab.assertRemainingItemsInTouchPoint();

@@ -48,7 +48,7 @@ test('Test_C56926,verify contacts tab', async ({ page }) => {
   await customersPage.clickOnCustomerIcon();
   await customersPage.checkNoContactsDisplayed();
 });
-test.skip('Test_C56928, verify room list tab', async ({ page }) => {
+test('Test_C56928, verify room list tab', async ({ page }) => {
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await customersPage.clickOnCustomerIcon();
   await customersPage.verifyRoomTab();

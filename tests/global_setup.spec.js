@@ -26,6 +26,11 @@ test.describe('LightHouse Operations', () => {
       atob(process.env.lighthouseEmail),
       atob(process.env.lighthousePassword)
     );
-    await page.context().storageState({ path: storageStatePath });
+    const currentUrl = await page.url();
+    if (currentUrl.includes(process.env.lighthouseUrl)) {
+      await page.context().storageState({ path: storageStatePath });
+    } else {
+      console.log(`Skipping session storage for this URL: ${currentUrl}`);
+    }
   });
 });
