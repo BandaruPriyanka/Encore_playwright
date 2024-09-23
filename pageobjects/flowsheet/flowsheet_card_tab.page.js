@@ -403,7 +403,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.notificationCloseBtn,"click","click on cross button to close notificaton");
   }
 
-  async asserMoodChangeLogMsg(searchText,jobId) {
+  async assertMoodChangeLogMsg(searchText,jobId) {
     await this.performSearchFunction(searchText,jobId);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     assertElementVisible(this.flowsheetTabElement(utilConst.Const.Log));
@@ -418,8 +418,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await assertElementVisible(this.logMsg(utilConst.Const.happyLogMsg));
   }
 
-  async assertCommentSectionInLOg() {
+  async assertCommentSectionInLOg(searchText,jobId) {
+    await this.performSearchFunction(searchText,jobId);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const countOfLogBeforeComment = await this.logMsgCount.textContent();
+    await executeStep(this.flowsheetTabElement(utilConst.Const.Log),"click","click on log in flowsheet tab");
     await executeStep(this.logCommentInput,"fill","Enter any msg in comment box",[indexPage.lighthouse_data.logCommentMsg]);
     await executeStep(this.commentSendBtn,"click","click on send button");
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
@@ -439,7 +442,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.sendToNavigatorBtn,"click","click on send to navigator button");
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     await this.page.reload();
-    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const countOfLogAfterComment = await this.logMsgCount.textContent();
     await assertEqualValues(parseInt(countOfLogAfterComment) , parseInt(countOfLogBeforeComment)+1);
   }
