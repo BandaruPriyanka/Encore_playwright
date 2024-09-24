@@ -271,7 +271,7 @@ exports.CreateData = class CreateData {
         indexPage.opportunity_data.eventObjective
       ]);
       await executeStep(this.historicalLesson, 'fill', 'Enter the historical data', [
-        indexPage.opportunity_data.eventObjective
+        indexPage.opportunity_data.historicalData
       ]);
       await executeStep(this.ordersButton, 'click', 'click the order button');
       await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
@@ -326,8 +326,13 @@ exports.CreateData = class CreateData {
     await executeStep(this.createOrderBtn, 'click', 'click on order');
   }
   async jobsPage() {
-    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await executeStep(this.clickOnjobsBtn, 'click', 'click on jobs');
+    await executeStep(
+      this.clickOnjobsBtn,
+      'click',
+      'click on jobs',
+      [],
+      parseInt(process.env.function_timeout)
+    );
   }
   async selectRooms() {
     await executeStep(this.selectRoomType, 'click', 'click on room type');
@@ -383,6 +388,6 @@ exports.CreateData = class CreateData {
       indexPage.opportunity_data.jobNotesTextArea
     ]);
     await executeStep(this.saveBtn, 'click', 'click on save button');
-    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
   }
 };

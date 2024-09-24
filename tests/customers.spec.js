@@ -43,6 +43,11 @@ test('Test_C56924 ,verify test data on customer card', async ({ page }) => {
   await customersPage.verifyCustomerCardContent();
   await customersPage.assertTabNames();
 });
+test('Test_C56925, verify details tab', async ({ page }) => {
+  await page.waitForTimeout(parseInt(process.env.medium_timeout));
+  await customersPage.clickOnCustomerIcon();
+  await customersPage.verifyDetailsTab();
+});
 test('Test_C56926,verify contacts tab', async ({ page }) => {
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await customersPage.clickOnCustomerIcon();
