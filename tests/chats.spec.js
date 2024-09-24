@@ -40,7 +40,7 @@ test.describe("LightHouse Chat Search", () => {
   }) => {
     chatpage = new indexPage.ChatPage(page);
     await chatpage.clickOnChatIcon(lighthouseData.highlightedText);
-    await chatpage.CreateNewChat(lighthouseData.count);
+    await chatpage.createNewChat(lighthouseData.count);
     await chatpage.AddParticipants(
       lighthouseData.validParticipant,
       lighthouseData.ChatRandomText,
