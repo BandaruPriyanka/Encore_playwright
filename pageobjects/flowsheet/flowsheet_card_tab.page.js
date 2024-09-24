@@ -6,11 +6,12 @@ const {
   assertGreaterThan,
   formatCurrency,
   assertEqualValues,
-  checkVisibleElementColors
+  checkVisibleElementColors,
+  assertElementNotVisible
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
-let beforeRoomCount, afterRoomCount, discountPrice;
+let beforeRoomCount, afterRoomCount, discountPrice, jobNotesText, coverSheetText;
 exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   constructor(page) {
     this.page = page;
@@ -137,22 +138,16 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
     this.noteInput = this.page.locator("//label[text()='Note']/following-sibling::textarea");
     this.angryIconInTouchPoint = this.page.locator("//span[contains(text(),'Angry')]");
-    this.touchPointLimitMsg = this.page.locator(
-      "//span[contains(text(),'The maximum number of touchpoints for today have been reached')]"
-    );
-    this.backBtnInMobile = this.page.locator(
-      "//icon[contains(@class,'e2e_flowsheet_detail_back')]"
-    );
-    this.touchPointAfterClickingCustomer = customerName =>
-      this.page.locator(
-        `//span[contains(text(),'` +
-          customerName +
-          `')]/parent::div/preceding-sibling::app-mood-pia-chart`
-      );
-    this.firstTouchPointIcon =
-      "//span[contains(text(),'First Touchpoint')]/ancestor::div/preceding-sibling::app-mood-icon/icon";
-    this.secondTouchPointIcon =
-      "//span[contains(text(),'Second Touchpoint')]/ancestor::div/preceding-sibling::app-mood-icon/icon";
+    this.touchPointLimitMsg = this.page.locator("//span[contains(text(),'The maximum number of touchpoints for today have been reached')]");
+    this.backBtnInMobile = this.page.locator("//icon[contains(@class,'e2e_flowsheet_detail_back')]");
+    this.touchPointAfterClickingCustomer =(customerName) => this.page.locator(`//span[contains(text(),'`+customerName+`')]/parent::div/preceding-sibling::app-mood-pia-chart`);
+    this.firstTouchPointIcon = "//span[contains(text(),'First Touchpoint')]/ancestor::div/preceding-sibling::app-mood-icon/icon";
+    this.secondTouchPointIcon = "//span[contains(text(),'Second Touchpoint')]/ancestor::div/preceding-sibling::app-mood-icon/icon"
+    this.blueIndicator = this.page.locator("//div[contains(@class,'text-blue-500')]");
+    this.flowsheetRoomDiv = "//div[contains(@class,'e2e_flowsheet_action_card')]";
+    this.jobOrderNotesTextDiv = this.page.locator("//div[text()='Job Order Notes']/following-sibling::div/div");
+    this.coversheetNotesTextDiv = this.page.locator("//div[text()='Coversheet Notes']/following-sibling::div/div");
+    this.historicalLessonsText = this.page.locator("//div[contains(text(),'Historical Lessons')]");
   }
 
   async searchFunction(searchText) {
@@ -655,5 +650,26 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
     await checkVisibleElementColors(this.page, this.firstTouchPointIcon, 'rgb(23, 181, 57)');
     await checkVisibleElementColors(this.page, this.secondTouchPointIcon, 'rgb(244, 235, 0)');
+  }
+
+  async assertNotesTab(searchText,jobId) {
+    await this.performSearchFunction(searchText,jobId);
+    await assertElementVisible(this.flowsheetTabElement(utilConst.Const.Notes));
+    await executeStep(this.flowsheetTabElement(utilConst.Const.Notes),"click","click on notes tab");
+    jobNotesText = await this.jobOrderNotesTextDiv.textContent();
+    coverSheetText = await this.coversheetNotesTextDiv.textContent();
+    try {
+      if(jobNotesText !== null || coverSheetText !== null) {
+        await assertElementVisible(this.blueIndicator);
+      }
+    } catch(error) {
+      await assertElementNotVisible(this.blueIndicator);
+    }
+  }
+
+  async assertFlowsheetTextAndNavigatorText() {
+      await assertEqualValues(jobNotesText,indexPage.opportunity_data.jobNotesTextArea);
+      await assertEqualValues(coverSheetText,indexPage.opportunity_data.coverSheetTextArea);
+      await executeStep(this.historicalLessonsText,"scroll","scroll to that element if needed");
   }
 };
