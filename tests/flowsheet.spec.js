@@ -69,4 +69,10 @@ test.describe('LightHouse Operations', () => {
     await flowsheetSearch.assertUrls();
     await flowsheetSearch.validateDateFromPastAndFuture();
   });
+
+  test('Test_C56881 Flowsheet Touchpoints indicator' , async() => {
+    await flowsheetSearch.assertTouchPointIndicator(indexPage.navigator_data.second_job_no);
+    await flowsheetSearch.addSecondTouchPoint(indexPage.navigator_data.second_job_no);
+    await flowsheetSearch.addRemainingTouchPoint();
+  })
 });
