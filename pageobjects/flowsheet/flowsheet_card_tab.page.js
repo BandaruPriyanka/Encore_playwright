@@ -457,7 +457,6 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.saveButton,"click","click on save button")
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await this.page.reload();
-    await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     if(this.isMobile) {
       await executeStep(this.backBtnInMobile,"click","click on back button");
@@ -479,7 +478,6 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.noteInput,"fill","enter the msg in note input",[indexPage.lighthouse_data.neutralComment]);
     await executeStep(this.saveButton,"click","click on save button");
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await this.page.reload();
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     if(this.isMobile) {

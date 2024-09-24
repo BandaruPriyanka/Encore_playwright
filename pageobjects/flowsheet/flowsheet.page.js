@@ -10,7 +10,8 @@ const {
   assertElementVisible,
   assertEqualValues,
   assertNotEqualValues,
-  assertIsNumber
+  assertIsNumber,
+  checkVisibleElementColors
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 
@@ -76,6 +77,18 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.statusSetRefresh = this.page.locator(
       "//app-select-status-sheet//li[.//span[text()='Set Refresh']]"
     );
+    // C56881
+    this.touchPointIndicator = this.page.locator("//app-mood-pia-chart");
+    this.countOfPieIcon = this.page.locator("app-mood-pia-chart > svg  > path");
+    this.touchPointModal = this.page.locator("//mat-bottom-sheet-container");
+    this.happyIconInTouchPoint = this.page.locator("//span[contains(text(),'Happy')]");
+    this.saveButton = this.page.locator("//button[contains(text(),'Save')]");
+    this.touchPointItems = (index) => `app-mood-pia-chart > svg > path:nth-of-type(`+index+`)`;
+    this.neutralIconInTouchPoint = this.page.locator("//span[contains(text(),'Neutral')]");
+    this.noteRequiresMsgInModal = this.page.locator("//span[contains(text(),'Note is required for Neutral and Angry mood.')]");
+    this.noteInput = this.page.locator("//label[text()='Note']/following-sibling::textarea");
+    this.angryIconInTouchPoint = this.page.locator("//span[contains(text(),'Angry')]");
+    this.touchPointLimitMsg = this.page.locator("//span[contains(text(),'The maximum number of touchpoints for today have been reached')]");
   }
 
   async changeLocation(locationId) {
@@ -289,5 +302,53 @@ exports.FlowSheetPage = class FlowSheetPage {
   async changestatus() {
     await executeStep(this.timeLine, 'click', 'Click the status button', []);
     await executeStep(this.statusSetRefresh, 'click', 'Click the status set referesh button', []);
+  }
+  async assertTouchPointIndicator(searchText) {
+    await this.searchFunction(searchText);
+    await assertElementVisible(this.touchPointIndicator);
+    const countOfElements =await this.countOfPieIcon.count();
+    try {
+      await assertEqualValues(countOfElements,5)
+    } catch (error) {
+      await assertEqualValues(countOfElements,3)
+    }
+    await executeStep(this.touchPointIndicator,"click","click touch point indicator");
+    await assertElementVisible(this.touchPointModal);
+    await executeStep(this.happyIconInTouchPoint,"click","click on happy icon");
+    await executeStep(this.saveButton,"click","click in save button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.reload();
+    await this.searchFunction(searchText);
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await checkVisibleElementColors(this.page,this.touchPointItems(1),'rgb(23, 181, 57)');
+  }
+
+  async addSecondTouchPoint(searchText) {
+    await executeStep(this.touchPointIndicator,"click","click touch point indicator");
+    await assertElementVisible(this.touchPointModal);
+    await executeStep(this.neutralIconInTouchPoint,"click","click on neutral icon");
+    await executeStep(this.noteInput,"fill","enter the comment",[indexPage.lighthouse_data.neutralComment]);
+    await executeStep(this.saveButton,"click","click in save button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.reload();
+    await this.searchFunction(searchText);
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await checkVisibleElementColors(this.page,this.touchPointItems(2),'rgb(244, 235, 0)');
+  }
+
+  async addRemainingTouchPoint() {
+    let isItem = true
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    while(isItem) {
+      try {
+        await assertElementVisible(this.touchPointModal);
+        await executeStep(this.angryIconInTouchPoint,"click","click the angry icon in modal");
+        await executeStep(this.noteInput,"fill","enter the msg in note input",[indexPage.lighthouse_data.angryComment]);
+        await executeStep(this.saveButton,"click","click on save button");
+      } catch(error) {
+        await assertElementVisible(this.touchPointLimitMsg);
+        isItem = false;
+      }
+    }
   }
 };
