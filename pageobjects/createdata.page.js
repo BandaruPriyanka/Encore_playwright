@@ -99,6 +99,17 @@ exports.CreateData = class CreateData {
         `//label[text()='${attributeValue}']/../following-sibling::div/descendant::button[@role='combobox']`
       );
     this.selectEndUserAccount = enduserText => page.locator(`//span[text()='${enduserText}']`);
+    this.eventLearning = page.locator("//li[@title='Event Learning']");
+    this.eventDescription = page.locator("//textarea[@aria-label='Event Description']");
+    this.eventObjective = page.locator("//textarea[@aria-label='Event Objective']");
+    this.historicalLesson = page.locator("//textarea[contains(@aria-label,'Historical Lessons')]");
+    this.notesTab = page.locator("(//a[contains(text(),'Notes')])[2] ");
+    this.coverSheetTextArea = page.locator(
+      "//p[contains(text(),'Cover Sheet Notes')]/following-sibling::textarea[1]"
+    );
+    this.jobNotesTextArea = page.locator(
+      "//p[contains(text(),'Job Notes')]//following-sibling::textarea"
+    );
   }
 
   async clickOnCompass() {
@@ -143,7 +154,7 @@ exports.CreateData = class CreateData {
       'clear the start date',
       ['']
     );
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await executeStep(
       this.inputAttribute(utilConst.Const.EventStartDate),
       'fill',
@@ -251,6 +262,17 @@ exports.CreateData = class CreateData {
       console.error('Element is not there in the DOM');
     } finally {
       await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+      await executeStep(this.eventLearning, 'click', 'click the event learning button');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await executeStep(this.eventDescription, 'fill', 'Enter the event description', [
+        indexPage.opportunity_data.eventDescription
+      ]);
+      await executeStep(this.eventObjective, 'fill', 'Enter the event objective', [
+        indexPage.opportunity_data.eventObjective
+      ]);
+      await executeStep(this.historicalLesson, 'fill', 'Enter the historical data', [
+        indexPage.opportunity_data.eventObjective
+      ]);
       await executeStep(this.ordersButton, 'click', 'click the order button');
       await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
       await executeStep(
@@ -353,6 +375,13 @@ exports.CreateData = class CreateData {
     const ItemName = await this.labourItemName.textContent();
     indexPage.navigator_data.labour_item_name = ItemName;
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
+    await executeStep(this.notesTab, 'click', 'click on notes tab');
+    await executeStep(this.coverSheetTextArea, 'fill', 'Enter data in cover sheet text area', [
+      indexPage.opportunity_data.coverSheetTextArea
+    ]);
+    await executeStep(this.jobNotesTextArea, 'fill', 'Enter content in job notes area', [
+      indexPage.opportunity_data.jobNotesTextArea
+    ]);
     await executeStep(this.saveBtn, 'click', 'click on save button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
   }
