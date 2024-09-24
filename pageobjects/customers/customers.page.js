@@ -6,7 +6,9 @@ const {
   scrollElement,
   assertEqualValues,
   assertElementAttributeContains,
-  assertIsNumber
+  assertIsNumber,
+  checkVisibleElementColors,
+  assertElementNotVisible
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
@@ -62,6 +64,27 @@ exports.CustomersPage = class CustomersPage {
     this.flowsheetTab = this.page.locator(
       "(//span[contains(normalize-space(),'Flowsheet')])[2]/parent::div"
     );
+    this.contactNameDiv = this.page.locator("//div[text()='Angelina Wood']");
+    this.orderNameDiv = (order_name) => this.page.locator(`//span[contains(text(),'`+order_name+`')]`);
+    this.touchPointSpan = this.page.locator("//span[text()='TouchPoint']");
+    this.touchPointModal = this.page.locator("//mat-bottom-sheet-container");
+    this.happyIconInTouchPointModal = this.page.locator("//span[contains(text(),'Happy')]");
+    this.saveButton = this.page.locator("//button[@type='submit']");
+    this.firstTouchPointIcon = (moodText) => this.page.locator(`(//span[contains(text(),'First Touchpoint')])[1]/ancestor::div/preceding-sibling::app-mood-icon/icon[@class='`+moodText+`']`);
+    this.neutralIconInTouchPointModal = this.page.locator("//span[contains(text(),'Neutral')]");
+    this.noteRequiresMsgInModal = this.page.locator("//span[contains(text(),'Note is required for Neutral and Angry mood.')]");
+    this.noteInput = this.page.locator("//label[text()='Note']/following-sibling::textarea");
+    this.secondTouchPointIcon =(moodText) => this.page.locator(`(//span[contains(text(),'Second Touchpoint')])[1]/ancestor::div/preceding-sibling::app-mood-icon/icon[@class='`+moodText+`']`);
+    this.secondTouchPointEditIcon = this.page.locator("(//span[contains(text(),'Second Touchpoint')])[1]/following-sibling::icon[@name='pen_line']");
+    this.backArrowBtn = this.page.locator("//strong[text()='Opportunity Information']/preceding-sibling::icon");
+    this.notificationIcon = this.page.locator("//icon[@name='bell_notification_line']");
+    this.notificationMsg = (msg) => this.page.locator(`//app-notification[1]//div[contains(text(),'`+msg+`')]`);
+    this.notificationCloseBtn = this.page.locator("//icon[@name='cross_line']");
+    this.angryIconInTouchPoint = this.page.locator("//span[contains(text(),'Angry')]");
+    this.touchPointLimitMsg = this.page.locator("//span[contains(text(),'The maximum number of touchpoints for today have been reached')]");
+    this.touchPointCountDiv = this.page.locator("//div[contains(text(),'Touchpoints')]/following-sibling::div");
+    this.dateElement = (date) => this.page.locator(`//span[text()='`+date+`']`);
+    this.firstOrderDiv = this.page.locator("//div[@role='region']/div/div/div[1]");
   }
 
   async search(searchText) {
@@ -207,5 +230,92 @@ exports.CustomersPage = class CustomersPage {
   async selectRoomList() {
     //await this.roomListScrollAction();
     await executeStep(this.selectRoom, 'click', 'click one room from the list', []);
+  }
+  async assertTouchPointTab() {
+    await executeStep(this.customersIcon,"click","click on customers icon");
+    await executeStep(this.contactNameDiv,"click","click on customer div");
+    await executeStep(this.orderNameDiv(indexPage.navigator_data.order_name),"click","click on order div");
+    await assertElementVisible(this.dynamicTabElement(utilConst.Const.tabNames[2]));
+    await executeStep(this.dynamicTabElement(utilConst.Const.tabNames[2]),"click","click on touch point in customers tab");
+    await assertElementVisible(this.touchPointSpan);
+  }
+  async addFirstTouchPoint() {
+    await executeStep(this.touchPointSpan,"click","click on add touch point");
+    await assertElementVisible(this.touchPointModal);
+    await executeStep(this.happyIconInTouchPointModal,"click","click happy icon in modal");
+    await executeStep(this.saveButton,"click","click save button");
+    await assertElementVisible(this.firstTouchPointIcon(utilConst.Const.greenIconText));
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.dynamicTabElement(utilConst.Const.tabNames[2]),"click","click on touch point in customers tab");
+    await assertElementVisible(this.firstTouchPointIcon(utilConst.Const.greenIconText));
+  }
+  async addSecondTouchPoint() {
+    const beforeCount = await this.touchPointCountDiv.textContent();
+    await executeStep(this.dynamicTabElement(utilConst.Const.tabNames[2]),"click","click on touch point in customers tab");
+    await executeStep(this.touchPointSpan,"click","click on add touch point");
+    await assertElementVisible(this.touchPointModal);
+    await executeStep(this.neutralIconInTouchPointModal,"click","click neutral icon in modal");
+    await executeStep(this.saveButton,"click","click save button");
+    await assertElementVisible(this.noteRequiresMsgInModal);
+    await executeStep(this.noteInput,"fill","enter the comment for neutral icon",[indexPage.lighthouse_data.neutralComment]);
+    await executeStep(this.saveButton,"click","click save button");
+    await assertElementVisible(this.secondTouchPointIcon(utilConst.Const.yellowIconText));
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    if(this.isMobile) {
+      await executeStep(this.backArrowBtn,"click","click on back arrow button");
+    }
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await executeStep(this.notificationIcon,"click","click on notification msg");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout)); 
+    await assertElementVisible(this.notificationMsg(indexPage.lighthouse_data.neutralComment));
+    await executeStep(this.notificationCloseBtn,"click","click notification close button");
+    if(this.isMobile) {
+      await executeStep(this.orderNameDiv(indexPage.navigator_data.order_name),"click","click on order name");
+    }
+    await this.page.reload();
+    await executeStep(this.dynamicTabElement(utilConst.Const.tabNames[2]),"click","click on touch point in customers tab");
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const afterCount = await this.touchPointCountDiv.textContent();
+    await assertEqualValues(parseInt(afterCount), parseInt(beforeCount)+1);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.secondTouchPointIcon(utilConst.Const.yellowIconText));
+  }
+  async addRemainingTouchPoints() {
+    let isItem = true
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    while(isItem) {
+      await executeStep(this.touchPointSpan,"click","click the touch point");
+
+      try {
+        await assertElementVisible(this.touchPointModal);
+        await executeStep(this.angryIconInTouchPoint,"click","click the angry icon in modal");
+        await executeStep(this.noteInput,"fill","enter the msg in note input",[indexPage.lighthouse_data.angryComment]);
+        await executeStep(this.saveButton,"click","click on save button");
+      } catch(error) {
+        await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+        await assertElementVisible(this.touchPointLimitMsg);
+        isItem = false;
+      }
+    }
+  }
+  async assertEditIcon() {
+    await executeStep(this.secondTouchPointEditIcon,"click","click on edit icon");
+    await executeStep(this.happyIconInTouchPointModal,"click","click on happy icon");
+    await executeStep(this.noteInput,"fill","enter the note",[""]);
+    await executeStep(this.saveButton,"click","click on save button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.secondTouchPointIcon(utilConst.Const.greenIconText));
+  }
+  async assertTouchPointForFuture() {
+    if(this.isMobile) {
+      await executeStep(this.backArrowBtn,"click","click on back arrow button");
+    }
+    await executeStep(this.dateElement(nextDayDate()),"click","click on next day date");
+    await executeStep(this.contactNameDiv,"click","click on customer div");
+    await executeStep(this.firstOrderDiv,"click","click on order");
+    await executeStep(this.dynamicTabElement(utilConst.Const.tabNames[2]),"click","click on touch point in customers tab");
+    await assertElementNotVisible(this.touchPointSpan);
   }
 };
