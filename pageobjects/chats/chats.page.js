@@ -117,7 +117,7 @@ exports.ChatPage = class ChatPage {
     );
   }
 
-  async CreateNewChat(count) {
+  async createNewChat(count) {
     await executeStep(this.newChatIcon, "click", "click on new Chat Icon");
     await assertElementVisible(this.participant1);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
