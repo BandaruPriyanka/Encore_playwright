@@ -102,4 +102,9 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertRemainingItemsInTouchPoint();
     await flowsheetCardAndTab.assertCustomerUrl();
   })
+
+  test('Test_C56908 Notes Tab', async () => {
+    await flowsheetCardAndTab.assertNotesTab(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await flowsheetCardAndTab.assertFlowsheetTextAndNavigatorText();
+  })
 });
