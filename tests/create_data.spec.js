@@ -10,7 +10,7 @@ test.describe('Opportunity and Order Creation', () => {
     loginPage = new indexPage.LoginPage(page);
     createdata = new indexPage.CreateData(page);
     navigatorLoginPage = new indexPage.NavigatorLoginPage(page);
-});
+  });
 
   test('Create new opportunity', async ({ page }) => {
     await page.goto(process.env.opportunityUrl);

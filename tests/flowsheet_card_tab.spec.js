@@ -68,8 +68,9 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.dateSelectModalChecking();
   });
 
-  test('Test_C56892 Test Comparison with previous jobs logic' , async() => {
-    await flowsheetCardAndTab.assertComparisonIcon(indexPage.navigator_data.second_job_no,
+  test('Test_C56892 Test Comparison with previous jobs logic', async () => {
+    await flowsheetCardAndTab.assertComparisonIcon(
+      indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no,
       indexPage.lighthouse_data.requestedBy,
       indexPage.lighthouse_data.individualProduct,
@@ -81,30 +82,45 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
   });
 
   test('Test_C56891 Test Mood change logic', async () => {
-    await flowsheetCardAndTab.assertMoodChangeHappyIcon(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
-    await flowsheetCardAndTab.assertMoodChangeNeutralIcon(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await flowsheetCardAndTab.assertMoodChangeHappyIcon(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
+    await flowsheetCardAndTab.assertMoodChangeNeutralIcon(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
     await flowsheetCardAndTab.assertMoodChangeAngryIcon();
   });
-  
+
   test('Test_C56909 Logs Tab', async () => {
-    await flowsheetCardAndTab.assertCommentSectionInLOg(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
-    await flowsheetCardAndTab.assertLogAfterAddOn(indexPage.lighthouse_data.requestedBy,
+    await flowsheetCardAndTab.assertCommentSectionInLOg(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
+    await flowsheetCardAndTab.assertLogAfterAddOn(
+      indexPage.lighthouse_data.requestedBy,
       indexPage.lighthouse_data.individualProduct,
       indexPage.lighthouse_data.packageProduct,
       indexPage.lighthouse_data.invalidQuantity,
       indexPage.lighthouse_data.validQuantity
     );
   });
-  
-  test('Test_C56894 Test Touchpoint adding' , async () => {
-    await flowsheetCardAndTab.assertTouchPointIndicator(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+
+  test('Test_C56894 Test Touchpoint adding', async () => {
+    await flowsheetCardAndTab.assertTouchPointIndicator(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
     await flowsheetCardAndTab.assertSecondItemInTouchPoint();
     await flowsheetCardAndTab.assertRemainingItemsInTouchPoint();
     await flowsheetCardAndTab.assertCustomerUrl();
-  })
+  });
+
 
   test('Test_C56908 Notes Tab', async () => {
     await flowsheetCardAndTab.assertNotesTab(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.assertFlowsheetTextAndNavigatorText();
   })
+
 });

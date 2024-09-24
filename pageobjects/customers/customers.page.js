@@ -8,7 +8,8 @@ const {
   assertElementAttributeContains,
   assertIsNumber,
   checkVisibleElementColors,
-  assertElementNotVisible
+  assertElementNotVisible,
+  assertContainsValue
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
@@ -85,6 +86,18 @@ exports.CustomersPage = class CustomersPage {
     this.touchPointCountDiv = this.page.locator("//div[contains(text(),'Touchpoints')]/following-sibling::div");
     this.dateElement = (date) => this.page.locator(`//span[text()='`+date+`']`);
     this.firstOrderDiv = this.page.locator("//div[@role='region']/div/div/div[1]");
+    this.cardsDiv = this.page.locator("//div[@role='region']/div");
+    this.dynamicOpportunity = orderName =>
+      this.page.locator(`//span[contains(text(),'${orderName}')]/../..`);
+    this.historicalData = this.page.locator(
+      "//div[contains(text(),'Historical Lessons')]//following-sibling::div"
+    );
+    this.eventObjectiveData = this.page.locator(
+      "//div[contains(text(),'Event Objectives')]//following-sibling::div"
+    );
+    this.eventDescriptionData = this.page.locator(
+      " //div[contains(text(),'Event Description')]//following-sibling::div"
+    );
   }
 
   async search(searchText) {
@@ -211,7 +224,6 @@ exports.CustomersPage = class CustomersPage {
     );
     await assertElementVisible(this.noDataFoundEle);
   }
-
   async roomListScrollAction() {
     const div = await this.roomList;
     await scrollElement(div, 'bottom');
@@ -317,5 +329,22 @@ exports.CustomersPage = class CustomersPage {
     await executeStep(this.firstOrderDiv,"click","click on order");
     await executeStep(this.dynamicTabElement(utilConst.Const.tabNames[2]),"click","click on touch point in customers tab");
     await assertElementNotVisible(this.touchPointSpan);
+  }
+
+  async verifyDetailsTab() {
+    await executeStep(this.customerCard, 'click', 'click on customer card from that list', []);
+    await executeStep(
+      this.dynamicOpportunity(indexPage.navigator_data.order_name),
+      'click',
+      'click on the opportunity card based on order names',
+      []
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const eventDescriptionText = await this.eventDescriptionData.textContent();
+    const eventObjectiveText = await this.eventObjectiveData.textContent();
+    const historicalDataText = await this.historicalData.textContent();
+    await assertContainsValue(eventDescriptionText, indexPage.opportunity_data.eventDescription);
+    await assertContainsValue(eventObjectiveText, indexPage.opportunity_data.eventObjective);
+    await assertContainsValue(historicalDataText, indexPage.opportunity_data.historicalData);
   }
 };
