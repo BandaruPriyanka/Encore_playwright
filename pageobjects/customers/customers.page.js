@@ -6,7 +6,8 @@ const {
   scrollElement,
   assertEqualValues,
   assertElementAttributeContains,
-  assertIsNumber
+  assertIsNumber,
+  assertContainsValue
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
@@ -61,6 +62,18 @@ exports.CustomersPage = class CustomersPage {
       : this.page.locator('//app-flowsheet-detail/child::div[1]');
     this.flowsheetTab = this.page.locator(
       "(//span[contains(normalize-space(),'Flowsheet')])[2]/parent::div"
+    );
+    this.cardsDiv = this.page.locator("//div[@role='region']/div");
+    this.dynamicOpportunity = orderName =>
+      this.page.locator(`//span[contains(text(),'${orderName}')]/../..`);
+    this.historicalData = this.page.locator(
+      "//div[contains(text(),'Historical Lessons')]//following-sibling::div"
+    );
+    this.eventObjectiveData = this.page.locator(
+      "//div[contains(text(),'Event Objectives')]//following-sibling::div"
+    );
+    this.eventDescriptionData = this.page.locator(
+      " //div[contains(text(),'Event Description')]//following-sibling::div"
     );
   }
 
@@ -207,5 +220,22 @@ exports.CustomersPage = class CustomersPage {
   async selectRoomList() {
     //await this.roomListScrollAction();
     await executeStep(this.selectRoom, 'click', 'click one room from the list', []);
+  }
+
+  async verifyDetailsTab() {
+    await executeStep(this.customerCard, 'click', 'click on customer card from that list', []);
+    await executeStep(
+      this.dynamicOpportunity(indexPage.navigator_data.order_name),
+      'click',
+      'click on the opportunity card based on order names',
+      []
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const eventDescriptionText = await this.eventDescriptionData.textContent();
+    const eventObjectiveText = await this.eventObjectiveData.textContent();
+    const historicalDataText = await this.historicalData.textContent();
+    await assertContainsValue(eventDescriptionText, indexPage.opportunity_data.eventDescription);
+    await assertContainsValue(eventObjectiveText, indexPage.opportunity_data.eventObjective);
+    await assertContainsValue(historicalDataText, indexPage.opportunity_data.historicalData);
   }
 };

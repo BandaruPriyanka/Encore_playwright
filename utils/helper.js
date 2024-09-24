@@ -137,6 +137,9 @@ async function assertElementNotVisible(element) {
 async function assertEqualValues(value1, value2) {
   await expect(value1).toEqual(value2);
 }
+async function assertContainsValue(value1, value2) {
+  await expect(value1).toContain(value2);
+}
 
 // Assert that two values are not equal (case insensitive)
 async function assertNotEqualValues(value1, value2) {
@@ -282,14 +285,16 @@ async function checkVisibleElementColors(page, selector, expectedColor) {
   const elements = await page.$$(selector);
 
   let visibleElementCount = 0;
-  
+
   // Check the color of each visible element
   for (const element of elements) {
     // Check if the element is visible
     const isVisible = await element.isVisible();
-    
+
     if (isVisible) {
-      const elementColor = await element.evaluate(el => getComputedStyle(el).fill || getComputedStyle(el).color);
+      const elementColor = await element.evaluate(
+        el => getComputedStyle(el).fill || getComputedStyle(el).color
+      );
       expect(elementColor).toBe(expectedColor);
       visibleElementCount++;
     }
@@ -339,5 +344,6 @@ module.exports = {
   assertNotEqualValues,
   assertIsNumber,
   assertElementAttributeContains,
-  checkVisibleElementColors
+  checkVisibleElementColors,
+  assertContainsValue
 };

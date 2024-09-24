@@ -5,7 +5,7 @@ const atob = require('atob');
 require('dotenv').config();
 
 test.describe('LightHouse Operations', () => {
-  let lighthouseLogin,flowsheetSearch, filtercount_before_pagereload, filtercount_after_pagereload;
+  let lighthouseLogin, flowsheetSearch, filtercount_before_pagereload, filtercount_after_pagereload;
 
   test.beforeEach(async ({ page }) => {
     lighthouseLogin = new indexPage.LoginPage(page);
@@ -70,9 +70,9 @@ test.describe('LightHouse Operations', () => {
     await flowsheetSearch.validateDateFromPastAndFuture();
   });
 
-  test('Test_C56881 Flowsheet Touchpoints indicator' , async() => {
+  test('Test_C56881 Flowsheet Touchpoints indicator', async () => {
     await flowsheetSearch.assertTouchPointIndicator(indexPage.navigator_data.second_job_no);
     await flowsheetSearch.addSecondTouchPoint(indexPage.navigator_data.second_job_no);
     await flowsheetSearch.addRemainingTouchPoint();
-  })
+  });
 });
