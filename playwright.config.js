@@ -50,7 +50,6 @@ module.exports = defineConfig({
     video: 'on',
     logLevel: 'error',
     screenshot: 'only-on-failure',
-    storageState: './data/storageState.json'
   },
 
   /* Configure projects for major browsers */
@@ -67,20 +66,8 @@ module.exports = defineConfig({
     },
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: [
-        'tests/flowsheet.spec.js',
-        'tests/flowsheet_card_tab.spec.js',
-        'tests/schedule.spec.js',
-        'tests/customers.spec.js',
-        'tests/chats.spec.js'
-      ]
-    },
-    {
-      name: 'Mobile_Chrome',
-      use: {
-        ...devices['Pixel 7'],
-        isMobile: true
+      use: { ...devices['Desktop Chrome'],
+      storageState: './data/storageState.json'
       },
       testMatch: [
         'tests/flowsheet.spec.js',
@@ -88,20 +75,39 @@ module.exports = defineConfig({
         'tests/schedule.spec.js',
         'tests/customers.spec.js',
         'tests/chats.spec.js'
-      ]
+      ],
+      dependencies:['global_setup']
+    },
+    {
+      name: 'Mobile_Chrome',
+      use: {
+        ...devices['Pixel 7'],
+        isMobile: true,
+        storageState: './data/storageState.json'
+      },
+      testMatch: [
+        'tests/flowsheet.spec.js',
+        'tests/flowsheet_card_tab.spec.js',
+        'tests/schedule.spec.js',
+        'tests/customers.spec.js',
+        'tests/chats.spec.js'
+      ],
+      dependencies:['global_setup']
     },
     {
       name: 'Mobile_Safari',
       use: {
         ...devices['iPhone 12'],
-        isMobile: true
+        isMobile: true,
+        storageState: './data/storageState.json'
       },
       testMatch: [
         'tests/flowsheet.spec.js',
         'tests/flowsheet_card_tab.spec.js',
         'tests/schedule.spec.js',
         'tests/customers.spec.js'
-      ]
+      ],
+      dependencies:['global_setup']
     }
     // {
     //   name: 'firefox',

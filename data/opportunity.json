@@ -6,5 +6,10 @@
   "endDate": "09/02/2024",
   "venue": "1137",
   "centerName": "1137",
-  "enduserText": "288"
+  "enduserText": "288",
+  "eventDescription": "This is a text area for describing the event.",
+  "eventObjective": "Use this area to describe the details of the event.",
+  "historicalData":"Provide relevant historical information or data for this event.",
+  "coverSheetTextArea":"Use this text area to enter details for the cover sheet.",
+  "jobNotesTextArea":"Provide important job details or notes here."
 }
