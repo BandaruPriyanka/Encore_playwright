@@ -127,8 +127,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.logMsgCount = this.page.locator("//div[contains(text(),'Log')]/following-sibling::div");
     this.logCommentInput = this.page.locator("//input[@name='add-note-field']");
     this.commentSendBtn = this.page.locator("//icon[@name='location_line']");
-    // C56894
-    this.touchPointModal = this.page.locator('//app-touchpoint-bottom-sheet');
+    this.touchPointModal = this.page.locator("//app-touchpoint-bottom-sheet");
     this.happyIconInTouchPoint = this.page.locator("//span[contains(text(),'Happy')]");
     this.saveButton = this.page.locator("//button[contains(text(),'Save')]");
     this.touchPointItems = index => `app-mood-pia-chart > svg > path:nth-of-type(` + index + `)`;

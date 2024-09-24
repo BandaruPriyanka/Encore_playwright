@@ -62,3 +62,11 @@ test('Test_C56928, verify room list tab', async ({ page }) => {
   await assertElementVisible(customersPage.flowsheetDetailsDiv);
   await assertElementAttributeContains(customersPage.flowsheetTab, 'class', 'text-purple');
 });
+test('Test_C56927 Touchpoints Tab' , async({ page }) => {
+  await customersPage.assertTouchPointTab();
+  await customersPage.addFirstTouchPoint();
+  await customersPage.addSecondTouchPoint();
+  await customersPage.addRemainingTouchPoints();
+  await customersPage.assertEditIcon();
+  await customersPage.assertTouchPointForFuture();
+})
