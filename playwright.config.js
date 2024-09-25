@@ -49,7 +49,7 @@ module.exports = defineConfig({
     headless: false,
     video: 'on',
     logLevel: 'error',
-    screenshot: 'only-on-failure',
+    screenshot: 'only-on-failure'
   },
 
   /* Configure projects for major browsers */
@@ -66,9 +66,7 @@ module.exports = defineConfig({
     },
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'],
-      storageState: './data/storageState.json'
-      },
+      use: { ...devices['Desktop Chrome'], storageState: './data/storageState.json' },
       testMatch: [
         'tests/flowsheet.spec.js',
         'tests/flowsheet_card_tab.spec.js',
@@ -76,7 +74,7 @@ module.exports = defineConfig({
         'tests/customers.spec.js',
         'tests/chats.spec.js'
       ],
-      dependencies:['global_setup']
+      dependencies: ['global_setup']
     },
     {
       name: 'Mobile_Chrome',
@@ -92,7 +90,7 @@ module.exports = defineConfig({
         'tests/customers.spec.js',
         'tests/chats.spec.js'
       ],
-      dependencies:['global_setup']
+      dependencies: ['global_setup']
     },
     {
       name: 'Mobile_Safari',
@@ -107,7 +105,7 @@ module.exports = defineConfig({
         'tests/schedule.spec.js',
         'tests/customers.spec.js'
       ],
-      dependencies:['global_setup']
+      dependencies: ['global_setup']
     }
     // {
     //   name: 'firefox',

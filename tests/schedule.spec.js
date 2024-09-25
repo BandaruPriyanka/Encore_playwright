@@ -18,4 +18,14 @@ test.describe('LightHouse Operations', () => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await schedulePage.actionsOnSchedule();
   });
+  test('Test_C56916	verify team schedule', async ({ page }) => {
+    await schedulePage.assertScheduleTab(indexPage.lighthouse_data.scheduleHighlightedDate);
+    await schedulePage.verifyingEventcard();
+    await schedulePage.verifyingFilterFunctionality();
+    await schedulePage.verifyingPreviousNextWeekDates();
+    await schedulePage.verifyingScheduleTabs(
+      indexPage.lighthouse_data.scheduletabActiveMobile,
+      indexPage.lighthouse_data.scheduletabActiveWeb
+    );
+  });
 });

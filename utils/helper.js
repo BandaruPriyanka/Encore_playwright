@@ -138,7 +138,7 @@ async function assertEqualValues(value1, value2) {
   await expect(value1).toEqual(value2);
 }
 async function assertContainsValue(value1, value2) {
-  await expect(value1).toContain(value2);
+   expect(value1).toContain(value2);
 }
 
 // Assert that two values are not equal (case insensitive)
@@ -279,7 +279,13 @@ async function assertIsNumber(value) {
   const numberValue = Number(value);
   expect(typeof numberValue).toBe('number'); // Assert that it is of type 'number'
 }
-
+function getTodayDateAndYear() {
+  const date = new Date();
+  const day = date.getDate();
+  const year = date.getFullYear();
+  const formattedDate = `${day}, ${year}`;
+  return formattedDate;
+}
 async function checkVisibleElementColors(page, selector, expectedColor) {
   // Get all elements matching the selector
   const elements = await page.$$(selector);
@@ -345,5 +351,6 @@ module.exports = {
   assertIsNumber,
   assertElementAttributeContains,
   checkVisibleElementColors,
-  assertContainsValue
+  assertContainsValue,
+  getTodayDateAndYear
 };

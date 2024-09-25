@@ -22,5 +22,8 @@
   "validParticipant": "Rob",
   "ChatGroupname": "demoGroup",
   "noresultText": "No results found.",
-  "highlightedText": "text-purple"
+  "highlightedText": "text-purple",
+  "scheduletabActiveMobile": "secondary-purple",
+  "scheduletabActiveWeb": "checked",
+  "scheduleHighlightedDate":"active"
 }
