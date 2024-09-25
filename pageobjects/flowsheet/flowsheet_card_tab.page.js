@@ -38,6 +38,8 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
         : this.page.locator(
             `//app-flowsheet-detail/div[1]/div[1]//app-mood-icon/icon[@class='` + iconText + `']`
           );
+    this.moodIconInPage = this.isMobile ? this.page.locator(`//app-flowsheet-detail/div[1]/div[2]//app-mood-icon/icon`)
+              : this.page.locator(`//app-flowsheet-detail/div[1]/div[1]//app-mood-icon/icon`);
     this.comparisonIcon = this.isMobile
       ? this.page.locator("(//app-comparison-icon/icon[@class='text-gray-500'])[2]")
       : this.page.locator("(//app-comparison-icon/icon[@class='text-gray-500'])[1]");
@@ -185,7 +187,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await assertElementContainsText(this.orderNameSpan, orderName);
     await assertElementContainsText(this.customerNameSpan, customerName);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementVisible(this.iconInPage(utilConst.Const.moodIconText));
+    await assertElementVisible(this.moodIconInPage);
     try {
       await assertElementVisible(this.comparisonIcon);
     } catch (error) {
