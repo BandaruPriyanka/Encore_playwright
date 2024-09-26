@@ -38,8 +38,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
         : this.page.locator(
             `//app-flowsheet-detail/div[1]/div[1]//app-mood-icon/icon[@class='` + iconText + `']`
           );
-    this.moodIconInPage = this.isMobile ? this.page.locator(`//app-flowsheet-detail/div[1]/div[2]//app-mood-icon/icon`)
-              : this.page.locator(`//app-flowsheet-detail/div[1]/div[1]//app-mood-icon/icon`);
+    this.moodIconInPage = this.isMobile
+      ? this.page.locator(`//app-flowsheet-detail/div[1]/div[2]//app-mood-icon/icon`)
+      : this.page.locator(`//app-flowsheet-detail/div[1]/div[1]//app-mood-icon/icon`);
     this.comparisonIcon = this.isMobile
       ? this.page.locator("(//app-comparison-icon/icon[@class='text-gray-500'])[2]")
       : this.page.locator("(//app-comparison-icon/icon[@class='text-gray-500'])[1]");
@@ -348,7 +349,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     try {
       await assertElementVisible(this.severalPriorMeetingsText);
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await this.selectFirstRowInAdditions.click({force: true});
+      await this.selectFirstRowInAdditions.click({ force: true });
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await assertElementVisible(this.changesFromPreviousMeetingsText);
       await assertElementVisible(this.additionsText);
@@ -357,7 +358,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await executeStep(this.backArrowBtn, 'click', 'click back button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await assertElementVisible(this.severalPriorMeetingsText);
-      await this.selectFirstRowInAdditions.click({force: true});
+      await this.selectFirstRowInAdditions.click({ force: true });
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await executeStep(this.closeButton, 'click', 'click close button');
       await executeStep(this.comparisonIcon, 'click', 'click on comparision icon');
