@@ -1,6 +1,8 @@
 const { executeStep } = require('../../utils/action');
 const { test, expect } = require('@playwright/test');
+const indexPage = require('../../utils/index.page');
 require('dotenv').config();
+const atob = require('atob');
 const {
   assertElementVisible,
   assertElementContainsText,
@@ -58,6 +60,20 @@ exports.ChatPage = class ChatPage {
     this.quantityCount = this.isMobile
       ? this.page.locator('(//div[@class="ng-star-inserted"]/div)[2]')
       : this.page.locator('(//icon[@name="group_line"]/parent::div)[1]');
+    this.searchChatUser = this.page.locator("//input[@role='combobox']");
+    this.textArea = this.page.locator("//textarea[@name='add-note-field']");
+    this.sendMsg = this.page.locator("//button[@type='submit']");
+    this.user1TimeStamp = this.page.locator(
+      "(//div[contains(@class,'e2e_message_card_time')])[1]"
+    );
+    this.menuLine = this.page.locator("(//icon[@name='menu_line'])[1]");
+    this.logOut = this.page.locator("//icon[@name='log_out_line']");
+    this.selectLogOutMail=this.page.locator(" //div[@id='tilesHolder']");
+    this.addAccount=this.page.locator("//div[@id='otherTile']");
+    this.enterUserName=this.page.locator("//div[@class='placeholder']");
+     this.selectMail = this.page.locator("//div[text()='s-tst-navi-crm@psav.com']");
+    this.enterPwd = this.page.locator("//input[@name='passwd']");
+    this.submitBtn = this.page.locator("//input[@type='submit']");
   }
 
   async clickOnChatIcon(hightlightedText) {
@@ -91,8 +107,6 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.createChatButton, 'click', 'click on createChatButton');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const quantity = await this.quantityCount.textContent();
-    console.log('count', quantity);
-
     expect(quantity).toContain(count);
   }
   async AddParticipants(validParticipant, randomdata, demogroup, noresultFound) {
@@ -102,7 +116,6 @@ exports.ChatPage = class ChatPage {
     await assertElementVisible(this.participantsModel);
     await executeStep(this.searchUsersField, 'click', 'click on search Users Field');
     await executeStep(this.searchUsersField, 'fill', 'enter valid user', [validParticipant]);
-
     await executeStep(this.searchUsersField, 'fill', 'empty the search field', [' ']);
     await executeStep(this.searchUsersField, 'fill', 'enter random data', [randomdata]);
     await assertElementContainsText(this.noResultsFoundTextInAddParticipants, [noresultFound]);
@@ -125,5 +138,57 @@ exports.ChatPage = class ChatPage {
     await assertElementVisible(this.leaveConfirmationDialogueModel);
     await executeStep(this.YesButton, 'click', 'click on Yes Button');
     await assertElementNotVisible(this.updatedGroupName);
+  }
+  async verifyChatsVisibility() {
+    await executeStep(this.chatIcon, 'click', 'click on Chat Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.participantChatAll);
+  }
+  async createChat() {
+    await executeStep(this.newChatIcon, 'click', 'click on new Chat Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.searchChatUser, 'fill', 'enter user name to select', [
+      indexPage.lighthouse_data.chatUser1
+    ]);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.participant1, 'click', 'click on participant1');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.participant2, 'click', 'click on participant2');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.createChatButton, 'click', 'click on createChatButton');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+  async sendMessageAndVerifyDetails() {
+    await executeStep(this.textArea, 'fill', 'enter the message from user1', [
+      indexPage.lighthouse_data.firstMessage
+    ]);
+    await executeStep(this.sendMsg, 'click', 'click on new Chat Icon');
+    await assertElementVisible(this.user1TimeStamp);
+  }
+  async profileLogout() {
+    await executeStep(this.menuLine, 'click', 'click on menu line');
+    await executeStep(this.logOut, 'click', 'click on logout');
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+  }
+  async selectUser2(){
+    const visibility=await assertElementVisible(this.selectLogOutMail);
+    await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+   // await executeStep(this.selectUser2, 'click', 'select mail to logout');
+   await executeStep(this.addAccount, 'click', 'click on submit button');
+   await executeStep(this.enterUserName, 'fill', 'enter user2 password', [
+    atob(process.env.email)
+  ]);
+  await executeStep(this.submitBtn, 'click', 'click on submit button');
+    await executeStep(this.enterPwd, 'fill', 'enter user2 password', [
+      atob(process.env.password)
+    ]);
+    await executeStep(this.submitBtn, 'click', 'click on submit button');
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await assertElementVisible(this.user1TimeStamp);
+    await executeStep(this.textArea, 'fill', 'enter the message from user1', [
+      indexPage.lighthouse_data.secondMessage
+    ]);
+    await executeStep(this.sendMsg, 'click', 'click on new Chat Icon');
   }
 };

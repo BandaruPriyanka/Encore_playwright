@@ -15,7 +15,6 @@ test.describe('LightHouse Chat Search', () => {
   });
 
   test('Test_C56930 verify Chats search', async ({ page }) => {
-    chatpage = new indexPage.ChatPage(page);
     await chatpage.clickOnChatIcon(lighthouseData.highlightedText);
     await assertElementVisible(chatpage.participantChatAll);
     await assertElementVisible(chatpage.searchChat_Field);
@@ -33,7 +32,6 @@ test.describe('LightHouse Chat Search', () => {
   });
 
   test('Test_C56931 Create New Chat / Add participant / Leave Chat', async ({ page }) => {
-    chatpage = new indexPage.ChatPage(page);
     await chatpage.clickOnChatIcon(lighthouseData.highlightedText);
     await chatpage.createNewChat(lighthouseData.count);
     await chatpage.AddParticipants(
@@ -44,4 +42,16 @@ test.describe('LightHouse Chat Search', () => {
     );
     await chatpage.leaveChat();
   });
+  test.skip('Test_C56933	verify chats messaging & notifications functionality', async ({ page }) => {
+    await chatpage.verifyChatsVisibility();
+    await chatpage.createChat();
+    await chatpage.sendMessageAndVerifyDetails();
+    await chatpage.profileLogout();
+    await chatpage.selectUser2();
+  });
 });
+
+ 
+  
+  
+  
