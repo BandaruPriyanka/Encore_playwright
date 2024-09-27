@@ -614,6 +614,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       'click the touch point in flowsheet details'
     );
     await assertElementVisible(this.touchPointModal);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout)); 
     await executeStep(this.neutralIconInTouchPoint, 'click', 'click the neutral icon in modal');
     await executeStep(this.saveButton, 'click', 'click on save button');
     await assertElementVisible(this.noteRequiresMsgInModal);

@@ -9,7 +9,8 @@ const {
   assertElementNotVisible,
   scrollElement,
   assertElementAttributeContains,
-  waitForElementVisible
+  waitForElementVisible,
+  assertEqualValues
 } = require('../../utils/helper');
 exports.ChatPage = class ChatPage {
   constructor(page) {
@@ -47,7 +48,7 @@ exports.ChatPage = class ChatPage {
     this.penIcon = this.isMobile
       ? this.page.locator('(//icon[@name="pen_line"])[2]')
       : this.page.locator('(//icon[@name="pen_line"])[1]');
-    this.groupNameField = this.page.locator('//div[@id="chat-user-search"]//input');
+    this.groupNameField = this.page.locator("//div[text()='Group name']/following-sibling::input");
     this.saveButton = this.page.locator('//button[text()="Save"]');
     this.updatedGroupName = this.isMobile
       ? this.page.locator('(//span[text()="demoGroup"])[2]')
@@ -125,11 +126,17 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.participant2, 'click', 'click on participant2');
     await executeStep(this.addButton, 'click', 'click on addButton');
     await executeStep(this.penIcon, 'click', 'click on penIcon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.groupNameField, 'click', 'click on groupNameField');
-    await executeStep(this.groupNameField, 'fill', 'empty the groupNameField', [' ']);
-    await executeStep(this.groupNameField, 'fill', 'empty the groupNameField', [demogroup]);
+    await executeStep(this.groupNameField, 'fill', 'empty the groupNameField', ['']);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.groupNameField, 'fill', 'enter the groupNameField', [demogroup]);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.saveButton, 'click', 'click on saveButton');
-    await assertElementContainsText(this.updatedGroupName, `${demogroup}`);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const groupName =await this.updatedGroupName.textContent();
+    await assertEqualValues(groupName,demogroup)
+    // await assertElementContainsText(this.updatedGroupName, `${demogroup}`);
   }
   async leaveChat() {
     await executeStep(this.groupIcon, 'click', 'click on groupIcon');
