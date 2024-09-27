@@ -15,7 +15,7 @@ test.describe('LightHouse Chat Search', () => {
   });
 
   test('Test_C56930 verify Chats search', async ({ page }) => {
-    await chatpage.clickOnChatIcon(lighthouseData.highlightedText);
+    await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
     await assertElementVisible(chatpage.participantChatAll);
     await assertElementVisible(chatpage.searchChat_Field);
     await assertElementAttributeContains(
@@ -24,25 +24,25 @@ test.describe('LightHouse Chat Search', () => {
       lighthouseData.ChatPlaceholder
     );
     await chatpage.verifyingSearchFieldWithData(
-      lighthouseData.ChatRandomText,
-      lighthouseData.ChatParticipantName,
-      lighthouseData.ChatPhraseFromChat,
-      lighthouseData.ChatCaseSentitiveData
+      indexPage.lighthouse_data.ChatRandomText,
+      indexPage.lighthouse_data.ChatParticipantName,
+      indexPage.lighthouse_data.ChatPhraseFromChat,
+      indexPage.lighthouse_data.ChatCaseSentitiveData
     );
   });
 
   test('Test_C56931 Create New Chat / Add participant / Leave Chat', async ({ page }) => {
-    await chatpage.clickOnChatIcon(lighthouseData.highlightedText);
-    await chatpage.createNewChat(lighthouseData.count);
+    await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
+    await chatpage.createNewChat(indexPage.lighthouse_data.count);
     await chatpage.AddParticipants(
-      lighthouseData.validParticipant,
-      lighthouseData.ChatRandomText,
-      lighthouseData.ChatGroupname,
-      lighthouseData.noresultText
+      indexPage.lighthouse_data.validParticipant,
+      indexPage.lighthouse_data.ChatRandomText,
+      indexPage.lighthouse_data.ChatGroupname,
+      indexPage.lighthouse_data.noresultText
     );
     await chatpage.leaveChat();
   });
-  test.skip('Test_C56933	verify chats messaging & notifications functionality', async ({ page }) => {
+  test('Test_C56933	verify chats messaging & notifications functionality', async ({ page }) => {
     await chatpage.verifyChatsVisibility();
     await chatpage.createChat();
     await chatpage.sendMessageAndVerifyDetails();

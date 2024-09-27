@@ -50,7 +50,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
 
   test('Test_C56895 Add-on creation (Docusign disabled)', async ({ page }) => {
     await flowsheetCardAndTab.verifyDocusignStatus(
-      indexPage.lighthouse_data.docusignOff,
+      indexPage.lighthouse_data.turnOff,
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
@@ -123,5 +123,14 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.navigator_data.second_job_no
     );
     await flowsheetCardAndTab.assertFlowsheetTextAndNavigatorText();
+  });
+
+  test.only('Test_C56907 Equipment Tab' , async () => {
+    await flowsheetCardAndTab.assertEquipmentTab(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await flowsheetCardAndTab.assertEquipmentsInLightHouseAndNavigator();
+    await flowsheetCardAndTab.assertEquipmentCheckList();
+    await flowsheetCardAndTab.assertCheckBox();
+    await flowsheetCardAndTab.assertEquipmentByDescription();
+    await flowsheetCardAndTab.assertEquipmentByName();
   });
 });

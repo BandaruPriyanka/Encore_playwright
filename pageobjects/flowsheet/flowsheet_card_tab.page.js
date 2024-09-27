@@ -7,11 +7,12 @@ const {
   formatCurrency,
   assertEqualValues,
   checkVisibleElementColors,
-  assertElementNotVisible
+  assertElementNotVisible,
+  assertNotEqualValues
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
-let beforeRoomCount, afterRoomCount, discountPrice, jobNotesText, coverSheetText;
+let beforeRoomCount, afterRoomCount, discountPrice, jobNotesText, coverSheetText, equipmentCheckListText,equipmentByDescription,equipmentByName;
 exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   constructor(page) {
     this.page = page;
@@ -165,6 +166,22 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       "//div[text()='Coversheet Notes']/following-sibling::div/div"
     );
     this.historicalLessonsText = this.page.locator("//div[contains(text(),'Historical Lessons')]");
+    this.countOfEquipments = this.page.locator("//div[contains(text(),'Equipment')]/following-sibling::div");
+    this.listOfEquipments = this.page.locator("//div[contains(@class,'e2e_flowsheet_equipment_list')]/div[contains(@class,'e2e_flowsheet_equipment_row')]");
+    this.equipmentCheckListOption = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_equipment_checklist_value')]") 
+            : this.page.locator("//span[@class='e2e_user_profile_equipment_checklist_value']");
+    this.labourEquipment = this.page.locator("//span[contains(text(),'Labor')]");
+    this.equipmentCheckListTurnOnAndOffBtn = this.isMobile ? this.page.locator("(//div[contains(@class,'e2e_user_profile_equipment_checklist_action')])[2]")
+            : this.page.locator("(//div[contains(@class,'e2e_user_profile_equipment_checklist_action')])[1]");
+    this.selectAllCheckBox = this.page.locator("//span[text()='Select All']//following-sibling::input[@type='checkbox']");
+    this.yesButton = this.page.locator("//span[text()='Yes']");
+    this.checkBoxForPackage = this.page.locator("//span[@class='e2e_flowsheet_equipment_package font-semibold'][1]/../following-sibling::div//input[@type='checkbox']");
+    this.myProfile = this.page.locator("//span[text()='My Profile']");
+    this.equipmentDisplayChioceValue = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_value')]")
+          : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div/span");
+    this.equipmentValueChangeButton = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_action')]")
+            : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div[contains(text(),'Update')]");
+    this.equipmentText = this.page.locator("(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]")
   }
 
   async searchFunction(searchText) {
@@ -686,5 +703,117 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await assertEqualValues(jobNotesText, indexPage.opportunity_data.jobNotesTextArea);
     await assertEqualValues(coverSheetText, indexPage.opportunity_data.coverSheetTextArea);
     await executeStep(this.historicalLessonsText, 'scroll', 'scroll to that element if needed');
+  }
+
+  async assertEquipmentTab(searchText,jobId) {
+    await this.performSearchFunction(searchText,jobId);
+    await assertElementVisible(this.flowsheetTabElement(utilConst.Const.Equipment));
+    await executeStep(this.flowsheetTabElement(utilConst.Const.Equipment),"click","click on equipment tab");
+    const countOfEquipmentsInTab = await this.countOfEquipments.textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const countOfListOfEquipments = await this.listOfEquipments.count();
+    await assertEqualValues(parseInt(countOfEquipmentsInTab),countOfListOfEquipments);
+  }
+
+  async assertEquipmentsInLightHouseAndNavigator() {
+    const countOfEquipmentsInLightHouse =await this.listOfEquipments.count();
+    const isLabourDisplayed = await this.labourEquipment.isVisible();
+    const newPage = await this.page.context().newPage();
+    await newPage.goto(indexPage.navigator_data.navigatorUrl ,  {
+      timeout: parseInt(process.env.pageload_timeout)
+    });
+    const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
+    await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
+    await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
+    await newPage.goto(indexPage.navigator_data.navigatorUrl, {
+      timeout: parseInt(process.env.pageload_timeout)
+    });
+    const createDataPage = new indexPage.CreateData(newPage);
+    await createDataPage.getCountOfEquipments();
+    let countOfEquipmentsInNavigator;
+    if(isLabourDisplayed) {
+        countOfEquipmentsInNavigator = await createDataPage.equipmentRowsCount.count()-1; 
+    } else {
+        countOfEquipmentsInNavigator = await createDataPage.equipmentRowsCount.count()-2;
+    }
+    await assertEqualValues(countOfEquipmentsInLightHouse,countOfEquipmentsInNavigator);
+    await newPage.waitForTimeout(parseInt(process.env.small_timeout));
+    await newPage.close();
+  }
+
+  async assertEquipmentCheckList() {
+    if(this.isMobile) {
+      await executeStep(this.backBtnInMobile,"click","click back button")
+    }
+    await executeStep(this.menuIcon,"click","click on menu icon");
+    await executeStep(this.locationProfile,"click","click on location profile from menu");
+    equipmentCheckListText = await this.equipmentCheckListOption.textContent();
+    if(equipmentCheckListText.trim() === indexPage.lighthouse_data.turnOff) {
+      await executeStep(this.equipmentCheckListTurnOnAndOffBtn,"click","click turn on button");
+    }
+    await executeStep(this.flowsheetBtn,"click","click flowsheet button");
+    await this.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await assertElementVisible(this.selectAllCheckBox);
+    if (await this.selectAllCheckBox.isChecked()) {
+      await this.selectAllCheckBox.uncheck();
+    }else {
+      await this.selectAllCheckBox.check();
+    }
+    await executeStep(this.yesButton,"click","click on yes button to check or uncheck")
+    if(await this.checkBoxForPackage.isChecked()) {
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await this.checkBoxForPackage.uncheck();
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }else {
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await this.checkBoxForPackage.check();
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+  }
+
+  async assertCheckBox() {
+    if(this.isMobile) {
+      await executeStep(this.backBtnInMobile,"click","click back button")
+    }
+    await executeStep(this.menuIcon,"click","click on menu icon");
+    await executeStep(this.locationProfile,"click","click on location profile");
+    equipmentCheckListText = await this.equipmentCheckListOption.textContent();
+    if(equipmentCheckListText.trim() === indexPage.lighthouse_data.turnOn) {
+      await executeStep(this.equipmentCheckListTurnOnAndOffBtn,"click","click on turn off button");
+    }
+    await executeStep(this.flowsheetBtn,"click","click flowsheet button");
+    await this.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await assertElementNotVisible(this.selectAllCheckBox);
+  }
+
+  async assertEquipmentByDescription() {
+    if(this.isMobile){
+      await executeStep(this.backBtnInMobile,"click","click back button in mobile");
+    }
+    await executeStep(this.menuIcon,"click","click on menu icon");
+    await executeStep(this.myProfile,"click","click on my profile");
+    const equipmentDispalyValue = await this.equipmentDisplayChioceValue.textContent();
+    if(equipmentDispalyValue.trim() === indexPage.lighthouse_data.equipmentName) {
+        await executeStep(this.equipmentValueChangeButton,"click","click on update button");
+    }
+    await executeStep(this.flowsheetBtn,"click","click on flowsheet button");
+    await this.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    equipmentByDescription = await this.equipmentText.textContent();
+  }
+
+  async assertEquipmentByName() {
+    if(this.isMobile){
+      await executeStep(this.backBtnInMobile,"click","click back button in mobile");
+    }
+    await executeStep(this.menuIcon,"click","click on menu icon");
+    await executeStep(this.myProfile,"click","click on my profile");
+    const equipmentDispalyValue = await this.equipmentDisplayChioceValue.textContent();
+    if(equipmentDispalyValue.trim() === indexPage.lighthouse_data.equipmentDescription) {
+        await executeStep(this.equipmentValueChangeButton,"click","click on update button");
+    }
+    await executeStep(this.flowsheetBtn,"click","click on flowsheet button");
+    await this.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    equipmentByName = await this.equipmentText.textContent();
+    await assertNotEqualValues(equipmentByDescription,equipmentByName);
   }
 };
