@@ -5,7 +5,8 @@
   "angryComment": "I am in angry mood",
   "flowsheetTabs": ["Equipment", "Notes", "Log", "Contacts", "Add Ons", "Labor"],
   "contactModalText": "This person has no contact information.",
-  "docusignOff": "Off",
+  "turnOff" : "Off",
+  "turnOn" : "On",
   "requestedBy": "Tommy Hilfiger",
   "individualProduct": "Laptop",
   "packageProduct": "PKG",
@@ -25,5 +26,7 @@
   "highlightedText": "text-purple",
   "scheduletabActiveMobile": "secondary-purple",
   "scheduletabActiveWeb": "checked",
-  "scheduleHighlightedDate":"active"
+  "scheduleHighlightedDate":"active",
+  "equipmentDescription" : "Description",
+  "equipmentName" : "Name"
 }

@@ -15,8 +15,7 @@ test.describe('LightHouse Chat Search', () => {
   });
 
   test('Test_C56930 verify Chats search', async ({ page }) => {
-    chatpage = new indexPage.ChatPage(page);
-    await chatpage.clickOnChatIcon(lighthouseData.highlightedText);
+    await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
     await assertElementVisible(chatpage.participantChatAll);
     await assertElementVisible(chatpage.searchChat_Field);
     await assertElementAttributeContains(
@@ -25,22 +24,21 @@ test.describe('LightHouse Chat Search', () => {
       lighthouseData.ChatPlaceholder
     );
     await chatpage.verifyingSearchFieldWithData(
-      lighthouseData.ChatRandomText,
-      lighthouseData.ChatParticipantName,
-      lighthouseData.ChatPhraseFromChat,
-      lighthouseData.ChatCaseSentitiveData
+      indexPage.lighthouse_data.ChatRandomText,
+      indexPage.lighthouse_data.ChatParticipantName,
+      indexPage.lighthouse_data.ChatPhraseFromChat,
+      indexPage.lighthouse_data.ChatCaseSentitiveData
     );
   });
 
   test('Test_C56931 Create New Chat / Add participant / Leave Chat', async ({ page }) => {
-    chatpage = new indexPage.ChatPage(page);
-    await chatpage.clickOnChatIcon(lighthouseData.highlightedText);
-    await chatpage.createNewChat(lighthouseData.count);
+    await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
+    await chatpage.createNewChat(indexPage.lighthouse_data.count);
     await chatpage.AddParticipants(
-      lighthouseData.validParticipant,
-      lighthouseData.ChatRandomText,
-      lighthouseData.ChatGroupname,
-      lighthouseData.noresultText
+      indexPage.lighthouse_data.validParticipant,
+      indexPage.lighthouse_data.ChatRandomText,
+      indexPage.lighthouse_data.ChatGroupname,
+      indexPage.lighthouse_data.noresultText
     );
     await chatpage.leaveChat();
   });

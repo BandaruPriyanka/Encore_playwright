@@ -110,6 +110,13 @@ exports.CreateData = class CreateData {
     this.jobNotesTextArea = page.locator(
       "//p[contains(text(),'Job Notes')]//following-sibling::textarea"
     );
+    this.homeIcon = this.page.locator("//span[contains(@class,'glyphicon-home')]");
+    this.jobSearchSpan = this.page.locator("//span[text()='Job Search']"); 
+    this.jobNumberSearchInput = this.page.locator("//span[contains(text(),'Job Number')]/following-sibling::input");
+    this.userDateRangeCheckBox = this.page.locator("//input[@id='job-search_ApplyDates']");
+    this.searchBtn = this.page.locator("(//input[@title='Search'])[2]");
+    this.clickOnJobId =(jobId) => this.page.locator(`//a[text()='`+jobId+`']`);
+    this.equipmentRowsCount = this.page.locator("//div[@id='oeOrderLinesGrid']/div[4]//div[contains(@class,'grid-canvas-top')]/div");
   }
 
   async clickOnCompass() {
@@ -389,5 +396,24 @@ exports.CreateData = class CreateData {
     ]);
     await executeStep(this.saveBtn, 'click', 'click on save button');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+  }
+  async getCountOfEquipments() {
+    await executeStep(this.homeIcon,"click","click on home icon");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await executeStep(this.jobSearchSpan,"click","click on job search button");
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await executeStep(this.jobNumberSearchInput,"fill","enter the valid job number",[indexPage.navigator_data.second_job_no]);
+    if(await this.userDateRangeCheckBox.isChecked()) {
+      await this.userDateRangeCheckBox.uncheck();
+    }
+    await executeStep(this.searchBtn,"click","click on search button");
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    if(!this.clickOnJobId(indexPage.navigator_data.second_job_no).isVisible()) {
+      await executeStep(this.searchBtn,"click","click on search button");
+      await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    }
+    await executeStep(this.clickOnJobId(indexPage.navigator_data.second_job_no),"click","click on job number");
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    
   }
 };
