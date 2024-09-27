@@ -415,7 +415,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     validData,
     updatedIconText
   ) {
-    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await assertElementVisible(this.tvLineIcon);
     await executeStep(this.searchInput, "click", "click on searchInput");
     await executeStep(this.searchInput, "fill", "Fill the search input field", [
