@@ -118,6 +118,26 @@ function formatCurrency(amount) {
   return `$${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
+function getFormattedTime() {
+  const now = new Date();
+  let hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  hours = String(hours).padStart(2, '0');
+  const formattedTime = `${hours}`;
+  return formattedTime;
+}
+function getCurrentMonth() {
+  const now = new Date();
+  const months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+  const monthIndex = now.getMonth();
+  return months[monthIndex];
+}
+
 async function scrollElement(element, scrollTo) {
   await element.evaluate((el, scrollTo) => {
     el.scrollTop = scrollTo === 'bottom' ? el.scrollHeight : 0;
@@ -322,6 +342,8 @@ module.exports = {
   invalidDiscountGenerator,
   calculateTotalAmountAfterDiscount,
   formatCurrency,
+  getFormattedTime,
+  getCurrentMonth,
   scrollElement,
   assertElementVisible,
   assertElementNotVisible,
