@@ -42,4 +42,16 @@ test.describe('LightHouse Chat Search', () => {
     );
     await chatpage.leaveChat();
   });
+  test('Test_C56933	verify chats messaging & notifications functionality', async ({ page }) => {
+    await chatpage.verifyChatsVisibility();
+    await chatpage.createChat();
+    await chatpage.sendMessageAndVerifyDetails();
+    await chatpage.profileLogout();
+    await chatpage.selectUser2();
+  });
 });
+
+ 
+  
+  
+  

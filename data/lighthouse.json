@@ -26,7 +26,10 @@
   "highlightedText": "text-purple",
   "scheduletabActiveMobile": "secondary-purple",
   "scheduletabActiveWeb": "checked",
-  "scheduleHighlightedDate":"active",
   "equipmentDescription" : "Description",
-  "equipmentName" : "Name"
+  "equipmentName" : "Name",
+  "scheduleHighlightedDate": "active",
+  "chatUser1": "Navi",
+  "firstMessage": "user1",
+  "secondMessage": "user2"
 }

@@ -138,7 +138,7 @@ async function assertEqualValues(value1, value2) {
   await expect(value1).toEqual(value2);
 }
 async function assertContainsValue(value1, value2) {
-   expect(value1).toContain(value2);
+  expect(value1).toContain(value2);
 }
 
 // Assert that two values are not equal (case insensitive)
