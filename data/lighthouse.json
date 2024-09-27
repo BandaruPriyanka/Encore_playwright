@@ -31,5 +31,6 @@
   "scheduleHighlightedDate": "active",
   "chatUser1": "Navi",
   "firstMessage": "user1",
-  "secondMessage": "user2"
+  "secondMessage": "user2",
+  "flowsheetUpdatedIconText" : "text-green-500"
 }

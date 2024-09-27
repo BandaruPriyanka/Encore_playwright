@@ -75,4 +75,13 @@ test.describe('LightHouse Operations', () => {
     await flowsheetSearch.addSecondTouchPoint(indexPage.navigator_data.second_job_no);
     await flowsheetSearch.addRemainingTouchPoint();
   });
+
+  test("Test_C56887 Flowsheets Command center", async ({ page }) => {
+    await flowsheetSearch.verifyingRoomsFunctionality(
+      indexPage.lighthouse_data.invalidText,
+      indexPage.navigator_data.second_job_no,
+      indexPage.lighthouse_data.flowsheetUpdatedIconText
+    );
+    await flowsheetSearch.verifyingTransfersFunctionality();
+  });
 });
