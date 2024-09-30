@@ -5,10 +5,11 @@ require('dotenv').config();
 const { lighthouseApi } = require('../utils/helper');
 
 test.describe('Opportunity and Order Creation', () => {
-  let loginPage, createdata, navigatorLoginPage;
+  let loginPage, createdata, navigatorLoginPage,isCreateData1;
   test.beforeEach(async ({ page }) => {
+    isCreateData1 = test.info().project.use.isCreateData1;
     loginPage = new indexPage.LoginPage(page);
-    createdata = new indexPage.CreateData(page);
+    createdata = new indexPage.CreateData(page,isCreateData1);
     navigatorLoginPage = new indexPage.NavigatorLoginPage(page);
   });
 
@@ -22,7 +23,6 @@ test.describe('Opportunity and Order Creation', () => {
       indexPage.opportunity_data.estRevenue,
       indexPage.opportunity_data.endUserAccount,
       indexPage.opportunity_data.endUserContact,
-      indexPage.opportunity_data.venue,
       indexPage.opportunity_data.centerName,
       indexPage.opportunity_data.enduserText
     );
@@ -49,6 +49,6 @@ test.describe('Opportunity and Order Creation', () => {
     await createdata.selectItems();
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await createdata.selectLabourItem();
-    await lighthouseApi();
+    await lighthouseApi(isCreateData1);
   });
 });

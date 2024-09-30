@@ -4,10 +4,11 @@ const lighthouseData = require('../data/lighthouse.json');
 const { assertElementVisible, assertElementAttributeContains } = require('../utils/helper');
 
 test.describe('LightHouse Chat Search', () => {
-  let chatpage;
+  let chatpage,flowsheetPage;
 
   test.beforeEach(async ({ page }) => {
     chatpage = new indexPage.ChatPage(page);
+    flowsheetPage  = new indexPage.FlowSheetPage(page);
     await page.goto(process.env.lighthouseUrl, {
       timeout: parseInt(process.env.pageload_timeout)
     });
@@ -15,6 +16,7 @@ test.describe('LightHouse Chat Search', () => {
   });
 
   test('Test_C56930 verify Chats search', async ({ page }) => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
     await assertElementVisible(chatpage.participantChatAll);
     await assertElementVisible(chatpage.searchChat_Field);
@@ -32,6 +34,7 @@ test.describe('LightHouse Chat Search', () => {
   });
 
   test('Test_C56931 Create New Chat / Add participant / Leave Chat', async ({ page }) => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData2,indexPage.lighthouse_data.locationText_createData2);
     await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
     await chatpage.createNewChat(indexPage.lighthouse_data.count);
     await chatpage.AddParticipants(
@@ -43,6 +46,7 @@ test.describe('LightHouse Chat Search', () => {
     await chatpage.leaveChat();
   });
   test.skip('Test_C56933	verify chats messaging & notifications functionality', async ({ page }) => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await chatpage.verifyChatsVisibility();
     await chatpage.createChat();
     await chatpage.sendMessageAndVerifyDetails();

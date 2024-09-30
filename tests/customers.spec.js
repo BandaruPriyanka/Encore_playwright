@@ -10,10 +10,11 @@ const {
 const atob = require('atob');
 require('dotenv').config();
 
-let lighthouseLogin, customersPage;
+let lighthouseLogin, customersPage,flowsheetPage;
 test.beforeEach(async ({ page }) => {
   lighthouseLogin = new indexPage.LoginPage(page);
   customersPage = new indexPage.CustomersPage(page);
+  flowsheetPage = new indexPage.FlowSheetPage(page);
   await page.goto(process.env.lighthouseUrl, {
     timeout: parseInt(process.env.pageload_timeout)
   });
@@ -21,6 +22,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('Test_C56920 Verify customer search', async ({ page }) => {
+  await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await customersPage.clickOnCustomerIcon();
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
@@ -28,6 +30,7 @@ test('Test_C56920 Verify customer search', async ({ page }) => {
   await customersPage.searchFunctionality();
 });
 test('Test_C5692 ,verify customers calendar', async ({ page }) => {
+  await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await customersPage.clickOnCustomerIcon();
   await page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -38,22 +41,26 @@ test('Test_C5692 ,verify customers calendar', async ({ page }) => {
   await customersPage.assertCalendarHasDates();
 });
 test('Test_C56924 ,verify test data on customer card', async ({ page }) => {
+  await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await customersPage.clickOnCustomerIcon();
   await customersPage.verifyCustomerCardContent();
   await customersPage.assertTabNames();
 });
 test('Test_C56925, verify details tab', async ({ page }) => {
+  await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await customersPage.clickOnCustomerIcon();
   await customersPage.verifyDetailsTab();
 });
 test('Test_C56926,verify contacts tab', async ({ page }) => {
+  await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await customersPage.clickOnCustomerIcon();
   await customersPage.checkNoContactsDisplayed();
 });
 test('Test_C56928, verify room list tab', async ({ page }) => {
+  await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
   await customersPage.clickOnCustomerIcon();
   await customersPage.verifyRoomTab();
@@ -63,6 +70,7 @@ test('Test_C56928, verify room list tab', async ({ page }) => {
   await assertElementAttributeContains(customersPage.flowsheetTab, 'class', 'text-purple');
 });
 test('Test_C56927 Touchpoints Tab', async ({ page }) => {
+  await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
   await customersPage.assertTouchPointTab();
   await customersPage.addFirstTouchPoint();
   await customersPage.addSecondTouchPoint();

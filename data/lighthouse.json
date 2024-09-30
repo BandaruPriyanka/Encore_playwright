@@ -1,5 +1,8 @@
 {
-  "locationId": "1137",
+  "locationId_createData1" : "1137",
+  "locationText_createData1" : "Hotel Del Coronado",
+  "locationId_createData2": "9023",
+  "locationText_createData2" : "Hyatt Regency Orlando International Airport",
   "invalidText": "abd",
   "neutralComment": "I am in neutral mood",
   "angryComment": "I am in angry mood",

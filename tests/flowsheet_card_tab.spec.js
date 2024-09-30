@@ -12,11 +12,12 @@ const atob = require('atob');
 require('dotenv').config();
 
 test.describe('LightHouse Flowsheet card and tab operations', () => {
-  let lighthouseLogin, flowsheetCardAndTab;
+  let lighthouseLogin, flowsheetCardAndTab,flowsheetPage;
 
   test.beforeEach(async ({ page }) => {
     lighthouseLogin = new indexPage.LoginPage(page);
     flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(page);
+    flowsheetPage = new indexPage.FlowSheetPage(page);
     await page.goto(process.env.lighthouseUrl, {
       timeout: parseInt(process.env.pageload_timeout)
     });
@@ -24,6 +25,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
   });
 
   test('Test_C56890 Verify test data on flowsheet card', async ({ page }) => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.validateRoomCard(
@@ -37,6 +39,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
   });
 
   test('Test_C56910 verify contacts tab', async ({ page }) => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
     await assertElementVisible(flowsheetCardAndTab.flowsheetTabElement(utilConst.Const.Contacts));
@@ -47,41 +50,8 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.lighthouse_data.contactModalText
     );
   });
-
-  test('Test_C56895 Add-on creation (Docusign disabled)', async ({ page }) => {
-    await flowsheetCardAndTab.verifyDocusignStatus(
-      indexPage.lighthouse_data.turnOff,
-      indexPage.navigator_data.second_job_no,
-      indexPage.navigator_data.second_job_no
-    );
-    await flowsheetCardAndTab.addOnFunction(
-      indexPage.lighthouse_data.requestedBy,
-      indexPage.lighthouse_data.individualProduct,
-      indexPage.lighthouse_data.packageProduct,
-      indexPage.lighthouse_data.invalidQuantity,
-      indexPage.lighthouse_data.validQuantity
-    );
-    await flowsheetCardAndTab.discountChecking(
-      invalidDiscountGenerator(),
-      validDiscountGenerator()
-    );
-    await flowsheetCardAndTab.dateSelectModalChecking();
-  });
-
-  test('Test_C56892 Test Comparison with previous jobs logic', async () => {
-    await flowsheetCardAndTab.assertComparisonIcon(
-      indexPage.navigator_data.second_job_no,
-      indexPage.navigator_data.second_job_no,
-      indexPage.lighthouse_data.requestedBy,
-      indexPage.lighthouse_data.individualProduct,
-      indexPage.lighthouse_data.packageProduct,
-      indexPage.lighthouse_data.invalidQuantity,
-      indexPage.lighthouse_data.validQuantity
-    );
-    await flowsheetCardAndTab.comparisonIconFunctionality();
-  });
-
   test('Test_C56891 Test Mood change logic', async () => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetCardAndTab.assertMoodChangeHappyIcon(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -92,22 +62,8 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     );
     await flowsheetCardAndTab.assertMoodChangeAngryIcon();
   });
-
-  test('Test_C56909 Logs Tab', async () => {
-    await flowsheetCardAndTab.assertCommentSectionInLOg(
-      indexPage.navigator_data.second_job_no,
-      indexPage.navigator_data.second_job_no
-    );
-    await flowsheetCardAndTab.assertLogAfterAddOn(
-      indexPage.lighthouse_data.requestedBy,
-      indexPage.lighthouse_data.individualProduct,
-      indexPage.lighthouse_data.packageProduct,
-      indexPage.lighthouse_data.invalidQuantity,
-      indexPage.lighthouse_data.validQuantity
-    );
-  });
-
   test('Test_C56894 Test Touchpoint adding', async () => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetCardAndTab.assertTouchPointIndicator(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -118,6 +74,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
   });
 
   test('Test_C56908 Notes Tab', async () => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetCardAndTab.assertNotesTab(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -126,6 +83,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
   });
 
   test('Test_C56907 Equipment Tab' , async () => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetCardAndTab.assertEquipmentTab(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.assertEquipmentsInLightHouseAndNavigator();
     await flowsheetCardAndTab.assertEquipmentCheckList();

@@ -60,7 +60,14 @@ module.exports = defineConfig({
       testMatch: ['tests/global_setup.spec.js']
     },
     {
-      name: 'create_data',
+      name: 'create_data1',
+      use: { ...devices['Desktop Chrome'],
+        isCreateData1: true, 
+      },
+      testMatch: ['tests/create_data.spec.js']
+    },
+    {
+      name: 'create_data2',
       use: { ...devices['Desktop Chrome'] },
       testMatch: ['tests/create_data.spec.js']
     },
@@ -75,6 +82,35 @@ module.exports = defineConfig({
         'tests/chats.spec.js'
       ],
        dependencies: ['global_setup']
+    },
+    {
+      name: 'docusign_disabled_all_Desktop_Chrome',
+      testMatch: ['tests/docuSign_disable.spec.js'],
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: './data/storageState.json'
+      },
+      dependencies: ['global_setup']
+    },
+    {
+      name: 'docusign_disabled_all_Pixel_7',
+      testMatch: ['tests/docuSign_disable.spec.js'],
+      use: {
+        ...devices['Pixel 7'],
+        isMobile: true,
+        storageState: './data/storageState.json'
+      },
+      dependencies: ['global_setup']
+    },
+    {
+      name: 'docusign_disabled_all_iPhone_12',
+      testMatch: ['tests/docuSign_disable.spec.js'],
+      use: {
+        ...devices['iPhone 12'],
+        isMobile: true,
+        storageState: './data/storageState.json'
+      },
+      dependencies: ['global_setup']
     },
     {
       name: 'Mobile_Chrome',

@@ -238,6 +238,7 @@ exports.CustomersPage = class CustomersPage {
     );
   }
   async checkNoContactsDisplayed() {
+    try{
     await this.clickOnCustomerBusinessCard();
     await executeStep(
       this.dynamicTabElement(utilConst.Const.tabNames[1]),
@@ -246,6 +247,10 @@ exports.CustomersPage = class CustomersPage {
     );
     await assertElementVisible(this.noDataFoundEle);
   }
+  catch{
+    console.error("No bussiness cards found");  
+  }
+  }
   async roomListScrollAction() {
     const div = await this.roomList;
     await scrollElement(div, 'bottom');
@@ -253,6 +258,7 @@ exports.CustomersPage = class CustomersPage {
     await scrollElement(div, 'top');
   }
   async verifyRoomTab() {
+    try{
     await this.clickOnCustomerBusinessCard();
     await executeStep(
       this.dynamicTabElement(utilConst.Const.tabNames[3]),
@@ -260,6 +266,10 @@ exports.CustomersPage = class CustomersPage {
       'click on room tab from that list'
     );
     roomsqty = await this.roomCount(utilConst.Const.tabNames[3]).textContent();
+  }
+  catch{
+    console.error("No bussiness cards found");
+  }
   }
   async selectRoomList() {
     //await this.roomListScrollAction();

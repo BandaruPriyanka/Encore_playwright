@@ -2,6 +2,7 @@ const fs = require('node:fs/promises');
 const axios = require('axios');
 require('dotenv').config();
 const data = require('../data/apidata.json');
+const indexPage = require('./index.page');
 const { expect } = require('@playwright/test');
 
 function getTodayDate() {
@@ -20,11 +21,17 @@ function generateRandString(numOfItr) {
   return 'TestAuto_' + returnStr;
 }
 
-async function lighthouseApi() {
+async function lighthouseApi(isCreateData1) {
   const url = process.env.api_url;
   getTodayDate();
+  let location
+  if(isCreateData1) {
+    location = indexPage.opportunity_data.centerId_createData1
+  }else {
+    location = indexPage.opportunity_data.centerId_createData2
+  }
   const params = {
-    locationId: data.locationId,
+    locationId: location,
     asOf: data.asOf,
     apiKey: data.apiKey
   };
