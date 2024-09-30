@@ -118,6 +118,7 @@ exports.CreateData = class CreateData {
     this.searchBtn = this.page.locator("(//input[@title='Search'])[2]");
     this.clickOnJobId =(jobId) => this.page.locator(`//a[text()='`+jobId+`']`);
     this.equipmentRowsCount = this.page.locator("//div[@id='oeOrderLinesGrid']/div[4]//div[contains(@class,'grid-canvas-top')]/div");
+    this.statusOfJob = (status) => this.page.locator(`//div[text()='`+status+`']`)
   }
 
   async clickOnCompass() {
@@ -443,6 +444,12 @@ exports.CreateData = class CreateData {
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
   }
   async getCountOfEquipments() {
+    await searchWithJobId();
+    await executeStep(this.clickOnJobId(indexPage.navigator_data.second_job_no),"click","click on job number");
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+  }
+
+  async searchWithJobId() {
     await executeStep(this.homeIcon,"click","click on home icon");
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await executeStep(this.jobSearchSpan,"click","click on job search button");
@@ -457,8 +464,5 @@ exports.CreateData = class CreateData {
       await executeStep(this.searchBtn,"click","click on search button");
       await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     }
-    await executeStep(this.clickOnJobId(indexPage.navigator_data.second_job_no),"click","click on job number");
-    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
-    
   }
 };

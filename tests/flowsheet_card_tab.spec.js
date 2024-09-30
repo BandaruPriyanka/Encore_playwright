@@ -91,4 +91,20 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertEquipmentByDescription();
     await flowsheetCardAndTab.assertEquipmentByName();
   });
+
+  test('Test_C56904 Test Add-on creation (Docusign enabled) - Positive flow' , async() => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
+    await flowsheetCardAndTab.createAddOn(indexPage.lighthouse_data.turnOn,indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.positive);
+    await flowsheetCardAndTab.assertRoomCountAfterAddOn();
+    await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.positive);
+  })
+
+  test('Test_C56906 Test Add-on creation (Docusign enabled) - Negative flow' , async() => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
+    await flowsheetCardAndTab.createAddOn(indexPage.lighthouse_data.turnOn,indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.negative);
+    await flowsheetCardAndTab.assertRoomCountAfterAddOn();
+    await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.negative);
+  })
 });

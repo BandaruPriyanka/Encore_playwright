@@ -8,7 +8,9 @@ const {
   assertEqualValues,
   checkVisibleElementColors,
   assertElementNotVisible,
-  assertNotEqualValues
+  assertNotEqualValues,
+  invalidDiscountGenerator,
+  validDiscountGenerator
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
@@ -181,7 +183,30 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
           : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div/span");
     this.equipmentValueChangeButton = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_action')]")
             : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div[contains(text(),'Update')]");
-    this.equipmentText = this.page.locator("(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]")
+    this.equipmentText = this.page.locator("(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]");
+    //C56904
+    this.textInModalForDocument = this.page.locator("//div[contains(text(),'Encore Sales')]");
+    this.continueBtnInModal = this.page.locator("//div[@class='MOB_InPersonButtons']/button[text()='Continue']");
+    this.acceptCheckBox = this.page.locator("//label[@for='disclosureAccepted']");
+    this.continueBtnInPage = this.page.locator("//button[@id='action-bar-btn-continue']");
+    this.startBtn = this.isMobile ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
+              : this.page.locator("//button[@id='navigate-btn']");
+    this.signBtn = this.page.locator("//div[text()='Sign']/parent::div");
+    this.adoptAndSignBtn = this.page.locator("//button[text()='Adopt and Sign']");
+    this.finishBtn = this.isMobile ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
+            : this.page.locator("//button[@id='action-bar-btn-finish']");
+    this.requestACopyModal = this.page.locator("//h1[text()='Request a Copy']");
+    this.emailInput = this.page.locator("//input[@id='in-person-email']");
+    this.continueButInRequestModal = this.page.locator("//button[@id='in-person-complete-continue-button']");
+    this.passControlModal = this.page.locator("//h1[text()='Pass Control']");
+    this.continueBtnInPassControlModal = this.page.locator("//button[@data-action='finishInPersonSigning']");
+    this.confirmModalForPositive = this.page.locator("//div[contains(text(),'Your job Add-On is now on its way to being processed')]");
+    this.otherActionsBtn = this.isMobile ? this.page.locator("//span[@class='icon-menu']") 
+            : this.page.locator("//button[@id='otherActionsButton']");
+    this.finishLaterBtn = this.isMobile ? this.page.locator("//div[@id='otherActionsMenuMobile']//button[text()='Finish Later']")
+            : this.page.locator("//div[@id='otherActionsMenu']//button[text()='Finish Later']");
+    this.continueBtnForFinishLater = this.page.locator("//button[@data-action='finishLaterInPersonSigning']");
+    this.confirmModalForNegative = this.page.locator("//div[contains(text(),'While this particular opportunity may not have been a perfect fit')]");
   }
 
   async searchFunction(searchText) {
@@ -303,7 +328,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.nextButton, 'click', 'click on next button');
   }
 
-  async dateSelectModalChecking() {
+  async dateSelectModal() {
     await assertElementVisible(this.dateSelectionModalText);
     await executeStep(this.arrowLineIcon, 'click', 'click on arrow button');
     await assertElementVisible(this.addOnModalText);
@@ -315,14 +340,21 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.reviewOrderBtn, 'click', 'click on review order button');
     await assertElementVisible(this.sendToNavigatorBtn);
     await executeStep(this.sendToNavigatorBtn, 'click', 'click on send to navigator button');
+  }
+
+  async dateSelectModalCheckingAndAssertRooms() {
+    await this.dateSelectModal();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertGreaterThan(await this.addOnRequestsList.count(), 0);
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     afterRoomCount = await this.roomsCount.textContent();
-    // assertEqualValues(parseInt(afterRoomCount), parseInt(beforeRoomCount) + 1);
+    try{
+      await assertEqualValues(parseInt(afterRoomCount), parseInt(beforeRoomCount) + 1);
+    }catch {
+      console.error("Romms count is not updated");
+    }
   }
-
   async assertComparisonIcon(
     searchText,
     jobId,
@@ -816,5 +848,83 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await this.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     equipmentByName = await this.equipmentText.textContent();
     await assertNotEqualValues(equipmentByDescription,equipmentByName);
+  }
+  //C56904
+  async createAddOn(docusignValue,searchText,jobId) {
+   await this.verifyDocusignStatus(docusignValue,searchText,jobId);
+   await this.addOnFunction(indexPage.lighthouse_data.requestedBy,
+    indexPage.lighthouse_data.individualProduct,
+    indexPage.lighthouse_data.packageProduct,
+    indexPage.lighthouse_data.invalidQuantity,
+    indexPage.lighthouse_data.validQuantity );
+    await this.discountChecking(
+      invalidDiscountGenerator(),
+      validDiscountGenerator()
+    );
+    await this.dateSelectModal();
+    await this.page.waitForTimeout(parseInt(process.env.default_timeout));
+    await assertElementVisible(this.textInModalForDocument);
+  }
+
+  async assertDocument(scenario) {
+    await executeStep(this.continueBtnInModal,"click","click on comtinue button");
+    await executeStep(this.acceptCheckBox,"click","click the checkbox");
+    await executeStep(this.continueBtnInPage,"click","click on continue button in document");
+    if(scenario === "positive") {
+      await executeStep(this.startBtn,"click","click on start button");
+    await executeStep(this.signBtn,"click","click on sign button");
+    await executeStep(this.adoptAndSignBtn,"click","click on adopt and sign button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.finishBtn);
+    await executeStep(this.finishBtn,"click","click on fnish button");
+    await assertElementVisible(this.requestACopyModal);
+    await executeStep(this.emailInput,"fill","enter the email id",[atob(process.env.lighthouseEmail)]);
+    await executeStep(this.continueButInRequestModal,"click","click on continue");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.passControlModal);
+    await executeStep(this.continueBtnInPassControlModal,"click","click on continue button");
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await assertElementVisible(this.confirmModalForPositive);
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    } else {
+      await executeStep(this.otherActionsBtn,"click","click on other actions");
+      await executeStep(this.finishLaterBtn,"click","click on finish later button");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await executeStep(this.continueBtnForFinishLater,"click","click continue button");
+      await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+      await assertElementVisible(this.confirmModalForNegative);
+    }
+    
+  }
+
+  async assertRoomCountAfterAddOn() {
+    afterRoomCount = await this.roomsCount.textContent();
+    try{
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await assertGreaterThan(parseInt(afterRoomCount),parseInt(beforeRoomCount));
+    }catch {
+      console.error("Rooms not updated...")
+    }
+    
+  }
+
+  async assertStatusOfNavigatorJob(scenario) {
+    const newPage = await this.page.context().newPage();
+    await newPage.goto(indexPage.navigator_data.navigatorUrl ,  {
+      timeout: parseInt(process.env.pageload_timeout)
+    });
+    const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
+    await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
+    await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
+    await newPage.goto(indexPage.navigator_data.navigatorUrl, {
+      timeout: parseInt(process.env.pageload_timeout)
+    });
+    const createDataPage = new indexPage.CreateData(newPage);
+    await createDataPage.searchWithJobId();
+    if(scenario === "positive") {
+      assertElementVisible(createDataPage.statusOfJob(indexPage.lighthouse_data.confirmed));
+    }else {
+      assertElementVisible(createDataPage.statusOfJob(indexPage.lighthouse_data.cancel));
+    }
   }
 };

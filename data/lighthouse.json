@@ -37,5 +37,9 @@
   "secondMessage": "user2",
   "user1AlertMessage":"This is an important message from user1",
   "user2AlertMessage":"This is an important message from user2",
-  "flowsheetUpdatedIconText" : "text-green-500"
+  "flowsheetUpdatedIconText" : "text-green-500",
+  "positive" : "positive",
+  "negative" : "negative",
+  "confirmed" : "Confirmed",
+  "cancel" : "Cancel"
 }
