@@ -45,13 +45,15 @@ test.describe('LightHouse Chat Search', () => {
     );
     await chatpage.leaveChat();
   });
-  test.skip('Test_C56933	verify chats messaging & notifications functionality', async ({ page }) => {
+  test('Test_C56933	verify chats messaging & notifications functionality', async ({ page }) => {
     await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await chatpage.verifyChatsVisibility();
     await chatpage.createChat();
     await chatpage.sendMessageAndVerifyDetails();
     await chatpage.profileLogout();
     await chatpage.selectUser2();
+    await chatpage.selectUser1();
+    await chatpage.imageValidation();
   });
 });
 

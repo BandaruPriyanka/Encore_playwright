@@ -35,6 +35,8 @@
   "chatUser1": "Navi",
   "firstMessage": "user1",
   "secondMessage": "user2",
+  "user1AlertMessage":"This is an important message from user1",
+  "user2AlertMessage":"This is an important message from user2",
   "flowsheetUpdatedIconText" : "text-green-500",
   "positive" : "positive",
   "negative" : "negative",

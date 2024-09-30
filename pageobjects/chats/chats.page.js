@@ -12,6 +12,7 @@ const {
   waitForElementVisible,
   assertEqualValues
 } = require('../../utils/helper');
+const { writeFileSync } = require('fs');
 exports.ChatPage = class ChatPage {
   constructor(page) {
     this.page = page;
@@ -71,10 +72,18 @@ exports.ChatPage = class ChatPage {
     this.logOut = this.page.locator("//icon[@name='log_out_line']");
     this.selectLogOutMail=this.page.locator(" //div[@id='tilesHolder']");
     this.addAccount=this.page.locator("//div[@id='otherTile']");
-    this.enterUserName=this.page.locator("//div[@class='placeholder']");
+    this.enterUserName=this.page.locator("//input[@type='email']");
      this.selectMail = this.page.locator("//div[text()='s-tst-navi-crm@psav.com']");
     this.enterPwd = this.page.locator("//input[@name='passwd']");
     this.submitBtn = this.page.locator("//input[@type='submit']");
+    this.chatGrp=this.page.locator("(//div[contains(text(),'Navi CRMautomaiton, Rob Griffith')])[1]");
+this.user2TimeStamp = this.page.locator("(//div[contains(@class,'e2e_message_card_time')])[2]");
+this.alertImportant = this.page.locator("//icon[@name='alert_important_undraw']");
+this.notification = this.page.locator(" //icon[@name='bell_notification_line']");
+this.validateAlertMsgNotification = this.page.locator(" (//app-notification)[1]");
+this.closeNotifications=this.page.locator("//icon[@name='cross_line']")
+this.insertFile = this.page.locator("//input[@type='file']");
+this.clickOnImg=this.page.locator("(//img[contains(@class,'object-scale-down')])[1]")
   }
 
   async clickOnChatIcon(hightlightedText) {
@@ -144,8 +153,32 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.leave, 'click', 'click on leave');
     await assertElementVisible(this.leaveConfirmationDialogueModel);
     await executeStep(this.YesButton, 'click', 'click on Yes Button');
-    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout))
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await assertElementNotVisible(this.updatedGroupName);
+  }
+  async loginUser(email, password) {
+    await executeStep(this.addAccount, 'click', 'click on add account');
+    await executeStep(this.enterUserName, 'fill', 'enter user name',[atob(email)]);
+    await executeStep(this.submitBtn, 'click', 'click on submit button');
+    await executeStep(this.enterPwd, 'fill', 'enter password',[atob(password)]);
+    await executeStep(this.submitBtn, 'click', 'click on submit button');
+  }
+  async profileLogout() {
+    await executeStep(this.menuLine, 'click', 'click on menu line');
+    await executeStep(this.logOut, 'click', 'click on logout');
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+  }
+  async validateNotifications(){
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await executeStep(this.notification, 'click', 'click on notification');
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout))
+    await executeStep(this.closeNotifications, 'click', 'click on close notification');
+  }
+  async selectRecentChat(){
+    await executeStep(this.chatIcon, 'click', 'click on Chat Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.chatGrp, 'click', 'select chat from list');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async verifyChatsVisibility() {
     await executeStep(this.chatIcon, 'click', 'click on Chat Icon');
@@ -170,33 +203,72 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.textArea, 'fill', 'enter the message from user1', [
       indexPage.lighthouse_data.firstMessage
     ]);
-    await executeStep(this.sendMsg, 'click', 'click on new Chat Icon');
+    await executeStep(this.sendMsg, 'click', 'click on send message');
+    await executeStep(this.textArea, 'fill', 'enter the important message from user1', [
+      indexPage.lighthouse_data.user1AlertMessage
+    ]);
+    await executeStep(this.alertImportant, 'click', 'click on alert icon to make as important');
+    await executeStep(this.sendMsg, 'click', 'click on send icon');
     await assertElementVisible(this.user1TimeStamp);
-  }
-  async profileLogout() {
-    await executeStep(this.menuLine, 'click', 'click on menu line');
-    await executeStep(this.logOut, 'click', 'click on logout');
-    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
   }
   async selectUser2(){
-    const visibility=await assertElementVisible(this.selectLogOutMail);
     await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
-   // await executeStep(this.selectUser2, 'click', 'select mail to logout');
-   await executeStep(this.addAccount, 'click', 'click on submit button');
-   await executeStep(this.enterUserName, 'fill', 'enter user2 password', [
-    atob(process.env.email)
-  ]);
-  await executeStep(this.submitBtn, 'click', 'click on submit button');
-    await executeStep(this.enterPwd, 'fill', 'enter user2 password', [
-      atob(process.env.password)
-    ]);
-    await executeStep(this.submitBtn, 'click', 'click on submit button');
-    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await this.loginUser(process.env.email, process.env.password);
+    await this.selectRecentChat();
     await assertElementVisible(this.user1TimeStamp);
-    await executeStep(this.textArea, 'fill', 'enter the message from user1', [
+    await this.validateNotifications();
+    await executeStep(this.textArea, 'fill', 'enter the message from user2', [
       indexPage.lighthouse_data.secondMessage
     ]);
-    await executeStep(this.sendMsg, 'click', 'click on new Chat Icon');
+    await executeStep(this.sendMsg, 'click', 'click on send message');
+    await executeStep(this.textArea, 'fill', 'enter the message from user2', [
+      indexPage.lighthouse_data.user2AlertMessage
+    ]);
+    await executeStep(this.alertImportant, 'click', 'click on alert icon to make as important');
+    await executeStep(this.sendMsg, 'click', 'click on send Icon');
+    await this.profileLogout();
+  }
+  async selectUser1(){
+    await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await this.loginUser(process.env.lighthouseEmail, process.env.lighthousePassword);
+    await executeStep(this.chatIcon, 'click', 'click on Chat Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.chatGrp, 'click', 'select chat from list');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.user2TimeStamp);
+  }
+  async imageValidation(){
+    const input=await this.insertFile;
+    const user1Image = process.cwd()+'//images//lighthouse.png'; 
+    await input.setInputFiles(user1Image);
+    await executeStep(this.sendMsg, 'click', 'click on send message');
+    await this.profileLogout();
+    await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await this.loginUser(process.env.email, process.env.password);
+    await this.selectRecentChat();
+    await assertElementVisible(this.user1TimeStamp);
+    const user2Image =  process.cwd()+'//images//venue.png'; 
+    await input.setInputFiles(user2Image);
+    await executeStep(this.sendMsg, 'click', 'click on send message');
+    await this.profileLogout();
+    await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await this.loginUser(process.env.lighthouseEmail, process.env.lighthousePassword);
+    await this.selectRecentChat();
+    await assertElementVisible(this.user2TimeStamp);
+    const user1ImpImage = process.cwd()+'//images//office.png'; 
+    await input.setInputFiles(user1ImpImage);
+    await executeStep(this.alertImportant, 'click', 'click on alert icon to make as important');
+    await executeStep(this.sendMsg, 'click', 'click on send message');
+    await this.profileLogout();
+    await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await this.loginUser(process.env.email, process.env.password);
+    await this.selectRecentChat();
+    await assertElementVisible(this.user1TimeStamp);
+    await executeStep(this.clickOnImg, 'click', 'click on new Chat Icon');
   }
 };
