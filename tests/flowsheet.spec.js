@@ -16,6 +16,7 @@ test.describe('LightHouse Operations', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
   test('Test_C56878 ,Flowsheet status', async ({ page }) => {
+    await flowsheetSearch.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetSearch.searchFunctionality();
     assertElementVisible(flowsheetSearch.statusIcon);
     assertElementVisible(flowsheetSearch.groupIcon);
@@ -27,6 +28,7 @@ test.describe('LightHouse Operations', () => {
     await flowsheetSearch.changestatus();
   });
   test('Test_C56880 ,Flowsheet groups', async ({ page }) => {
+    await flowsheetSearch.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetSearch.searchFunctionality();
     assertElementVisible(flowsheetSearch.statusIcon);
     assertElementVisible(flowsheetSearch.groupIcon);
@@ -35,12 +37,14 @@ test.describe('LightHouse Operations', () => {
   });
 
   test('Test_C56882 Verify lighthouse flowsheet search functionality', async ({ page }) => {
+    await flowsheetSearch.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await page.waitForTimeout(parseInt(process.env.large_timeout));
     await assertElementVisible(flowsheetSearch.searchInput);
     await flowsheetSearch.checkingSearchFunctionality();
   });
 
   test('Test_C56885	,Flowsheets filtering', async ({ page }) => {
+    await flowsheetSearch.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetSearch.filterIcon);
     await flowsheetSearch.flowsheetFilter();
@@ -52,6 +56,7 @@ test.describe('LightHouse Operations', () => {
   });
 
   test('Test_C56886	Flowsheets calendar', async ({ page }) => {
+    await flowsheetSearch.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetSearch.calendarDiv);
     await assertElementVisible(flowsheetSearch.nextweekIcon);
@@ -62,6 +67,7 @@ test.describe('LightHouse Operations', () => {
   });
 
   test('Test_C56888 Flowsheets calendar widget', async ({ page }) => {
+    await flowsheetSearch.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetSearch.calendarDiv);
     await flowsheetSearch.asserRoomsWhileDateChange();
@@ -71,12 +77,14 @@ test.describe('LightHouse Operations', () => {
   });
 
   test('Test_C56881 Flowsheet Touchpoints indicator', async () => {
+    await flowsheetSearch.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetSearch.assertTouchPointIndicator(indexPage.navigator_data.second_job_no);
     await flowsheetSearch.addSecondTouchPoint(indexPage.navigator_data.second_job_no);
     await flowsheetSearch.addRemainingTouchPoint();
   });
 
   test("Test_C56887 Flowsheets Command center", async ({ page }) => {
+    await flowsheetSearch.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetSearch.verifyingRoomsFunctionality(
       indexPage.lighthouse_data.invalidText,
       indexPage.navigator_data.second_job_no,

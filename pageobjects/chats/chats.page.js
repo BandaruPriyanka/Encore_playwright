@@ -51,8 +51,8 @@ exports.ChatPage = class ChatPage {
     this.groupNameField = this.page.locator("//div[text()='Group name']/following-sibling::input");
     this.saveButton = this.page.locator('//button[text()="Save"]');
     this.updatedGroupName = this.isMobile
-      ? this.page.locator('(//span[text()="demoGroup"])[2]')
-      : this.page.locator('(//span[text()="demoGroup"])[1]');
+      ? this.page.locator('(//icon[@name="pen_line"]/parent::div/div/span)[2]')
+      : this.page.locator('(//icon[@name="pen_line"]/parent::div/div/span)[1]');
     this.leaveConfirmationDialogueModel = this.page.locator(
       '//p[@class="mat-mdc-dialog-title mdc-dialog__title e2e_confirm_dialog_title"]//parent::app-confirm-dialog'
     );
@@ -144,6 +144,7 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.leave, 'click', 'click on leave');
     await assertElementVisible(this.leaveConfirmationDialogueModel);
     await executeStep(this.YesButton, 'click', 'click on Yes Button');
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout))
     await assertElementNotVisible(this.updatedGroupName);
   }
   async verifyChatsVisibility() {
