@@ -35,5 +35,9 @@
   "chatUser1": "Navi",
   "firstMessage": "user1",
   "secondMessage": "user2",
-  "flowsheetUpdatedIconText" : "text-green-500"
+  "flowsheetUpdatedIconText" : "text-green-500",
+  "positive" : "positive",
+  "negative" : "negative",
+  "confirmed" : "Confirmed",
+  "cancel" : "Cancel"
 }

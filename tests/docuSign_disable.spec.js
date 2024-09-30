@@ -41,7 +41,7 @@ let lighthouseLogin, flowsheetCardAndTab,flowsheetPage;
       invalidDiscountGenerator(),
       validDiscountGenerator()
     );
-    await flowsheetCardAndTab.dateSelectModalChecking();
+    await flowsheetCardAndTab.dateSelectModalCheckingAndAssertRooms();
   });
 
   test('Test_C56892 Test Comparison with previous jobs logic', async () => {

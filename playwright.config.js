@@ -81,7 +81,7 @@ module.exports = defineConfig({
         'tests/customers.spec.js',
         'tests/chats.spec.js'
       ],
-       dependencies: ['global_setup']
+      //  dependencies: ['global_setup']
     },
     {
       name: 'docusign_disabled_all_Desktop_Chrome',
