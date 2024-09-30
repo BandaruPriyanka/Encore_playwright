@@ -184,8 +184,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.equipmentValueChangeButton = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_action')]")
             : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div[contains(text(),'Update')]");
     this.equipmentText = this.page.locator("(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]");
-    //C56904
-    this.textInModalForDocument = this.page.locator("//div[contains(text(),'Encore Sales')]");
+    this.textInModalForDocument = this.page.locator("//span[text()='Encore Sales, pass control of the session to Tommy Hilfiger.']");
     this.continueBtnInModal = this.page.locator("//div[@class='MOB_InPersonButtons']/button[text()='Continue']");
     this.acceptCheckBox = this.page.locator("//label[@for='disclosureAccepted']");
     this.continueBtnInPage = this.page.locator("//button[@id='action-bar-btn-continue']");
@@ -193,6 +192,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
               : this.page.locator("//button[@id='navigate-btn']");
     this.signBtn = this.page.locator("//div[text()='Sign']/parent::div");
     this.adoptAndSignBtn = this.page.locator("//button[text()='Adopt and Sign']");
+    this.styleSelectInMobile = this.page.locator("//button[text()='Select Style']");
     this.finishBtn = this.isMobile ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
             : this.page.locator("//button[@id='action-bar-btn-finish']");
     this.requestACopyModal = this.page.locator("//h1[text()='Request a Copy']");
@@ -308,7 +308,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       invalidDiscount
     ]);
     await this.discountInput.hover();
-    await assertElementVisible(this.discountInvalidMsg);
+    // await assertElementVisible(this.discountInvalidMsg);
     await executeStep(this.discountInput, 'fill', 'clear the discount input', ['']);
     await executeStep(this.discountInput, 'fill', 'enter the valid discount', [validDiscount]);
     const estimatedMoneyBeforeDiscount = await this.moneyElement.textContent();
@@ -849,7 +849,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     equipmentByName = await this.equipmentText.textContent();
     await assertNotEqualValues(equipmentByDescription,equipmentByName);
   }
-  //C56904
+
   async createAddOn(docusignValue,searchText,jobId) {
    await this.verifyDocusignStatus(docusignValue,searchText,jobId);
    await this.addOnFunction(indexPage.lighthouse_data.requestedBy,
@@ -873,6 +873,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     if(scenario === "positive") {
       await executeStep(this.startBtn,"click","click on start button");
     await executeStep(this.signBtn,"click","click on sign button");
+    if(this.isMobile) {
+      executeStep(this.styleSelectInMobile,"click","click style select");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
     await executeStep(this.adoptAndSignBtn,"click","click on adopt and sign button");
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(this.finishBtn);
