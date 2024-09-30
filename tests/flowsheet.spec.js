@@ -15,7 +15,8 @@ test.describe('LightHouse Operations', () => {
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
-  test('Test_C56878 ,Flowsheet status', async ({ page }) => {
+  test('Test_C56878 ,Flowsheet status', async ({ page,isMobile}) => {
+    test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
     await flowsheetSearch.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetSearch.searchFunctionality();
     assertElementVisible(flowsheetSearch.statusIcon);
@@ -27,7 +28,8 @@ test.describe('LightHouse Operations', () => {
     await assertElementVisible(flowsheetSearch.carryOver);
     await flowsheetSearch.changestatus();
   });
-  test('Test_C56880 ,Flowsheet groups', async ({ page }) => {
+  test('Test_C56880 ,Flowsheet groups', async ({ page,isMobile }) => {
+    test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
     await flowsheetSearch.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await flowsheetSearch.searchFunctionality();
     assertElementVisible(flowsheetSearch.statusIcon);
