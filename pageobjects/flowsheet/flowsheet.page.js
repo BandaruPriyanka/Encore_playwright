@@ -2,6 +2,7 @@ require('dotenv').config();
 const { executeStep } = require('../../utils/action');
 const {
   todayDate,
+  todayDateWithLeadingZero,
   nextDayDate,
   scrollElement,
   todayDateFullFormate,
@@ -132,7 +133,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     );
     this.hotel =(location) => this.page.locator(`//div[contains(@class,'text-left')]/div[contains(text(),'`+location+`')]`);
     this.todayDate = this.page.locator(
-      `//div[contains(text(),'${getCurrentMonth()} ${todayDate()}')]`
+      `//div[contains(text(),'${getCurrentMonth()} ${todayDateWithLeadingZero()}')]`
     );
     this.backarrow = this.page.locator(
       '//icon[contains(@class,"e2e_flowsheet_detail_back")]'
@@ -146,14 +147,14 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.noDataFoundText = this.page.locator("(//span[contains(text(),'No data found')])[2]")
   }
 
-  async changeLocation(locationId,locationName) {
+async changeLocation(locationId,locationName) {
   await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   await executeStep(this.locationDiv, 'click', 'Click the location div', []);
   await executeStep(this.searchLocation, 'fill', 'Fill the search location field', [locationId]);
   await executeStep(this.selectLocation(locationName), 'click', 'Select the location', []);
 }
 
-  async searchFunction(searchText) {
+async searchFunction(searchText) {
   await executeStep(this.searchInput, 'fill', 'Fill the search input field', [searchText]);
 }
 
@@ -196,7 +197,6 @@ exports.FlowSheetPage = class FlowSheetPage {
   await this.page.waitForTimeout(parseInt(process.env.small_timeout));
 }
   async checkingSearchFunctionality() {
-  // await this.changeLocation(indexPage.lighthouse_data.locationId);
   beforeRoomCount = await this.roomsCount.textContent();
   await this.searchFunction(indexPage.lighthouse_data.invalidText);
   await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -267,11 +267,10 @@ exports.FlowSheetPage = class FlowSheetPage {
   } catch (error) {
     await assertEqualValues(todayRoomCount, nextDayRoomCount);
   }
-
   await executeStep(this.dateElement(todayDate()), 'click', 'click today date');
   await this.page.waitForTimeout(parseInt(process.env.small_timeout));
 }
-  async assertDates() {
+async assertDates() {
   await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
   await assertElementVisible(this.dateElement(nextWeekDate()));
   await assertElementVisible(this.todayButton);
@@ -282,7 +281,7 @@ exports.FlowSheetPage = class FlowSheetPage {
   await executeStep(this.todayButton, 'click', 'click today date');
   await this.page.waitForTimeout(parseInt(process.env.small_timeout));
 }
-  async assertUrls() {
+async assertUrls() {
   await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
   await executeStep(this.todayButton, 'click', 'click on today url');
   await assertElementVisible(this.dateElement(todayDate()));
@@ -291,7 +290,7 @@ exports.FlowSheetPage = class FlowSheetPage {
   await assertElementVisible(this.dateElement(todayDate()));
 }
 
-  async validateDateFromPastAndFuture() {
+async validateDateFromPastAndFuture() {
   await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
   await executeStep(this.dateElement(nextWeekDate()), 'click', 'click date from next week');
   await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
@@ -311,14 +310,16 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
 }
 
-  async searchFunctionality() {
+async searchFunctionality() {
   await this.searchFunction(indexPage.navigator_data.second_job_no);
   await this.flowsheetCard.hover();
   await this.flowsheetCard.waitFor({ state: 'visible' });
 }
-  async verifyGroup() {
+async verifyGroup() {
   await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
   await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  const isLinkVisible = await this.clickOnLink.isVisible();
+  if(isLinkVisible) {
   await executeStep(this.clickOnLink, 'click', 'Click on link', []);
   await executeStep(this.placeholder, 'fill', 'fill the data', ['test']);
   await executeStep(this.createButton, 'click', 'Click on create button', []);
@@ -326,7 +327,9 @@ exports.FlowSheetPage = class FlowSheetPage {
   await executeStep(this.flowsheetButton, 'click', 'Click on create button', []);
   await this.flowsheetCard.hover();
   await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
-  await executeStep(this.selectGroup, 'click', 'select group', []);
+  }else {
+    await executeStep(this.selectGroup, 'click', 'select group', []);
+  }
   await executeStep(this.applyButton, 'click', 'click on apply button', []);
   await assertElementVisible(this.ungroup);
   await executeStep(this.filterIcon, 'click', 'click on filter icon', []);
@@ -334,7 +337,7 @@ exports.FlowSheetPage = class FlowSheetPage {
   await executeStep(this.selectCreatedGroup, 'click', 'select create group', []);
   await executeStep(this.applyFilter, 'click', 'click on apply filter button', []);
 }
-  async deleteGroupData() {
+async deleteGroupData() {
   await executeStep(this.iconMenu, 'click', 'Click on icon menu', []);
   await executeStep(this.clickOnLocationProfile, 'click', 'Click on groupIcon button', []);
   await executeStep(this.flowsheetGroups, 'click', 'Click on location profile', []);
@@ -343,7 +346,7 @@ exports.FlowSheetPage = class FlowSheetPage {
   await this.page.waitForTimeout(parseInt(process.env.small_timeout));
 }
 
-  async setStatus() {
+async setStatus() {
   await executeStep(this.timeLine, 'click', 'Click the status button', []);
   const statusOption = await this.statusSetRefreshComplete.isVisible();
   if (statusOption) {
@@ -359,11 +362,11 @@ exports.FlowSheetPage = class FlowSheetPage {
   await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   await this.flowsheetCard.hover();
 }
-  async changestatus() {
+async changestatus() {
   await executeStep(this.timeLine, 'click', 'Click the status button', []);
   await executeStep(this.statusSetRefresh, 'click', 'Click the status set referesh button', []);
 }
-  async assertTouchPointIndicator(searchText) {
+async assertTouchPointIndicator(searchText) {
   await this.searchFunction(searchText);
   await assertElementVisible(this.touchPointIndicator);
   const countOfElements = await this.countOfPieIcon.count();
@@ -383,7 +386,7 @@ exports.FlowSheetPage = class FlowSheetPage {
   await checkVisibleElementColors(this.page, this.touchPointItems(1), 'rgb(23, 181, 57)');
 }
 
-  async addSecondTouchPoint(searchText) {
+async addSecondTouchPoint(searchText) {
   await executeStep(this.touchPointIndicator, 'click', 'click touch point indicator');
   await assertElementVisible(this.touchPointModal);
   await executeStep(this.neutralIconInTouchPoint, 'click', 'click on neutral icon');
@@ -398,7 +401,7 @@ exports.FlowSheetPage = class FlowSheetPage {
   await checkVisibleElementColors(this.page, this.touchPointItems(2), 'rgb(244, 235, 0)');
 }
 
-  async addRemainingTouchPoint() {
+async addRemainingTouchPoint() {
     let isItem = true;
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     while (isItem) {
@@ -414,8 +417,8 @@ exports.FlowSheetPage = class FlowSheetPage {
         isItem = false;
       }
     }
-  }
-  async verifyingRoomsFunctionality(
+}
+async verifyingRoomsFunctionality(
     searchRandomData,
     validData,
     updatedIconText
@@ -462,7 +465,7 @@ exports.FlowSheetPage = class FlowSheetPage {
       await executeStep(this.backarrow, "click", "click on backarrow Button");
     }
     await executeStep(this.tvLineIcon, "click", "click on tvLineIcon");
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const classAttributeIcon = await this.updatedMoodIcon.getAttribute("class");
     await assertContainsValue(classAttributeIcon,updatedIconText);
     await assertElementVisible(this.hotel(indexPage.lighthouse_data.locationText_createData1));
@@ -473,8 +476,8 @@ exports.FlowSheetPage = class FlowSheetPage {
       "click",
       "click on flowsheet List Element1"
     );
-  }
-  async verifyingTransfersFunctionality() {
+}
+async verifyingTransfersFunctionality() {
     await executeStep(this.transfersTab, "click", "click on transfersTab");
     try {
      
@@ -495,5 +498,5 @@ exports.FlowSheetPage = class FlowSheetPage {
     } catch {
       await assertElementVisible(this.noDataFoundText);
     }
-  }
+}
 }

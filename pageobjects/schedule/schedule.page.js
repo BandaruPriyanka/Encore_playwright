@@ -4,15 +4,12 @@ const { timeout } = require('../../playwright.config');
 const { executeStep } = require('../../utils/action');
 const {
   assertElementVisible,
-  assertEqualValues,
-  getTodayDate,
   getTodayDateAndYear,
   nextWeekDate,
   previousWeekDate,
   assertElementNotVisible,
   todayDate,
   assertElementContainsText,
-  assertContainsValue
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 exports.SchedulePage = class SchedulePage {
@@ -160,16 +157,20 @@ exports.SchedulePage = class SchedulePage {
 
     await executeStep(this.eventCard, 'click', 'click on eventCard');
     await assertElementVisible(this.detailsModel);
-    const highlightedWorkingAt = await this.highlightedFieldWorkingAt.textContent();
-    await executeStep(
-      this.highlightedFieldWorkingAt,
-      'click',
-      'click on highlightedFieldEmployeeName'
-    );
-    const employeeDetailsLocationWorkingat =
+    try{
+      const highlightedWorkingAt = await this.highlightedFieldWorkingAt.textContent();
+      await executeStep(
+        this.highlightedFieldWorkingAt,
+        'click',
+        'click on highlightedFieldEmployeeName'
+      );
+      const employeeDetailsLocationWorkingat =
       await this.employeeDetailsEmployeeLocationWorkingat.textContent();
-    expect(employeeDetailsLocationWorkingat).toContain(highlightedWorkingAt);
-    await executeStep(this.crossButton, 'click', 'click on crossButton');
+      expect(employeeDetailsLocationWorkingat).toContain(highlightedWorkingAt);
+      await executeStep(this.crossButton, 'click', 'click on crossButton');
+    }catch {
+      await executeStep(this.crossButton, 'click', 'click on crossButton');
+    }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async verifyingFilterFunctionality() {

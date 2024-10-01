@@ -34,7 +34,7 @@ test.describe('LightHouse Chat Search', () => {
   });
 
   test('Test_C56931 Create New Chat / Add participant / Leave Chat', async ({ page }) => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData2,indexPage.lighthouse_data.locationText_createData2);
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
     await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
     await chatpage.createNewChat(indexPage.lighthouse_data.count);
     await chatpage.AddParticipants(

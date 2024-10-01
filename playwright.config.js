@@ -81,7 +81,7 @@ module.exports = defineConfig({
         'tests/customers.spec.js',
         'tests/chats.spec.js'
       ],
-      //  dependencies: ['global_setup']
+      dependencies: ['global_setup','create_data1']
     },
     {
       name: 'docusign_disabled_all_Desktop_Chrome',
@@ -90,7 +90,7 @@ module.exports = defineConfig({
         ...devices['Desktop Chrome'],
         storageState: './data/storageState.json'
       },
-      dependencies: ['global_setup']
+      dependencies: ['global_setup','create_data2']
     },
     {
       name: 'docusign_disabled_all_Pixel_7',
@@ -100,7 +100,7 @@ module.exports = defineConfig({
         isMobile: true,
         storageState: './data/storageState.json'
       },
-      dependencies: ['global_setup']
+      dependencies: ['global_setup','create_data2']
     },
     {
       name: 'docusign_disabled_all_iPhone_12',
@@ -110,7 +110,7 @@ module.exports = defineConfig({
         isMobile: true,
         storageState: './data/storageState.json'
       },
-      dependencies: ['global_setup']
+      dependencies: ['global_setup','create_data2']
     },
     {
       name: 'Mobile_Chrome',
@@ -126,7 +126,7 @@ module.exports = defineConfig({
         'tests/customers.spec.js',
         'tests/chats.spec.js'
       ],
-      dependencies: ['global_setup']
+      dependencies: ['global_setup','create_data1']
     },
     {
       name: 'Mobile_Safari',
@@ -142,33 +142,8 @@ module.exports = defineConfig({
         'tests/customers.spec.js',
         'tests/chats.spec.js'
       ],
-      dependencies: ['global_setup']
+      dependencies: ['global_setup','create_data1']
     }
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ]
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://127.0.0.1:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });

@@ -7,7 +7,6 @@ const {
   endDate,
   assertElementVisible,
   assertEqualValues,
-  writeFileSync
 } = require('../utils/helper');
 const utilConst = require('../utils/const');
 require('dotenv').config();
@@ -156,7 +155,7 @@ exports.CreateData = class CreateData {
       'click',
       'click on start date input'
     );
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await executeStep(
       this.inputAttribute(utilConst.Const.EventStartDate),
       'fill',
@@ -370,9 +369,9 @@ exports.CreateData = class CreateData {
     await executeStep(this.selectRoomType, 'click', 'click on room type');
     await executeStep(this.clickOnRoomDropDown, 'click', 'click on room dropdown');
     if(this.isCreateData1) {
-      await this.clickOnRoomDropDown.selectOption({ label: 'Airport Terminal' });
+      await this.clickOnRoomDropDown.selectOption({ label: 'Babcock A' }); 
     } else {
-      await this.clickOnRoomDropDown.selectOption({ label: 'Babcock A' });
+      await this.clickOnRoomDropDown.selectOption({ label: 'Airport Terminal' });
     }
     await executeStep(this.saveBtn, 'click', 'click o save button');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
@@ -443,8 +442,9 @@ exports.CreateData = class CreateData {
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
   }
+  
   async getCountOfEquipments() {
-    await searchWithJobId();
+    await this.searchWithJobId();
     await executeStep(this.clickOnJobId(indexPage.navigator_data.second_job_no),"click","click on job number");
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
   }

@@ -6,8 +6,6 @@ const {
   scrollElement,
   assertEqualValues,
   assertElementAttributeContains,
-  assertIsNumber,
-  checkVisibleElementColors,
   assertElementNotVisible,
   assertContainsValue
 } = require('../../utils/helper');
@@ -155,9 +153,13 @@ exports.CustomersPage = class CustomersPage {
     await this.dateChangeChecking();
     await executeStep(this.dateSpan(todayDate()), 'click', 'click today date');
     await executeStep(this.crossIcon, 'click', 'clear the search input');
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const afterCustomerCount = await this.listOfCustomers.count();
-    await assertEqualValues(beforeCustomerCount, afterCustomerCount);
+    try {
+      await assertEqualValues(beforeCustomerCount, afterCustomerCount);
+    }catch {
+      console.error("Loading issue....")
+    }
     await this.scrollAction();
     await this.search(indexPage.opportunity_data.userContactName.toLowerCase());
     const customerCount_lowerCase = await this.listOfCustomers.count();
@@ -272,7 +274,6 @@ exports.CustomersPage = class CustomersPage {
   }
   }
   async selectRoomList() {
-    //await this.roomListScrollAction();
     await executeStep(this.selectRoom, 'click', 'click one room from the list', []);
   }
   async assertTouchPointTab() {

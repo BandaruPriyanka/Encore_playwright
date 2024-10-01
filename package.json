@@ -16,7 +16,7 @@
     "clean-results": "npm run clean:allure-results",
     "allure:generate": "allure generate allure-results --clean",
     "allure:open": "allure open",
-    "all": "npm run clean:allure-results & npm run ui & npm run mobile_chrome & npm run ios"
+    "all": "npm run clean:allure-results & npm run ui & npm run mobile_chrome & npm run ios & docusign_disable_ui & docusign_disable_android & docusign_disable_ios"
   },
   "keywords": [],
   "author": "",

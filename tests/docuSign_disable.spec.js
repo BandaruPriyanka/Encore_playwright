@@ -1,9 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
 const {
-  assertElementVisible,
-  assertEqualValues,
-  assertElementContainsText,
   invalidDiscountGenerator,
   validDiscountGenerator
 } = require('../utils/helper');

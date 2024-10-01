@@ -201,7 +201,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.passControlModal = this.page.locator("//h1[text()='Pass Control']");
     this.continueBtnInPassControlModal = this.page.locator("//button[@data-action='finishInPersonSigning']");
     this.confirmModalForPositive = this.page.locator("//div[contains(text(),'Your job Add-On is now on its way to being processed')]");
-    this.otherActionsBtn = this.isMobile ? this.page.locator("//span[@class='icon-menu']") 
+    this.otherActionsBtn = this.isMobile ? this.page.locator("//span[@class='icon-menu']//parent::button") 
             : this.page.locator("//button[@id='otherActionsButton']");
     this.finishLaterBtn = this.isMobile ? this.page.locator("//div[@id='otherActionsMenuMobile']//button[text()='Finish Later']")
             : this.page.locator("//div[@id='otherActionsMenu']//button[text()='Finish Later']");
@@ -308,7 +308,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       invalidDiscount
     ]);
     await this.discountInput.hover();
-    // await assertElementVisible(this.discountInvalidMsg);
+    await assertElementVisible(this.discountInvalidMsg);
     await executeStep(this.discountInput, 'fill', 'clear the discount input', ['']);
     await executeStep(this.discountInput, 'fill', 'enter the valid discount', [validDiscount]);
     const estimatedMoneyBeforeDiscount = await this.moneyElement.textContent();
@@ -891,7 +891,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await assertElementVisible(this.confirmModalForPositive);
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     } else {
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await executeStep(this.otherActionsBtn,"click","click on other actions");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      if(! this.finishLaterBtn.isVisible()) {
+        await executeStep(this.otherActionsBtn,"click","click on other actions");
+        await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      }
       await executeStep(this.finishLaterBtn,"click","click on finish later button");
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await executeStep(this.continueBtnForFinishLater,"click","click continue button");
