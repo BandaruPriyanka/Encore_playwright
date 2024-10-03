@@ -23,27 +23,41 @@ test.describe('Performing actions on Flowsheet', () => {
   test('Test_C56878: Verify Flowsheet status', async ({ page, isMobile }) => {
     test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
     await flowsheetPage.searchFunctionality();
-    assertElementVisible(flowsheetPage.statusIcon);
-    assertElementVisible(flowsheetPage.groupIcon);
+    test.step('Verify status icon is visible', async () => {
+      await assertElementVisible(flowsheetPage.statusIcon);
+    });
+    test.step('Verify group icon is visible', async () => {
+      await assertElementVisible(flowsheetPage.groupIcon);
+    });
     await flowsheetPage.setStatus();
-    await assertElementVisible(flowsheetPage.carryOver);
+    test.step('Check if carryOver is visible before page reload', async () => {
+      await assertElementVisible(flowsheetPage.carryOver);
+    });
     await page.reload();
     await flowsheetPage.searchFunctionality();
-    await assertElementVisible(flowsheetPage.carryOver);
+    test.step('Check if carryOver is visible after page reload', async () => {
+      await assertElementVisible(flowsheetPage.carryOver);
+    });
     await flowsheetPage.changestatus();
   });
-  test.only('Test_C56880 : Verify Flowsheet groups', async ({ isMobile }) => {
+  test('Test_C56880 : Verify Flowsheet groups', async ({ isMobile }) => {
     test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
     await flowsheetPage.searchFunctionality();
-    assertElementVisible(flowsheetPage.statusIcon);
-    assertElementVisible(flowsheetPage.groupIcon);
+    test.step('Verify status icon is visible', async () => {
+      await assertElementVisible(flowsheetPage.statusIcon);
+    });
+    test.step('Verify group icon is visible', async () => {
+      await assertElementVisible(flowsheetPage.groupIcon);
+    });
     await flowsheetPage.verifyGroup();
     await flowsheetPage.deleteGroupData();
   });
 
   test('Test_C56882: Verify lighthouse flowsheet search functionality', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.large_timeout));
-    await assertElementVisible(flowsheetPage.searchInput);
+    test.step('Verify search input is visible', async () => {
+      await assertElementVisible(flowsheetPage.searchInput);
+    });
     await flowsheetPage.checkingSearchFunctionality();
   });
 
@@ -60,35 +74,65 @@ test.describe('Performing actions on Flowsheet', () => {
 
   test('Test_C56886: Verify Flowsheets calendar', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await assertElementVisible(flowsheetPage.calendarDiv);
-    await assertElementVisible(flowsheetPage.nextweekIcon);
-    await assertElementVisible(flowsheetPage.previousweekIcon);
-    await flowsheetPage.clickonPreviousWeek();
-    await assertElementVisible(flowsheetPage.todayButton);
-    await flowsheetPage.assertCalendarHasDates();
+    await test.step('Verify visibility of the calendar', async () => {
+      await assertElementVisible(flowsheetPage.calendarDiv);
+    });
+    await test.step('Verify visibility of the next week icon', async () => {
+      await assertElementVisible(flowsheetPage.nextweekIcon);
+    });
+    await test.step('Verify visibility of the previous week icon', async () => {
+      await assertElementVisible(flowsheetPage.previousweekIcon);
+    });
+    await test.step('Click on the previous week', async () => {
+      await flowsheetPage.clickonPreviousWeek();
+    });
+    await test.step('Verify visibility of the today button', async () => {
+      await assertElementVisible(flowsheetPage.todayButton);
+    });
+    await test.step('Verify the calendar has the correct dates', async () => {
+      await flowsheetPage.assertCalendarHasDates();
+    });
   });
 
-  test('Test_C56888 : Verify Flowsheets calendar widget', async ({ page }) => {
+  test('Test_C56888: Verify Flowsheets calendar widget', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await assertElementVisible(flowsheetPage.calendarDiv);
-    await flowsheetPage.asserRoomsWhileDateChange();
-    await flowsheetPage.assertDates();
-    await flowsheetPage.assertUrls();
-    await flowsheetPage.validateDateFromPastAndFuture();
+    await test.step('Verify visibility of the calendar widget', async () => {
+      await assertElementVisible(flowsheetPage.calendarDiv);
+    });
+    await test.step('Assert rooms while changing dates', async () => {
+      await flowsheetPage.asserRoomsWhileDateChange();
+    });
+    await test.step('Assert dates displayed in the calendar', async () => {
+      await flowsheetPage.assertDates();
+    });
+    await test.step('Assert URLs associated with the calendar', async () => {
+      await flowsheetPage.assertUrls();
+    });
+    await test.step('Validate dates from the past and future', async () => {
+      await flowsheetPage.validateDateFromPastAndFuture();
+    });
   });
-
   test('Test_C56881: Verify Flowsheet touchpoints indicator', async () => {
-    await flowsheetPage.assertTouchPointIndicator(indexPage.navigator_data.second_job_no);
-    await flowsheetPage.addSecondTouchPoint(indexPage.navigator_data.second_job_no);
-    await flowsheetPage.addRemainingTouchPoint();
+    await test.step('Assert touchpoint indicator visibility', async () => {
+      await flowsheetPage.assertTouchPointIndicator(indexPage.navigator_data.second_job_no);
+    });
+    await test.step('Add second touchpoint', async () => {
+      await flowsheetPage.addSecondTouchPoint(indexPage.navigator_data.second_job_no);
+    });
+    await test.step('Add remaining touchpoints', async () => {
+      await flowsheetPage.addRemainingTouchPoint();
+    });
   });
-
-  test('Test_C56887 : Verify Flowsheets command center', async () => {
-    await flowsheetPage.verifyingRoomsFunctionality(
-      indexPage.lighthouse_data.invalidText,
-      indexPage.navigator_data.second_job_no,
-      indexPage.lighthouse_data.flowsheetUpdatedIconText
-    );
-    await flowsheetPage.verifyingTransfersFunctionality();
+  test('Test_C56887: Verify Flowsheets command center', async () => {
+    await test.step('Verify rooms functionality', async () => {
+      await flowsheetPage.verifyingRoomsFunctionality(
+        indexPage.lighthouse_data.invalidText,
+        indexPage.navigator_data.second_job_no,
+        indexPage.lighthouse_data.flowsheetUpdatedIconText
+      );
+    });
+    await test.step('Verify transfers functionality', async () => {
+      await flowsheetPage.verifyingTransfersFunctionality();
+    });
   });
 });

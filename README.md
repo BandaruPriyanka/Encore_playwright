@@ -46,6 +46,7 @@ Install the dependencies:
 npm install
 
 ## Project Folder Structure
+
 ```
 Encore
 ├── data
@@ -78,12 +79,13 @@ Encore
 ├── playwright.config.js
 └── README.md
 ```
+
 ## Running Tests
 
 - Before running any test case run this to clean allure results : `npm run clean:allure-results`
 
 - Before running lighthouse testcases run the below commands for creating the data:
-    `npm run createdata1` and `npm run createdata2` 
+  `npm run createdata1` and `npm run createdata2`
 
 - To run **UI** tests follow this command : `npm run ui`
 
