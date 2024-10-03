@@ -24,11 +24,11 @@ function generateRandString(numOfItr) {
 async function lighthouseApi(isCreateData1) {
   const url = process.env.api_url;
   getTodayDate();
-  let location
-  if(isCreateData1) {
-    location = indexPage.opportunity_data.centerId_createData1
-  }else {
-    location = indexPage.opportunity_data.centerId_createData2
+  let location;
+  if (isCreateData1) {
+    location = indexPage.opportunity_data.centerId_createData1;
+  } else {
+    location = indexPage.opportunity_data.centerId_createData2;
   }
   const params = {
     locationId: location,
@@ -140,8 +140,18 @@ function getFormattedTime() {
 function getCurrentMonth() {
   const now = new Date();
   const months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
   ];
   const monthIndex = now.getMonth();
   return months[monthIndex];

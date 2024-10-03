@@ -6,13 +6,13 @@ const {
   startDate,
   endDate,
   assertElementVisible,
-  assertEqualValues,
+  assertEqualValues
 } = require('../utils/helper');
 const utilConst = require('../utils/const');
 require('dotenv').config();
 
 exports.CreateData = class CreateData {
-  constructor(page,isCreateData1) {
+  constructor(page, isCreateData1) {
     this.page = page;
     this.isCreateData1 = isCreateData1;
     this.copilotButton = page.locator(
@@ -27,14 +27,12 @@ exports.CreateData = class CreateData {
     this.deleteVenue = page.locator(
       "//div[text()='PSAV Corporate Headquarters']/../following-sibling::button"
     );
-    this.selectVenue = (locationText) => page.locator(
-      `//span[text()='`+locationText+`']`
-    );
+    this.selectVenue = locationText => page.locator(`//span[text()='` + locationText + `']`);
     this.saveButton = page.locator("//span[text()='Save']");
     this.currencyElement = page.locator("//label[text()='Currency']");
     this.ignoreAndSaveButton = page.locator("//button[text()='Ignore and save']");
     this.ordersButton = page.locator("//li[text()='Orders']");
-    this.selectCenter = (centerText) => page.locator(`//span[text()='`+centerText+`']`);
+    this.selectCenter = centerText => page.locator(`//span[text()='` + centerText + `']`);
     this.createOrderBtn = page.locator("//button[contains(text(), 'Create Order')]");
     this.clickOnjobsBtn = page.locator("//a[normalize-space()='Jobs']");
     this.selectRoomType = page.locator(
@@ -111,13 +109,17 @@ exports.CreateData = class CreateData {
       "//p[contains(text(),'Job Notes')]//following-sibling::textarea"
     );
     this.homeIcon = this.page.locator("//span[contains(@class,'glyphicon-home')]");
-    this.jobSearchSpan = this.page.locator("//span[text()='Job Search']"); 
-    this.jobNumberSearchInput = this.page.locator("//span[contains(text(),'Job Number')]/following-sibling::input");
+    this.jobSearchSpan = this.page.locator("//span[text()='Job Search']");
+    this.jobNumberSearchInput = this.page.locator(
+      "//span[contains(text(),'Job Number')]/following-sibling::input"
+    );
     this.userDateRangeCheckBox = this.page.locator("//input[@id='job-search_ApplyDates']");
     this.searchBtn = this.page.locator("(//input[@title='Search'])[2]");
-    this.clickOnJobId =(jobId) => this.page.locator(`//a[text()='`+jobId+`']`);
-    this.equipmentRowsCount = this.page.locator("//div[@id='oeOrderLinesGrid']/div[4]//div[contains(@class,'grid-canvas-top')]/div");
-    this.statusOfJob = (status) => this.page.locator(`//div[text()='`+status+`']`)
+    this.clickOnJobId = jobId => this.page.locator(`//a[text()='` + jobId + `']`);
+    this.equipmentRowsCount = this.page.locator(
+      "//div[@id='oeOrderLinesGrid']/div[4]//div[contains(@class,'grid-canvas-top')]/div"
+    );
+    this.statusOfJob = status => this.page.locator(`//div[text()='` + status + `']`);
   }
 
   async clickOnCompass() {
@@ -257,20 +259,28 @@ exports.CreateData = class CreateData {
     );
     await executeStep(this.deleteVenue, 'click', 'click the delete venue in the input');
     await executeStep(this.inputAttribute(utilConst.Const.Venue), 'click', 'click the venue input');
-    if(this.isCreateData1) {
+    if (this.isCreateData1) {
       await executeStep(this.inputAttribute(utilConst.Const.Venue), 'fill', 'Enter the venue', [
         indexPage.opportunity_data.venue_createData1
       ]);
-    }else {
+    } else {
       await executeStep(this.inputAttribute(utilConst.Const.Venue), 'fill', 'Enter the venue', [
         indexPage.opportunity_data.venue_createData2
       ]);
     }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    if(this.isCreateData1) {
-      await executeStep(this.selectVenue(indexPage.opportunity_data.venueText_createData1), 'click', 'select the venue from the dropdown');
+    if (this.isCreateData1) {
+      await executeStep(
+        this.selectVenue(indexPage.opportunity_data.venueText_createData1),
+        'click',
+        'select the venue from the dropdown'
+      );
     } else {
-      await executeStep(this.selectVenue(indexPage.opportunity_data.venueText_createData2), 'click', 'select the venue from the dropdown');
+      await executeStep(
+        this.selectVenue(indexPage.opportunity_data.venueText_createData2),
+        'click',
+        'select the venue from the dropdown'
+      );
     }
     await assertElementVisible(this.saveButton);
     await this.saveButton.click();
@@ -298,14 +308,14 @@ exports.CreateData = class CreateData {
         'click',
         'click the GL center input'
       );
-      if(this.isCreateData1) {
+      if (this.isCreateData1) {
         await executeStep(
           this.inputAttribute(utilConst.Const.GLCenter),
           'fill',
           'enter the center name',
           [indexPage.opportunity_data.centerId_createData1]
         );
-      }else {
+      } else {
         await executeStep(
           this.inputAttribute(utilConst.Const.GLCenter),
           'fill',
@@ -314,10 +324,18 @@ exports.CreateData = class CreateData {
         );
       }
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      if(this.isCreateData1) {
-        await executeStep(this.selectCenter(indexPage.opportunity_data.centerName_createData1), 'click', 'select the center from the dropdown');
+      if (this.isCreateData1) {
+        await executeStep(
+          this.selectCenter(indexPage.opportunity_data.centerName_createData1),
+          'click',
+          'select the center from the dropdown'
+        );
       } else {
-        await executeStep(this.selectCenter(indexPage.opportunity_data.centerName_createData2), 'click', 'select the center from the dropdown');
+        await executeStep(
+          this.selectCenter(indexPage.opportunity_data.centerName_createData2),
+          'click',
+          'select the center from the dropdown'
+        );
       }
       await executeStep(this.saveButton, 'click', 'click on save button');
       await this.page.waitForTimeout(parseInt(process.env.large_timeout));
@@ -353,7 +371,7 @@ exports.CreateData = class CreateData {
   }
 
   async createOrder() {
-    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await executeStep(this.createOrderBtn, 'click', 'click on order');
   }
   async jobsPage() {
@@ -368,8 +386,8 @@ exports.CreateData = class CreateData {
   async selectRooms() {
     await executeStep(this.selectRoomType, 'click', 'click on room type');
     await executeStep(this.clickOnRoomDropDown, 'click', 'click on room dropdown');
-    if(this.isCreateData1) {
-      await this.clickOnRoomDropDown.selectOption({ label: 'Babcock A' }); 
+    if (this.isCreateData1) {
+      await this.clickOnRoomDropDown.selectOption({ label: 'Babcock A' });
     } else {
       await this.clickOnRoomDropDown.selectOption({ label: 'Airport Terminal' });
     }
@@ -377,27 +395,27 @@ exports.CreateData = class CreateData {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const firstJobNumberElement = await this.page.locator('span.job-number').nth(0);
     const firstJobNumber = await firstJobNumberElement.textContent();
-    if(this.isCreateData1) {
+    if (this.isCreateData1) {
       indexPage.navigator_data.first_job_no = firstJobNumber;
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
     const secondJobNumberElement = await this.page.locator('span.job-number').nth(1);
     const secondJobNumber = await secondJobNumberElement.textContent();
-    if(this.isCreateData1) {
+    if (this.isCreateData1) {
       indexPage.navigator_data.second_job_no = secondJobNumber;
-    }else {
+    } else {
       indexPage.navigator_data.second_job_no_createData2 = secondJobNumber;
     }
     const orderNumber = await this.orderNumber.textContent();
-    if(this.isCreateData1) {
+    if (this.isCreateData1) {
       indexPage.navigator_data.order_no = orderNumber;
     }
     const order_name = await this.orderName.textContent();
-    if(this.isCreateData1) {
+    if (this.isCreateData1) {
       indexPage.navigator_data.order_name = order_name;
     }
     const roomNameele = await this.roomName.textContent();
-    if(this.isCreateData1) {
+    if (this.isCreateData1) {
       indexPage.navigator_data.roomName = roomNameele;
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
@@ -408,7 +426,7 @@ exports.CreateData = class CreateData {
     await executeStep(this.clickPackageIcon, 'click', 'click on package icon');
     await executeStep(this.selectPackageName, 'doubleclick', 'double click the select package');
     const textContent = await this.selectedItemName.textContent();
-    if(this.isCreateData1) {
+    if (this.isCreateData1) {
       indexPage.navigator_data.item_name = textContent;
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
@@ -427,7 +445,7 @@ exports.CreateData = class CreateData {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.addToPackageBtn, 'click', 'click on add to package button');
     const ItemName = await this.labourItemName.textContent();
-    if(this.isCreateData1) {
+    if (this.isCreateData1) {
       indexPage.navigator_data.labour_item_name = ItemName;
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
@@ -442,26 +460,32 @@ exports.CreateData = class CreateData {
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
   }
-  
+
   async getCountOfEquipments() {
     await this.searchWithJobId();
-    await executeStep(this.clickOnJobId(indexPage.navigator_data.second_job_no),"click","click on job number");
+    await executeStep(
+      this.clickOnJobId(indexPage.navigator_data.second_job_no),
+      'click',
+      'click on job number'
+    );
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
   }
 
   async searchWithJobId() {
-    await executeStep(this.homeIcon,"click","click on home icon");
+    await executeStep(this.homeIcon, 'click', 'click on home icon');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await executeStep(this.jobSearchSpan,"click","click on job search button");
+    await executeStep(this.jobSearchSpan, 'click', 'click on job search button');
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
-    await executeStep(this.jobNumberSearchInput,"fill","enter the valid job number",[indexPage.navigator_data.second_job_no]);
-    if(await this.userDateRangeCheckBox.isChecked()) {
+    await executeStep(this.jobNumberSearchInput, 'fill', 'enter the valid job number', [
+      indexPage.navigator_data.second_job_no
+    ]);
+    if (await this.userDateRangeCheckBox.isChecked()) {
       await this.userDateRangeCheckBox.uncheck();
     }
-    await executeStep(this.searchBtn,"click","click on search button");
+    await executeStep(this.searchBtn, 'click', 'click on search button');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
-    if(!this.clickOnJobId(indexPage.navigator_data.second_job_no).isVisible()) {
-      await executeStep(this.searchBtn,"click","click on search button");
+    if (!this.clickOnJobId(indexPage.navigator_data.second_job_no).isVisible()) {
+      await executeStep(this.searchBtn, 'click', 'click on search button');
       await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     }
   }

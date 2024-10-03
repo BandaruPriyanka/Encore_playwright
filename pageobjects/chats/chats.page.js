@@ -1,5 +1,5 @@
 const { executeStep } = require('../../utils/action');
-const { test, expect } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const indexPage = require('../../utils/index.page');
 require('dotenv').config();
 const atob = require('atob');
@@ -8,11 +8,8 @@ const {
   assertElementContainsText,
   assertElementNotVisible,
   scrollElement,
-  assertElementAttributeContains,
-  waitForElementVisible,
   assertEqualValues
 } = require('../../utils/helper');
-const { writeFileSync } = require('fs');
 exports.ChatPage = class ChatPage {
   constructor(page) {
     this.page = page;
@@ -65,25 +62,25 @@ exports.ChatPage = class ChatPage {
     this.searchChatUser = this.page.locator("//input[@role='combobox']");
     this.textArea = this.page.locator("//textarea[@name='add-note-field']");
     this.sendMsg = this.page.locator("//button[@type='submit']");
-    this.user1TimeStamp = this.page.locator(
-      "(//div[contains(@class,'e2e_message_card_time')])[1]"
-    );
+    this.user1TimeStamp = this.page.locator("(//div[contains(@class,'e2e_message_card_time')])[1]");
     this.menuLine = this.page.locator("(//icon[@name='menu_line'])[1]");
     this.logOut = this.page.locator("//icon[@name='log_out_line']");
-    this.selectLogOutMail=this.page.locator(" //div[@id='tilesHolder']");
-    this.addAccount=this.page.locator("//div[@id='otherTile']");
-    this.enterUserName=this.page.locator("//input[@type='email']");
-     this.selectMail = this.page.locator("//div[text()='s-tst-navi-crm@psav.com']");
+    this.selectLogOutMail = this.page.locator(" //div[@id='tilesHolder']");
+    this.addAccount = this.page.locator("//div[@id='otherTile']");
+    this.enterUserName = this.page.locator("//input[@type='email']");
+    this.selectMail = this.page.locator("//div[text()='s-tst-navi-crm@psav.com']");
     this.enterPwd = this.page.locator("//input[@name='passwd']");
     this.submitBtn = this.page.locator("//input[@type='submit']");
-    this.chatGrp=this.page.locator("(//div[contains(text(),'Navi CRMautomaiton, Rob Griffith')])[1]");
+    this.chatGrp = this.page.locator(
+      "(//div[contains(text(),'Navi CRMautomaiton, Rob Griffith')])[1]"
+    );
     this.user2TimeStamp = this.page.locator("(//div[contains(@class,'e2e_message_card_time')])[2]");
     this.alertImportant = this.page.locator("//icon[@name='alert_important_undraw']");
     this.notification = this.page.locator(" //icon[@name='bell_notification_line']");
-    this.validateAlertMsgNotification = this.page.locator(" (//app-notification)[1]");
-    this.closeNotifications=this.page.locator("//icon[@name='cross_line']")
+    this.validateAlertMsgNotification = this.page.locator(' (//app-notification)[1]');
+    this.closeNotifications = this.page.locator("//icon[@name='cross_line']");
     this.insertFile = this.page.locator("//input[@type='file']");
-    this.clickOnImg=this.page.locator("(//img[contains(@class,'object-scale-down')])[1]")
+    this.clickOnImg = this.page.locator("(//img[contains(@class,'object-scale-down')])[1]");
   }
 
   async clickOnChatIcon(hightlightedText) {
@@ -145,8 +142,8 @@ exports.ChatPage = class ChatPage {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.saveButton, 'click', 'click on saveButton');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    const groupName =await this.updatedGroupName.textContent();
-    await assertEqualValues(groupName,demogroup);
+    const groupName = await this.updatedGroupName.textContent();
+    await assertEqualValues(groupName, demogroup);
   }
   async leaveChat() {
     await executeStep(this.groupIcon, 'click', 'click on groupIcon');
@@ -157,16 +154,15 @@ exports.ChatPage = class ChatPage {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     try {
       await assertElementNotVisible(this.updatedGroupName);
-    }catch {
-      console.error("Group is not delted...");
+    } catch {
+      console.error('Group is not deleted...');
     }
-    
   }
   async loginUser(email, password) {
     await executeStep(this.addAccount, 'click', 'click on add account');
-    await executeStep(this.enterUserName, 'fill', 'enter user name',[atob(email)]);
+    await executeStep(this.enterUserName, 'fill', 'enter user name', [atob(email)]);
     await executeStep(this.submitBtn, 'click', 'click on submit button');
-    await executeStep(this.enterPwd, 'fill', 'enter password',[atob(password)]);
+    await executeStep(this.enterPwd, 'fill', 'enter password', [atob(password)]);
     await executeStep(this.submitBtn, 'click', 'click on submit button');
   }
   async profileLogout() {
@@ -174,13 +170,13 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.logOut, 'click', 'click on logout');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
   }
-  async validateNotifications(){
+  async validateNotifications() {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await executeStep(this.notification, 'click', 'click on notification');
-    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout))
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await executeStep(this.closeNotifications, 'click', 'click on close notification');
   }
-  async selectRecentChat(){
+  async selectRecentChat() {
     await executeStep(this.chatIcon, 'click', 'click on Chat Icon');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.chatGrp, 'click', 'select chat from list');
@@ -217,7 +213,7 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.sendMsg, 'click', 'click on send icon');
     await assertElementVisible(this.user1TimeStamp);
   }
-  async selectUser2(){
+  async selectUser2() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
@@ -236,8 +232,8 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.sendMsg, 'click', 'click on send Icon');
     await this.profileLogout();
   }
-  async selectUser1(){
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout))
+  async selectUser1() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.lighthouseEmail, process.env.lighthousePassword);
@@ -247,39 +243,39 @@ exports.ChatPage = class ChatPage {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(this.user2TimeStamp);
   }
-  async imageValidation(){
-    const input=await this.insertFile;
-    const user1Image = process.cwd()+'//images//lighthouse.png'; 
+  async imageValidation() {
+    const input = await this.insertFile;
+    const user1Image = process.cwd() + '//images//lighthouse.png';
     await input.setInputFiles(user1Image);
     await executeStep(this.sendMsg, 'click', 'click on send message');
     await this.profileLogout();
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout))
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.email, process.env.password);
     await this.selectRecentChat();
     await assertElementVisible(this.user1TimeStamp);
-    const user2Image =  process.cwd()+'//images//venue.png'; 
+    const user2Image = process.cwd() + '//images//venue.png';
     await input.setInputFiles(user2Image);
     await executeStep(this.sendMsg, 'click', 'click on send message');
     await this.profileLogout();
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout))
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.lighthouseEmail, process.env.lighthousePassword);
     await this.selectRecentChat();
     await assertElementVisible(this.user2TimeStamp);
-    const user1ImpImage = process.cwd()+'//images//office.png'; 
+    const user1ImpImage = process.cwd() + '//images//office.png';
     await input.setInputFiles(user1ImpImage);
     await executeStep(this.alertImportant, 'click', 'click on alert icon to make as important');
     await executeStep(this.sendMsg, 'click', 'click on send message');
     await this.profileLogout();
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout))
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.email, process.env.password);
     await this.selectRecentChat();
     await assertElementVisible(this.user1TimeStamp);
-    await executeStep(this.clickOnImg, 'click', 'click on new Chat Icon');
+    await executeStep(this.clickOnImg, 'click', 'click on image to check');
   }
 };

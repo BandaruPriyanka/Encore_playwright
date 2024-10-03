@@ -14,7 +14,14 @@ const {
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
-let beforeRoomCount, afterRoomCount, discountPrice, jobNotesText, coverSheetText, equipmentCheckListText,equipmentByDescription,equipmentByName;
+let beforeRoomCount,
+  afterRoomCount,
+  discountPrice,
+  jobNotesText,
+  coverSheetText,
+  equipmentCheckListText,
+  equipmentByDescription,
+  equipmentByName;
 exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   constructor(page) {
     this.page = page;
@@ -168,45 +175,89 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       "//div[text()='Coversheet Notes']/following-sibling::div/div"
     );
     this.historicalLessonsText = this.page.locator("//div[contains(text(),'Historical Lessons')]");
-    this.countOfEquipments = this.page.locator("//div[contains(text(),'Equipment')]/following-sibling::div");
-    this.listOfEquipments = this.page.locator("//div[contains(@class,'e2e_flowsheet_equipment_list')]/div[contains(@class,'e2e_flowsheet_equipment_row')]");
-    this.equipmentCheckListOption = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_equipment_checklist_value')]") 
-            : this.page.locator("//span[@class='e2e_user_profile_equipment_checklist_value']");
+    this.countOfEquipments = this.page.locator(
+      "//div[contains(text(),'Equipment')]/following-sibling::div"
+    );
+    this.listOfEquipments = this.page.locator(
+      "//div[contains(@class,'e2e_flowsheet_equipment_list')]/div[contains(@class,'e2e_flowsheet_equipment_row')]"
+    );
+    this.equipmentCheckListOption = this.isMobile
+      ? this.page.locator("//div[contains(@class,'e2e_user_profile_equipment_checklist_value')]")
+      : this.page.locator("//span[@class='e2e_user_profile_equipment_checklist_value']");
     this.labourEquipment = this.page.locator("//span[contains(text(),'Labor')]");
-    this.equipmentCheckListTurnOnAndOffBtn = this.isMobile ? this.page.locator("(//div[contains(@class,'e2e_user_profile_equipment_checklist_action')])[2]")
-            : this.page.locator("(//div[contains(@class,'e2e_user_profile_equipment_checklist_action')])[1]");
-    this.selectAllCheckBox = this.page.locator("//span[text()='Select All']//following-sibling::input[@type='checkbox']");
+    this.equipmentCheckListTurnOnAndOffBtn = this.isMobile
+      ? this.page.locator(
+          "(//div[contains(@class,'e2e_user_profile_equipment_checklist_action')])[2]"
+        )
+      : this.page.locator(
+          "(//div[contains(@class,'e2e_user_profile_equipment_checklist_action')])[1]"
+        );
+    this.selectAllCheckBox = this.page.locator(
+      "//span[text()='Select All']//following-sibling::input[@type='checkbox']"
+    );
     this.yesButton = this.page.locator("//span[text()='Yes']");
-    this.checkBoxForPackage = this.page.locator("//span[@class='e2e_flowsheet_equipment_package font-semibold'][1]/../following-sibling::div//input[@type='checkbox']");
+    this.checkBoxForPackage = this.page.locator(
+      "//span[@class='e2e_flowsheet_equipment_package font-semibold'][1]/../following-sibling::div//input[@type='checkbox']"
+    );
     this.myProfile = this.page.locator("//span[text()='My Profile']");
-    this.equipmentDisplayChioceValue = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_value')]")
-          : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div/span");
-    this.equipmentValueChangeButton = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_action')]")
-            : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div[contains(text(),'Update')]");
-    this.equipmentText = this.page.locator("(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]");
-    this.textInModalForDocument = this.page.locator("//span[text()='Encore Sales, pass control of the session to Tommy Hilfiger.']");
-    this.continueBtnInModal = this.page.locator("//div[@class='MOB_InPersonButtons']/button[text()='Continue']");
+    this.equipmentDisplayChioceValue = this.isMobile
+      ? this.page.locator(
+          "(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_value')]"
+        )
+      : this.page.locator(
+          "//div[contains(text(),'Equipment Display Choice')]/following-sibling::div/span"
+        );
+    this.equipmentValueChangeButton = this.isMobile
+      ? this.page.locator(
+          "(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_action')]"
+        )
+      : this.page.locator(
+          "//div[contains(text(),'Equipment Display Choice')]/following-sibling::div[contains(text(),'Update')]"
+        );
+    this.equipmentText = this.page.locator(
+      "(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]"
+    );
+    this.textInModalForDocument = this.page.locator(
+      "//span[text()='Encore Sales, pass control of the session to Tommy Hilfiger.']"
+    );
+    this.continueBtnInModal = this.page.locator(
+      "//div[@class='MOB_InPersonButtons']/button[text()='Continue']"
+    );
     this.acceptCheckBox = this.page.locator("//label[@for='disclosureAccepted']");
     this.continueBtnInPage = this.page.locator("//button[@id='action-bar-btn-continue']");
-    this.startBtn = this.isMobile ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
-              : this.page.locator("//button[@id='navigate-btn']");
+    this.startBtn = this.isMobile
+      ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
+      : this.page.locator("//button[@id='navigate-btn']");
     this.signBtn = this.page.locator("//div[text()='Sign']/parent::div");
     this.adoptAndSignBtn = this.page.locator("//button[text()='Adopt and Sign']");
     this.styleSelectInMobile = this.page.locator("//button[text()='Select Style']");
-    this.finishBtn = this.isMobile ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
-            : this.page.locator("//button[@id='action-bar-btn-finish']");
+    this.finishBtn = this.isMobile
+      ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
+      : this.page.locator("//button[@id='action-bar-btn-finish']");
     this.requestACopyModal = this.page.locator("//h1[text()='Request a Copy']");
     this.emailInput = this.page.locator("//input[@id='in-person-email']");
-    this.continueButInRequestModal = this.page.locator("//button[@id='in-person-complete-continue-button']");
+    this.continueButInRequestModal = this.page.locator(
+      "//button[@id='in-person-complete-continue-button']"
+    );
     this.passControlModal = this.page.locator("//h1[text()='Pass Control']");
-    this.continueBtnInPassControlModal = this.page.locator("//button[@data-action='finishInPersonSigning']");
-    this.confirmModalForPositive = this.page.locator("//div[contains(text(),'Your job Add-On is now on its way to being processed')]");
-    this.otherActionsBtn = this.isMobile ? this.page.locator("//span[@class='icon-menu']//parent::button") 
-            : this.page.locator("//button[@id='otherActionsButton']");
-    this.finishLaterBtn = this.isMobile ? this.page.locator("//div[@id='otherActionsMenuMobile']//button[text()='Finish Later']")
-            : this.page.locator("//div[@id='otherActionsMenu']//button[text()='Finish Later']");
-    this.continueBtnForFinishLater = this.page.locator("//button[@data-action='finishLaterInPersonSigning']");
-    this.confirmModalForNegative = this.page.locator("//div[contains(text(),'While this particular opportunity may not have been a perfect fit')]");
+    this.continueBtnInPassControlModal = this.page.locator(
+      "//button[@data-action='finishInPersonSigning']"
+    );
+    this.confirmModalForPositive = this.page.locator(
+      "//div[contains(text(),'Your job Add-On is now on its way to being processed')]"
+    );
+    this.otherActionsBtn = this.isMobile
+      ? this.page.locator("//span[@class='icon-menu']//parent::button")
+      : this.page.locator("//button[@id='otherActionsButton']");
+    this.finishLaterBtn = this.isMobile
+      ? this.page.locator("//div[@id='otherActionsMenuMobile']//button[text()='Finish Later']")
+      : this.page.locator("//div[@id='otherActionsMenu']//button[text()='Finish Later']");
+    this.continueBtnForFinishLater = this.page.locator(
+      "//button[@data-action='finishLaterInPersonSigning']"
+    );
+    this.confirmModalForNegative = this.page.locator(
+      "//div[contains(text(),'While this particular opportunity may not have been a perfect fit')]"
+    );
   }
 
   async searchFunction(searchText) {
@@ -275,16 +326,16 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.newAddOnRequestBtn, 'click', 'click on new add-on request button');
     await assertElementVisible(this.addOnModalText);
     await executeStep(this.requestedByInput, 'fill', 'Enter the username', [requestedBy]);
-    await executeStep(this.searchProductInput, 'fill', 'enter  the individual product', [
+    await executeStep(this.searchProductInput, 'fill', 'Enter the individual product', [
       individualProduct
     ]);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await executeStep(
       this.selectFirstProduct,
       'click',
-      'select the first product from  individual products'
+      'select the first product from individual products'
     );
-    await executeStep(this.searchProductInput, 'fill', 'enter  the package product', [
+    await executeStep(this.searchProductInput, 'fill', 'enter the package product', [
       packageProduct
     ]);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
@@ -309,7 +360,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     ]);
     await this.discountInput.hover();
     await assertElementVisible(this.discountInvalidMsg);
-    await executeStep(this.discountInput, 'fill', 'clear the discount input', ['']);
+    await executeStep(this.discountInput, 'fill', 'clear on discount input', ['']);
     await executeStep(this.discountInput, 'fill', 'enter the valid discount', [validDiscount]);
     const estimatedMoneyBeforeDiscount = await this.moneyElement.textContent();
     const originalPrice = parseFloat(estimatedMoneyBeforeDiscount.replace(/[^0-9.]/g, ''));
@@ -349,10 +400,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     afterRoomCount = await this.roomsCount.textContent();
-    try{
+    try {
       await assertEqualValues(parseInt(afterRoomCount), parseInt(beforeRoomCount) + 1);
-    }catch {
-      console.error("Romms count is not updated");
+    } catch {
+      console.error('Romms count is not updated');
     }
   }
   async assertComparisonIcon(
@@ -418,7 +469,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await assertElementVisible(this.additionsText);
       await executeStep(this.RemovalsText, 'scroll', 'scroll to the element if needed');
       await assertElementVisible(this.RemovalsText);
-      await executeStep(this.closeButton, 'click', 'click close button');
+      await executeStep(this.closeButton, 'click', 'click on close button');
     }
   }
 
@@ -436,7 +487,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       'click',
       'click on happy icon in modal'
     );
-    await executeStep(this.submitButton, 'click', 'click submit button');
+    await executeStep(this.submitButton, 'click', 'click on submit button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(this.iconInPage(utilConst.Const.greenIconText));
     await this.page.reload();
@@ -537,7 +588,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.iconInPage(utilConst.Const.moodIconText),
       'click',
-      'click mood change icon in page'
+      'click on mood change icon in page'
     );
     await executeStep(
       this.moodChangeIconInModal(utilConst.Const.greenIconText),
@@ -646,7 +697,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       'click the touch point in flowsheet details'
     );
     await assertElementVisible(this.touchPointModal);
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout)); 
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.neutralIconInTouchPoint, 'click', 'click the neutral icon in modal');
     await executeStep(this.saveButton, 'click', 'click on save button');
     await assertElementVisible(this.noteRequiresMsgInModal);
@@ -697,9 +748,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertCustomerUrl() {
     if (this.isMobile) {
-      await executeStep(this.orderNameSpan, 'click', 'click order name');
+      await executeStep(this.orderNameSpan, 'click', 'click on order name');
     } else {
-      await executeStep(this.customerNameSpan, 'click', 'click customer name');
+      await executeStep(this.customerNameSpan, 'click', 'click the customer name');
     }
     await assertElementVisible(
       this.touchPointAfterClickingCustomer(indexPage.opportunity_data.endUserAccount)
@@ -738,21 +789,25 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.historicalLessonsText, 'scroll', 'scroll to that element if needed');
   }
 
-  async assertEquipmentTab(searchText,jobId) {
-    await this.performSearchFunction(searchText,jobId);
+  async assertEquipmentTab(searchText, jobId) {
+    await this.performSearchFunction(searchText, jobId);
     await assertElementVisible(this.flowsheetTabElement(utilConst.Const.Equipment));
-    await executeStep(this.flowsheetTabElement(utilConst.Const.Equipment),"click","click on equipment tab");
+    await executeStep(
+      this.flowsheetTabElement(utilConst.Const.Equipment),
+      'click',
+      'click on equipment tab'
+    );
     const countOfEquipmentsInTab = await this.countOfEquipments.textContent();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const countOfListOfEquipments = await this.listOfEquipments.count();
-    await assertEqualValues(parseInt(countOfEquipmentsInTab),countOfListOfEquipments);
+    await assertEqualValues(parseInt(countOfEquipmentsInTab), countOfListOfEquipments);
   }
 
   async assertEquipmentsInLightHouseAndNavigator() {
-    const countOfEquipmentsInLightHouse =await this.listOfEquipments.count();
+    const countOfEquipmentsInLightHouse = await this.listOfEquipments.count();
     const isLabourDisplayed = await this.labourEquipment.isVisible();
     const newPage = await this.page.context().newPage();
-    await newPage.goto(indexPage.navigator_data.navigatorUrl ,  {
+    await newPage.goto(indexPage.navigator_data.navigatorUrl, {
       timeout: parseInt(process.env.pageload_timeout)
     });
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
@@ -764,40 +819,43 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     const createDataPage = new indexPage.CreateData(newPage);
     await createDataPage.getCountOfEquipments();
     let countOfEquipmentsInNavigator;
-    if(isLabourDisplayed) {
-        countOfEquipmentsInNavigator = await createDataPage.equipmentRowsCount.count()-1; 
+    if (isLabourDisplayed) {
+      countOfEquipmentsInNavigator = (await createDataPage.equipmentRowsCount.count()) - 1;
     } else {
-        countOfEquipmentsInNavigator = await createDataPage.equipmentRowsCount.count()-2;
+      countOfEquipmentsInNavigator = (await createDataPage.equipmentRowsCount.count()) - 2;
     }
-    await assertEqualValues(countOfEquipmentsInLightHouse,countOfEquipmentsInNavigator);
+    await assertEqualValues(countOfEquipmentsInLightHouse, countOfEquipmentsInNavigator);
     await newPage.waitForTimeout(parseInt(process.env.small_timeout));
     await newPage.close();
   }
 
   async assertEquipmentCheckList() {
-    if(this.isMobile) {
-      await executeStep(this.backBtnInMobile,"click","click back button")
+    if (this.isMobile) {
+      await executeStep(this.backBtnInMobile, 'click', 'click back button');
     }
-    await executeStep(this.menuIcon,"click","click on menu icon");
-    await executeStep(this.locationProfile,"click","click on location profile from menu");
+    await executeStep(this.menuIcon, 'click', 'click on menu icon');
+    await executeStep(this.locationProfile, 'click', 'click on location profile from menu');
     equipmentCheckListText = await this.equipmentCheckListOption.textContent();
-    if(equipmentCheckListText.trim() === indexPage.lighthouse_data.turnOff) {
-      await executeStep(this.equipmentCheckListTurnOnAndOffBtn,"click","click turn on button");
+    if (equipmentCheckListText.trim() === indexPage.lighthouse_data.turnOff) {
+      await executeStep(this.equipmentCheckListTurnOnAndOffBtn, 'click', 'click turn on button');
     }
-    await executeStep(this.flowsheetBtn,"click","click flowsheet button");
-    await this.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await executeStep(this.flowsheetBtn, 'click', 'click flowsheet button');
+    await this.performSearchFunction(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
     await assertElementVisible(this.selectAllCheckBox);
     if (await this.selectAllCheckBox.isChecked()) {
       await this.selectAllCheckBox.uncheck();
-    }else {
+    } else {
       await this.selectAllCheckBox.check();
     }
-    await executeStep(this.yesButton,"click","click on yes button to check or uncheck")
-    if(await this.checkBoxForPackage.isChecked()) {
+    await executeStep(this.yesButton, 'click', 'click on yes button to check or uncheck');
+    if (await this.checkBoxForPackage.isChecked()) {
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await this.checkBoxForPackage.uncheck();
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    }else {
+    } else {
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await this.checkBoxForPackage.check();
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -805,122 +863,134 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   }
 
   async assertCheckBox() {
-    if(this.isMobile) {
-      await executeStep(this.backBtnInMobile,"click","click back button")
+    if (this.isMobile) {
+      await executeStep(this.backBtnInMobile, 'click', 'click on back button');
     }
-    await executeStep(this.menuIcon,"click","click on menu icon");
-    await executeStep(this.locationProfile,"click","click on location profile");
+    await executeStep(this.menuIcon, 'click', 'click on menu icon');
+    await executeStep(this.locationProfile, 'click', 'click on location profile');
     equipmentCheckListText = await this.equipmentCheckListOption.textContent();
-    if(equipmentCheckListText.trim() === indexPage.lighthouse_data.turnOn) {
-      await executeStep(this.equipmentCheckListTurnOnAndOffBtn,"click","click on turn off button");
+    if (equipmentCheckListText.trim() === indexPage.lighthouse_data.turnOn) {
+      await executeStep(
+        this.equipmentCheckListTurnOnAndOffBtn,
+        'click',
+        'click on turn off button'
+      );
     }
-    await executeStep(this.flowsheetBtn,"click","click flowsheet button");
-    await this.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await executeStep(this.flowsheetBtn, 'click', 'click flowsheet button');
+    await this.performSearchFunction(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
     await assertElementNotVisible(this.selectAllCheckBox);
   }
 
   async assertEquipmentByDescription() {
-    if(this.isMobile){
-      await executeStep(this.backBtnInMobile,"click","click back button in mobile");
+    if (this.isMobile) {
+      await executeStep(this.backBtnInMobile, 'click', 'click back button in mobile');
     }
-    await executeStep(this.menuIcon,"click","click on menu icon");
-    await executeStep(this.myProfile,"click","click on my profile");
+    await executeStep(this.menuIcon, 'click', 'click on menu icon');
+    await executeStep(this.myProfile, 'click', 'click on my profile');
     const equipmentDispalyValue = await this.equipmentDisplayChioceValue.textContent();
-    if(equipmentDispalyValue.trim() === indexPage.lighthouse_data.equipmentName) {
-        await executeStep(this.equipmentValueChangeButton,"click","click on update button");
+    if (equipmentDispalyValue.trim() === indexPage.lighthouse_data.equipmentName) {
+      await executeStep(this.equipmentValueChangeButton, 'click', 'click on update button');
     }
-    await executeStep(this.flowsheetBtn,"click","click on flowsheet button");
-    await this.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
+    await this.performSearchFunction(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
     equipmentByDescription = await this.equipmentText.textContent();
   }
 
   async assertEquipmentByName() {
-    if(this.isMobile){
-      await executeStep(this.backBtnInMobile,"click","click back button in mobile");
+    if (this.isMobile) {
+      await executeStep(this.backBtnInMobile, 'click', 'click on back button in mobile');
     }
-    await executeStep(this.menuIcon,"click","click on menu icon");
-    await executeStep(this.myProfile,"click","click on my profile");
+    await executeStep(this.menuIcon, 'click', 'click on menu icon');
+    await executeStep(this.myProfile, 'click', 'click on my profile');
     const equipmentDispalyValue = await this.equipmentDisplayChioceValue.textContent();
-    if(equipmentDispalyValue.trim() === indexPage.lighthouse_data.equipmentDescription) {
-        await executeStep(this.equipmentValueChangeButton,"click","click on update button");
+    if (equipmentDispalyValue.trim() === indexPage.lighthouse_data.equipmentDescription) {
+      await executeStep(this.equipmentValueChangeButton, 'click', 'click on update button');
     }
-    await executeStep(this.flowsheetBtn,"click","click on flowsheet button");
-    await this.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
+    await this.performSearchFunction(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
     equipmentByName = await this.equipmentText.textContent();
-    await assertNotEqualValues(equipmentByDescription,equipmentByName);
+    await assertNotEqualValues(equipmentByDescription, equipmentByName);
   }
 
-  async createAddOn(docusignValue,searchText,jobId) {
-   await this.verifyDocusignStatus(docusignValue,searchText,jobId);
-   await this.addOnFunction(indexPage.lighthouse_data.requestedBy,
-    indexPage.lighthouse_data.individualProduct,
-    indexPage.lighthouse_data.packageProduct,
-    indexPage.lighthouse_data.invalidQuantity,
-    indexPage.lighthouse_data.validQuantity );
-    await this.discountChecking(
-      invalidDiscountGenerator(),
-      validDiscountGenerator()
+  async createAddOn(docusignValue, searchText, jobId) {
+    await this.verifyDocusignStatus(docusignValue, searchText, jobId);
+    await this.addOnFunction(
+      indexPage.lighthouse_data.requestedBy,
+      indexPage.lighthouse_data.individualProduct,
+      indexPage.lighthouse_data.packageProduct,
+      indexPage.lighthouse_data.invalidQuantity,
+      indexPage.lighthouse_data.validQuantity
     );
+    await this.discountChecking(invalidDiscountGenerator(), validDiscountGenerator());
     await this.dateSelectModal();
     await this.page.waitForTimeout(parseInt(process.env.default_timeout));
     await assertElementVisible(this.textInModalForDocument);
   }
 
   async assertDocument(scenario) {
-    await executeStep(this.continueBtnInModal,"click","click on comtinue button");
-    await executeStep(this.acceptCheckBox,"click","click the checkbox");
-    await executeStep(this.continueBtnInPage,"click","click on continue button in document");
-    if(scenario === "positive") {
-      await executeStep(this.startBtn,"click","click on start button");
-    await executeStep(this.signBtn,"click","click on sign button");
-    if(this.isMobile) {
-      executeStep(this.styleSelectInMobile,"click","click style select");
-      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    }
-    await executeStep(this.adoptAndSignBtn,"click","click on adopt and sign button");
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementVisible(this.finishBtn);
-    await executeStep(this.finishBtn,"click","click on fnish button");
-    await assertElementVisible(this.requestACopyModal);
-    await executeStep(this.emailInput,"fill","enter the email id",[atob(process.env.lighthouseEmail)]);
-    await executeStep(this.continueButInRequestModal,"click","click on continue");
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementVisible(this.passControlModal);
-    await executeStep(this.continueBtnInPassControlModal,"click","click on continue button");
-    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
-    await assertElementVisible(this.confirmModalForPositive);
-    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    } else {
-      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await executeStep(this.otherActionsBtn,"click","click on other actions");
-      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      if(! this.finishLaterBtn.isVisible()) {
-        await executeStep(this.otherActionsBtn,"click","click on other actions");
+    await executeStep(this.continueBtnInModal, 'click', 'click on comtinue button');
+    await executeStep(this.acceptCheckBox, 'click', 'click on checkbox');
+    await executeStep(this.continueBtnInPage, 'click', 'click on continue button in document');
+    if (scenario === 'positive') {
+      await executeStep(this.startBtn, 'click', 'click on start button');
+      await executeStep(this.signBtn, 'click', 'click on sign button');
+      if (this.isMobile) {
+        executeStep(this.styleSelectInMobile, 'click', 'click style select');
         await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       }
-      await executeStep(this.finishLaterBtn,"click","click on finish later button");
+      await executeStep(this.adoptAndSignBtn, 'click', 'click on adopt and sign button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await executeStep(this.continueBtnForFinishLater,"click","click continue button");
+      await assertElementVisible(this.finishBtn);
+      await executeStep(this.finishBtn, 'click', 'click on fnish button');
+      await assertElementVisible(this.requestACopyModal);
+      await executeStep(this.emailInput, 'fill', 'enter the email id', [
+        atob(process.env.lighthouseEmail)
+      ]);
+      await executeStep(this.continueButInRequestModal, 'click', 'click on continue');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await assertElementVisible(this.passControlModal);
+      await executeStep(this.continueBtnInPassControlModal, 'click', 'click on continue button');
+      await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+      await assertElementVisible(this.confirmModalForPositive);
+      await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    } else {
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await executeStep(this.otherActionsBtn, 'click', 'click on other actions');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      if (!this.finishLaterBtn.isVisible()) {
+        await executeStep(this.otherActionsBtn, 'click', 'click on other actions');
+        await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      }
+      await executeStep(this.finishLaterBtn, 'click', 'click on finish later button');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await executeStep(this.continueBtnForFinishLater, 'click', 'click on continue button');
       await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
       await assertElementVisible(this.confirmModalForNegative);
     }
-    
   }
 
   async assertRoomCountAfterAddOn() {
     afterRoomCount = await this.roomsCount.textContent();
-    try{
+    try {
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await assertGreaterThan(parseInt(afterRoomCount),parseInt(beforeRoomCount));
-    }catch {
-      console.error("Rooms not updated...")
+      await assertGreaterThan(parseInt(afterRoomCount), parseInt(beforeRoomCount));
+    } catch {
+      console.error('Rooms not updated...');
     }
-    
   }
 
   async assertStatusOfNavigatorJob(scenario) {
     const newPage = await this.page.context().newPage();
-    await newPage.goto(indexPage.navigator_data.navigatorUrl ,  {
+    await newPage.goto(indexPage.navigator_data.navigatorUrl, {
       timeout: parseInt(process.env.pageload_timeout)
     });
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
@@ -931,9 +1001,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     });
     const createDataPage = new indexPage.CreateData(newPage);
     await createDataPage.searchWithJobId();
-    if(scenario === "positive") {
+    if (scenario === 'positive') {
       assertElementVisible(createDataPage.statusOfJob(indexPage.lighthouse_data.confirmed));
-    }else {
+    } else {
       assertElementVisible(createDataPage.statusOfJob(indexPage.lighthouse_data.cancel));
     }
   }

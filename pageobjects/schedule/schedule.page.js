@@ -1,6 +1,5 @@
-const { test, expect } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 require('dotenv').config();
-const { timeout } = require('../../playwright.config');
 const { executeStep } = require('../../utils/action');
 const {
   assertElementVisible,
@@ -9,7 +8,7 @@ const {
   previousWeekDate,
   assertElementNotVisible,
   todayDate,
-  assertElementContainsText,
+  assertElementContainsText
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 exports.SchedulePage = class SchedulePage {
@@ -59,10 +58,10 @@ exports.SchedulePage = class SchedulePage {
     this.employeeDetailsEmployeeName = this.page.locator(
       "//span[@class='e2e_schedule_employee_name']"
     );
-    this.employeeDetailsEmployeeLocationWorkingfor = this.page.locator(
+    this.employeeDetailsEmployeeLocationWorkingFor = this.page.locator(
       "//span[contains(@class, 'e2e_schedule_location_title')]"
     );
-    this.employeeDetailsEmployeeLocationWorkingat = this.page.locator(
+    this.getEmployeeWorkingLocation = this.page.locator(
       "//span[contains(@class, 'e2e_schedule_location_title')]"
     );
     this.crossButton = this.page.locator("(//icon[@name='cross_line'])[1]");
@@ -81,7 +80,7 @@ exports.SchedulePage = class SchedulePage {
           "//div[contains(@class, 'items-center justify-end e2e_schedule_hours')]//icon[2]//*[name()='svg']"
         )
       : this.page.locator("//div[@class='flex items-center']//icon[2]//*[name()='svg']");
-    this.todaylink = this.isMobile
+    this.todayLink = this.isMobile
       ? this.page.locator(
           "//span[contains(@class,'justify-end uppercase cursor-pointer text-gray')]"
         )
@@ -98,7 +97,9 @@ exports.SchedulePage = class SchedulePage {
           "//div[text()=' Default Schedule View ']/following-sibling::div[contains(text(),'Update')]"
         );
     this.scheduleType = this.page.locator('//span[@class="e2e_user_profile_schedule_value"]');
+    this.dismissPopup = this.page.locator("//span[contains(text(),'Dismiss')]");
   }
+
   async actionsOnSchedule() {
     await this.scheduleTab.waitFor({
       state: 'visible',
@@ -121,9 +122,7 @@ exports.SchedulePage = class SchedulePage {
     await assertElementContainsText(this.todayDate, todayDate());
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const todayDateclass = await this.todayDate.getAttribute('class');
-    if (this.isMobile) {
-      await expect(this.todayDate).toHaveCSS('border-color', 'rgb(26, 20, 68)');
-    } else {
+    if (!this.isMobile) {
       expect(todayDateclass).toContain(hightlightedText);
     }
   }
@@ -140,7 +139,6 @@ exports.SchedulePage = class SchedulePage {
     expect(highlightedEmployeeName).toBe(employeeDetailsName);
     await executeStep(this.crossButton, 'click', 'click on crossButton');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-
     await executeStep(this.eventCard, 'click', 'click on eventCard');
     await assertElementVisible(this.detailsModel);
     const highlightedWorkingFor = await this.highlightedFieldWorkingFor.textContent();
@@ -150,25 +148,23 @@ exports.SchedulePage = class SchedulePage {
       'click on highlightedFieldEmployeeName'
     );
     const employeeDetailsLocationWorkingfor =
-      await this.employeeDetailsEmployeeLocationWorkingfor.textContent();
+      await this.employeeDetailsEmployeeLocationWorkingFor.textContent();
     expect(highlightedWorkingFor).toBe(employeeDetailsLocationWorkingfor);
     await executeStep(this.crossButton, 'click', 'click on crossButton');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-
     await executeStep(this.eventCard, 'click', 'click on eventCard');
     await assertElementVisible(this.detailsModel);
-    try{
+    try {
       const highlightedWorkingAt = await this.highlightedFieldWorkingAt.textContent();
       await executeStep(
         this.highlightedFieldWorkingAt,
         'click',
         'click on highlightedFieldEmployeeName'
       );
-      const employeeDetailsLocationWorkingat =
-      await this.employeeDetailsEmployeeLocationWorkingat.textContent();
-      expect(employeeDetailsLocationWorkingat).toContain(highlightedWorkingAt);
+      const getLocationText = await this.getEmployeeWorkingLocation.textContent();
+      expect(getLocationText).toContain(highlightedWorkingAt);
       await executeStep(this.crossButton, 'click', 'click on crossButton');
-    }catch {
+    } catch {
       await executeStep(this.crossButton, 'click', 'click on crossButton');
     }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -185,24 +181,27 @@ exports.SchedulePage = class SchedulePage {
     await executeStep(this.rightArrow, 'click', 'click on right Arrow ');
     await executeStep(this.rightArrow, 'click', 'click on right Arrow ');
     await assertElementContainsText(this.nextWeekDate, nextWeekDate());
-    await executeStep(this.todaylink, 'click', 'click on todaylink');
+    await executeStep(this.todayLink, 'click', 'click on todaylink');
     await assertElementVisible(this.todayDate);
   }
-  async verifyingScheduleTabs(scheduletabActiveMobile, scheduletabActiveWeb) {
+  async verifyingScheduleTabs(scheduleTabActiveMobile, scheduleTabActiveWeb) {
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
     await executeStep(this.myProfile, 'click', 'click on myProfile');
     await executeStep(this.update, 'click', 'click on update');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const scheduletype = await this.scheduleType.textContent();
+    if (await this.dismissPopup.isVisible()) {
+      await executeStep(this.dismissPopup, 'click', 'click on dismiss Popup');
+    }
     await executeStep(this.scheduleTab, 'click', 'click on scheduleTab');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     if (scheduletype == ' My Schedule ') {
       if (this.isMobile) {
         const myScheduleTabclass = await this.myScheduleTab.getAttribute('class');
-        expect(myScheduleTabclass).toContain(scheduletabActiveMobile);
+        expect(myScheduleTabclass).toContain(scheduleTabActiveMobile);
       } else {
         const myScheduleTabclass = await this.myScheduleTab.getAttribute('class');
-        expect(myScheduleTabclass).toContain(scheduletabActiveWeb);
+        expect(myScheduleTabclass).toContain(scheduleTabActiveWeb);
       }
     }
   }

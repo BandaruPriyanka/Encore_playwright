@@ -1,34 +1,35 @@
-const { test, expect } = require('@playwright/test');
+const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
-const { assertElementVisible, assertEqualValues, assertIsNumber } = require('../utils/helper');
-const atob = require('atob');
 require('dotenv').config();
 
-test.describe('LightHouse Operations', () => {
-  let lighthouseLogin, schedulePage,flowsheetPage;
+test.describe('Performing actions on Schedule Tab', () => {
+  let schedulePage, flowsheetPage, locationId, locationText;
+
   test.beforeEach(async ({ page }) => {
-    lighthouseLogin = new indexPage.LoginPage(page);
     schedulePage = new indexPage.SchedulePage(page);
     flowsheetPage = new indexPage.FlowSheetPage(page);
+    locationId = indexPage.lighthouse_data.locationId_createData1;
+    locationText = indexPage.lighthouse_data.locationText_createData1;
     await page.goto(process.env.lighthouseUrl, {
       timeout: parseInt(process.env.pageload_timeout)
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
-  });
-  test('Test_C56915 ,My Schedule - WIP (Asked Mark for assistance)	', async ({ page }) => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
+    await flowsheetPage.changeLocation(locationId, locationText);
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
+  });
+
+  test('Test_C56915: Verify Actions on My Schedule', async () => {
     await schedulePage.actionsOnSchedule();
   });
-  test('Test_C56916	verify team schedule', async ({ page }) => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
+
+  test('Test_C56916: Verify Team Schedule', async () => {
     await schedulePage.assertScheduleTab(indexPage.lighthouse_data.scheduleHighlightedDate);
     await schedulePage.verifyingEventcard();
     await schedulePage.verifyingFilterFunctionality();
     await schedulePage.verifyingPreviousNextWeekDates();
     await schedulePage.verifyingScheduleTabs(
-      indexPage.lighthouse_data.scheduletabActiveMobile,
-      indexPage.lighthouse_data.scheduletabActiveWeb
+      indexPage.lighthouse_data.scheduleTabActiveMobile,
+      indexPage.lighthouse_data.scheduleTabActiveWeb
     );
   });
 });

@@ -13,9 +13,7 @@ if (fs.existsSync(storageStatePath)) {
 }
 test.describe('LightHouse Operations', () => {
   let lighthouseLogin, flowsheetSearch;
-  test('In this login test, the purpose is to perform the login operation and store the session data, which can be reused for future tests', async ({
-    page
-  }) => {
+  test('Login and store session data for future tests', async ({ page }) => {
     lighthouseLogin = new indexPage.LoginPage(page);
     flowsheetSearch = new indexPage.FlowSheetPage(page);
     await page.goto(process.env.lighthouseUrl, {

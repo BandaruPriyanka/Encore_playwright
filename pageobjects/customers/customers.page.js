@@ -12,7 +12,7 @@ const {
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
 require('dotenv').config();
-let roomsqty;
+
 exports.CustomersPage = class CustomersPage {
   constructor(page) {
     this.page = page;
@@ -124,11 +124,11 @@ exports.CustomersPage = class CustomersPage {
     await executeStep(this.customerSearchInput, 'fill', 'enter the customer name', [searchText]);
   }
   async clickOnCustomerIcon() {
-    await executeStep(this.customersIcon, 'click', 'click customer icon');
+    await executeStep(this.customersIcon, 'click', 'click on customer icon');
   }
   async dateChangeChecking() {
     const inputValueBeforeDateChange = await this.customerSearchInput.inputValue();
-    await executeStep(this.dateSpan(nextDayDate()), 'click', 'click next day');
+    await executeStep(this.dateSpan(nextDayDate()), 'click', 'click on next day');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const inputValueAfterDateChange = await this.customerSearchInput.inputValue();
     await assertEqualValues(inputValueBeforeDateChange, inputValueAfterDateChange);
@@ -151,14 +151,14 @@ exports.CustomersPage = class CustomersPage {
     await this.search(indexPage.opportunity_data.userContactName);
     await assertElementVisible(this.customerList);
     await this.dateChangeChecking();
-    await executeStep(this.dateSpan(todayDate()), 'click', 'click today date');
+    await executeStep(this.dateSpan(todayDate()), 'click', 'click on today date');
     await executeStep(this.crossIcon, 'click', 'clear the search input');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const afterCustomerCount = await this.listOfCustomers.count();
     try {
       await assertEqualValues(beforeCustomerCount, afterCustomerCount);
-    }catch {
-      console.error("Loading issue....")
+    } catch {
+      console.error('Loading issue....');
     }
     await this.scrollAction();
     await this.search(indexPage.opportunity_data.userContactName.toLowerCase());
@@ -240,18 +240,17 @@ exports.CustomersPage = class CustomersPage {
     );
   }
   async checkNoContactsDisplayed() {
-    try{
-    await this.clickOnCustomerBusinessCard();
-    await executeStep(
-      this.dynamicTabElement(utilConst.Const.tabNames[1]),
-      'click',
-      'click on customer card from that list'
-    );
-    await assertElementVisible(this.noDataFoundEle);
-  }
-  catch{
-    console.error("No bussiness cards found");  
-  }
+    try {
+      await this.clickOnCustomerBusinessCard();
+      await executeStep(
+        this.dynamicTabElement(utilConst.Const.tabNames[1]),
+        'click',
+        'click on customer card from that list'
+      );
+      await assertElementVisible(this.noDataFoundEle);
+    } catch {
+      console.error('No bussiness cards found');
+    }
   }
   async roomListScrollAction() {
     const div = await this.roomList;
@@ -260,18 +259,17 @@ exports.CustomersPage = class CustomersPage {
     await scrollElement(div, 'top');
   }
   async verifyRoomTab() {
-    try{
-    await this.clickOnCustomerBusinessCard();
-    await executeStep(
-      this.dynamicTabElement(utilConst.Const.tabNames[3]),
-      'click',
-      'click on room tab from that list'
-    );
-    roomsqty = await this.roomCount(utilConst.Const.tabNames[3]).textContent();
-  }
-  catch{
-    console.error("No bussiness cards found");
-  }
+    try {
+      await this.clickOnCustomerBusinessCard();
+      await executeStep(
+        this.dynamicTabElement(utilConst.Const.tabNames[3]),
+        'click',
+        'click on room tab from that list'
+      );
+      roomsqty = await this.roomCount(utilConst.Const.tabNames[3]).textContent();
+    } catch {
+      console.error('No bussiness cards found');
+    }
   }
   async selectRoomList() {
     await executeStep(this.selectRoom, 'click', 'click one room from the list', []);
@@ -296,7 +294,7 @@ exports.CustomersPage = class CustomersPage {
     await executeStep(this.touchPointSpan, 'click', 'click on add touch point');
     await assertElementVisible(this.touchPointModal);
     await executeStep(this.happyIconInTouchPointModal, 'click', 'click happy icon in modal');
-    await executeStep(this.saveButton, 'click', 'click save button');
+    await executeStep(this.saveButton, 'click', 'click on save button');
     await assertElementVisible(this.firstTouchPointIcon(utilConst.Const.greenIconText));
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await this.page.reload();
@@ -317,13 +315,13 @@ exports.CustomersPage = class CustomersPage {
     );
     await executeStep(this.touchPointSpan, 'click', 'click on add touch point');
     await assertElementVisible(this.touchPointModal);
-    await executeStep(this.neutralIconInTouchPointModal, 'click', 'click neutral icon in modal');
+    await executeStep(this.neutralIconInTouchPointModal, 'click', 'click on neutral icon in modal');
     await executeStep(this.saveButton, 'click', 'click save button');
     await assertElementVisible(this.noteRequiresMsgInModal);
     await executeStep(this.noteInput, 'fill', 'enter the comment for neutral icon', [
       indexPage.lighthouse_data.neutralComment
     ]);
-    await executeStep(this.saveButton, 'click', 'click save button');
+    await executeStep(this.saveButton, 'click', 'click on save button');
     await assertElementVisible(this.secondTouchPointIcon(utilConst.Const.yellowIconText));
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     if (this.isMobile) {
@@ -333,7 +331,7 @@ exports.CustomersPage = class CustomersPage {
     await executeStep(this.notificationIcon, 'click', 'click on notification msg');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(this.notificationMsg(indexPage.lighthouse_data.neutralComment));
-    await executeStep(this.notificationCloseBtn, 'click', 'click notification close button');
+    await executeStep(this.notificationCloseBtn, 'click', 'click on notification close button');
     if (this.isMobile) {
       await executeStep(
         this.orderNameDiv(indexPage.navigator_data.order_name),
@@ -361,7 +359,7 @@ exports.CustomersPage = class CustomersPage {
 
       try {
         await assertElementVisible(this.touchPointModal);
-        await executeStep(this.angryIconInTouchPoint, 'click', 'click the angry icon in modal');
+        await executeStep(this.angryIconInTouchPoint, 'click', 'click on angry icon in modal');
         await executeStep(this.noteInput, 'fill', 'enter the msg in note input', [
           indexPage.lighthouse_data.angryComment
         ]);

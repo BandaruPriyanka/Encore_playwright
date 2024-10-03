@@ -1,28 +1,26 @@
-const { test, expect } = require('@playwright/test');
+const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
-const {
-  assertElementVisible,
-  assertElementContainsText,
-} = require('../utils/helper');
+const { assertElementVisible, assertElementContainsText } = require('../utils/helper');
 const utilConst = require('../utils/const');
-const atob = require('atob');
 require('dotenv').config();
 
 test.describe('LightHouse Flowsheet card and tab operations', () => {
-  let lighthouseLogin, flowsheetCardAndTab,flowsheetPage;
+  let flowsheetCardAndTab, flowsheetPage, locationId, locationText;
 
   test.beforeEach(async ({ page }) => {
-    lighthouseLogin = new indexPage.LoginPage(page);
     flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(page);
     flowsheetPage = new indexPage.FlowSheetPage(page);
+    locationId = indexPage.lighthouse_data.locationId_createData1;
+    locationText = indexPage.lighthouse_data.locationText_createData1;
     await page.goto(process.env.lighthouseUrl, {
       timeout: parseInt(process.env.pageload_timeout)
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
+    await flowsheetPage.changeLocation(locationId, locationText);
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test('Test_C56890 Verify test data on flowsheet card', async ({ page }) => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
+  test('Test_C56890 :Verify test data on flowsheet card', async () => {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.validateRoomCard(
@@ -35,8 +33,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     }
   });
 
-  test('Test_C56910 verify contacts tab', async ({ page }) => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
+  test('Test_C56910: Verify contacts tab', async ({ page }) => {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
     await assertElementVisible(flowsheetCardAndTab.flowsheetTabElement(utilConst.Const.Contacts));
@@ -47,8 +44,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.lighthouse_data.contactModalText
     );
   });
-  test('Test_C56891 Test Mood change logic', async () => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
+  test('Test_C56891: Verify Test Mood change logic', async () => {
     await flowsheetCardAndTab.assertMoodChangeHappyIcon(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -59,8 +55,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     );
     await flowsheetCardAndTab.assertMoodChangeAngryIcon();
   });
-  test('Test_C56894 Test Touchpoint adding', async () => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
+  test('Test_C56894: Verify Test Touchpoint adding', async () => {
     await flowsheetCardAndTab.assertTouchPointIndicator(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -70,8 +65,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertCustomerUrl();
   });
 
-  test('Test_C56908 Notes Tab', async () => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
+  test('Test_C56908 : Verify Notes Tab', async () => {
     await flowsheetCardAndTab.assertNotesTab(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -79,9 +73,11 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertFlowsheetTextAndNavigatorText();
   });
 
-  test('Test_C56907 Equipment Tab' , async () => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
-    await flowsheetCardAndTab.assertEquipmentTab(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+  test('Test_C56907: Verify Equipment Tab', async () => {
+    await flowsheetCardAndTab.assertEquipmentTab(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
     await flowsheetCardAndTab.assertEquipmentsInLightHouseAndNavigator();
     await flowsheetCardAndTab.assertEquipmentCheckList();
     await flowsheetCardAndTab.assertCheckBox();
@@ -89,19 +85,25 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertEquipmentByName();
   });
 
-  test('Test_C56904 Test Add-on creation (Docusign enabled) - Positive flow' , async() => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
-    await flowsheetCardAndTab.createAddOn(indexPage.lighthouse_data.turnOn,indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+  test('Test_C56904: Verify Test Add-on creation (Docusign enabled) - Positive flow', async () => {
+    await flowsheetCardAndTab.createAddOn(
+      indexPage.lighthouse_data.turnOn,
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.positive);
     await flowsheetCardAndTab.assertRoomCountAfterAddOn();
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.positive);
-  })
+  });
 
-  test.only('Test_C56906 Test Add-on creation (Docusign enabled) - Negative flow' , async() => {
-    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
-    await flowsheetCardAndTab.createAddOn(indexPage.lighthouse_data.turnOn,indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+  test('Test_C56906: Verify Test Add-on creation (Docusign enabled) - Negative flow', async () => {
+    await flowsheetCardAndTab.createAddOn(
+      indexPage.lighthouse_data.turnOn,
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.negative);
     await flowsheetCardAndTab.assertRoomCountAfterAddOn();
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.negative);
-  })
+  });
 });

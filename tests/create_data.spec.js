@@ -1,15 +1,15 @@
-const { test, expect } = require('@playwright/test');
+const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
 const atob = require('atob');
 require('dotenv').config();
 const { lighthouseApi } = require('../utils/helper');
 
 test.describe('Opportunity and Order Creation', () => {
-  let loginPage, createdata, navigatorLoginPage,isCreateData1;
+  let loginPage, createdata, navigatorLoginPage, isCreateData1;
   test.beforeEach(async ({ page }) => {
     isCreateData1 = test.info().project.use.isCreateData1;
     loginPage = new indexPage.LoginPage(page);
-    createdata = new indexPage.CreateData(page,isCreateData1);
+    createdata = new indexPage.CreateData(page, isCreateData1);
     navigatorLoginPage = new indexPage.NavigatorLoginPage(page);
   });
 
