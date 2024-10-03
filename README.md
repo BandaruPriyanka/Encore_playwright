@@ -46,7 +46,7 @@ Install the dependencies:
 npm install
 
 ## Project Folder Structure
-
+```
 Encore
 ├── data
 ├── pageobjects
@@ -77,7 +77,7 @@ Encore
 ├── package.json
 ├── playwright.config.js
 └── README.md
-
+```
 ## Running Tests
 
 - Before running any test case run this to clean allure results : npm run clean:allure-results
