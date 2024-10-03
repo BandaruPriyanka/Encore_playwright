@@ -80,10 +80,15 @@ Encore
 ```
 ## Running Tests
 
-- Before running any test case run this to clean allure results : npm run clean:allure-results
+- Before running any test case run this to clean allure results : `npm run clean:allure-results`
 
-- To run **UI** tests follow this command : npm run ui
+- Before running lighthouse testcases run the below commands for creating the data:
+    `npm run createdata1` and `npm run createdata2` 
 
-- To run **Mobile** tests follow this command : npm run mobile_chrome
+- To run **UI** tests follow this command : `npm run ui`
 
-- To run **iOS** tests follow this command : npm run ios
+- To run **Mobile** tests follow this command : `npm run mobile_chrome`
+
+- To run **iOS** tests follow this command : `npm run ios`
+
+- To generate allure report : `npm run allure-report`
