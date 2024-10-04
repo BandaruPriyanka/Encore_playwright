@@ -1,14 +1,15 @@
-const { expect } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 require('dotenv').config();
 const { executeStep } = require('../../utils/action');
 const {
   assertElementVisible,
   getTodayDateAndYear,
-  nextWeekDate,
-  previousWeekDate,
   assertElementNotVisible,
-  todayDate,
-  assertElementContainsText
+  assertElementContainsText,
+  getFormattedTodayDate,
+  getTodayDateAndMonth,
+  getPreviousWeekDateAndMonth,
+  getNextWeekDateAndMonth
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 exports.SchedulePage = class SchedulePage {
@@ -35,12 +36,14 @@ exports.SchedulePage = class SchedulePage {
       ? this.page.locator('//div[contains(@class,"mbsc-event-list")]')
       : this.page.locator('//mbsc-timeline');
     this.todayDate = this.isMobile
-      ? this.page.locator(`(//div[contains(text(),'${todayDate()}')])[2]`)
+      ? this.page.locator(`(//div[contains(text(),'${getTodayDateAndMonth()}')])[2]`)
       : this.page.locator(`(//div[contains(text(),'${getTodayDateAndYear()}')])[1]`);
     this.previousWeekDate = this.page.locator(
-      `(//div[contains(text(),'${previousWeekDate()}')])[1]`
+      `(//div[contains(text(),'${getPreviousWeekDateAndMonth()}')])[1]`
     );
-    this.nextWeekDate = this.page.locator(`(//div[contains(text(),'${nextWeekDate()}')])[1]`);
+    this.nextWeekDate = this.page.locator(
+      `(//div[contains(text(),'${getNextWeekDateAndMonth()}')])[1]`
+    );
 
     this.eventCard = this.isMobile
       ? this.page.locator('(//app-events-agenda/div)[1]')
@@ -113,96 +116,141 @@ exports.SchedulePage = class SchedulePage {
     await executeStep(this.myScheduleTab, 'click', 'click on my schedule button', []);
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     const actualMsg = indexPage.lighthouse_data.scheduleErrorMsg;
-    await assertElementContainsText(this.errorMessage, actualMsg);
+    const errorMessageText = await this.errorMessage.textContent();
+    await test.step(`Assert error message is displayed: Expected error message should contain "${actualMsg}", Actual error message: "${errorMessageText}"`, async () => {
+      await assertElementContainsText(this.errorMessage, actualMsg);
+    });
   }
   async assertScheduleTab(hightlightedText) {
     await executeStep(this.scheduleTab, 'click', 'click on scheduleTab');
     await executeStep(this.teamScheduleTab, 'click', 'click on teamSchedule Tab');
-    await assertElementVisible(this.teamScheduleTable);
-    await assertElementContainsText(this.todayDate, todayDate());
+    await test.step('Assert team schedule table is visible', async () => {
+      await assertElementVisible(this.teamScheduleTable);
+    });
+    const actualDateText = await this.todayDate.textContent();
+    const expectedDateText = getFormattedTodayDate();
+    await test.step(`Assert today's date is displayed Expected today's date: "${expectedDateText}", Actual today's date: "${actualDateText}"`, async () => {
+      await assertElementContainsText(this.todayDate, expectedDateText);
+    });
+
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const todayDateclass = await this.todayDate.getAttribute('class');
-    if (!this.isMobile) {
+    await test.step(`Assert class contains highlighted text: "${hightlightedText}"`, async () => {
       expect(todayDateclass).toContain(hightlightedText);
-    }
+    });
   }
   async verifyingEventcard() {
-    await executeStep(this.eventCard, 'click', 'click on eventCard');
-    await assertElementVisible(this.detailsModel);
+    await executeStep(this.eventCard, 'click', 'Click on event card');
+    await test.step('Assert event details model is visible', async () => {
+      await assertElementVisible(this.detailsModel);
+    });
     const highlightedEmployeeName = await this.highlightedFieldEmployeeName.textContent();
     await executeStep(
       this.highlightedFieldEmployeeName,
       'click',
-      'click on highlightedFieldEmployeeName'
+      'Click on highlighted employee name'
     );
     const employeeDetailsName = await this.employeeDetailsEmployeeName.textContent();
-    expect(highlightedEmployeeName).toBe(employeeDetailsName);
-    await executeStep(this.crossButton, 'click', 'click on crossButton');
+    await test.step(`Assert employee names match: expected "${highlightedEmployeeName}", actual "${employeeDetailsName}"`, async () => {
+      expect(highlightedEmployeeName).toBe(employeeDetailsName);
+    });
+    await executeStep(this.crossButton, 'click', 'Click on cross button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.eventCard, 'click', 'click on eventCard');
-    await assertElementVisible(this.detailsModel);
+    await executeStep(this.eventCard, 'click', 'Click on event card again');
+    await test.step('Assert event details model is visible again', async () => {
+      await assertElementVisible(this.detailsModel);
+    });
     const highlightedWorkingFor = await this.highlightedFieldWorkingFor.textContent();
     await executeStep(
       this.highlightedFieldWorkingFor,
       'click',
-      'click on highlightedFieldEmployeeName'
+      'Click on highlighted working for field'
     );
-    const employeeDetailsLocationWorkingfor =
+    const employeeDetailsLocationWorkingFor =
       await this.employeeDetailsEmployeeLocationWorkingFor.textContent();
-    expect(highlightedWorkingFor).toBe(employeeDetailsLocationWorkingfor);
-    await executeStep(this.crossButton, 'click', 'click on crossButton');
+    await test.step(`Assert working for names match: expected "${highlightedWorkingFor}", actual "${employeeDetailsLocationWorkingFor}"`, async () => {
+      expect(highlightedWorkingFor).toBe(employeeDetailsLocationWorkingFor);
+    });
+    await executeStep(this.crossButton, 'click', 'Click on cross button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.eventCard, 'click', 'click on eventCard');
-    await assertElementVisible(this.detailsModel);
+    await executeStep(this.eventCard, 'click', 'Click on event card again');
+    await test.step('Assert event details model is visible for working at', async () => {
+      await assertElementVisible(this.detailsModel);
+    });
     try {
       const highlightedWorkingAt = await this.highlightedFieldWorkingAt.textContent();
       await executeStep(
         this.highlightedFieldWorkingAt,
         'click',
-        'click on highlightedFieldEmployeeName'
+        'Click on highlighted working at field'
       );
       const getLocationText = await this.getEmployeeWorkingLocation.textContent();
-      expect(getLocationText).toContain(highlightedWorkingAt);
-      await executeStep(this.crossButton, 'click', 'click on crossButton');
-    } catch {
-      await executeStep(this.crossButton, 'click', 'click on crossButton');
+      await test.step(`Assert working at location contains highlighted text: expected "${highlightedWorkingAt}", actual "${getLocationText}"`, async () => {
+        expect(getLocationText).toContain(highlightedWorkingAt);
+      });
+    } catch (error) {
+      await test.step('Error occurred while checking working at details', async () => {
+        console.error('Error:', error);
+      });
+    } finally {
+      await executeStep(this.crossButton, 'click', 'Click on cross button to close modal');
     }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
+
   async verifyingFilterFunctionality() {
-    await executeStep(this.filterIcon, 'click', 'click on filterIcon');
-    await assertElementVisible(this.filtersModel);
-    await executeStep(this.clearFilterOption, 'click', 'click on clearFilter Option');
-    await assertElementNotVisible(this.filtersModel);
+    await executeStep(this.filterIcon, 'click', 'Click on filter icon');
+    await test.step('Assert filters model is visible', async () => {
+      await assertElementVisible(this.filtersModel);
+    });
+    await executeStep(this.clearFilterOption, 'click', 'Click on clear filter option');
+    await test.step('Assert filters model is not visible', async () => {
+      await assertElementNotVisible(this.filtersModel);
+    });
   }
   async verifyingPreviousNextWeekDates() {
-    await executeStep(this.leftArrow, 'click', 'click on left Arrow ');
-    await assertElementContainsText(this.previousWeekDate, previousWeekDate());
-    await executeStep(this.rightArrow, 'click', 'click on right Arrow ');
-    await executeStep(this.rightArrow, 'click', 'click on right Arrow ');
-    await assertElementContainsText(this.nextWeekDate, nextWeekDate());
-    await executeStep(this.todayLink, 'click', 'click on todaylink');
-    await assertElementVisible(this.todayDate);
+    await executeStep(this.leftArrow, 'click', 'Click on left arrow');
+    const expectedPreviousDate = getPreviousWeekDateAndMonth();
+    await test.step(`Assert previous week date is displayed correctly: expected "${expectedPreviousDate}", actual "${await this.previousWeekDate.textContent()}"`, async () => {
+      await assertElementContainsText(this.previousWeekDate, expectedPreviousDate);
+    });
+    await executeStep(this.rightArrow, 'click', 'Click on right arrow');
+    await executeStep(this.rightArrow, 'click', 'Click on right arrow again');
+    const expectedNextDate = getNextWeekDateAndMonth();
+    await test.step(`Assert next week date is displayed correctly: expected "${expectedNextDate}", actual "${await this.nextWeekDate.textContent()}"`, async () => {
+      await assertElementContainsText(this.nextWeekDate, expectedNextDate);
+    });
+    await executeStep(this.todayLink, 'click', 'Click on today link');
+    await test.step('Assert today date is visible', async () => {
+      await assertElementVisible(this.todayDate);
+    });
   }
+
   async verifyingScheduleTabs(scheduleTabActiveMobile, scheduleTabActiveWeb) {
-    await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await executeStep(this.myProfile, 'click', 'click on myProfile');
-    await executeStep(this.update, 'click', 'click on update');
+    await executeStep(this.menuIcon, 'click', 'Click on menu icon');
+    await executeStep(this.myProfile, 'click', 'Click on my profile');
+    await executeStep(this.update, 'click', 'Click on update');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const scheduletype = await this.scheduleType.textContent();
     if (await this.dismissPopup.isVisible()) {
-      await executeStep(this.dismissPopup, 'click', 'click on dismiss Popup');
+      await executeStep(this.dismissPopup, 'click', 'Click on dismiss popup');
     }
-    await executeStep(this.scheduleTab, 'click', 'click on scheduleTab');
+
+    await executeStep(this.scheduleTab, 'click', 'Click on schedule tab');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     if (scheduletype == ' My Schedule ') {
-      if (this.isMobile) {
+      await test.step('Assert active schedule tab for mobile or web', async () => {
         const myScheduleTabclass = await this.myScheduleTab.getAttribute('class');
-        expect(myScheduleTabclass).toContain(scheduleTabActiveMobile);
-      } else {
-        const myScheduleTabclass = await this.myScheduleTab.getAttribute('class');
-        expect(myScheduleTabclass).toContain(scheduleTabActiveWeb);
-      }
+        if (this.isMobile) {
+          await test.step(`Assert mobile schedule tab class: expected "${scheduleTabActiveMobile}", actual "${myScheduleTabclass}"`, async () => {
+            expect(myScheduleTabclass).toContain(scheduleTabActiveMobile);
+          });
+        } else {
+          await test.step(`Assert web schedule tab class: expected "${scheduleTabActiveWeb}", actual "${myScheduleTabclass}"`, async () => {
+            expect(myScheduleTabclass).toContain(scheduleTabActiveWeb);
+          });
+        }
+      });
     }
   }
 };

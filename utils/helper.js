@@ -69,7 +69,12 @@ function todayDateFullFormate() {
   const startDate = `${month}/${startDay}/${year}`;
   return startDate;
 }
-
+function getFormattedTodayDate() {
+  const today = new Date();
+  const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
+  const formattedDate = today.toLocaleDateString('en-US', options).replace(',', ''); // Remove comma between day and year
+  return formattedDate;
+}
 function nextWeekDate() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -99,7 +104,10 @@ function todayDateWithLeadingZero() {
   const todayDate = today.getDate().toString().padStart(2, '0');
   return todayDate;
 }
-
+function todayDateWithoutMonthYear() {
+  const today = new Date();
+  return today.getDate().toString();
+}
 function nextDayDate() {
   const today = new Date();
   today.setDate(today.getDate() + 1);
@@ -155,6 +163,29 @@ function getCurrentMonth() {
   ];
   const monthIndex = now.getMonth();
   return months[monthIndex];
+}
+
+function formatDate(date) {
+  const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
+  return date.toLocaleDateString('en-US', options).replace(',', '');
+}
+
+function getTodayDateAndMonth() {
+  const today = new Date();
+  return formatDate(today);
+}
+
+function getPreviousWeekDateAndMonth() {
+  const today = new Date();
+  const previousWeek = new Date(today);
+  previousWeek.setDate(today.getDate() - 7);
+  return formatDate(previousWeek);
+}
+function getNextWeekDateAndMonth() {
+  const today = new Date();
+  const nextWeek = new Date(today);
+  nextWeek.setDate(today.getDate() + 7);
+  return formatDate(nextWeek);
 }
 
 async function scrollElement(element, scrollTo) {
@@ -239,8 +270,7 @@ async function assertElementEnabled(element) {
   expect(isEnabled).toBe(true);
 }
 
-async function assertElementDisabled(page, selector) {
-  const element = await page.locator(selector);
+async function assertElementDisabled(element) {
   const isDisabled = await element.isDisabled();
   expect(isDisabled).toBe(true);
 }
@@ -366,5 +396,10 @@ module.exports = {
   assertElementAttributeContains,
   checkVisibleElementColors,
   assertContainsValue,
-  getTodayDateAndYear
+  getTodayDateAndYear,
+  todayDateWithoutMonthYear,
+  getTodayDateAndMonth,
+  getPreviousWeekDateAndMonth,
+  getNextWeekDateAndMonth,
+  getFormattedTodayDate
 };
