@@ -57,6 +57,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     );
     this.statusIcon = this.page.locator('(//app-button-card//div//icon)[1]');
     this.groupIcon = this.page.locator("(//div[normalize-space()='groups'])[4]");
+    this.noConfiguredModal = this.page.locator('//app-add-flowsheet-group');
     this.clickOnLink = this.page.locator(
       "//a[contains(normalize-space(),'tap or click right here')]"
     );
@@ -135,9 +136,9 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.backarrow = this.page.locator('//icon[contains(@class,"e2e_flowsheet_detail_back")]');
     this.transfersTab = this.page.locator("(//div[normalize-space()='Transfers'])[1]");
     this.transfersCount = this.page.locator(
-      "//div[normalize-space()='Transfers']//following-sibling::div"
+      "(//div[normalize-space()='Transfers']//following-sibling::div)[1]"
     );
-    this.noDataFoundText = this.page.locator("(//span[contains(text(),'No data found')])[2]");
+    this.noDataFoundText = this.page.locator("(//span[contains(text(),'No data found')])[1]");
   }
 
   async changeLocation(locationId, locationName) {
@@ -198,7 +199,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     });
     await this.searchFunction(indexPage.navigator_data.second_job_no);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Verify job ID placeholder is visible', async () => {
+    await test.step('Verify valid search results are returned after entering valid room number', async () => {
       await assertElementVisible(this.jobIdChecking(indexPage.navigator_data.second_job_no));
     });
     const inputValueBeforeDateChange = await this.searchInput.inputValue();
@@ -213,7 +214,9 @@ exports.FlowSheetPage = class FlowSheetPage {
     await test.step(`Verify room counts before and after searching are equal: expected "${beforeRoomCount}", actual "${afterRoomCount}"`, async () => {
       await assertEqualValues(afterRoomCount, beforeRoomCount);
     });
-    await this.scrollAction();
+    await test.step('Verify that scrolling works properly', async () => {
+      await this.scrollAction();
+    });
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await this.searchFunction(indexPage.navigator_data.order_name.trim());
     const roomCount_lowerCase = await this.roomsCount.textContent();
@@ -235,14 +238,20 @@ exports.FlowSheetPage = class FlowSheetPage {
     await executeStep(this.actionTab, 'click', 'Click on action tab', []);
     await executeStep(this.strikeReset, 'click', 'Click on strike reset button', []);
     await executeStep(this.applyFilter, 'click', 'Click on apply filter button', []);
-    await assertElementVisible(this.noResultsPlaceholder);
+    await test.step('Assert that no results placeholder is visible', async () => {
+      await assertElementVisible(this.noResultsPlaceholder);
+    });
     await this.searchFunction(indexPage.navigator_data.second_job_no);
-    await assertIsNumber(roomsreturned);
+    await test.step(`Assert that the rooms returned is a valid number: ${roomsreturned}`, async () => {
+      await assertIsNumber(roomsreturned);
+    });
   }
   async sorting() {
     await executeStep(this.filterIcon, 'click', 'Click on filter button', []);
     await executeStep(this.clearFilter, 'click', 'Click on clear filter button', []);
-    await assertIsNumber(roomsreturned);
+    await test.step(`Assert that the rooms returned is a valid number: ${roomsreturned}`, async () => {
+      await assertIsNumber(roomsreturned);
+    });
     await executeStep(this.filterIcon, 'click', 'Click on filter button', []);
     await executeStep(this.sortTab, 'click', 'click on sort button', []);
     await executeStep(this.customerName, 'click', 'Click on customer name button', []);
@@ -303,10 +312,12 @@ exports.FlowSheetPage = class FlowSheetPage {
     await test.step(`Verify today's date element is visible`, async () => {
       await assertElementVisible(this.dateElement(todayDate()));
     });
-    await executeStep(this.nextweekIcon, 'click', 'Click on next week icon');
-    await executeStep(this.todayDateButton(todayDateFullFormate()), 'click', 'Click on date URL');
-    await test.step(`Verify today's date element is visible again`, async () => {
-      await assertElementVisible(this.dateElement(todayDate()));
+    await test.step('Verify redirection via URL works properly', async () => {
+      await executeStep(this.nextweekIcon, 'click', 'Click on next week icon');
+      await executeStep(this.todayDateButton(todayDateFullFormate()), 'click', 'Click on date URL');
+      await test.step(`Verify today's date element is visible again`, async () => {
+        await assertElementVisible(this.dateElement(todayDate()));
+      });
     });
   }
 
@@ -343,6 +354,9 @@ exports.FlowSheetPage = class FlowSheetPage {
   async verifyGroup() {
     await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await test.step('Assert no configured groups modal is visible', async () => {
+      await assertElementVisible(this.noConfiguredModal);
+    });
     const isLinkVisible = await this.clickOnLink.isVisible();
     if (isLinkVisible) {
       await executeStep(this.clickOnLink, 'click', 'Click on link', []);
@@ -352,15 +366,19 @@ exports.FlowSheetPage = class FlowSheetPage {
       await executeStep(this.flowsheetButton, 'click', 'Click on create button', []);
       await this.flowsheetCard.hover();
       await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
-    } else {
-      await executeStep(this.selectGroup, 'click', 'select group', []);
     }
+    await executeStep(this.selectGroup, 'click', 'select group', []);
     await executeStep(this.applyButton, 'click', 'click on apply button', []);
-    await assertElementVisible(this.ungroup);
+    await test.step('Assert icon has changed to ungroup icon and is displayed', async () => {
+      await assertElementVisible(this.ungroup);
+    });
     await executeStep(this.filterIcon, 'click', 'click on filter icon', []);
     await executeStep(this.selectGroupFilter, 'click', 'select group filter', []);
-    await executeStep(this.selectCreatedGroup, 'click', 'select create group', []);
+    await executeStep(this.selectCreatedGroup, 'click', 'select created group', []);
     await executeStep(this.applyFilter, 'click', 'click on apply filter button', []);
+    await test.step('Assert rooms count is visible after applying filtering options', async () => {
+      await assertElementVisible(this.roomsCount);
+    });
   }
 
   async deleteGroupData() {

@@ -26,10 +26,14 @@ test.describe('Performing actions on Schedule Tab', () => {
     await schedulePage.assertScheduleTab(indexPage.lighthouse_data.scheduleHighlightedDate);
     await schedulePage.verifyingEventcard();
     await schedulePage.verifyingFilterFunctionality();
-    await schedulePage.verifyingPreviousNextWeekDates();
-    await schedulePage.verifyingScheduleTabs(
-      indexPage.lighthouse_data.scheduleTabActiveMobile,
-      indexPage.lighthouse_data.scheduleTabActiveWeb
-    );
+    await test.step('Verify navigation within past/future weeks should working properly', async () => {
+      await schedulePage.verifyingPreviousNextWeekDates();
+    });
+    await test.step('Verify schedule tabs are correctly active', async () => {
+      await schedulePage.verifyingScheduleTabs(
+        indexPage.lighthouse_data.scheduleTabActiveMobile,
+        indexPage.lighthouse_data.scheduleTabActiveWeb
+      );
+    });
   });
 });

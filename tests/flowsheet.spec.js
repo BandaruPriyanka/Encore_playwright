@@ -55,6 +55,9 @@ test.describe('Performing actions on Flowsheet', () => {
 
   test('Test_C56882: Verify lighthouse flowsheet search functionality', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.large_timeout));
+    await test.step('Assert that rooms count is visible', async () => {
+      await assertElementVisible(flowsheetPage.roomsCount);
+    });
     test.step('Verify search input is visible', async () => {
       await assertElementVisible(flowsheetPage.searchInput);
     });
@@ -63,12 +66,19 @@ test.describe('Performing actions on Flowsheet', () => {
 
   test('Test_C56885: Verify Flowsheets filtering', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await assertElementVisible(flowsheetPage.filterIcon);
+    await test.step('Assert that rooms count is visible', async () => {
+      await assertElementVisible(flowsheetPage.roomsCount);
+    });
+    await test.step('Assert filter icon is visible', async () => {
+      await assertElementVisible(flowsheetPage.filterIcon);
+    });
     await flowsheetPage.flowsheetFilter();
     filtercount_before_pagereload = await flowsheetPage.filterCount.textContent();
     await page.reload();
     filtercount_after_pagereload = await flowsheetPage.filterCount.textContent();
-    await assertEqualValues(filtercount_before_pagereload, filtercount_after_pagereload);
+    await test.step(`Assert that the filter count before page reload "${filtercount_before_pagereload}" matches the filter count after reload "${filtercount_after_pagereload}"`, async () => {
+      await assertEqualValues(filtercount_before_pagereload, filtercount_after_pagereload);
+    });
     await flowsheetPage.sorting();
   });
 
@@ -83,9 +93,7 @@ test.describe('Performing actions on Flowsheet', () => {
     await test.step('Verify visibility of the previous week icon', async () => {
       await assertElementVisible(flowsheetPage.previousweekIcon);
     });
-    await test.step('Click on the previous week', async () => {
-      await flowsheetPage.clickonPreviousWeek();
-    });
+    await flowsheetPage.clickonPreviousWeek();
     await test.step('Verify visibility of the today button', async () => {
       await assertElementVisible(flowsheetPage.todayButton);
     });
@@ -99,7 +107,7 @@ test.describe('Performing actions on Flowsheet', () => {
     await test.step('Verify visibility of the calendar widget', async () => {
       await assertElementVisible(flowsheetPage.calendarDiv);
     });
-    await test.step('Assert rooms while changing dates', async () => {
+    await test.step('Verifying a unique flowsheet list is returned for each date', async () => {
       await flowsheetPage.asserRoomsWhileDateChange();
     });
     await test.step('Assert dates displayed in the calendar', async () => {
