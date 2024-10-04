@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { executeStep } = require('../../utils/action');
+const { test } = require('@playwright/test');
 const {
   todayDate,
   todayDateWithLeadingZero,
@@ -192,18 +193,26 @@ exports.FlowSheetPage = class FlowSheetPage {
     beforeRoomCount = await this.roomsCount.textContent();
     await this.searchFunction(indexPage.lighthouse_data.invalidText);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementVisible(this.noResultsPlaceholder);
+    await test.step('Verify no results placeholder is visible', async () => {
+      await assertElementVisible(this.noResultsPlaceholder);
+    });
     await this.searchFunction(indexPage.navigator_data.second_job_no);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementVisible(this.jobIdChecking(indexPage.navigator_data.second_job_no));
+    await test.step('Verify job ID placeholder is visible', async () => {
+      await assertElementVisible(this.jobIdChecking(indexPage.navigator_data.second_job_no));
+    });
     const inputValueBeforeDateChange = await this.searchInput.inputValue();
     await this.dateChangeChecking();
     const inputValueAfterDateChange = await this.searchInput.inputValue();
-    await assertEqualValues(inputValueAfterDateChange, inputValueBeforeDateChange);
+    await test.step(`Verify input value after date change matches before: expected "${inputValueBeforeDateChange}", actual "${inputValueAfterDateChange}"`, async () => {
+      await assertEqualValues(inputValueAfterDateChange, inputValueBeforeDateChange);
+    });
     await this.backToTodayDate();
     await this.clickOnCrossButton();
     afterRoomCount = await this.roomsCount.textContent();
-    assertEqualValues(beforeRoomCount, afterRoomCount);
+    await test.step(`Verify room counts before and after searching are equal: expected "${beforeRoomCount}", actual "${afterRoomCount}"`, async () => {
+      await assertEqualValues(afterRoomCount, beforeRoomCount);
+    });
     await this.scrollAction();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await this.searchFunction(indexPage.navigator_data.order_name.trim());
@@ -213,7 +222,9 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.searchFunction(indexPage.navigator_data.order_name.toUpperCase().trim());
     const roomCount_upperCase = await this.roomsCount.textContent();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertEqualValues(roomCount_lowerCase, roomCount_upperCase);
+    await test.step(`Verify room counts for lowercase and uppercase order names are equal: expected "${roomCount_lowerCase}", actual "${roomCount_upperCase}"`, async () => {
+      await assertEqualValues(roomCount_lowerCase, roomCount_upperCase);
+    });
   }
 
   async flowsheetFilter() {
@@ -243,63 +254,84 @@ exports.FlowSheetPage = class FlowSheetPage {
   async assertCalendarHasDates() {
     await executeStep(this.previousweekIcon, 'click', 'click on previous icon', []);
     await executeStep(this.todayButton, 'click', 'click on today button', []);
-    const datelocator = await this.dateElement(todayDate()).textContent();
+    const dateLocator = await this.dateElement(todayDate()).textContent();
     const getTodayDate = await todayDate();
-    await assertEqualValues(datelocator, getTodayDate);
-    await this.dateChangeChecking();
-    await this.backToTodayDate();
+    await test.step(`Assert that the calendar displays today's date: expected "${getTodayDate}", actual "${dateLocator}"`, async () => {
+      await assertEqualValues(dateLocator, getTodayDate);
+    });
+    await test.step('Check for date changes in the calendar', async () => {
+      await this.dateChangeChecking();
+    });
+    await test.step("Return to today's date in the calendar", async () => {
+      await this.backToTodayDate();
+    });
   }
   async asserRoomsWhileDateChange() {
     const todayRoomCount = await this.roomsCount.textContent();
-    await executeStep(this.dateElement(nextDayDate()), 'click', 'select tomorrow date');
+    await executeStep(this.dateElement(nextDayDate()), 'click', 'Select tomorrow date');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const nextDayRoomCount = await this.roomsCount.textContent();
-    try {
-      await assertNotEqualValues(todayRoomCount, nextDayRoomCount);
-    } catch (error) {
-      await assertEqualValues(todayRoomCount, nextDayRoomCount);
-    }
-    await executeStep(this.dateElement(todayDate()), 'click', 'click on today date');
+    await test.step(`Verify room counts are not equal: expected "${todayRoomCount}", actual "${nextDayRoomCount}"`, async () => {
+      try {
+        await assertNotEqualValues(todayRoomCount, nextDayRoomCount);
+      } catch (error) {
+        test.info(`Expected room count: ${todayRoomCount}, Actual room count: ${nextDayRoomCount}`);
+        await assertEqualValues(todayRoomCount, nextDayRoomCount);
+      }
+    });
+    await executeStep(this.dateElement(todayDate()), 'click', 'Click on today date');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async assertDates() {
-    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
-    await assertElementVisible(this.dateElement(nextWeekDate()));
-    await assertElementVisible(this.todayButton);
-    await assertElementVisible(this.todayDateButton(todayDateFullFormate()));
-    await executeStep(this.todayButton, 'click', 'click on today button');
-    await executeStep(this.previousweekIcon, 'click', 'click on previous week icon');
-    await assertElementVisible(this.dateElement(previousWeekDate()));
-    await executeStep(this.todayButton, 'click', 'click today date');
+    await executeStep(this.nextweekIcon, 'click', 'Click on next week icon');
+    await test.step('Assert elements are visible for the next week', async () => {
+      await assertElementVisible(this.dateElement(nextWeekDate()));
+      await assertElementVisible(this.todayButton);
+      await assertElementVisible(this.todayDateButton(todayDateFullFormate()));
+    });
+    await executeStep(this.todayButton, 'click', 'Click on today button');
+    await executeStep(this.previousweekIcon, 'click', 'Click on previous week icon');
+    await test.step('Assert previous week date element is visible', async () => {
+      await assertElementVisible(this.dateElement(previousWeekDate()));
+    });
+    await executeStep(this.todayButton, 'click', 'Click today date');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async assertUrls() {
-    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
-    await executeStep(this.todayButton, 'click', 'click on today url');
-    await assertElementVisible(this.dateElement(todayDate()));
-    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
-    await executeStep(this.todayDateButton(todayDateFullFormate()), 'click', 'click on date url');
-    await assertElementVisible(this.dateElement(todayDate()));
+    await executeStep(this.nextweekIcon, 'click', 'Click on next week icon');
+    await executeStep(this.todayButton, 'click', 'Click on today URL');
+    await test.step(`Verify today's date element is visible`, async () => {
+      await assertElementVisible(this.dateElement(todayDate()));
+    });
+    await executeStep(this.nextweekIcon, 'click', 'Click on next week icon');
+    await executeStep(this.todayDateButton(todayDateFullFormate()), 'click', 'Click on date URL');
+    await test.step(`Verify today's date element is visible again`, async () => {
+      await assertElementVisible(this.dateElement(todayDate()));
+    });
   }
 
   async validateDateFromPastAndFuture() {
-    await executeStep(this.nextweekIcon, 'click', 'click on next week icon');
-    await executeStep(this.dateElement(nextWeekDate()), 'click', 'click date from next week');
+    await executeStep(this.nextweekIcon, 'click', 'Click on next week icon');
+    await executeStep(this.dateElement(nextWeekDate()), 'click', 'Click date from next week');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await assertElementVisible(this.roomsCount);
-    await executeStep(this.todayButton, 'click', 'click on today url');
-    await executeStep(this.previousweekIcon, 'click', 'click on previous week icon');
+    await test.step('Assert rooms count is visible for next week', async () => {
+      await assertElementVisible(this.roomsCount);
+    });
+    await executeStep(this.todayButton, 'click', 'Click on today URL');
+    await executeStep(this.previousweekIcon, 'click', 'Click on previous week icon');
     await executeStep(
       this.dateElement(previousWeekDate()),
       'click',
-      'click date from previous week'
+      'Click date from previous week'
     );
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    try {
-      await assertElementVisible(this.roomsCount);
-    } catch {
-      console.error('No Rooms Found...');
-    }
+    await test.step('Assert rooms count is visible for previous week', async () => {
+      try {
+        await assertElementVisible(this.roomsCount);
+      } catch {
+        test.info('No Rooms Found...');
+      }
+    });
   }
 
   async searchFunctionality() {
@@ -307,6 +339,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.flowsheetCard.hover();
     await this.flowsheetCard.waitFor({ state: 'visible' });
   }
+
   async verifyGroup() {
     await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -329,6 +362,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     await executeStep(this.selectCreatedGroup, 'click', 'select create group', []);
     await executeStep(this.applyFilter, 'click', 'click on apply filter button', []);
   }
+
   async deleteGroupData() {
     await executeStep(this.iconMenu, 'click', 'Click on icon menu', []);
     await executeStep(this.clickOnLocationProfile, 'click', 'Click on groupIcon button', []);
@@ -354,23 +388,30 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await this.flowsheetCard.hover();
   }
+
   async changestatus() {
     await executeStep(this.timeLine, 'click', 'Click on status button', []);
     await executeStep(this.statusSetRefresh, 'click', 'Click on status set referesh button', []);
   }
   async assertTouchPointIndicator(searchText) {
     await this.searchFunction(searchText);
-    await assertElementVisible(this.touchPointIndicator);
+    await test.step('Assert touch point indicator is visible', async () => {
+      await assertElementVisible(this.touchPointIndicator);
+    });
     const countOfElements = await this.countOfPieIcon.count();
-    try {
-      await assertEqualValues(countOfElements, 5);
-    } catch (error) {
-      await assertEqualValues(countOfElements, 3);
-    }
-    await executeStep(this.touchPointIndicator, 'click', 'click on touch point indicator');
-    await assertElementVisible(this.touchPointModal);
-    await executeStep(this.happyIconInTouchPoint, 'click', 'click on happy icon');
-    await executeStep(this.saveButton, 'click', 'click on save button');
+    await test.step(`Assert count of pie icons: expected 5, actual ${countOfElements}`, async () => {
+      try {
+        await assertEqualValues(countOfElements, 5);
+      } catch (error) {
+        await assertEqualValues(countOfElements, 3);
+      }
+    });
+    await executeStep(this.touchPointIndicator, 'click', 'Click on touch point indicator');
+    await test.step('Assert touch point modal is visible', async () => {
+      await assertElementVisible(this.touchPointModal);
+    });
+    await executeStep(this.happyIconInTouchPoint, 'click', 'Click on happy icon');
+    await executeStep(this.saveButton, 'click', 'Click on save button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await this.page.reload();
     await this.searchFunction(searchText);
@@ -379,18 +420,22 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
 
   async addSecondTouchPoint(searchText) {
-    await executeStep(this.touchPointIndicator, 'click', 'click on touch point indicator');
-    await assertElementVisible(this.touchPointModal);
-    await executeStep(this.neutralIconInTouchPoint, 'click', 'click on neutral icon');
-    await executeStep(this.noteInput, 'fill', 'enter the comment', [
+    await executeStep(this.touchPointIndicator, 'click', 'Click on touch point indicator');
+    await test.step('Assert touch point modal is visible', async () => {
+      await assertElementVisible(this.touchPointModal);
+    });
+    await executeStep(this.neutralIconInTouchPoint, 'click', 'Click on neutral icon');
+    await executeStep(this.noteInput, 'fill', 'Enter the comment', [
       indexPage.lighthouse_data.neutralComment
     ]);
-    await executeStep(this.saveButton, 'click', 'click on save button');
+    await executeStep(this.saveButton, 'click', 'Click on save button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await this.page.reload();
     await this.searchFunction(searchText);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await checkVisibleElementColors(this.page, this.touchPointItems(2), 'rgb(244, 235, 0)');
+    await test.step('Verify the color of the second touch point icon is yellow', async () => {
+      await checkVisibleElementColors(this.page, this.touchPointItems(2), 'rgb(244, 235, 0)');
+    });
   }
 
   async addRemainingTouchPoint() {
@@ -398,72 +443,103 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     while (isItem) {
       try {
-        await assertElementVisible(this.touchPointModal);
-        await executeStep(this.angryIconInTouchPoint, 'click', 'click on angry icon in modal');
-        await executeStep(this.noteInput, 'fill', 'enter the msg in note input', [
+        await test.step('Assert touch point modal is visible', async () => {
+          await assertElementVisible(this.touchPointModal);
+        });
+
+        await executeStep(this.angryIconInTouchPoint, 'click', 'Click on angry icon in modal');
+        await executeStep(this.noteInput, 'fill', 'Enter the message in note input', [
           indexPage.lighthouse_data.angryComment
         ]);
-        await executeStep(this.saveButton, 'click', 'click on save button');
+        await executeStep(this.saveButton, 'click', 'Click on save button');
       } catch (error) {
-        await assertElementVisible(this.touchPointLimitMsg);
+        await test.step('Assert touch point limit message is visible', async () => {
+          await assertElementVisible(this.touchPointLimitMsg);
+        });
         isItem = false;
       }
     }
   }
   async verifyingRoomsFunctionality(searchRandomData, validData, updatedIconText) {
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
-    await assertElementVisible(this.commandCenterIcon);
-    await executeStep(this.searchInput, 'click', 'click on searchInput');
+    await test.step('Assert command center icon is visible', async () => {
+      await assertElementVisible(this.commandCenterIcon);
+    });
+    await executeStep(this.searchInput, 'click', 'Click on search input');
     await executeStep(this.searchInput, 'fill', 'Fill the search input field', [searchRandomData]);
-    await assertElementVisible(this.noResultsPlaceholder);
-    await assertElementNotVisible(this.commandCenterIcon);
-    await executeStep(this.searchInput, 'click', 'click on searchInput');
+
+    await test.step('Assert no results placeholder is visible', async () => {
+      await assertElementVisible(this.noResultsPlaceholder);
+    });
+    await test.step('Assert command center icon is not visible', async () => {
+      await assertElementNotVisible(this.commandCenterIcon);
+    });
+    await executeStep(this.searchInput, 'click', 'Click on search input again');
     await executeStep(this.searchInput, 'fill', 'Fill the search input field', [validData]);
     const resultRoomsCount = await this.roomsCount.textContent();
     const resultRoomsCountNumber = parseInt(resultRoomsCount.trim(), 10);
-    await executeStep(this.commandCenterIcon, 'click', 'click on commandCenterIcon');
+    await executeStep(this.commandCenterIcon, 'click', 'Click on command center icon');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const flowsheetListCount = await this.flowsheetList.count();
-    await assertEqualValues(resultRoomsCountNumber, flowsheetListCount);
-
-    await executeStep(this.flowsheetListElement1, 'click', 'click on flowsheet List Element1');
+    await test.step(`Assert room counts match: expected ${resultRoomsCountNumber}, actual ${flowsheetListCount}`, async () => {
+      await assertEqualValues(resultRoomsCountNumber, flowsheetListCount);
+    });
+    await executeStep(this.flowsheetListElement1, 'click', 'Click on flowsheet List Element1');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(
       this.jobIdChecking(indexPage.navigator_data.second_job_no),
       'click',
-      'click on job'
+      'Click on job'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.moodChooserIcon, 'click', 'click on moodChooser Icon');
-    await executeStep(this.happyIcon, 'click', 'click on happy Icon');
-    await executeStep(this.submitButton, 'click', 'click on submit Button');
+    await executeStep(this.moodChooserIcon, 'click', 'Click on mood chooser icon');
+    await executeStep(this.happyIcon, 'click', 'Click on happy icon');
+    await executeStep(this.submitButton, 'click', 'Click on submit button');
     if (this.isMobile) {
-      await executeStep(this.backarrow, 'click', 'click on backarrow Button');
+      await executeStep(this.backarrow, 'click', 'Click on back arrow button');
     }
-    await executeStep(this.commandCenterIcon, 'click', 'click on commandCenterIcon');
+    await executeStep(this.commandCenterIcon, 'click', 'Click on command center icon');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const classAttributeIcon = await this.updatedMoodIcon.getAttribute('class');
-    await assertContainsValue(classAttributeIcon, updatedIconText);
-    await assertElementVisible(this.hotel(indexPage.lighthouse_data.locationText_createData1));
-    await assertElementVisible(this.presentTime);
-    await assertElementVisible(this.todayDate);
-    await executeStep(this.flowsheetListElement1, 'click', 'click on flowsheet List Element1');
+    await test.step(`Assert updated mood icon contains text: expected "${updatedIconText}", actual "${classAttributeIcon}"`, async () => {
+      await assertContainsValue(classAttributeIcon, updatedIconText);
+    });
+    await test.step('Assert hotel element is visible', async () => {
+      await assertElementVisible(this.hotel(indexPage.lighthouse_data.locationText_createData1));
+    });
+    await test.step('Assert present time element is visible', async () => {
+      await assertElementVisible(this.presentTime);
+    });
+    await test.step('Assert today date element is visible', async () => {
+      await assertElementVisible(this.todayDate);
+    });
+    await executeStep(this.flowsheetListElement1, 'click', 'Click on flowsheet List Element1');
   }
   async verifyingTransfersFunctionality() {
-    await executeStep(this.transfersTab, 'click', 'click on transfers tab');
+    await executeStep(this.transfersTab, 'click', 'Click on transfers tab');
     try {
-      const resulttransfersCount = await this.transfersCount.textContent();
-      const resulttransfersCountNumber = parseInt(resulttransfersCount.trim(), 10);
-      await executeStep(this.commandCenterIcon, 'click', 'click on commandCenterIcon');
+      const resultTransfersCount = await this.transfersCount.textContent();
+      const resultTransfersCountNumber = parseInt(resultTransfersCount.trim(), 10);
+      await executeStep(this.commandCenterIcon, 'click', 'Click on command center icon');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      const transfersflowsheetListCount = await this.flowsheetList.count();
-      await assertEqualValues(resulttransfersCountNumber, transfersflowsheetListCount);
+      const transfersFlowsheetListCount = await this.flowsheetList.count();
+      await test.step(`Assert transfer counts match: expected ${resultTransfersCountNumber}, actual ${transfersFlowsheetListCount}`, async () => {
+        await assertEqualValues(resultTransfersCountNumber, transfersFlowsheetListCount);
+      });
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await assertElementVisible(this.hotel(indexPage.lighthouse_data.locationText_createData1));
-      await assertElementVisible(this.presentTime);
-      await assertElementVisible(this.todayDate);
+      await test.step('Assert hotel element is visible', async () => {
+        await assertElementVisible(this.hotel(indexPage.lighthouse_data.locationText_createData1));
+      });
+      await test.step('Assert present time element is visible', async () => {
+        await assertElementVisible(this.presentTime);
+      });
+      await test.step('Assert today date element is visible', async () => {
+        await assertElementVisible(this.todayDate);
+      });
     } catch {
-      await assertElementVisible(this.noDataFoundText);
+      await test.step('Assert no data found text is visible', async () => {
+        await assertElementVisible(this.noDataFoundText);
+      });
     }
   }
 };
