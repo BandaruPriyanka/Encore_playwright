@@ -20,13 +20,19 @@ test.describe('LightHouse Chat Search', () => {
 
   test('Test_C56930: Verify chats search', async () => {
     await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
-    await assertElementVisible(chatpage.participantChatAll);
-    await assertElementVisible(chatpage.searchChat_Field);
-    await assertElementAttributeContains(
-      chatpage.searchChat_Field,
-      'placeholder',
-      lighthouseData.ChatPlaceholder
-    );
+    await test.step('Verify that the All Chats  are visible', async () => {
+      await assertElementVisible(chatpage.participantChatAll);
+    });    
+    await test.step('Verify that the Search Chat Field is visible', async () => {
+      await assertElementVisible(chatpage.searchChat_Field);
+    });    
+    await test.step(`Verify that the Search Chat Field contains the placeholder text: "${lighthouseData.ChatPlaceholder}"`, async () => {
+      await assertElementAttributeContains(
+        chatpage.searchChat_Field,
+        'placeholder',
+        lighthouseData.ChatPlaceholder
+      );
+    });
     await chatpage.verifyingSearchFieldWithData(
       indexPage.lighthouse_data.ChatRandomText,
       indexPage.lighthouse_data.ChatParticipantName,

@@ -1,6 +1,6 @@
 const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
-const { assertElementVisible, assertElementContainsText } = require('../utils/helper');
+const { assertElementVisible, assertElementContainsText,checkVisibleElementColors,assertElementNotVisible } = require('../utils/helper');
 const utilConst = require('../utils/const');
 require('dotenv').config();
 
@@ -29,40 +29,61 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.opportunity_data.endUserAccount
     );
     for (const tabText of indexPage.lighthouse_data.flowsheetTabs) {
-      await assertElementVisible(flowsheetCardAndTab.flowsheetTabElement(tabText));
-    }
+      await test.step("In the flowsheet tab: " + tabText + " is displayed", async () => {
+        await assertElementVisible(flowsheetCardAndTab.flowsheetTabElement(tabText));
+      });
+    }    
   });
 
   test('Test_C56910: Verify contacts tab', async ({ page }) => {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
-    await assertElementVisible(flowsheetCardAndTab.flowsheetTabElement(utilConst.Const.Contacts));
+    await test.step('Verify the "Contacts" flowsheet tab is visible', async () => {
+      await assertElementVisible(flowsheetCardAndTab.flowsheetTabElement(utilConst.Const.Contacts));
+    });
     await flowsheetCardAndTab.clickOnContactAndValidate();
     await page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementContainsText(
-      flowsheetCardAndTab.textInModal,
-      indexPage.lighthouse_data.contactModalText
-    );
+    await test.step(`Verify the modal contains the text: "${indexPage.lighthouse_data.contactModalText}"`, async () => {
+      await assertElementContainsText(
+        flowsheetCardAndTab.textInModal,
+        indexPage.lighthouse_data.contactModalText
+      );
+    });
   });
   test('Test_C56891: Verify Test Mood change logic', async () => {
     await flowsheetCardAndTab.assertMoodChangeHappyIcon(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
+    await test.step(`Verify the appropriate log record was created. log msg : "${utilConst.Const.happyLogMsg}" `, async () => {
+      await assertElementVisible(flowsheetCardAndTab.logMsg(utilConst.Const.happyLogMsg));
+    }); 
     await flowsheetCardAndTab.assertMoodChangeNeutralIcon(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
     await flowsheetCardAndTab.assertMoodChangeAngryIcon();
   });
-  test('Test_C56894: Verify Test Touchpoint adding', async () => {
+  test('Test_C56894: Verify Test Touchpoint adding', async ({page}) => {
     await flowsheetCardAndTab.assertTouchPointIndicator(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
+    await test.step('Check if the first touch point item has the expected color of green', async () => {
+      await checkVisibleElementColors(page, flowsheetCardAndTab.touchPointItems(1), 'rgb(23, 181, 57)');
+    });
     await flowsheetCardAndTab.assertSecondItemInTouchPoint();
+    await test.step('Verify the color of the second touch point item is yellow', async () => {
+      await checkVisibleElementColors(page, flowsheetCardAndTab.touchPointItems(2), 'rgb(244, 235, 0)');
+    }); 
     await flowsheetCardAndTab.assertRemainingItemsInTouchPoint();
     await flowsheetCardAndTab.assertCustomerUrl();
+    await test.step('Verify the color of the first touch point icon is green', async () => {
+      await checkVisibleElementColors(page, flowsheetCardAndTab.firstTouchPointIcon, 'rgb(23, 181, 57)');
+    });
+    await test.step('Verify the color of the second touch point icon is yellow', async () => {
+      await checkVisibleElementColors(page, flowsheetCardAndTab.secondTouchPointIcon, 'rgb(244, 235, 0)');
+    });
   });
 
   test('Test_C56908 : Verify Notes Tab', async () => {
@@ -81,6 +102,9 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertEquipmentsInLightHouseAndNavigator();
     await flowsheetCardAndTab.assertEquipmentCheckList();
     await flowsheetCardAndTab.assertCheckBox();
+    await test.step('Verify that the "Select All checkbox" is not visible', async () => {
+      await assertElementNotVisible(flowsheetCardAndTab.selectAllCheckBox);
+    });
     await flowsheetCardAndTab.assertEquipmentByDescription();
     await flowsheetCardAndTab.assertEquipmentByName();
   });
@@ -91,6 +115,9 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
+    await test.step('Verify that the "pass control" modal is visible', async () => {
+      await assertElementVisible(flowsheetCardAndTab.textInModalForDocument);
+    }); 
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.positive);
     await flowsheetCardAndTab.assertRoomCountAfterAddOn();
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.positive);
@@ -102,6 +129,9 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
+    await test.step('Verify that the text in the document modal is visible', async () => {
+      await assertElementVisible(this.textInModalForDocument);
+    }); 
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.negative);
     await flowsheetCardAndTab.assertRoomCountAfterAddOn();
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.negative);

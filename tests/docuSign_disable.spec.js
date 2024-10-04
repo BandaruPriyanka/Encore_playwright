@@ -49,7 +49,7 @@ test('Test_C56892: Verify Comparison with previous jobs logic', async () => {
 });
 
 test('Test_C56909 : Verify Logs Tab', async () => {
-  await flowsheetCardAndTab.assertCommentSectionInLOg(
+  await flowsheetCardAndTab.assertCommentSectionInLog(
     indexPage.navigator_data.second_job_no_createData2,
     indexPage.navigator_data.second_job_no_createData2
   );

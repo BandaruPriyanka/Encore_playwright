@@ -41,5 +41,6 @@
   "positive": "positive",
   "negative": "negative",
   "confirmed": "Confirmed",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "noResultsFound" : "No data found"
 }
