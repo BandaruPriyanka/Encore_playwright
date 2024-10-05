@@ -24,7 +24,7 @@ module.exports = defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ['html'],
+    // ['html'],
     [
       'allure-playwright',
       {
@@ -87,7 +87,7 @@ module.exports = defineConfig({
         'tests/customers.spec.js',
         'tests/chats.spec.js'
       ],
-      // dependencies: ['global_setup', 'create_data1']
+      dependencies: ['global_setup', 'create_data1']
     },
     {
       name: 'docusign_disabled_all_Desktop_Chrome',

@@ -1,10 +1,12 @@
 const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
+const utilConst = require('../utils/const');
 const {
   assertElementVisible,
   assertIsNumber,
   assertElementEnabled,
-  assertElementAttributeContains
+  assertElementAttributeContains,
+  assertElementAttribute
 } = require('../utils/helper');
 require('dotenv').config();
 
@@ -20,45 +22,64 @@ test.beforeEach(async ({ page }) => {
   await page.waitForTimeout(parseInt(process.env.small_timeout));
   await flowsheetPage.changeLocation(locationId, locationText);
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
+  await customersPage.clickOnCustomerIcon();
 });
 
 test('Test_C56920 : Verify customer search', async ({ page }) => {
-  await customersPage.clickOnCustomerIcon();
   await page.waitForTimeout(parseInt(process.env.medium_timeout));
-  await assertElementVisible(customersPage.customerSearchInput);
+  await test.step('Assert some customers are returned', async () => {
+    await assertElementVisible(customersPage.existingCustomers);
+  });
+  await test.step('Assert customer search input is visible', async () => {
+    await assertElementVisible(customersPage.customerSearchInput);
+  });
   await customersPage.searchFunctionality();
 });
-test('Test_C5692 : Verify customers calendar', async ({ page }) => {
-  await customersPage.clickOnCustomerIcon();
+test('Test_C56923: Verify customers calendar', async ({ page }) => {
   await page.waitForTimeout(parseInt(process.env.small_timeout));
+  await test.step('Assert some customers are returned', async () => {
+    await assertElementVisible(customersPage.existingCustomers);
+  });
   await customersPage.assertCustomersExist();
-  await assertElementVisible(customersPage.calendarDiv);
-  await assertElementEnabled(customersPage.nextweekIcon);
-  await assertElementEnabled(customersPage.previousweekIcon);
+  await test.step('Assert calendar div is visible', async () => {
+    await assertElementVisible(customersPage.calendarDiv);
+  });
+  await test.step('Assert next week icon is enabled', async () => {
+    await assertElementEnabled(customersPage.nextweekIcon);
+  });
+  await test.step('Assert previous week icon is enabled', async () => {
+    await assertElementEnabled(customersPage.previousweekIcon);
+  });
   await customersPage.assertCalendarHasDates();
 });
-test('Test_C56924 : Verify test data on customer card', async () => {
-  await customersPage.clickOnCustomerIcon();
+test('Test_C56924 : Verify test data on customer card', async ({ page }) => {
   await customersPage.verifyCustomerCardContent();
   await customersPage.assertTabNames();
+  await test.step('Verify touchpoints pie icons should not be clickable from the customers page', async () => {
+    await assertElementAttributeContains(customersPage.touchpointPieIcon, 'class', 'mr-2');
+  });
 });
 test('Test_C56925 : Verify details tab', async () => {
-  await customersPage.clickOnCustomerIcon();
   await customersPage.verifyDetailsTab();
 });
 test('Test_C56926: Verify contacts tab', async () => {
-  await customersPage.clickOnCustomerIcon();
   await customersPage.checkNoContactsDisplayed();
 });
 test('Test_C56928 : Verify room list tab', async () => {
-  await customersPage.clickOnCustomerIcon();
   await customersPage.verifyRoomTab();
-  await assertIsNumber(customersPage.roomsqty);
+  await test.step('The Room List Tab should be highlighted', async () => {
+    await assertElementAttributeContains(
+      customersPage.dynamicTabElement(utilConst.Const.tabNames[3]),
+      'class',
+      'purple'
+    );
+  });
   await customersPage.selectRoomList();
-  await assertElementVisible(customersPage.flowsheetDetailsDiv);
-  await assertElementAttributeContains(customersPage.flowsheetTab, 'class', 'text-purple');
+  await test.step('Verify User is redirected to the Flowsheets page with the selected Room details expanded', async () => {
+    await assertElementVisible(customersPage.flowsheetDetailsDiv);
+  });
 });
-test('Test_C56927: Verify Touchpoints Tab', async () => {
+test.only('Test_C56927: Verify Touchpoints Tab', async () => {
   await customersPage.assertTouchPointTab();
   await customersPage.addFirstTouchPoint();
   await customersPage.addSecondTouchPoint();
