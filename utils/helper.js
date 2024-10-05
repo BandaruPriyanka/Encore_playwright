@@ -239,8 +239,7 @@ async function assertElementEnabled(element) {
   expect(isEnabled).toBe(true);
 }
 
-async function assertElementDisabled(page, selector) {
-  const element = await page.locator(selector);
+async function assertElementDisabled(element) {
   const isDisabled = await element.isDisabled();
   expect(isDisabled).toBe(true);
 }
