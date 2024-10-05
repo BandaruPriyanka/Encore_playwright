@@ -85,7 +85,8 @@ module.exports = defineConfig({
         'tests/flowsheet_card_tab.spec.js',
         'tests/schedule.spec.js',
         'tests/customers.spec.js',
-        'tests/chats.spec.js'
+        'tests/chats.spec.js',
+        'tests/myprofile.spec.js'
       ],
       dependencies: ['global_setup', 'create_data1']
     },
@@ -130,7 +131,8 @@ module.exports = defineConfig({
         'tests/flowsheet_card_tab.spec.js',
         'tests/schedule.spec.js',
         'tests/customers.spec.js',
-        'tests/chats.spec.js'
+        'tests/chats.spec.js',
+        'tests/myprofile.spec.js'
       ],
       dependencies: ['global_setup', 'create_data1']
     },
@@ -146,7 +148,8 @@ module.exports = defineConfig({
         'tests/flowsheet_card_tab.spec.js',
         'tests/schedule.spec.js',
         'tests/customers.spec.js',
-        'tests/chats.spec.js'
+        'tests/chats.spec.js',
+        'tests/myprofile.spec.js'
       ],
       dependencies: ['global_setup', 'create_data1']
     }
