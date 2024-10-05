@@ -8,6 +8,7 @@ import { SchedulePage } from '../pageobjects/schedule/schedule.page';
 import { CustomersPage } from '../pageobjects/customers/customers.page';
 import { ChatPage } from '../pageobjects/chats/chats.page';
 import { ProfilePage } from '../pageobjects/myprofile/profile.page';
+import { NotificationPage } from '../pageobjects/myprofile/notification.page';
 
 //datafile
 import api_data from '../data/apidata.json';
@@ -28,5 +29,6 @@ export {
   lighthouse_data,
   navigator_data,
   opportunity_data,
-  ProfilePage
+  ProfilePage,
+  NotificationPage
 };
