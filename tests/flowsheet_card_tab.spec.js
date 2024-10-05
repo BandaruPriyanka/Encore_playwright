@@ -136,4 +136,15 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertRoomCountAfterAddOn();
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.negative);
   });
+
+  test("Verify complimentary job" , async () => {
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1,indexPage.lighthouse_data.locationText_createData1);
+    await flowsheetCardAndTab.createAddOnForComplimentaryJob(indexPage.lighthouse_data.turnOn,indexPage.navigator_data.second_job_no_complimentary,indexPage.navigator_data.second_job_no_complimentary);
+    await test.step('Verify that the "pass control" modal is visible', async () => {
+      await assertElementVisible(flowsheetCardAndTab.textInModalForDocument);
+    });
+    await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.negative);
+    await flowsheetCardAndTab.assertRoomCountAfterAddOn();
+  });
+
 });

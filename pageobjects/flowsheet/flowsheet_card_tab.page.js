@@ -10,7 +10,8 @@ const {
   assertElementNotVisible,
   assertNotEqualValues,
   invalidDiscountGenerator,
-  validDiscountGenerator
+  validDiscountGenerator,
+  assertElementDisabled
 } = require('../../utils/helper');
 const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
@@ -425,7 +426,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.nextButton, 'click', 'click on next button');
   }
 
-  async dateSelectModal() {
+  async dateSelectModal(isNotComplimentary) {
     await test.step('Verify the "date selection" modal is visible', async () => {
       await assertElementVisible(this.dateSelectionModalText);
     });    
@@ -442,14 +443,16 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.selectDate, 'click', 'select today date');
     await executeStep(this.reviewOrderBtn, 'click', 'click on review order button');
     await test.step('Verify the confirmation page should be displayed with all the valid details.', async () => {
-      await assertElementContainsText(this.priceInConfirmationModal,discountPrice);
+      if(isNotComplimentary) {
+        await assertElementContainsText(this.priceInConfirmationModal,discountPrice);
+      }
       await assertElementVisible(this.sendToNavigatorBtn);
     });     
     await executeStep(this.sendToNavigatorBtn, 'click', 'click on send to navigator button');
   }
 
   async dateSelectModalCheckingAndAssertRooms() {
-    await this.dateSelectModal();
+    await this.dateSelectModal(true);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await test.step('Verify that there are add-on requests present', async () => {
       const addOnRequestsCount = await this.addOnRequestsList.count();
@@ -946,13 +949,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     const countOfEquipmentsInLightHouse = await this.listOfEquipments.count();
     const isLabourDisplayed = await this.labourEquipment.isVisible();
     const newPage = await this.page.context().newPage();
-    await newPage.goto(indexPage.navigator_data.navigatorUrl, {
+    await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
     await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
     await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
-    await newPage.goto(indexPage.navigator_data.navigatorUrl, {
+    await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
     const createDataPage = new indexPage.CreateData(newPage);
@@ -1075,11 +1078,8 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       indexPage.lighthouse_data.validQuantity
     );
     await this.discountChecking(invalidDiscountGenerator(), validDiscountGenerator());
-    await this.dateSelectModal();
-    await this.page.waitForTimeout(parseInt(process.env.default_timeout));
-    // await test.step('Verify that the text in the document modal is visible', async () => {
-    //   await assertElementVisible(this.textInModalForDocument);
-    // });    
+    await this.dateSelectModal(true);
+    await this.page.waitForTimeout(parseInt(process.env.default_timeout));    
   }
 
   async assertDocument(scenario) {
@@ -1148,13 +1148,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertStatusOfNavigatorJob(scenario) {
     const newPage = await this.page.context().newPage();
-    await newPage.goto(indexPage.navigator_data.navigatorUrl, {
+    await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
     await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
     await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
-    await newPage.goto(indexPage.navigator_data.navigatorUrl, {
+    await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
     const createDataPage = new indexPage.CreateData(newPage);
@@ -1169,4 +1169,20 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       });
     }
   }
+
+  async createAddOnForComplimentaryJob(docusignValue,searchText,jobId) {
+    await this.verifyDocusignStatus(docusignValue,searchText,jobId);
+    await this.addOnFunction(indexPage.lighthouse_data.requestedBy,
+    indexPage.lighthouse_data.individualProduct,
+    indexPage.lighthouse_data.packageProduct,
+    indexPage.lighthouse_data.invalidQuantity,
+    indexPage.lighthouse_data.validQuantity );
+    await test.step('Verify that the discount input field is disabled for a complimentary job', async () => {
+      await assertElementDisabled(this.discountInput);
+    });    
+    await executeStep(this.nextButton,"click","click on next button");
+    await this.dateSelectModal(false);
+    await this.page.waitForTimeout(parseInt(process.env.default_timeout));
+  }
+
 };

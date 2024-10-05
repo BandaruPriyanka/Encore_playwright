@@ -70,16 +70,24 @@ module.exports = defineConfig({
       testMatch: ['tests/create_data.spec.js']
     },
     {
+      name : 'complimentary_job',
+      use : { ...devices['Desktop Chrome'],
+        isCreateData1: true,
+        isComplimentary : true
+       },
+      testMatch: ['tests/create_data.spec.js']
+    },
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'], storageState: './data/storageState.json' },
       testMatch: [
-        // 'tests/flowsheet.spec.js',
-        // 'tests/flowsheet_card_tab.spec.js',
-        // 'tests/schedule.spec.js',
-        'tests/customers.spec.js'
-        // 'tests/chats.spec.js'
-      ]
-      //  dependencies: ['global_setup', 'create_data1']
+        'tests/flowsheet.spec.js',
+        'tests/flowsheet_card_tab.spec.js',
+        'tests/schedule.spec.js',
+        'tests/customers.spec.js',
+        'tests/chats.spec.js'
+      ],
+      dependencies: ['global_setup', 'create_data1']
     },
     {
       name: 'docusign_disabled_all_Desktop_Chrome',
