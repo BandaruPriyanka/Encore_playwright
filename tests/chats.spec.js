@@ -22,10 +22,10 @@ test.describe('LightHouse Chat Search', () => {
     await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
     await test.step('Verify that the All Chats  are visible', async () => {
       await assertElementVisible(chatpage.participantChatAll);
-    });    
+    });
     await test.step('Verify that the Search Chat Field is visible', async () => {
       await assertElementVisible(chatpage.searchChat_Field);
-    });    
+    });
     await test.step(`Verify that the Search Chat Field contains the placeholder text: "${lighthouseData.ChatPlaceholder}"`, async () => {
       await assertElementAttributeContains(
         chatpage.searchChat_Field,

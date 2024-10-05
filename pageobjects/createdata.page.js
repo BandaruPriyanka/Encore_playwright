@@ -12,7 +12,7 @@ const utilConst = require('../utils/const');
 require('dotenv').config();
 
 exports.CreateData = class CreateData {
-  constructor(page, isCreateData1,isComplimentary) {
+  constructor(page, isCreateData1, isComplimentary) {
     this.page = page;
     this.isCreateData1 = isCreateData1;
     this.isComplimentary = isComplimentary;
@@ -122,9 +122,15 @@ exports.CreateData = class CreateData {
     );
     this.statusOfJob = status => this.page.locator(`//div[text()='` + status + `']`);
     this.optionsBtn = this.page.locator("//a[contains(text(),'Options')]");
-    this.complimentaryExcludingLabourInput  = this.page.locator("//input[@id='CompNoLaborWithSysAmts']");
-    this.complimentaryExcludingLabourSelect  = this.page.locator("//select[@id='CompNoLaborWithSystemAmts']");
-    this.conformationTextArea = this.page.locator("//textarea[@name='OrderDiscountApprovalRequesterComments']");
+    this.complimentaryExcludingLabourInput = this.page.locator(
+      "//input[@id='CompNoLaborWithSysAmts']"
+    );
+    this.complimentaryExcludingLabourSelect = this.page.locator(
+      "//select[@id='CompNoLaborWithSystemAmts']"
+    );
+    this.conformationTextArea = this.page.locator(
+      "//textarea[@name='OrderDiscountApprovalRequesterComments']"
+    );
     this.continueBtn = this.page.locator("//button[normalize-space()='Continue']");
     // this.crossBtn = this.page.locator("//span[text()='×']");
   }
@@ -371,15 +377,15 @@ exports.CreateData = class CreateData {
     await newPage.locator("//span[@id='submitButton']").click();
     await newPage.waitForTimeout(parseInt(process.env.large_timeout));
     const navigationUrl = await newPage.url();
-    if(this.isCreateData1) {
+    if (this.isCreateData1) {
       indexPage.navigator_data.navigatorUrl_createdata1 = navigationUrl;
-    }else {
-      indexPage.navigator_data.navigatorUrl_createdata2 = navigationUrl
+    } else {
+      indexPage.navigator_data.navigatorUrl_createdata2 = navigationUrl;
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
-    if(this.isCreateData1) {
+    if (this.isCreateData1) {
       await assertEqualValues(indexPage.navigator_data.navigatorUrl_createdata1, navigationUrl);
-    }else {
+    } else {
       await assertEqualValues(indexPage.navigator_data.navigatorUrl_createdata2, navigationUrl);
     }
     await newPage.close();
@@ -410,29 +416,29 @@ exports.CreateData = class CreateData {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const firstJobNumberElement = await this.page.locator('span.job-number').nth(0);
     const firstJobNumber = await firstJobNumberElement.textContent();
-    if(this.isCreateData1  && !this.isComplimentary) {
+    if (this.isCreateData1 && !this.isComplimentary) {
       indexPage.navigator_data.first_job_no = firstJobNumber;
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
     const secondJobNumberElement = await this.page.locator('span.job-number').nth(1);
     const secondJobNumber = await secondJobNumberElement.textContent();
-    if(this.isCreateData1  && !this.isComplimentary) {
+    if (this.isCreateData1 && !this.isComplimentary) {
       indexPage.navigator_data.second_job_no = secondJobNumber;
-    }else if(this.isCreateData1 && this.isComplimentary) {
+    } else if (this.isCreateData1 && this.isComplimentary) {
       indexPage.navigator_data.second_job_no_complimentary = secondJobNumber;
-    }else {
+    } else {
       indexPage.navigator_data.second_job_no_createData2 = secondJobNumber;
     }
     const orderNumber = await this.orderNumber.textContent();
-    if(this.isCreateData1  && !this.isComplimentary) {
+    if (this.isCreateData1 && !this.isComplimentary) {
       indexPage.navigator_data.order_no = orderNumber;
     }
     const order_name = await this.orderName.textContent();
-    if(this.isCreateData1  && !this.isComplimentary) {
+    if (this.isCreateData1 && !this.isComplimentary) {
       indexPage.navigator_data.order_name = order_name;
     }
     const roomNameele = await this.roomName.textContent();
-    if(this.isCreateData1  && !this.isComplimentary) {
+    if (this.isCreateData1 && !this.isComplimentary) {
       indexPage.navigator_data.roomName = roomNameele;
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
@@ -443,7 +449,7 @@ exports.CreateData = class CreateData {
     await executeStep(this.clickPackageIcon, 'click', 'click on package icon');
     await executeStep(this.selectPackageName, 'doubleclick', 'double click the select package');
     const textContent = await this.selectedItemName.textContent();
-    if(this.isCreateData1  && !this.isComplimentary) {
+    if (this.isCreateData1 && !this.isComplimentary) {
       indexPage.navigator_data.item_name = textContent;
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
@@ -462,7 +468,7 @@ exports.CreateData = class CreateData {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.addToPackageBtn, 'click', 'click on add to package button');
     const ItemName = await this.labourItemName.textContent();
-    if(this.isCreateData1  && !this.isComplimentary) {
+    if (this.isCreateData1 && !this.isComplimentary) {
       indexPage.navigator_data.labour_item_name = ItemName;
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
@@ -473,18 +479,20 @@ exports.CreateData = class CreateData {
     await executeStep(this.jobNotesTextArea, 'fill', 'Enter content in job notes area', [
       indexPage.opportunity_data.jobNotesTextArea
     ]);
-    if(this.isComplimentary) {
-      await executeStep(this.optionsBtn,"click","click options button");
-      await executeStep(this.complimentaryExcludingLabourInput,"click","click on check box")
-      await executeStep(this.complimentaryExcludingLabourSelect,"click","click on select");
-      await this.complimentaryExcludingLabourSelect.selectOption({ label : "Competitor Match" });
+    if (this.isComplimentary) {
+      await executeStep(this.optionsBtn, 'click', 'click options button');
+      await executeStep(this.complimentaryExcludingLabourInput, 'click', 'click on check box');
+      await executeStep(this.complimentaryExcludingLabourSelect, 'click', 'click on select');
+      await this.complimentaryExcludingLabourSelect.selectOption({ label: 'Competitor Match' });
       await executeStep(this.saveBtn, 'click', 'click on save button');
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-      await executeStep(this.conformationTextArea,"fill","enter the text for conformation",[indexPage.lighthouse_data.confirmed]);
-      await executeStep(this.continueBtn,"click","click on continue button");
+      await executeStep(this.conformationTextArea, 'fill', 'enter the text for conformation', [
+        indexPage.lighthouse_data.confirmed
+      ]);
+      await executeStep(this.continueBtn, 'click', 'click on continue button');
       // await executeStep(this.crossBtn,"click","click on cross button");
     }
-    if(! this.isComplimentary) {
+    if (!this.isComplimentary) {
       await executeStep(this.saveBtn, 'click', 'click on save button');
     }
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));

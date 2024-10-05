@@ -5,7 +5,7 @@
   "scripts": {
     "createdata1": "npx playwright test --project=create_data1",
     "createdata2": "npx playwright test --project=create_data2",
-    "complimentary" : "npx playwright test --project=complimentary_job",
+    "complimentary": "npx playwright test --project=complimentary_job",
     "global_setup": "npx playwright test --project=global_setup",
     "clean:allure-results": "rimraf allure-results",
     "ios": "npx playwright test --project=Mobile_Safari",
