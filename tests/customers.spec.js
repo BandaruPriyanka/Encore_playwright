@@ -79,7 +79,7 @@ test('Test_C56928 : Verify room list tab', async () => {
     await assertElementVisible(customersPage.flowsheetDetailsDiv);
   });
 });
-test.only('Test_C56927: Verify Touchpoints Tab', async () => {
+test('Test_C56927: Verify Touchpoints Tab', async () => {
   await customersPage.assertTouchPointTab();
   await customersPage.addFirstTouchPoint();
   await customersPage.addSecondTouchPoint();

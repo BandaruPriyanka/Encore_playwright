@@ -2,10 +2,10 @@ const { executeStep } = require('../../utils/action');
 const indexPage = require('../../utils/index.page');
 const fs = require('node:fs/promises');
 const {
-    assertElementVisible,
-    assertContainsValue,
-    validateLastSyncValue
-  } = require('../../utils/helper');
+  assertElementVisible,
+  assertContainsValue,
+  validateLastSyncValue
+} = require('../../utils/helper');
 exports.ProfilePage = class ProfilePage {
   constructor(page) {
     this.page = page;
