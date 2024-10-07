@@ -116,6 +116,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
       await profilePage.resyncJustnowStatus();
       await profilePage.validatingNotification();
     });
+    await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await page.reload();
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     test.step('Verify Last Synced Value Updates on Page Refresh', async () => {
@@ -201,4 +202,10 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     });
     await notificationPage.verifyRemovingLocation();
   });
+
+  test.skip("Test_C57114 Check 'Favourite Slot' selection" , async () => {
+    await profilePage.assertInitialFavouriteMenuSlot();
+    await profilePage.changeMenuSlot1ToFavouriteSlot();
+    await profilePage.restoreToSelectedMenuSlot();
+  })
 });
