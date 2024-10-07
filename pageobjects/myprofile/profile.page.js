@@ -47,64 +47,98 @@ exports.ProfilePage = class ProfilePage {
     this.myProfileBtn = this.page.locator(
       "//app-side-menu//span[normalize-space(text())='My Profile']"
     );
-    this.generalTab = this.page.locator(
-      "(//aside//li[contains(@class, 'text-purple-500') and contains(@class, 'bg-gray-300')]//span[text()='General'])[2]"
-    );
-    this.notificationLocations = this.page.locator(
-      "(//aside//span[text()='Notification Locations'])[2]"
-    );
-    this.profileModule = this.page.locator("//div[normalize-space()='Profile']");
-    this.locationProfileOption = this.page.locator('//span[normalize-space()="Location Profile"]');
-    this.locationHeading = this.page.locator('//h1[contains(text(),"Location")]');
-    this.logsOption = this.page.locator('//span[normalize-space()="Logs"]');
-    this.logsHeading = this.page.locator('//span[contains(@class,"e2e_logs_title")]');
-    this.dashboardOption = this.page.locator('//span[normalize-space()="Dashboard"]');
-    this.dashboardPageText = this.page.locator(
-      '(//div[normalize-space()="Additions Captured"])[1]'
-    );
-    this.preferencesModule = this.page.locator("//app-profile-header//div[text()='Preferences']");
-    this.moreOptionsModule = this.page.locator(
-      "//app-profile-header//div[text()='Menu Options / Default Screen']"
-    );
-    this.lastSyncText = this.page.locator(
-      "//app-profile-content//div[contains(@class, 'xl:flex')]//div[normalize-space(text())='Last Synced']"
-    );
-    this.notificationsAllowedText = this.page.locator(
-      "(//app-profile-content//div[normalize-space(text())='Notifications Allowed'])[1]"
-    );
-    this.displayName = this.page.locator(
-      "(//app-profile-content//div[normalize-space(text())='Display Name'])[1]"
-    );
-    this.emailText = this.page.locator(
-      "(//app-profile-content//div[normalize-space(text())='Email'])[1]"
-    );
-    this.userNameText = this.page.locator(
-      "(//app-profile-content//div[normalize-space(text())='Username'])[1]"
-    );
-    this.defaultLocationText = this.page.locator(
-      "(//app-profile-content//div[normalize-space(text())='Default Location'])[1]"
-    );
-    this.selectedLocationText = this.page.locator(
-      "(//app-profile-content//div[normalize-space(text())='Selected Location'])[1]"
-    );
-    this.languageElement = this.page.locator("(//div[normalize-space(text())='Language'])[1]");
-    this.equipmentDisplayChoiceElement = this.page.locator(
-      "(//div[normalize-space(text())='Equipment Display Choice'])[1]"
-    );
-    this.defaultScheduleViewElement = this.page.locator(
-      "(//div[normalize-space(text())='Default Schedule View'])[1]"
-    );
-    this.themeElement = this.page.locator("(//div[normalize-space(text())='Theme'])[1]");
-    this.timeDisplayElement = this.page.locator(
-      "(//div[normalize-space(text())='Time Display'])[1]"
-    );
-    this.lastSyncValue = this.page.locator(
-      "//app-profile-content//span[contains(@class, 'e2e_user_profile_sync_value')]"
-    );
-    this.resyncLink = this.page.locator(
-      "(//app-profile-content//div[contains(@class,'e2e_user_profile_sync_action') and normalize-space(text())='Resync'])[1]"
-    );
-    this.notificationMessage = this.page.locator('//mat-snack-bar-container');
+    this.generalTab = this.isMobile
+    ? this.page.locator(
+        "(//aside//li[contains(@class, 'text-purple-500') and contains(@class, 'bg-gray-300')]//span[text()='General'])[1]"
+      )
+    : this.page.locator(
+        "(//aside//li[contains(@class, 'text-purple-500') and contains(@class, 'bg-gray-300')]//span[text()='General'])[2]"
+      );
+  this.notificationLocations = this.page.locator(
+    "(//aside//span[text()='Notification Locations'])[2]"
+  );
+  this.profileModule = this.page.locator("//div[normalize-space()='Profile']");
+  this.locationProfileOption = this.page.locator('//span[normalize-space()="Location Profile"]');
+  this.locationHeading = this.page.locator('//h1[contains(text(),"Location")]');
+  this.logsOption = this.page.locator('//span[normalize-space()="Logs"]');
+  this.logsHeading = this.page.locator('//span[contains(@class,"e2e_logs_title")]');
+  this.dashboardOption = this.page.locator('//span[normalize-space()="Dashboard"]');
+  this.dashboardPageText = this.page.locator(
+    '(//div[normalize-space()="Additions Captured"])[1]'
+  );
+  this.preferencesModule = this.page.locator("//app-profile-header//div[text()='Preferences']");
+  this.moreOptionsModule = this.page.locator(
+    "//app-profile-header//div[text()='Menu Options / Default Screen']"
+  );
+  this.lastSyncText = this.isMobile
+    ? this.page.locator(
+        "//app-profile-content//div[contains(@class, 'flex justify-between')]//div[normalize-space(text())='Last Synced']"
+      )
+    : this.page.locator(
+        "//app-profile-content//div[contains(@class, 'xl:flex')]//div[normalize-space(text())='Last Synced']"
+      );
+  this.notificationsAllowedText = this.isMobile
+    ? this.page.locator(
+        "(//app-profile-content//div[normalize-space(text())='Notifications Allowed'])[2]"
+      )
+    : this.page.locator(
+        "(//app-profile-content//div[normalize-space(text())='Notifications Allowed'])[1]"
+      );
+  this.displayName = this.isMobile
+    ? this.page.locator("(//app-profile-content//div[normalize-space(text())='Display Name'])[2]")
+    : this.page.locator(
+        "(//app-profile-content//div[normalize-space(text())='Display Name'])[1]"
+      );
+  this.emailText = this.isMobile
+    ? this.page.locator("(//app-profile-content//div[normalize-space(text())='Email'])[2]")
+    : this.page.locator("(//app-profile-content//div[normalize-space(text())='Email'])[1]");
+  this.userNameText = this.isMobile
+    ? this.page.locator("(//app-profile-content//div[normalize-space(text())='Username'])[2]")
+    : this.page.locator("(//app-profile-content//div[normalize-space(text())='Username'])[1]");
+  this.defaultLocationText = this.isMobile
+    ? this.page.locator(
+        "(//app-profile-content//div[normalize-space(text())='Default Location'])[2]"
+      )
+    : this.page.locator(
+        "(//app-profile-content//div[normalize-space(text())='Default Location'])[1]"
+      );
+  this.selectedLocationText = this.isMobile
+    ? this.page.locator(
+        "(//app-profile-content//div[normalize-space(text())='Selected Location'])[2]"
+      )
+    : this.page.locator(
+        "(//app-profile-content//div[normalize-space(text())='Selected Location'])[1]"
+      );
+  this.languageElement = this.isMobile
+    ? this.page.locator("(//div[normalize-space(text())='Language'])[2]")
+    : this.page.locator("(//div[normalize-space(text())='Language'])[1]");
+  this.equipmentDisplayChoiceElement = this.isMobile
+    ? this.page.locator("(//div[normalize-space(text())='Equipment Display Choice'])[2]")
+    : this.page.locator("(//div[normalize-space(text())='Equipment Display Choice'])[1]");
+  this.defaultScheduleViewElement = this.isMobile
+    ? this.page.locator("(//div[normalize-space(text())='Default Schedule View'])[2]")
+    : this.page.locator("(//div[normalize-space(text())='Default Schedule View'])[1]");
+  this.themeElement = this.isMobile
+    ? this.page.locator("(//div[normalize-space(text())='Theme'])[2]")
+    : this.page.locator("(//div[normalize-space(text())='Theme'])[1]");
+  this.timeDisplayElement = this.isMobile
+    ? this.page.locator("(//div[normalize-space(text())='Time Display'])[2]")
+    : this.page.locator("(//div[normalize-space(text())='Time Display'])[1]");
+  this.lastSyncValue = this.isMobile
+    ? this.page.locator(
+        "//app-profile-content//div[contains(@class, 'e2e_user_profile_sync_value')]"
+      )
+    : this.page.locator(
+        "//app-profile-content//span[contains(@class, 'e2e_user_profile_sync_value')]"
+      );
+  this.resyncLink = this.isMobile
+    ? this.page.locator(
+        "(//app-profile-content//div[contains(@class,'e2e_user_profile_sync_action') and normalize-space(text())='Resync'])[2]"
+      )
+    : this.page.locator(
+        "(//app-profile-content//div[contains(@class,'e2e_user_profile_sync_action') and normalize-space(text())='Resync'])[1]"
+      );
+  this.notificationMessage = this.page.locator('//mat-snack-bar-container');
     this.getLocationFromHeader = this.page.locator("(//icon[@name='map_point_line'])[1]//parent::div");
     this.getLocationFromGeneralTab = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_selected_location_value')]") 
               : this.page.locator("//span[@class='e2e_user_profile_selected_location_value']");
@@ -135,6 +169,17 @@ exports.ProfilePage = class ProfilePage {
               : this.page.locator("(//div[contains(@class,'e2e_user_profile_sync_label')])[1]")
     this.firstnavigationItemTitleInUI = this.page.locator("(//span[contains(@class,'e2e_navigation_item_title')])[1]");
     this.navigationElementsLocator = "//span[contains(@class,'e2e_navigation_item_title')]";
+    // C57114
+    this.initialFavouriteMenuSlot = this.isMobile ? this.page.locator("//div[text()='Menu Slot 3']//following-sibling::div") 
+              : this.page.locator("(//div[contains(@class,'e2e_profile_content_favorite')])[3]");
+    this.getValueOfMenuSlot3 = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_menu_3_value')]")
+              : this.page.locator("//span[contains(@class,'e2e_user_profile_menu_3_value')]");
+    this.selectFirstMenuSlotAsFavourite = this.isMobile ? this.page.locator("//div[text()='Menu Slot 1']//following-sibling::div")
+              : this.page.locator("(//div[contains(@class,'e2e_profile_content_favorite')])[1]");
+    this.getValueOfMenuSlot5 = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_menu_5_value')]")
+              : this.page.locator("//span[contains(@class,'e2e_user_profile_menu_5_value')]");
+    this.getFlowsheetTextFromPage = this.page.locator("//div[contains(@class,'e2e_page_header_flowsheets')]/span");
+    this.getScheduleTextFromPage = this.page.locator("//div[contains(@class,'e2e_page_header_schedule')]")
   }
   async navigateToProfileMenu() {
     await executeStep(this.menuIcon, 'click', 'Click on Profile Menu Icon');
@@ -143,7 +188,9 @@ exports.ProfilePage = class ProfilePage {
     await executeStep(this.myProfileBtn, 'click', 'Click on My Profile');
   }
   getMenuSlotElement(slotNumber) {
-    return this.page.locator(`(//div[normalize-space(text())='Menu Slot ${slotNumber}'])[1]`);
+    return this.isMobile
+      ? this.page.locator(`(//div[normalize-space(text())='Menu Slot ${slotNumber}'])[2]`)
+      : this.page.locator(`(//div[normalize-space(text())='Menu Slot ${slotNumber}'])[1]`);
   }
   async validatingLastSyncValue() {
     const lastSyncedText = await this.lastSyncValue.innerText();
@@ -432,5 +479,37 @@ exports.ProfilePage = class ProfilePage {
       const profileTitleText = await this.getTextOfSyncLabel.textContent();
       await assertEqualValues(profileTitleText.trim(),indexPage.lighthouse_data.lastSyncedInEnglish);
     });
+  }
+
+  async assertInitialFavouriteMenuSlot() {
+    const getMenuSlotValue = await this.getValueOfMenuSlot3.textContent();
+    await this.page.goto(process.env.lighthouseUrl);
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    const textFromPage = await this.getFlowsheetTextFromPage.textContent();
+    await test.step('Verify that the appropriate page is opened based on the Favourite option From Menu Slot 3' , async() => {
+      await assertEqualValues(textFromPage,getMenuSlotValue);
+    });
+  }
+ 
+  async changeMenuSlot1ToFavouriteSlot() {
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    await executeStep(this.selectFirstMenuSlotAsFavourite,"click","Select the first menu slot as favourite");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const getMenuSlotValue = await this.getValueOfMenuSlot5.textContent();
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await this.page.goto(process.env.lighthouseUrl);
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    const textFromPage = await this.getScheduleTextFromPage.textContent();
+    await test.step('Verify that the appropriate page is opened based on the Favourite option From Menu Slot 1' , async() => {
+      await assertEqualValues(textFromPage,getMenuSlotValue);
+    });
+  }
+
+  async restoreToSelectedMenuSlot() {
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    await executeStep(this.initialFavouriteMenuSlot,"click","Select the third menu slot as favourite")
   }
 };
