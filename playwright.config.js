@@ -88,7 +88,7 @@ module.exports = defineConfig({
         'tests/chats.spec.js',
         'tests/myprofile.spec.js'
       ],
-      dependencies: ['global_setup', 'create_data1']
+      // dependencies: ['global_setup', 'create_data1']
     },
     {
       name: 'docusign_disabled_all_Desktop_Chrome',
@@ -134,7 +134,7 @@ module.exports = defineConfig({
         'tests/chats.spec.js',
         'tests/myprofile.spec.js'
       ],
-      dependencies: ['global_setup', 'create_data1']
+      // dependencies: ['global_setup', 'create_data1']
     },
     {
       name: 'Mobile_Safari',

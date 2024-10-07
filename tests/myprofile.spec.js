@@ -4,6 +4,8 @@ require('dotenv').config();
 const {
   assertElementVisible,
   assertNotEqualValues,
+  assertEqualValues,
+  assertElementNotVisible,
   assertElementEnabled,
   assertElementDisabled,
   assertElementAttributeContains
@@ -121,6 +123,32 @@ test.describe('Performing actions on My Profile Tab', () => {
       await assertNotEqualValues(lastSyncValue, indexPage.lighthouse_data.lastSyncedTime);
     });
   });
+  test('Test_C57106 Check "Location" selection', async () => {
+    const locationFromHeader = await profilePage.getLocationFromHeader.textContent();
+    const locationFromGeneralTab = await profilePage.getLocationFromGeneralTab.textContent();
+    await test.step(`Verify that a valid location is displayed as the default 'Selected location' value- Expected: "${locationFromGeneralTab.trim()}", Actual: "${locationFromHeader.trim()}"`, async () => {
+      await assertEqualValues(locationFromHeader.trim(), locationFromGeneralTab.trim());
+    });    
+    await test.step('Verify that the "Selected location change" button is not visible', async () => {
+      await assertElementNotVisible(profilePage.selectedLocationChangeButton);
+    });    
+  });
+  test('Test_C57108 Check "Equipment Display Choice" selection', async() => {
+    await profilePage.assertEquipmentByIntialDisplayValue();
+    await profilePage.assertEquipmentByChangedDisplayValue();
+    await profilePage.changeEquipmentDisplayChoiceToInitialValue();
+  })
+  test('Test_Check "Default Schedule View" selection', async () => {
+    await profilePage.assertInitialDefaultSheduleView();
+    await profilePage.assertDefaultScheduleViewAfterChange();
+    await profilePage.changeScheduleViewValueToIntialValue();
+  })
+  test('Test_C57107 Check "Language" selection' , async() => {
+    await profilePage.assertInitialLanguageValue();
+    await profilePage.assertUpdateLanguageToSpanish();
+    await profilePage.assertUpdateLanguageToFrench();
+    await profilePage.changeLanguageToIntialValue();
+  })
   test('Test_C57115:Verify Notification Location Tab elements', async () => {
     await notificationPage.clickOnNotification();
     await test.step('The Notification Location page should consist : Notification location tab , location list , search field', async () => {

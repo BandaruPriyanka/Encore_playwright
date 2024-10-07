@@ -3,7 +3,8 @@ const axios = require('axios');
 require('dotenv').config();
 const data = require('../data/apidata.json');
 const indexPage = require('./index.page');
-const { expect } = require('@playwright/test');
+const { expect,test } = require('@playwright/test');
+
 
 function getTodayDate() {
   const date = new Date();
@@ -401,5 +402,5 @@ module.exports = {
   getTodayDateAndMonth,
   getPreviousWeekDateAndMonth,
   getNextWeekDateAndMonth,
-  getFormattedTodayDate
+  getFormattedTodayDate,
 };
