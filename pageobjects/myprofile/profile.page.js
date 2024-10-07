@@ -13,6 +13,7 @@ const {
   } = require('../../utils/helper');
 let initialEquipmentDispalyValue,getequipmentTextByIntialDisplayValue,
     getequipmentTextByChangedDisplayValue,initialScheduleViewValue,initialLanguageValue,spanishText,frenchText
+
 exports.ProfilePage = class ProfilePage {
   constructor(page) {
     this.page = page;

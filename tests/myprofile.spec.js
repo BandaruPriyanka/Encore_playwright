@@ -5,11 +5,15 @@ const {
   assertElementVisible,
   assertNotEqualValues,
   assertEqualValues,
-  assertElementNotVisible
+  assertElementNotVisible,
+  assertElementEnabled,
+  assertElementDisabled,
+  assertElementAttributeContains
 } = require('../utils/helper');
 test.describe('Performing actions on My Profile Tab', () => {
   let profilePage,
     flowsheetPage,
+    notificationPage,
     locationId,
     locationText,
     lastSyncValue,
@@ -20,6 +24,7 @@ test.describe('Performing actions on My Profile Tab', () => {
   test.beforeEach(async ({ page }) => {
     profilePage = new indexPage.ProfilePage(page);
     flowsheetPage = new indexPage.FlowSheetPage(page);
+    notificationPage = new indexPage.NotificationPage(page);
     locationId = indexPage.lighthouse_data.locationId_createData1;
     locationText = indexPage.lighthouse_data.locationText_createData1;
     await page.goto(process.env.lighthouseUrl, {
@@ -27,17 +32,16 @@ test.describe('Performing actions on My Profile Tab', () => {
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await flowsheetPage.changeLocation(locationId, locationText);
-    await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await profilePage.navigateToProfileMenu();
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     test.step('Verify My Profile is visible', async () => {
       await assertElementVisible(profilePage.myProfileBtn);
       await profilePage.navigateToMyProfile();
     });
-    await page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test.skip('Test_C57103 Verify Menu navigation desktop', async ({isMobile }) => {
+  test.skip('Test_C57103 Verify Menu navigation desktop', async ({ isMobile }) => {
     test.skip(isMobile, 'Skipping Verify Menu navigation on mobile devices');
     await profilePage.verifyingMenuNavigation(
       indexPage.lighthouse_data.expectedProfileText,
@@ -47,7 +51,7 @@ test.describe('Performing actions on My Profile Tab', () => {
     );
   });
 
-  test.skip('Test_C57109 Verify Menu navigation mobile', async ({isMobile }) => {
+  test.skip('Test_C57109 Verify Menu navigation mobile', async ({ isMobile }) => {
     test.skip(!isMobile, 'Skipping Flowsheet status on desktop devices');
     await profilePage.verifyingMenuNavigation(
       indexPage.lighthouse_data.expectedProfileText,
@@ -139,10 +143,35 @@ test.describe('Performing actions on My Profile Tab', () => {
     await profilePage.assertDefaultScheduleViewAfterChange();
     await profilePage.changeScheduleViewValueToIntialValue();
   })
-  test.only('Test_C57107 Check "Language" selection' , async() => {
+  test('Test_C57107 Check "Language" selection' , async() => {
     await profilePage.assertInitialLanguageValue();
     await profilePage.assertUpdateLanguageToSpanish();
     await profilePage.assertUpdateLanguageToFrench();
     await profilePage.changeLanguageToIntialValue();
   })
+  test('Test_C57115:Verify Notification Location Tab elements', async () => {
+    await notificationPage.clickOnNotification();
+    await test.step('The Notification Location page should consist : Notification location tab , location list , search field', async () => {
+      await assertElementVisible(notificationPage.notificationLocation);
+      await assertElementVisible(notificationPage.locationList);
+      await assertElementVisible(notificationPage.addLocation);
+    });
+    await test.step('Verify that one location is marked with "Home" icon and cannot be removed', async () => {
+      await assertElementVisible(notificationPage.homeIcon);
+    });
+    await test.step('Verify that other non-home locations can be removed from the list', async () => {
+      await assertElementVisible(notificationPage.deleteIcon);
+      await assertElementEnabled(notificationPage.deleteIcon);
+    });
+  });
+  test('Test_C57115:Verify Notification Location search functiona', async () => {
+    await notificationPage.clickOnNotification();
+    await test.step('Verify search field is displayed as the last row ', async () => {
+      await assertElementVisible(notificationPage.addLocation);
+    });
+    await test.step('Verify search field has Add Location placeholder', async () => {
+        await assertElementAttributeContains(notificationPage.addLocation,'placeholder','Add Location');
+      });
+    await notificationPage.verifyAddLocationField();
+  });
 });
