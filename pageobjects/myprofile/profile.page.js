@@ -1,11 +1,14 @@
 const { executeStep } = require('../../utils/action');
 const indexPage = require('../../utils/index.page');
 const fs = require('node:fs/promises');
+const { test, expect } = require('@playwright/test');
 const {
   assertElementVisible,
   assertContainsValue,
-  validateLastSyncValue
+  validateLastSyncValue,
+  validateLastSyncedText
 } = require('../../utils/helper');
+
 exports.ProfilePage = class ProfilePage {
   constructor(page) {
     this.page = page;
@@ -107,7 +110,17 @@ exports.ProfilePage = class ProfilePage {
     return this.page.locator(`(//div[normalize-space(text())='Menu Slot ${slotNumber}'])[1]`);
   }
   async validatingLastSyncValue() {
-    await validateLastSyncValue(this.lastSyncValue);
+    const lastSyncedText = await this.lastSyncValue.innerText();
+    indexPage.lighthouse_data.lastSyncedTime = lastSyncedText;
+    await fs.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
+    const isValid = await validateLastSyncedText(lastSyncedText);
+
+    await test.step(`Verify that the 'Last synced' value represents a past time: "${lastSyncedText}"`, async () => {
+      expect(isValid).toBe(
+        true,
+        `The 'Last synced' value "${lastSyncedText}" is not valid, as it should represent a past time frame.`
+      );
+    });
   }
   async resyncTheTime() {
     await executeStep(this.resyncLink, 'click', 'Click on Resync Link');
@@ -124,53 +137,67 @@ exports.ProfilePage = class ProfilePage {
   }
   async verifyingMenuNavigation(
     expectedProfileText,
-    expectedlocationText,
-    expectedlogsText,
-    expecteddashboardText
+    expectedLocationText,
+    expectedLogsText,
+    expectedDashboardText
   ) {
-    await assertElementVisible(this.menuIcon);
+    await test.step('Verify that Menu Icon is displayed.', async () => {
+      await assertElementVisible(this.menuIcon);
+    });
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
+    await test.step('Verify that Menu Modal is displayed.', async () => {
+      await assertElementVisible(this.menuModal);
+    });
     await executeStep(this.menuText, 'click', 'click on menuText');
     await executeStep(this.scheduleTab, 'click', 'click on scheduleTab');
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
+    await test.step('Verify that Menu Modal is displayed in Schedule page.', async () => {
+      await assertElementVisible(this.menuModal);
+    });
     await executeStep(this.menuText, 'click', 'click on menuText');
     await executeStep(this.customersIcon, 'click', 'click on customersIcon');
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
+    await test.step('Verify that Menu Modal is displayed in Customers page.', async () => {
+      await assertElementVisible(this.menuModal);
+    });
     await executeStep(this.menuText, 'click', 'click on menuText');
     await executeStep(this.chatIcon, 'click', 'click on chatIcon');
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
+    await test.step('Verify that Menu Modal is displayed in Chat page.', async () => {
+      await assertElementVisible(this.menuModal);
+    });
     await executeStep(this.menuText, 'click', 'click on menuText');
     await executeStep(this.AgendasIcon, 'click', 'click on AgendasIcon');
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
+    await test.step('Verify that Menu Modal is displayed in Agendas page.', async () => {
+      await assertElementVisible(this.menuModal);
+    });
     await executeStep(this.myProfileBtn, 'click', 'click on myProfileOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let profileText = await this.profileModule.textContent();
-    await assertContainsValue(profileText, expectedProfileText);
-
+    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedProfileText}" is displayed after clicking on my profile option.`, async () => {
+      await assertContainsValue(profileText, expectedProfileText);
+    });
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
     await executeStep(this.locationProfileOption, 'click', 'click on locationProfileOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let locationText = await this.locationHeading.textContent();
-    await assertContainsValue(locationText, expectedlocationText);
-
+    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedLocationText}" is displayed after clicking on my profile option.`, async () => {
+      await assertContainsValue(locationText, expectedLocationText);
+    });
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
     await executeStep(this.logsOption, 'click', 'click on logsOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let logsText = await this.logsHeading.textContent();
-    await assertContainsValue(logsText, expectedlogsText);
-
+    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedLogsText}" is displayed after clicking on my profile option.`, async () => {
+      await assertContainsValue(logsText, expectedLogsText);
+    });
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
     await executeStep(this.dashboardOption, 'click', 'click on dashboardOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let dashboardText = await this.dashboardPageText.textContent();
-    await assertContainsValue(dashboardText, expecteddashboardText);
+    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedDashboardText}" is displayed after clicking on my profile option.`, async () => {
+      await assertContainsValue(dashboardText, expectedDashboardText);
+    });
   }
 };

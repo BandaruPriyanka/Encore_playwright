@@ -1012,19 +1012,19 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertCheckBox() {
     if (this.isMobile) {
-      await executeStep(this.backBtnInMobile, 'click', 'click on back button');
+      await executeStep(this.backBtnInMobile, 'click', 'Click on Back button');
     }
-    await executeStep(this.menuIcon, 'click', 'click on menu icon');
-    await executeStep(this.locationProfile, 'click', 'click on location profile');
+    await executeStep(this.menuIcon, 'click', 'Click on Menu icon');
+    await executeStep(this.locationProfile, 'click', 'Click on Location Profile Tab');
     equipmentCheckListText = await this.equipmentCheckListOption.textContent();
     if (equipmentCheckListText.trim() === indexPage.lighthouse_data.turnOn) {
       await executeStep(
         this.equipmentCheckListTurnOnAndOffBtn,
         'click',
-        'click on turn off button'
+        'Click on Turn off button'
       );
     }
-    await executeStep(this.flowsheetBtn, 'click', 'click flowsheet button');
+    await executeStep(this.flowsheetBtn, 'click', 'Click Flowsheet Button');
     await this.performSearchFunction(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no

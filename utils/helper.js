@@ -4,7 +4,7 @@ require('dotenv').config();
 const data = require('../data/apidata.json');
 const indexPage = require('./index.page');
 const { expect } = require('@playwright/test');
-
+let isValid;
 function getTodayDate() {
   const date = new Date();
   const formattedDate = date.toISOString().split('T')[0];
@@ -347,7 +347,21 @@ async function checkVisibleElementColors(page, selector, expectedColor) {
     }
   }
 }
+async function validateLastSyncedText(lastSyncedText) {
+  const match = lastSyncedText.match(/(\d+)([a-zA-Z]+)/);
 
+  if (match) {
+    const value = parseInt(match[1]);
+    const unit = match[2].toLowerCase();
+    isValid = false;
+    if (unit.includes('w') || unit.includes('hr') || unit.includes('min')) {
+      isValid = value > 0;
+    }
+    return isValid;
+  } else {
+    throw new Error('Could not parse the last synced value.');
+  }
+}
 module.exports = {
   getTodayDate,
   generateRandString,
@@ -401,5 +415,6 @@ module.exports = {
   getTodayDateAndMonth,
   getPreviousWeekDateAndMonth,
   getNextWeekDateAndMonth,
-  getFormattedTodayDate
+  getFormattedTodayDate,
+  validateLastSyncedText
 };

@@ -115,7 +115,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertFlowsheetTextAndNavigatorText();
   });
 
-  test('Test_C56907: Verify Equipment Tab', async () => {
+  test.only('Test_C56907: Verify Equipment Tab', async () => {
     await flowsheetCardAndTab.assertEquipmentTab(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
