@@ -70,11 +70,8 @@ module.exports = defineConfig({
       testMatch: ['tests/create_data.spec.js']
     },
     {
-      name : 'complimentary_job',
-      use : { ...devices['Desktop Chrome'],
-        isCreateData1: true,
-        isComplimentary : true
-       },
+      name: 'complimentary_job',
+      use: { ...devices['Desktop Chrome'], isCreateData1: true, isComplimentary: true },
       testMatch: ['tests/create_data.spec.js']
     },
     {
@@ -86,7 +83,8 @@ module.exports = defineConfig({
         'tests/schedule.spec.js',
         'tests/customers.spec.js',
         'tests/chats.spec.js',
-        'tests/myprofile.spec.js'
+        'tests/my_profile.spec.js',
+        'tests/location_profile.spec.js'
       ],
       dependencies: ['global_setup', 'create_data1']
     },
@@ -131,8 +129,8 @@ module.exports = defineConfig({
         'tests/flowsheet_card_tab.spec.js',
         'tests/schedule.spec.js',
         'tests/customers.spec.js',
-        'tests/chats.spec.js',
-        'tests/myprofile.spec.js'
+        'tests/my_profile.spec.js',
+        'tests/location_profile.spec.js'
       ],
       dependencies: ['global_setup', 'create_data1']
     },
@@ -149,7 +147,8 @@ module.exports = defineConfig({
         'tests/schedule.spec.js',
         'tests/customers.spec.js',
         'tests/chats.spec.js',
-        'tests/myprofile.spec.js'
+        'tests/my_profile.spec.js',
+        'tests/location_profile.spec.js'
       ],
       dependencies: ['global_setup', 'create_data1']
     }

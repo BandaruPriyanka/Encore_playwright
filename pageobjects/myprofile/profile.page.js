@@ -3,6 +3,7 @@ const indexPage = require('../../utils/index.page');
 const { test } = require('@playwright/test');
 const utilConst = require('../../utils/const');
 const fs = require('node:fs/promises');
+const { test, expect } = require('@playwright/test');
 const {
     assertElementVisible,
     assertContainsValue,
@@ -10,10 +11,11 @@ const {
     assertNotEqualValues,
     assertEqualValues,
     assertElementNotVisible,
-    verifyNavigationElements
+    verifyNavigationElements,
+    validateLastSyncedText
   } = require('../../utils/helper');
 let initialEquipmentDispalyValue,getequipmentTextByIntialDisplayValue,
-    getequipmentTextByChangedDisplayValue,initialScheduleViewValue,initialLanguageValue,spanishText,frenchText
+    getequipmentTextByChangedDisplayValue,initialScheduleViewValue,initialLanguageValue,spanishText,frenchText;
 
 exports.ProfilePage = class ProfilePage {
   constructor(page) {
@@ -104,14 +106,10 @@ exports.ProfilePage = class ProfilePage {
       "(//app-profile-content//div[contains(@class,'e2e_user_profile_sync_action') and normalize-space(text())='Resync'])[1]"
     );
     this.notificationMessage = this.page.locator('//mat-snack-bar-container');
-    this.selectedLocationValue = this;
-    // C57106
     this.getLocationFromHeader = this.page.locator("(//icon[@name='map_point_line'])[1]//parent::div");
     this.getLocationFromGeneralTab = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_selected_location_value')]") 
               : this.page.locator("//span[@class='e2e_user_profile_selected_location_value']");
-    this.selectedLocationChangeButton = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_selected_location_value')]//following-sibling::div") 
-              : this.page.locator("//span[@class='e2e_user_profile_selected_location_value']/..//following-sibling::div");
-    //C57108
+    this.selectedLocationChangeButton = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_selected_location_value')]//following-sibling::div");
     this.equipmentDisplayChioceValue = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_value')]")
               : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div/span");
     this.equipmentValueChangeButton = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_action')]")
@@ -120,7 +118,6 @@ exports.ProfilePage = class ProfilePage {
               : this.page.locator('//app-desktop-navigation//app-navigation-item[1]//span[contains(text(),Flowsheet)]');
     this.equipmentText = this.page.locator("(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]");
     this.backBtnInMobile = this.page.locator("//icon[contains(@class,'e2e_flowsheet_detail_back')]");
-    //C57110
     this.defaultScheduleViewValue = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_schedule_value')]")
               : this.page.locator("//div[contains(@class,'e2e_user_profile_schedule_value')]");
     this.defaultScheduleViewChangeBtn = this.isMobile ? this.page.locator("(//div[contains(@class,'e2e_user_profile_schedule_action')])[2]")
@@ -128,7 +125,6 @@ exports.ProfilePage = class ProfilePage {
     this.highlightedScheduleText = this.isMobile ? this.page.locator("//div[contains(@class,'text-encore-secondary-purple')]")
               : this.page.locator("//mat-button-toggle[contains(@class,'mat-button-toggle-checked')]//button//span");
     this.dismissBtn = this.page.locator("//span[contains(text(),'Dismiss')]");
-    //C57107 
     this.getSelectedLanguageValue = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_language_value')]") 
               : this.page.locator("//span[@class='e2e_user_profile_language_value']");
     this.languageUpdateButton = this.isMobile ? this.page.locator("(//div[contains(@class,'e2e_user_profile_language_action')])[2]")
@@ -151,7 +147,17 @@ exports.ProfilePage = class ProfilePage {
     return this.page.locator(`(//div[normalize-space(text())='Menu Slot ${slotNumber}'])[1]`);
   }
   async validatingLastSyncValue() {
-    await validateLastSyncValue(this.lastSyncValue);
+    const lastSyncedText = await this.lastSyncValue.innerText();
+    indexPage.lighthouse_data.lastSyncedTime = lastSyncedText;
+    await fs.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
+    const isValid = await validateLastSyncedText(lastSyncedText);
+
+    await test.step(`Verify that the 'Last synced' value represents a past time: "${lastSyncedText}"`, async () => {
+      expect(isValid).toBe(
+        true,
+        `The 'Last synced' value "${lastSyncedText}" is not valid, as it should represent a past time frame.`
+      );
+    });
   }
   async resyncTheTime() {
     await executeStep(this.resyncLink, 'click', 'Click on Resync Link');
@@ -168,54 +174,68 @@ exports.ProfilePage = class ProfilePage {
   }
   async verifyingMenuNavigation(
     expectedProfileText,
-    expectedlocationText,
-    expectedlogsText,
-    expecteddashboardText
+    expectedLocationText,
+    expectedLogsText,
+    expectedDashboardText
   ) {
-    await assertElementVisible(this.menuIcon);
+    await test.step('Verify that Menu Icon is displayed.', async () => {
+      await assertElementVisible(this.menuIcon);
+    });
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
+    await test.step('Verify that Menu Modal is displayed.', async () => {
+      await assertElementVisible(this.menuModal);
+    });
     await executeStep(this.menuText, 'click', 'click on menuText');
     await executeStep(this.scheduleTab, 'click', 'click on scheduleTab');
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
+    await test.step('Verify that Menu Modal is displayed in Schedule page.', async () => {
+      await assertElementVisible(this.menuModal);
+    });
     await executeStep(this.menuText, 'click', 'click on menuText');
     await executeStep(this.customersIcon, 'click', 'click on customersIcon');
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
+    await test.step('Verify that Menu Modal is displayed in Customers page.', async () => {
+      await assertElementVisible(this.menuModal);
+    });
     await executeStep(this.menuText, 'click', 'click on menuText');
     await executeStep(this.chatIcon, 'click', 'click on chatIcon');
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
+    await test.step('Verify that Menu Modal is displayed in Chat page.', async () => {
+      await assertElementVisible(this.menuModal);
+    });
     await executeStep(this.menuText, 'click', 'click on menuText');
     await executeStep(this.AgendasIcon, 'click', 'click on AgendasIcon');
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
+    await test.step('Verify that Menu Modal is displayed in Agendas page.', async () => {
+      await assertElementVisible(this.menuModal);
+    });
     await executeStep(this.myProfileBtn, 'click', 'click on myProfileOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let profileText = await this.profileModule.textContent();
-    await assertContainsValue(profileText, expectedProfileText);
-
+    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedProfileText}" is displayed after clicking on my profile option.`, async () => {
+      await assertContainsValue(profileText, expectedProfileText);
+    });
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
     await executeStep(this.locationProfileOption, 'click', 'click on locationProfileOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let locationText = await this.locationHeading.textContent();
-    await assertContainsValue(locationText, expectedlocationText);
-
+    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedLocationText}" is displayed after clicking on my profile option.`, async () => {
+      await assertContainsValue(locationText, expectedLocationText);
+    });
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
     await executeStep(this.logsOption, 'click', 'click on logsOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let logsText = await this.logsHeading.textContent();
-    await assertContainsValue(logsText, expectedlogsText);
-
+    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedLogsText}" is displayed after clicking on my profile option.`, async () => {
+      await assertContainsValue(logsText, expectedLogsText);
+    });
     await executeStep(this.menuIcon, 'click', 'click on menuIcon');
-    await assertElementVisible(this.menuModal);
     await executeStep(this.dashboardOption, 'click', 'click on dashboardOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let dashboardText = await this.dashboardPageText.textContent();
-    await assertContainsValue(dashboardText, expecteddashboardText);
+    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedDashboardText}" is displayed after clicking on my profile option.`, async () => {
+      await assertContainsValue(dashboardText, expectedDashboardText);
+    });
   }
 
   async assertEquipmentByIntialDisplayValue() {

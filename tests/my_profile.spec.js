@@ -10,7 +10,7 @@ const {
   assertElementDisabled,
   assertElementAttributeContains
 } = require('../utils/helper');
-test.describe('Performing actions on My Profile Tab', () => {
+test.describe('Performing actions on My Profile Tab & Notifications Tab', () => {
   let profilePage,
     flowsheetPage,
     notificationPage,
@@ -41,26 +41,26 @@ test.describe('Performing actions on My Profile Tab', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test.skip('Test_C57103 Verify Menu navigation desktop', async ({ isMobile }) => {
+  test('Test_C57103 Verify Menu navigation desktop', async ({ isMobile }) => {
     test.skip(isMobile, 'Skipping Verify Menu navigation on mobile devices');
     await profilePage.verifyingMenuNavigation(
       indexPage.lighthouse_data.expectedProfileText,
-      indexPage.lighthouse_data.expectedlocationText,
-      indexPage.lighthouse_data.expectedlogsText,
-      indexPage.lighthouse_data.expecteddashboardText
+      indexPage.lighthouse_data.expectedLocationText,
+      indexPage.lighthouse_data.expectedLogsText,
+      indexPage.lighthouse_data.expectedDashboardText
     );
   });
 
-  test.skip('Test_C57109 Verify Menu navigation mobile', async ({ isMobile }) => {
+  test('Test_C57109 Verify Menu navigation mobile', async ({ isMobile }) => {
     test.skip(!isMobile, 'Skipping Flowsheet status on desktop devices');
     await profilePage.verifyingMenuNavigation(
       indexPage.lighthouse_data.expectedProfileText,
-      indexPage.lighthouse_data.expectedlocationText,
-      indexPage.lighthouse_data.expectedlogsText,
-      indexPage.lighthouse_data.expecteddashboardText
+      indexPage.lighthouse_data.expectedLocationText,
+      indexPage.lighthouse_data.expectedLogsText,
+      indexPage.lighthouse_data.expectedDashboardText
     );
   });
-  test.skip('Test_C57104: Check General Tab elements', async ({ page }) => {
+  test('Test_C57104: Check General Tab elements', async ({ page }) => {
     await test.step('Verify General Tab is opened by default', async () => {
       await assertElementVisible(profilePage.generalTab);
     });
@@ -104,7 +104,7 @@ test.describe('Performing actions on My Profile Tab', () => {
       }
     });
   });
-  test.skip('Test_C57105: Check Resync Functionality', async ({ page }) => {
+  test('Test_C57105: Check Resync Functionality', async ({ page }) => {
     test.step('Verify last sync date/time is previous', async () => {
       await profilePage.validatingLastSyncValue();
     });
@@ -164,14 +164,41 @@ test.describe('Performing actions on My Profile Tab', () => {
       await assertElementEnabled(notificationPage.deleteIcon);
     });
   });
-  test('Test_C57115:Verify Notification Location search functiona', async () => {
+  test('Test_C57116:Verify Notification Location search functionality', async () => {
     await notificationPage.clickOnNotification();
     await test.step('Verify search field is displayed as the last row ', async () => {
       await assertElementVisible(notificationPage.addLocation);
     });
     await test.step('Verify search field has Add Location placeholder', async () => {
-        await assertElementAttributeContains(notificationPage.addLocation,'placeholder','Add Location');
-      });
+      await assertElementAttributeContains(
+        notificationPage.addLocation,
+        'placeholder',
+        'Add Location'
+      );
+    });
     await notificationPage.verifyAddLocationField();
+  });
+
+  test('Test_C57117 :Verify adding locations on Notification Location tab', async () => {
+    await notificationPage.clickOnNotification();
+    await test.step('Verify search field is displayed as the last row ', async () => {
+      await assertElementVisible(notificationPage.addLocation);
+    });
+    await test.step('Verify search field has Add Location placeholder', async () => {
+      await assertElementAttributeContains(
+        notificationPage.addLocation,
+        'placeholder',
+        'Add Location'
+      );
+    });
+    await notificationPage.verifyAddingLocation();
+  });
+  test('Test_C57118: Verify removing locations on Notification Location tab', async () => {
+    await notificationPage.clickOnNotification();
+    await test.step('Verify that other non-home locations can be removed from the list', async () => {
+      await assertElementVisible(notificationPage.deleteIcon);
+      await assertElementEnabled(notificationPage.deleteIcon);
+    });
+    await notificationPage.verifyRemovingLocation();
   });
 });
