@@ -109,7 +109,7 @@ exports.ProfilePage = class ProfilePage {
     this.getLocationFromHeader = this.page.locator("(//icon[@name='map_point_line'])[1]//parent::div");
     this.getLocationFromGeneralTab = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_selected_location_value')]") 
               : this.page.locator("//span[@class='e2e_user_profile_selected_location_value']");
-    this.selectedLocationChangeButton = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_selected_location_value')]//following-sibling::div");
+    this.selectedLocationChangeButton = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_selected_location_value')]//following-sibling::div"):this.page.locator("//span[@class='e2e_user_profile_selected_location_value']/..//following-sibling::div");
     this.equipmentDisplayChioceValue = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_value')]")
               : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div/span");
     this.equipmentValueChangeButton = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_action')]")
