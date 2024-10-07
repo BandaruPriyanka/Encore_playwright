@@ -173,46 +173,46 @@ exports.ProfilePage = class ProfilePage {
     expecteddashboardText
   ) {
     await assertElementVisible(this.menuIcon);
-    await executeStep(this.menuIcon, 'click', 'click on menuIcon');
+    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(this.menuModal);
-    await executeStep(this.menuText, 'click', 'click on menuText');
-    await executeStep(this.scheduleTab, 'click', 'click on scheduleTab');
-    await executeStep(this.menuIcon, 'click', 'click on menuIcon');
+    await executeStep(this.menuText, 'click', 'Click on menuText');
+    await executeStep(this.scheduleTab, 'click', 'Click on scheduleTab');
+    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(this.menuModal);
-    await executeStep(this.menuText, 'click', 'click on menuText');
-    await executeStep(this.customersIcon, 'click', 'click on customersIcon');
-    await executeStep(this.menuIcon, 'click', 'click on menuIcon');
+    await executeStep(this.menuText, 'click', 'Click on menuText');
+    await executeStep(this.customersIcon, 'click', 'Click on customersIcon');
+    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(this.menuModal);
-    await executeStep(this.menuText, 'click', 'click on menuText');
-    await executeStep(this.chatIcon, 'click', 'click on chatIcon');
-    await executeStep(this.menuIcon, 'click', 'click on menuIcon');
+    await executeStep(this.menuText, 'click', 'Click on menuText');
+    await executeStep(this.chatIcon, 'click', 'Click on chatIcon');
+    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(this.menuModal);
-    await executeStep(this.menuText, 'click', 'click on menuText');
-    await executeStep(this.AgendasIcon, 'click', 'click on AgendasIcon');
-    await executeStep(this.menuIcon, 'click', 'click on menuIcon');
+    await executeStep(this.menuText, 'click', 'Click on menuText');
+    await executeStep(this.AgendasIcon, 'click', 'Click on AgendasIcon');
+    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(this.menuModal);
-    await executeStep(this.myProfileBtn, 'click', 'click on myProfileOption');
+    await executeStep(this.myProfileBtn, 'click', 'Click on myProfileOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let profileText = await this.profileModule.textContent();
     await assertContainsValue(profileText, expectedProfileText);
 
-    await executeStep(this.menuIcon, 'click', 'click on menuIcon');
+    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(this.menuModal);
-    await executeStep(this.locationProfileOption, 'click', 'click on locationProfileOption');
+    await executeStep(this.locationProfileOption, 'click', 'Click on locationProfileOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let locationText = await this.locationHeading.textContent();
     await assertContainsValue(locationText, expectedlocationText);
 
-    await executeStep(this.menuIcon, 'click', 'click on menuIcon');
+    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(this.menuModal);
-    await executeStep(this.logsOption, 'click', 'click on logsOption');
+    await executeStep(this.logsOption, 'click', 'Click on logsOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let logsText = await this.logsHeading.textContent();
     await assertContainsValue(logsText, expectedlogsText);
 
-    await executeStep(this.menuIcon, 'click', 'click on menuIcon');
+    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(this.menuModal);
-    await executeStep(this.dashboardOption, 'click', 'click on dashboardOption');
+    await executeStep(this.dashboardOption, 'click', 'Click on dashboardOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let dashboardText = await this.dashboardPageText.textContent();
     await assertContainsValue(dashboardText, expecteddashboardText);
@@ -220,7 +220,7 @@ exports.ProfilePage = class ProfilePage {
 
   async assertEquipmentByIntialDisplayValue() {
     initialEquipmentDispalyValue = await this.equipmentDisplayChioceValue.textContent();
-    await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
+    await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
     const flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(this.page);
     await flowsheetCardAndTab.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     getequipmentTextByIntialDisplayValue = await this.equipmentText.textContent();
@@ -228,13 +228,13 @@ exports.ProfilePage = class ProfilePage {
 
   async assertEquipmentByChangedDisplayValue() {
     if (this.isMobile) {
-      await executeStep(this.backBtnInMobile, 'click', 'click on back button in mobile');
+      await executeStep(this.backBtnInMobile, 'click', 'Click on back button in mobile');
     }
     await this.navigateToProfileMenu();
     await this.navigateToMyProfile();
     const equipmentDisplayValue = await this.equipmentDisplayChioceValue.textContent();
     if(equipmentDisplayValue === initialEquipmentDispalyValue) {
-      await executeStep(this.equipmentValueChangeButton,"click","change the equipment display value");
+      await executeStep(this.equipmentValueChangeButton,"click","Change the equipment display value");
     }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const equipmentValueAfterChange = await this.equipmentDisplayChioceValue.textContent();
@@ -242,7 +242,7 @@ exports.ProfilePage = class ProfilePage {
     await test.step(`Verify that 'Equipment Display Choice' option has been changed successfully. InitialValue: ${equipmentDisplayValue}, ChangedValue: ${equipmentValueAfterChange}`, async () => {
       await assertNotEqualValues(equipmentDisplayValue, equipmentValueAfterChange);
     });    
-    await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
+    await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
     const flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(this.page);
     await flowsheetCardAndTab.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
     getequipmentTextByChangedDisplayValue = await this.equipmentText.textContent();
@@ -254,13 +254,13 @@ exports.ProfilePage = class ProfilePage {
 
   async changeEquipmentDisplayChoiceToInitialValue() {
     if (this.isMobile) {
-      await executeStep(this.backBtnInMobile, 'click', 'click on back button in mobile');
+      await executeStep(this.backBtnInMobile, 'click', 'Click on back button in mobile');
     }
     await this.navigateToProfileMenu();
     await this.navigateToMyProfile();
     const equipmentDisplayValue = await this.equipmentDisplayChioceValue.textContent();
     if(equipmentDisplayValue !== initialEquipmentDispalyValue) {
-      await executeStep(this.equipmentValueChangeButton,"click","change the equipment display value");
+      await executeStep(this.equipmentValueChangeButton,"click","Change the equipment display value");
     }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const equipmentValueAfterChange = await this.equipmentDisplayChioceValue.textContent();
@@ -286,14 +286,14 @@ exports.ProfilePage = class ProfilePage {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const scheduleViewValue = await this.defaultScheduleViewValue.textContent();
     if(scheduleViewValue === initialScheduleViewValue) {
-      await executeStep(this.defaultScheduleViewChangeBtn,"click","click on update button");
+      await executeStep(this.defaultScheduleViewChangeBtn,"click","Click on update button");
     }
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const scheduleViewValueAfterChange = await this.defaultScheduleViewValue.textContent();
     await test.step(`Verify that the 'Default Schedule View' option is changed successfully from "${scheduleViewValue}" to "${scheduleViewValueAfterChange}"`, async () => {
       await assertNotEqualValues(scheduleViewValueAfterChange, scheduleViewValue);
     });   
-    await executeStep(this.dismissBtn,"click","click on dismiss button"); 
+    await executeStep(this.dismissBtn,"click","Click on dismiss button"); 
     await executeStep(this.scheduleTab,"click","Click on 'Schedule icon'");
     const getHighlighedTextFormSchedule = await this.highlightedScheduleText.textContent();
     await test.step('Verify that the correct Schedule tab is opened based on the Default Schedule View option.', async () => {
@@ -307,7 +307,7 @@ exports.ProfilePage = class ProfilePage {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const scheduleViewValue = await this.defaultScheduleViewValue.textContent();
     if(scheduleViewValue !== initialScheduleViewValue) {
-      await executeStep(this.defaultScheduleViewChangeBtn,"click","click on update button");
+      await executeStep(this.defaultScheduleViewChangeBtn,"click","Click on update button");
     }
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const scheduleViewValueAfterChange = await this.defaultScheduleViewValue.textContent();
@@ -331,21 +331,21 @@ exports.ProfilePage = class ProfilePage {
   async assertUpdateLanguageToSpanish() {
     const getLanguageText = await this.getSelectedLanguageValue.textContent();
     if(getLanguageText === initialLanguageValue) {
-      await executeStep(this.languageUpdateButton,"click","click on update button");
+      await executeStep(this.languageUpdateButton,"click","Click on update button");
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await test.step('Verify that the "Language selection modal" is displayed', async () => {
         await assertElementVisible(this.appLanguagerRequestModal);
       });    
-      await executeStep(this.requestModalCloseBtn,"click","click on close button");
+      await executeStep(this.requestModalCloseBtn,"click","Click on close button");
       await test.step("Verify that the 'Close' link works properly", async () => { 
         await assertElementNotVisible(this.appLanguagerRequestModal);
       });
-      await executeStep(this.languageUpdateButton,"click","click on update button");
+      await executeStep(this.languageUpdateButton,"click","Click on update button");
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await test.step('Verify that the "Language selection modal" is displayed', async () => {
         await assertElementVisible(this.appLanguagerRequestModal);
       });
-      await executeStep(this.selectLanguage(2),"click","select spanish language");
+      await executeStep(this.selectLanguage(2),"click","Select spanish language");
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     }
     spanishText = await this.getSelectedLanguageValue.textContent();
@@ -366,12 +366,12 @@ exports.ProfilePage = class ProfilePage {
   async assertUpdateLanguageToFrench() {
     const getLanguageText = await this.getSelectedLanguageValue.textContent();
     if(getLanguageText === spanishText) {
-      await executeStep(this.languageUpdateButton,"click","click on update button");
+      await executeStep(this.languageUpdateButton,"click","Click on update button");
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await test.step('Verify that the "Language selection modal" is displayed', async () => {
         await assertElementVisible(this.appLanguagerRequestModal);
       }); 
-      await executeStep(this.selectLanguage(3),"click","select spanish language");
+      await executeStep(this.selectLanguage(3),"click","Select spanish language");
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     }
     frenchText = await this.getSelectedLanguageValue.textContent();
@@ -392,12 +392,12 @@ exports.ProfilePage = class ProfilePage {
   async changeLanguageToIntialValue() {
     const getLanguageText = await this.getSelectedLanguageValue.textContent();
     if(getLanguageText !== initialLanguageValue) {
-      await executeStep(this.languageUpdateButton,"click","click on update button");
+      await executeStep(this.languageUpdateButton,"click","Click on update button");
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await test.step('Verify that the "Language selection modal" is displayed', async () => {
         await assertElementVisible(this.appLanguagerRequestModal);
       });
-      await executeStep(this.selectLanguage(1),"click","select spanish language");
+      await executeStep(this.selectLanguage(1),"click","Select spanish language");
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     }
     const englishText = await this.getSelectedLanguageValue.textContent();

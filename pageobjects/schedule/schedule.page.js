@@ -108,12 +108,12 @@ exports.SchedulePage = class SchedulePage {
       state: 'visible',
       timeout: parseInt(process.env.large_timeout)
     });
-    await executeStep(this.scheduleTab, 'click', 'click on schedule tab', []);
+    await executeStep(this.scheduleTab, 'click', 'Click on schedule tab', []);
     await this.myScheduleTab.waitFor({
       state: 'visible',
       timeout: parseInt(process.env.medium_timeout)
     });
-    await executeStep(this.myScheduleTab, 'click', 'click on my schedule button', []);
+    await executeStep(this.myScheduleTab, 'click', 'Click on my schedule button', []);
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     const actualMsg = indexPage.lighthouse_data.scheduleErrorMsg;
     const errorMessageText = await this.errorMessage.textContent();
@@ -122,8 +122,8 @@ exports.SchedulePage = class SchedulePage {
     });
   }
   async assertScheduleTab(hightlightedText) {
-    await executeStep(this.scheduleTab, 'click', 'click on scheduleTab');
-    await executeStep(this.teamScheduleTab, 'click', 'click on teamSchedule Tab');
+    await executeStep(this.scheduleTab, 'click', 'Click on scheduleTab');
+    await executeStep(this.teamScheduleTab, 'click', 'Click on teamSchedule Tab');
     await test.step('Assert team schedule table is visible', async () => {
       await assertElementVisible(this.teamScheduleTable);
     });

@@ -266,11 +266,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   }
 
   async searchFunction(searchText) {
-    await executeStep(this.searchInput, 'fill', 'enter the job id', [searchText]);
+    await executeStep(this.searchInput, 'fill', 'Enter the job id', [searchText]);
   }
 
   async clickOnJob(jobId) {
-    await executeStep(this.jobIdElement(jobId), 'click', 'click the room div');
+    await executeStep(this.jobIdElement(jobId), 'click', 'Click the room div');
   }
 
   async performSearchFunction(searchText, jobId) {
@@ -318,28 +318,28 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Contacts),
       'click',
-      'click on the contacts'
+      'Click on the contacts'
     );
     await test.step(`Verify the contact: "${indexPage.opportunity_data.userContactName}" is displayed`, async () => {
       await assertElementVisible(this.contactName(indexPage.opportunity_data.userContactName));
     });
-    await executeStep(this.contactDiv, 'click', 'click on first div from the list');
+    await executeStep(this.contactDiv, 'click', 'Click on first div from the list');
   }
 
   async verifyDocusignStatus(docusign, searchText, jobId) {
-    await executeStep(this.menuIcon, 'click', 'click menu icon');
-    await executeStep(this.locationProfile, 'click', 'click location profile in menu');
+    await executeStep(this.menuIcon, 'click', 'Click on menu icon');
+    await executeStep(this.locationProfile, 'click', 'Click on location profile in menu');
     await test.step(`Verify the DocuSign value is displayed: "${docusign}"`, async () => {
       await assertElementContainsText(this.docusignValue, docusign);
     });
-    await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
+    await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     beforeRoomCount = await this.roomsCount.textContent();
     await this.performSearchFunction(searchText, jobId);
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Add_Ons),
       'click',
-      'click on add ons in flowsheet tabs'
+      'Click on add ons in flowsheet tabs'
     );
     await test.step('Verify the "New Add-On Request" button is visible', async () => {
       await assertElementVisible(this.newAddOnRequestBtn);
@@ -353,7 +353,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     invalidQuantity,
     validQuantity
   ) {
-    await executeStep(this.newAddOnRequestBtn, 'click', 'click on new add-on request button');
+    await executeStep(this.newAddOnRequestBtn, 'click', 'Click on new add-on request button');
     await test.step('Verify "Add on request" modal should be displayed', async () => {
       await assertElementVisible(this.addOnModalText);
     });
@@ -365,28 +365,28 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.selectFirstProduct,
       'click',
-      'select the first product from individual products'
+      'Select the first product from individual products'
     );
-    await executeStep(this.searchProductInput, 'fill', 'enter the package product', [
+    await executeStep(this.searchProductInput, 'fill', 'Enter the package product', [
       packageProduct
     ]);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await executeStep(
       this.selectFirstProduct,
       'click',
-      'select the first product from  package products'
+      'Select the first product from  package products'
     );
-    await executeStep(this.quantityInput, 'fill', 'clear the quantity', ['']);
-    await executeStep(this.quantityInput, 'fill', 'enter the invalid quantity', [invalidQuantity]);
-    await executeStep(this.requestedByInput, 'click', 'click request by input');
+    await executeStep(this.quantityInput, 'fill', 'Clear the quantity', ['']);
+    await executeStep(this.quantityInput, 'fill', 'Enter the invalid quantity', [invalidQuantity]);
+    await executeStep(this.requestedByInput, 'click', 'Click request by input');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     try {
       await test.step('Verify proper validation message should be displayed for quantity.', async () => {
         await assertElementVisible(this.quantityInvalidMsg);
       });
       if (this.quantityInvalidMsg.isVisible()) {
-        await executeStep(this.quantityInput, 'fill', 'clear the quantity', ['']);
-        await executeStep(this.quantityInput, 'fill', 'enter the valid qunatity', [validQuantity]);
+        await executeStep(this.quantityInput, 'fill', 'Clear the quantity', ['']);
+        await executeStep(this.quantityInput, 'fill', 'Enter the valid qunatity', [validQuantity]);
       }
     } catch {
       await test.step('Verify proper validation message should be displayed for quantity.', async () => {
@@ -396,18 +396,18 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   }
 
   async discountChecking(invalidDiscount, validDiscount) {
-    await executeStep(this.discountInput, 'fill', 'enter the discount percentage', [
+    await executeStep(this.discountInput, 'fill', 'Enter the discount percentage', [
       invalidDiscount
     ]);
     await this.discountInput.hover();
     await test.step('Verify proper validation message should be displayed for discount.', async () => {
       await assertElementVisible(this.discountInvalidMsg);
     });
-    await executeStep(this.discountInput, 'fill', 'clear on discount input', ['']);
-    await executeStep(this.discountInput, 'fill', 'enter the valid discount', [validDiscount]);
+    await executeStep(this.discountInput, 'fill', 'Clear on discount input', ['']);
+    await executeStep(this.discountInput, 'fill', 'Enter the valid discount', [validDiscount]);
     const estimatedMoneyBeforeDiscount = await this.moneyElement.textContent();
     const originalPrice = parseFloat(estimatedMoneyBeforeDiscount.replace(/[^0-9.]/g, ''));
-    await executeStep(this.discountInput, 'fill', 'enter the valid discount', [validDiscount]);
+    await executeStep(this.discountInput, 'fill', 'Enter the valid discount', [validDiscount]);
     discountPrice = formatCurrency(calculateTotalAmountAfterDiscount(originalPrice, validDiscount));
     await test.step(`Verify the element contains the discount price: "${discountPrice}"`, async () => {
       await assertElementContainsText(this.moneyElement, discountPrice);
@@ -417,40 +417,40 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await test.step(`Verify that the added products count (${addedProductsCount}) is equal to the delete icon count (${deleteIconCount})`, async () => {
       await assertEqualValues(addedProductsCount, deleteIconCount);
     });
-    await executeStep(this.searchProductInput, 'fill', 'enter the invalid text', [
+    await executeStep(this.searchProductInput, 'fill', 'Enter the invalid text', [
       indexPage.lighthouse_data.invalidText
     ]);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await test.step('Verify the "No Result Found" message is visible', async () => {
       await assertElementVisible(this.noResultSpan);
     });
-    await executeStep(this.productCrossLine, 'click', 'click on cross button');
-    await executeStep(this.nextButton, 'click', 'click on next button');
+    await executeStep(this.productCrossLine, 'click', 'Click on cross button');
+    await executeStep(this.nextButton, 'click', 'Click on next button');
   }
 
   async dateSelectModal(isNotComplimentary) {
     await test.step('Verify the "date selection" modal is visible', async () => {
       await assertElementVisible(this.dateSelectionModalText);
     });
-    await executeStep(this.arrowLineIcon, 'click', 'click on arrow button');
+    await executeStep(this.arrowLineIcon, 'click', 'Click on arrow button');
     await test.step('Verify the add-on modal is visible', async () => {
       await assertElementVisible(this.addOnModalText);
     });
-    await executeStep(this.nextButton, 'click', 'click on next button');
-    await executeStep(this.reviewOrderBtn, 'click', 'click on review order button');
+    await executeStep(this.nextButton, 'click', 'Click on next button');
+    await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await test.step('Verify the "Select at least one date" error message is visible', async () => {
       await assertElementVisible(this.selectOneDateErrorMsg);
     });
-    await executeStep(this.selectDate, 'click', 'select today date');
-    await executeStep(this.reviewOrderBtn, 'click', 'click on review order button');
+    await executeStep(this.selectDate, 'click', 'Select today date');
+    await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
     await test.step('Verify the confirmation page should be displayed with all the valid details.', async () => {
       if (isNotComplimentary) {
         await assertElementContainsText(this.priceInConfirmationModal, discountPrice);
       }
       await assertElementVisible(this.sendToNavigatorBtn);
     });
-    await executeStep(this.sendToNavigatorBtn, 'click', 'click on send to navigator button');
+    await executeStep(this.sendToNavigatorBtn, 'click', 'Click on send to navigator button');
   }
 
   async dateSelectModalCheckingAndAssertRooms() {
@@ -492,7 +492,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await executeStep(
         this.flowsheetTabElement(utilConst.Const.Add_Ons),
         'click',
-        'click on add ons in flowsheet tabs'
+        'Click on add ons in flowsheet tabs'
       );
       await this.addOnFunction(
         requestedBy,
@@ -501,13 +501,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
         invalidQuantity,
         validQuantity
       );
-      await executeStep(this.nextButton, 'click', 'click on next button');
-      await executeStep(this.selectDate, 'click', 'select today date');
-      await executeStep(this.reviewOrderBtn, 'click', 'click on review order button');
+      await executeStep(this.nextButton, 'click', 'Click on next button');
+      await executeStep(this.selectDate, 'click', 'Select today date');
+      await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
       await test.step('Verify the "Send to Navigator" button is visible', async () => {
         await assertElementVisible(this.sendToNavigatorBtn);
       });
-      await executeStep(this.sendToNavigatorBtn, 'click', 'click on send to navigator button');
+      await executeStep(this.sendToNavigatorBtn, 'click', 'Click on send to navigator button');
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
       await this.page.reload();
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
@@ -518,7 +518,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   }
 
   async comparisonIconFunctionality() {
-    await executeStep(this.comparisonIcon, 'click', 'click on comparision icon');
+    await executeStep(this.comparisonIcon, 'click', 'Click on comparision icon');
     try {
       await test.step('Verify the "Several Prior Meetings" modal is visible', async () => {
         await assertElementVisible(this.severalPriorMeetingsText);
@@ -532,21 +532,21 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await test.step('Verify the "Additions" are visible', async () => {
         await assertElementVisible(this.additionsText);
       });
-      await executeStep(this.RemovalsText, 'scroll', 'scroll to the element if needed');
+      await executeStep(this.RemovalsText, 'scroll', 'Scroll to the element if needed');
       await test.step('Verify the "Removals" are visible', async () => {
         await assertElementVisible(this.RemovalsText);
       });
-      await executeStep(this.backArrowBtn, 'click', 'click back button');
+      await executeStep(this.backArrowBtn, 'click', 'Click back button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await test.step('Verify the "Several Prior Meetings" modal is visible', async () => {
         await assertElementVisible(this.severalPriorMeetingsText);
       });
       await this.selectFirstRowInAdditions.click({ force: true });
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await executeStep(this.closeButton, 'click', 'click close button');
-      await executeStep(this.comparisonIcon, 'click', 'click on comparision icon');
+      await executeStep(this.closeButton, 'click', 'Click close button');
+      await executeStep(this.comparisonIcon, 'click', 'Click on comparision icon');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await executeStep(this.cancelButton, 'click', 'click on cancel button');
+      await executeStep(this.cancelButton, 'click', 'Click on cancel button');
     } catch (error) {
       await test.step('Verify the "Changes from Previous Meetings" modal is visible', async () => {
         await assertElementVisible(this.changesFromPreviousMeetingsText);
@@ -554,11 +554,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await test.step('Verify the "Additions" are visible', async () => {
         await assertElementVisible(this.additionsText);
       });
-      await executeStep(this.RemovalsText, 'scroll', 'scroll to the element if needed');
+      await executeStep(this.RemovalsText, 'scroll', 'Scroll to the element if needed');
       await test.step('Verify the "Removals" are visible', async () => {
         await assertElementVisible(this.RemovalsText);
       });
-      await executeStep(this.closeButton, 'click', 'click on close button');
+      await executeStep(this.closeButton, 'click', 'Click on close button');
     }
   }
 
@@ -570,7 +570,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.iconInPage(utilConst.Const.moodIconText),
       'click',
-      'click on mood chnage icon'
+      'Click on mood chnage icon'
     );
     await test.step('Verify the mood change modal is visible', async () => {
       await assertElementVisible(this.moodModalText);
@@ -578,9 +578,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.moodChangeIconInModal(utilConst.Const.greenIconText),
       'click',
-      'click on happy icon in modal'
+      'Click on happy icon in modal'
     );
-    await executeStep(this.submitButton, 'click', 'click on submit button');
+    await executeStep(this.submitButton, 'click', 'Click on submit button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await test.step('Verify the mood should be saved successfully - green icon should be displayed.', async () => {
       await assertElementVisible(this.iconInPage(utilConst.Const.greenIconText));
@@ -593,7 +593,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Log),
       'click',
-      'click log in flowsheet tab'
+      'Click on log in flowsheet tab'
     );
   }
 
@@ -602,18 +602,18 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.iconInPage(utilConst.Const.greenIconText),
       'click',
-      'click on happy icon in page'
+      'Click on happy icon in page'
     );
     await executeStep(
       this.moodChangeIconInModal(utilConst.Const.yellowIconText),
       'click',
-      'click neutral icon in modal'
+      'Click on neutral icon in modal'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.commentBoxInput, 'fill', 'enter the comment for neutral mood', [
+    await executeStep(this.commentBoxInput, 'fill', 'Enter the comment for neutral mood', [
       indexPage.lighthouse_data.neutralComment
     ]);
-    await executeStep(this.submitButton, 'click', 'click on submit button');
+    await executeStep(this.submitButton, 'click', 'Click on submit button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await test.step('Verify the mood should be saved successfully - yellow icon should be displayed.', async () => {
       await assertElementVisible(this.iconInPage(utilConst.Const.yellowIconText));
@@ -626,21 +626,21 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Log),
       'click',
-      'click on log in flowsheet tab'
+      'Click on log in flowsheet tab'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await test.step(`Verify the appropriate log record is created , log msg : "${utilConst.Const.neutralLogMsg}"`, async () => {
       await assertElementVisible(this.logMsg(utilConst.Const.neutralLogMsg));
     });
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
-    await executeStep(this.notificationIcon, 'click', 'click on notification icon');
+    await executeStep(this.notificationIcon, 'click', 'Click on notification icon');
     await test.step('Verify user notification should be received for the Neutral mood change.', async () => {
       await assertElementVisible(this.notificationMsg(indexPage.lighthouse_data.neutralComment));
     });
     await executeStep(
       this.notificationCloseBtn,
       'click',
-      'click on cross button to close notificaton'
+      'Click on cross button to close notificaton'
     );
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
   }
@@ -649,19 +649,19 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.iconInPage(utilConst.Const.yellowIconText),
       'click',
-      'click on neutral icon'
+      'Click on neutral icon'
     );
     await executeStep(
       this.moodChangeIconInModal(utilConst.Const.redIconText),
-      'click',
+      'Click',
       'click on angry icon in modal'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await executeStep(this.commentBoxInput, 'fill', 'enter the comment for angry icon', [
+    await executeStep(this.commentBoxInput, 'fill', 'Enter the comment for angry icon', [
       indexPage.lighthouse_data.angryComment
     ]);
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await executeStep(this.submitButton, 'click', 'click on submit button');
+    await executeStep(this.submitButton, 'click', 'Click on submit button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await test.step('Verify the mood should be saved successfully - red icon should be displayed.', async () => {
       await assertElementVisible(this.iconInPage(utilConst.Const.redIconText));
@@ -674,14 +674,14 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Log),
       'click',
-      'click on log in flowsheet tab'
+      'Click on log in flowsheet tab'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await test.step(`Verify appropriate log record is created , log msg : "${utilConst.Const.angryLogMsg}"`, async () => {
       await assertElementVisible(this.logMsg(utilConst.Const.angryLogMsg));
     });
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await executeStep(this.notificationIcon, 'click', 'click on notification button');
+    await executeStep(this.notificationIcon, 'click', 'Click on notification button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await test.step('Verify user notification should be received for the Dissatisfied mood change.', async () => {
       await assertElementVisible(this.notificationMsg(indexPage.lighthouse_data.angryComment));
@@ -689,7 +689,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.notificationCloseBtn,
       'click',
-      'click on cross button to close notificaton'
+      'Click on cross button to close notificaton'
     );
   }
 
@@ -702,21 +702,21 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.iconInPage(utilConst.Const.moodIconText),
       'click',
-      'click on mood change icon in page'
+      'Click on mood change icon in page'
     );
     await executeStep(
       this.moodChangeIconInModal(utilConst.Const.greenIconText),
       'click',
-      'click on happy icon in modal'
+      'Click on happy icon in modal'
     );
-    await executeStep(this.submitButton, 'click', 'click on submit button in modal');
+    await executeStep(this.submitButton, 'click', 'Click on submit button in modal');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Log),
       'click',
-      'click on log in flowsheet tab'
+      'Click on log in flowsheet tab'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await test.step('Verify the happy log message is visible', async () => {
@@ -731,12 +731,12 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Log),
       'click',
-      'click on log in flowsheet tab'
+      'Click on log in flowsheet tab'
     );
     await executeStep(this.logCommentInput, 'fill', 'Enter any msg in comment box', [
       indexPage.lighthouse_data.logCommentMsg
     ]);
-    await executeStep(this.commentSendBtn, 'click', 'click on send button');
+    await executeStep(this.commentSendBtn, 'click', 'Click on send button');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     const countOfLogAfterComment = await this.logMsgCount.textContent();
     await test.step('Verify the log count increases by 1 after adding a comment', async () => {
@@ -759,7 +759,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Add_Ons),
       'click',
-      'click on add ons in flowsheet tabs'
+      'Click on add ons in flowsheet tabs'
     );
     await this.addOnFunction(
       requestedBy,
@@ -768,11 +768,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       invalidQuantity,
       validQuantity
     );
-    await executeStep(this.nextButton, 'click', 'click on next button');
-    await executeStep(this.selectDate, 'click', 'select today date');
-    await executeStep(this.reviewOrderBtn, 'click', 'click on review order button');
+    await executeStep(this.nextButton, 'click', 'Click on next button');
+    await executeStep(this.selectDate, 'click', 'Select today date');
+    await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
     await assertElementVisible(this.sendToNavigatorBtn);
-    await executeStep(this.sendToNavigatorBtn, 'click', 'click on send to navigator button');
+    await executeStep(this.sendToNavigatorBtn, 'click', 'Click on send to navigator button');
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
@@ -793,18 +793,18 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.touchPointElement,
       'click',
-      'click the touch point in flowsheet details'
+      'Click the touch point in flowsheet details'
     );
     await test.step('Verify the touch point modal is visible', async () => {
       await assertElementVisible(this.touchPointModal);
     });
-    await executeStep(this.happyIconInTouchPoint, 'click', 'click on happy icon in modal');
-    await executeStep(this.saveButton, 'click', 'click on save button');
+    await executeStep(this.happyIconInTouchPoint, 'click', 'Click on happy icon in modal');
+    await executeStep(this.saveButton, 'click', 'Click on save button');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     if (this.isMobile) {
-      await executeStep(this.backBtnInMobile, 'click', 'click on back button');
+      await executeStep(this.backBtnInMobile, 'click', 'Click on back button');
     }
     await this.searchFunction(indexPage.navigator_data.order_name.trim());
     if (this.isMobile) {
@@ -817,26 +817,26 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.touchPointElement,
       'click',
-      'click the touch point in flowsheet details'
+      'Click the touch point in flowsheet details'
     );
     await test.step('Verify the touch point modal is visible', async () => {
       await assertElementVisible(this.touchPointModal);
     });
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.neutralIconInTouchPoint, 'click', 'click the neutral icon in modal');
-    await executeStep(this.saveButton, 'click', 'click on save button');
+    await executeStep(this.neutralIconInTouchPoint, 'click', 'Click the neutral icon in modal');
+    await executeStep(this.saveButton, 'click', 'Click on save button');
     await test.step('Verify the note requires message in the modal is visible', async () => {
       await assertElementVisible(this.noteRequiresMsgInModal);
     });
-    await executeStep(this.noteInput, 'fill', 'enter the msg in note input', [
+    await executeStep(this.noteInput, 'fill', 'Enter the msg in note input', [
       indexPage.lighthouse_data.neutralComment
     ]);
-    await executeStep(this.saveButton, 'click', 'click on save button');
+    await executeStep(this.saveButton, 'click', 'Click on save button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     if (this.isMobile) {
-      await executeStep(this.backBtnInMobile, 'click', 'click on back button');
+      await executeStep(this.backBtnInMobile, 'click', 'Click on back button');
     }
     await this.searchFunction(indexPage.navigator_data.order_name.trim());
     if (this.isMobile) {
@@ -855,18 +855,18 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await executeStep(
         this.touchPointElement,
         'click',
-        'click the touch point in flowsheet details'
+        'Click the touch point in flowsheet details'
       );
 
       try {
         await test.step('Verify the touch point modal is displayed', async () => {
           await assertElementVisible(this.touchPointModal);
         });
-        await executeStep(this.angryIconInTouchPoint, 'click', 'click the angry icon in modal');
-        await executeStep(this.noteInput, 'fill', 'enter the msg in note input', [
+        await executeStep(this.angryIconInTouchPoint, 'click', 'Click the angry icon in modal');
+        await executeStep(this.noteInput, 'fill', 'Enter the msg in note input', [
           indexPage.lighthouse_data.angryComment
         ]);
-        await executeStep(this.saveButton, 'click', 'click on save button');
+        await executeStep(this.saveButton, 'click', 'Click on save button');
       } catch (error) {
         await test.step('Verify the touch point limit message is visible', async () => {
           await assertElementVisible(this.touchPointLimitMsg);
@@ -878,9 +878,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertCustomerUrl() {
     if (this.isMobile) {
-      await executeStep(this.orderNameSpan, 'click', 'click on order name');
+      await executeStep(this.orderNameSpan, 'click', 'Click on order name');
     } else {
-      await executeStep(this.customerNameSpan, 'click', 'click the customer name');
+      await executeStep(this.customerNameSpan, 'click', 'Click the customer name');
     }
     await test.step(`Verify the touch point for the customer '${indexPage.opportunity_data.endUserAccount}' is visible after clicking`, async () => {
       await assertElementVisible(
@@ -890,7 +890,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.tabNames[3]),
       'click',
-      'click touchpoint in tab'
+      'Click touchpoint in tab'
     );
   }
 
@@ -902,7 +902,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Notes),
       'click',
-      'click on notes tab'
+      'Click on notes tab'
     );
     jobNotesText = await this.jobOrderNotesTextDiv.textContent();
     coverSheetText = await this.coversheetNotesTextDiv.textContent();
@@ -926,7 +926,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await test.step(`Verify cover sheet text matches the expected value. Expected: "${indexPage.opportunity_data.coverSheetTextArea}", Actual: "${coverSheetText}"`, async () => {
       await assertEqualValues(coverSheetText, indexPage.opportunity_data.coverSheetTextArea);
     });
-    await executeStep(this.historicalLessonsText, 'scroll', 'scroll to that element if needed');
+    await executeStep(this.historicalLessonsText, 'scroll', 'Scroll to that element if needed');
   }
 
   async assertEquipmentTab(searchText, jobId) {
@@ -937,7 +937,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Equipment),
       'click',
-      'click on equipment tab'
+      'Click on equipment tab'
     );
     const countOfEquipmentsInTab = await this.countOfEquipments.textContent();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -977,15 +977,15 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertEquipmentCheckList() {
     if (this.isMobile) {
-      await executeStep(this.backBtnInMobile, 'click', 'click back button');
+      await executeStep(this.backBtnInMobile, 'click', 'Click back button');
     }
-    await executeStep(this.menuIcon, 'click', 'click on menu icon');
-    await executeStep(this.locationProfile, 'click', 'click on location profile from menu');
+    await executeStep(this.menuIcon, 'click', 'Click on menu icon');
+    await executeStep(this.locationProfile, 'click', 'Click on location profile from menu');
     equipmentCheckListText = await this.equipmentCheckListOption.textContent();
     if (equipmentCheckListText.trim() === indexPage.lighthouse_data.turnOff) {
-      await executeStep(this.equipmentCheckListTurnOnAndOffBtn, 'click', 'click turn on button');
+      await executeStep(this.equipmentCheckListTurnOnAndOffBtn, 'click', 'Click turn on button');
     }
-    await executeStep(this.flowsheetBtn, 'click', 'click flowsheet button');
+    await executeStep(this.flowsheetBtn, 'click', 'Click flowsheet button');
     await this.performSearchFunction(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -998,7 +998,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     } else {
       await this.selectAllCheckBox.check();
     }
-    await executeStep(this.yesButton, 'click', 'click on yes button to check or uncheck');
+    await executeStep(this.yesButton, 'click', 'Click on yes button to check or uncheck');
     if (await this.checkBoxForPackage.isChecked()) {
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await this.checkBoxForPackage.uncheck();
@@ -1012,19 +1012,19 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertCheckBox() {
     if (this.isMobile) {
-      await executeStep(this.backBtnInMobile, 'click', 'click on back button');
+      await executeStep(this.backBtnInMobile, 'click', 'Click on back button');
     }
-    await executeStep(this.menuIcon, 'click', 'click on menu icon');
-    await executeStep(this.locationProfile, 'click', 'click on location profile');
+    await executeStep(this.menuIcon, 'click', 'Click on menu icon');
+    await executeStep(this.locationProfile, 'click', 'Click on location profile');
     equipmentCheckListText = await this.equipmentCheckListOption.textContent();
     if (equipmentCheckListText.trim() === indexPage.lighthouse_data.turnOn) {
       await executeStep(
         this.equipmentCheckListTurnOnAndOffBtn,
         'click',
-        'click on turn off button'
+        'Click on turn off button'
       );
     }
-    await executeStep(this.flowsheetBtn, 'click', 'click flowsheet button');
+    await executeStep(this.flowsheetBtn, 'click', 'Click flowsheet button');
     await this.performSearchFunction(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -1033,15 +1033,15 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertEquipmentByDescription() {
     if (this.isMobile) {
-      await executeStep(this.backBtnInMobile, 'click', 'click back button in mobile');
+      await executeStep(this.backBtnInMobile, 'click', 'Click back button in mobile');
     }
-    await executeStep(this.menuIcon, 'click', 'click on menu icon');
-    await executeStep(this.myProfile, 'click', 'click on my profile');
+    await executeStep(this.menuIcon, 'click', 'Click on menu icon');
+    await executeStep(this.myProfile, 'click', 'Click on my profile');
     const equipmentDispalyValue = await this.equipmentDisplayChioceValue.textContent();
     if (equipmentDispalyValue.trim() === indexPage.lighthouse_data.equipmentName) {
-      await executeStep(this.equipmentValueChangeButton, 'click', 'click on update button');
+      await executeStep(this.equipmentValueChangeButton, 'click', 'Click on update button');
     }
-    await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
+    await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
     await this.performSearchFunction(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -1051,15 +1051,15 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertEquipmentByName() {
     if (this.isMobile) {
-      await executeStep(this.backBtnInMobile, 'click', 'click on back button in mobile');
+      await executeStep(this.backBtnInMobile, 'click', 'Click on back button in mobile');
     }
-    await executeStep(this.menuIcon, 'click', 'click on menu icon');
-    await executeStep(this.myProfile, 'click', 'click on my profile');
+    await executeStep(this.menuIcon, 'click', 'Click on menu icon');
+    await executeStep(this.myProfile, 'click', 'Click on my profile');
     const equipmentDispalyValue = await this.equipmentDisplayChioceValue.textContent();
     if (equipmentDispalyValue.trim() === indexPage.lighthouse_data.equipmentDescription) {
-      await executeStep(this.equipmentValueChangeButton, 'click', 'click on update button');
+      await executeStep(this.equipmentValueChangeButton, 'click', 'Click on update button');
     }
-    await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
+    await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
     await this.performSearchFunction(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -1085,34 +1085,34 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   }
 
   async assertDocument(scenario) {
-    await executeStep(this.continueBtnInModal, 'click', 'click on comtinue button');
-    await executeStep(this.acceptCheckBox, 'click', 'click on checkbox');
-    await executeStep(this.continueBtnInPage, 'click', 'click on continue button in document');
+    await executeStep(this.continueBtnInModal, 'click', 'Click on comtinue button');
+    await executeStep(this.acceptCheckBox, 'click', 'Click on checkbox');
+    await executeStep(this.continueBtnInPage, 'click', 'Click on continue button in document');
     if (scenario === 'positive') {
-      await executeStep(this.startBtn, 'click', 'click on start button');
-      await executeStep(this.signBtn, 'click', 'click on sign button');
+      await executeStep(this.startBtn, 'click', 'Click on start button');
+      await executeStep(this.signBtn, 'click', 'Click on sign button');
       if (this.isMobile) {
-        executeStep(this.styleSelectInMobile, 'click', 'click style select');
+        executeStep(this.styleSelectInMobile, 'click', 'Click style select');
         await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       }
-      await executeStep(this.adoptAndSignBtn, 'click', 'click on adopt and sign button');
+      await executeStep(this.adoptAndSignBtn, 'click', 'Click on adopt and sign button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await test.step('Verify that the Finish button is visible', async () => {
         await assertElementVisible(this.finishBtn);
       });
-      await executeStep(this.finishBtn, 'click', 'click on fnish button');
+      await executeStep(this.finishBtn, 'click', 'Click on fnish button');
       await test.step('Verify that the "Request a Copy" modal is visible', async () => {
         await assertElementVisible(this.requestACopyModal);
       });
-      await executeStep(this.emailInput, 'fill', 'enter the email id', [
+      await executeStep(this.emailInput, 'fill', 'Enter the email id', [
         atob(process.env.lighthouseEmail)
       ]);
-      await executeStep(this.continueButInRequestModal, 'click', 'click on continue');
+      await executeStep(this.continueButInRequestModal, 'click', 'Click on continue');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await test.step('Verify that the "Pass Control" modal is visible', async () => {
         await assertElementVisible(this.passControlModal);
       });
-      await executeStep(this.continueBtnInPassControlModal, 'click', 'click on continue button');
+      await executeStep(this.continueBtnInPassControlModal, 'click', 'Click on continue button');
       await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
       await test.step('Verify that the Confirmation modal is visible for positive flow', async () => {
         await assertElementVisible(this.confirmModalForPositive);
@@ -1120,15 +1120,15 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     } else {
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await executeStep(this.otherActionsBtn, 'click', 'click on other actions');
+      await executeStep(this.otherActionsBtn, 'click', 'Click on other actions');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       if (!this.finishLaterBtn.isVisible()) {
-        await executeStep(this.otherActionsBtn, 'click', 'click on other actions');
+        await executeStep(this.otherActionsBtn, 'click', 'Click on other actions');
         await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       }
-      await executeStep(this.finishLaterBtn, 'click', 'click on finish later button');
+      await executeStep(this.finishLaterBtn, 'click', 'Click on finish later button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await executeStep(this.continueBtnForFinishLater, 'click', 'click on continue button');
+      await executeStep(this.continueBtnForFinishLater, 'click', 'Click on continue button');
       await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
       await test.step('Verify that the Confirmation modal is visible for negative flow', async () => {
         await assertElementVisible(this.confirmModalForNegative);
@@ -1188,7 +1188,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await test.step('Verify that the discount input field is disabled for a complimentary job', async () => {
       await assertElementDisabled(this.discountInput);
     });
-    await executeStep(this.nextButton, 'click', 'click on next button');
+    await executeStep(this.nextButton, 'click', 'Click on next button');
     await this.dateSelectModal(false);
     await this.page.waitForTimeout(parseInt(process.env.default_timeout));
   }
