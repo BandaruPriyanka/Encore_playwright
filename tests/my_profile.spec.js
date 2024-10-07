@@ -138,7 +138,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await profilePage.assertEquipmentByChangedDisplayValue();
     await profilePage.changeEquipmentDisplayChoiceToInitialValue();
   })
-  test('Test_Check "Default Schedule View" selection', async () => {
+  test('Test_C57110 Check "Default Schedule View" selection', async () => {
     await profilePage.assertInitialDefaultSheduleView();
     await profilePage.assertDefaultScheduleViewAfterChange();
     await profilePage.changeScheduleViewValueToIntialValue();

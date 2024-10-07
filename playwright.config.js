@@ -130,7 +130,8 @@ module.exports = defineConfig({
         'tests/schedule.spec.js',
         'tests/customers.spec.js',
         'tests/my_profile.spec.js',
-        'tests/location_profile.spec.js'
+        'tests/location_profile.spec.js',
+        'tests/chats.spec.js',
       ],
      // dependencies: ['global_setup', 'create_data1']
     },
