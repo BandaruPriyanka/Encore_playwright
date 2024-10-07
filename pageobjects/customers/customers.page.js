@@ -121,7 +121,7 @@ exports.CustomersPage = class CustomersPage {
     this.eventDescriptionData = this.page.locator(
       " //div[contains(text(),'Event Description')]//following-sibling::div"
     );
-    this.touchpointPieIcon = this.page.locator('(//app-mood-pia-chart)[4]');
+    this.touchpointPieIcon =ordername=> this.page.locator(`(//span[text()='${ordername}'])[2]/../../app-mood-pia-chart`);
   }
 
   async search(searchText) {

@@ -9,7 +9,7 @@ const {
   assertElementAttribute
 } = require('../utils/helper');
 require('dotenv').config();
-
+test.describe('Performing actions on Customer Tab', () => {
 let customersPage, flowsheetPage, locationId, locationText;
 test.beforeEach(async ({ page }) => {
   customersPage = new indexPage.CustomersPage(page);
@@ -56,7 +56,7 @@ test('Test_C56924 : Verify test data on customer card', async ({ page }) => {
   await customersPage.verifyCustomerCardContent();
   await customersPage.assertTabNames();
   await test.step('Verify touchpoints pie icons should not be clickable from the customers page', async () => {
-    await assertElementAttributeContains(customersPage.touchpointPieIcon, 'class', 'mr-2');
+    await assertElementAttributeContains(customersPage.touchpointPieIcon(indexPage.navigator_data.order_name), 'class', 'mr-2');
   });
 });
 test('Test_C56925 : Verify details tab', async () => {
@@ -86,4 +86,5 @@ test('Test_C56927: Verify Touchpoints Tab', async () => {
   await customersPage.addRemainingTouchPoints();
   await customersPage.assertEditIcon();
   await customersPage.assertTouchPointForFuture();
+});
 });
