@@ -1,6 +1,5 @@
 const { executeStep } = require('../../utils/action');
 const indexPage = require('../../utils/index.page');
-const { test } = require('@playwright/test');
 const utilConst = require('../../utils/const');
 const fs = require('node:fs/promises');
 const { test, expect } = require('@playwright/test');
