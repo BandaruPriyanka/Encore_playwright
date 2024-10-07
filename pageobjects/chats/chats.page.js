@@ -84,7 +84,7 @@ exports.ChatPage = class ChatPage {
   }
 
   async clickOnChatIcon(highlightedText) {
-    await executeStep(this.chatIcon, 'click', 'click on Chat Icon');
+    await executeStep(this.chatIcon, 'click', 'Click on Chat Icon');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const classAttribute = await this.HighlightedChatIcon.getAttribute('class');
     await test.step(`Verify The chat icon should be highlighted : "${highlightedText}"`, async () => {
@@ -97,7 +97,7 @@ exports.ChatPage = class ChatPage {
     phraseFromChat,
     casesensitiveText
   ) {
-    await executeStep(this.searchChat_Field, 'fill', 'enter the invalid text in the search input', [
+    await executeStep(this.searchChat_Field, 'fill', 'Enter the invalid text in the search input', [
       randomText
     ]);
     await test.step('Verify that the "No Results Found" message is displayed', async () => {
@@ -106,49 +106,49 @@ exports.ChatPage = class ChatPage {
         indexPage.lighthouse_data.noResultsFound
       );
     });
-    await executeStep(this.searchChat_Field, 'fill', 'enter the participant name', [
+    await executeStep(this.searchChat_Field, 'fill', 'Enter the participant name', [
       participantname
     ]);
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeouts));
     await test.step('Verify that the Participant Chat is visible and valid search results are returned', async () => {
       await assertElementVisible(this.participantChat);
     });
-    await executeStep(this.searchChat_Field, 'fill', 'enter the phrase from the chat', [
+    await executeStep(this.searchChat_Field, 'fill', 'Enter the phrase from the chat', [
       phraseFromChat
     ]);
     await test.step('Verify that searching using a valid phrase from the chat returns an appropriate chats list', async () => {
       await assertElementVisible(this.participantChat);
     });
-    await executeStep(this.crossMark, 'click', 'click on cross Mark');
+    await executeStep(this.crossMark, 'click', 'Click on cross Mark');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await test.step('Verify that the All Chats  are visible after clicking cross icon', async () => {
       await assertElementVisible(this.participantChatAll);
     });
-    await executeStep(this.searchChat_Field, 'fill', 'enter the valid text in the search input', [
+    await executeStep(this.searchChat_Field, 'fill', 'Enter the valid text in the search input', [
       casesensitiveText
     ]);
     await test.step('Verify that the Participant Chat is visible and the search is case-insensitive, returning appropriate results regardless of case', async () => {
       await assertElementVisible(this.participantChat);
     });
     await scrollElement(this.participantChatAll, 'bottom');
-    await executeStep(this.participantChat, 'click', 'click on participant Chat');
+    await executeStep(this.participantChat, 'click', 'Click on participant Chat');
   }
 
   async createNewChat(count) {
     await test.step('Verify that the New Chat icon is visible', async () => {
       await assertElementVisible(this.newChatIcon);
     });
-    await executeStep(this.newChatIcon, 'click', 'click on new Chat Icon');
+    await executeStep(this.newChatIcon, 'click', 'Click on new Chat Icon');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeouts));
     await test.step('Verify that Participant 1 is visible', async () => {
       await assertElementVisible(this.participant1);
     });
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.participant1, 'click', 'click on participant1');
+    await executeStep(this.participant1, 'click', 'Click on participant1');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.participant2, 'click', 'click on participant2');
+    await executeStep(this.participant2, 'click', 'Click on participant2');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.createChatButton, 'click', 'click on createChatButton');
+    await executeStep(this.createChatButton, 'click', 'Click on createChatButton');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const quantity = await this.quantityCount.textContent();
     await test.step(`Verify that the quantity (${quantity}) matches the expected count (${count})`, async () => {
@@ -156,35 +156,35 @@ exports.ChatPage = class ChatPage {
     });
   }
   async AddParticipants(validParticipant, randomdata, demogroup, noresultFound) {
-    await executeStep(this.groupIcon, 'click', 'click on groupIcon');
+    await executeStep(this.groupIcon, 'click', 'Click on groupIcon');
     await test.step('Verify that the Participants modal is displayed with participant names, "Add participant", and "Leave" options', async () => {
       await assertElementVisible(this.leave);
       await assertElementVisible(this.addParticipants);
     });
-    await executeStep(this.addParticipants, 'click', 'click on addParticipants');
+    await executeStep(this.addParticipants, 'click', 'Click on addParticipants');
     await test.step('Verify that "Add Participant" modal should be displayed', async () => {
       await assertElementVisible(this.participantsModel);
     });
-    await executeStep(this.searchUsersField, 'click', 'click on search Users Field');
-    await executeStep(this.searchUsersField, 'fill', 'enter valid user', [validParticipant]);
-    await executeStep(this.searchUsersField, 'fill', 'empty the search field', [' ']);
-    await executeStep(this.searchUsersField, 'fill', 'enter random data', [randomdata]);
+    await executeStep(this.searchUsersField, 'click', 'Click on search Users Field');
+    await executeStep(this.searchUsersField, 'fill', 'Enter valid user', [validParticipant]);
+    await executeStep(this.searchUsersField, 'fill', 'Empty the search field', [' ']);
+    await executeStep(this.searchUsersField, 'fill', 'Enter random data', [randomdata]);
     await test.step('Verify that the "No Results Found" message is displayed in Add Participants', async () => {
       await assertElementContainsText(this.noResultsFoundTextInAddParticipants, noresultFound);
     });
-    await executeStep(this.searchUsersField, 'fill', 'empty the search field', [' ']);
-    await executeStep(this.participant1, 'click', 'click on participant1');
-    await executeStep(this.searchUsersField, 'click', 'click on search Users Field');
-    await executeStep(this.participant2, 'click', 'click on participant2');
-    await executeStep(this.addButton, 'click', 'click on addButton');
-    await executeStep(this.penIcon, 'click', 'click on penIcon');
+    await executeStep(this.searchUsersField, 'fill', 'Empty the search field', [' ']);
+    await executeStep(this.participant1, 'click', 'Click on participant1');
+    await executeStep(this.searchUsersField, 'click', 'Click on search Users Field');
+    await executeStep(this.participant2, 'click', 'Click on participant2');
+    await executeStep(this.addButton, 'click', 'Click on addButton');
+    await executeStep(this.penIcon, 'click', 'Click on penIcon');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.groupNameField, 'click', 'click on groupNameField');
-    await executeStep(this.groupNameField, 'fill', 'empty the groupNameField', ['']);
+    await executeStep(this.groupNameField, 'click', 'Click on groupNameField');
+    await executeStep(this.groupNameField, 'fill', 'Empty the groupNameField', ['']);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.groupNameField, 'fill', 'enter the groupNameField', [demogroup]);
+    await executeStep(this.groupNameField, 'fill', 'Enter the groupNameField', [demogroup]);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.saveButton, 'click', 'click on saveButton');
+    await executeStep(this.saveButton, 'click', 'Click on saveButton');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const groupName = await this.updatedGroupName.textContent();
     await test.step(`Verify that the group name ("${groupName}") matches the expected group name ("${demogroup}")`, async () => {
@@ -192,15 +192,15 @@ exports.ChatPage = class ChatPage {
     });
   }
   async leaveChat() {
-    await executeStep(this.groupIcon, 'click', 'click on groupIcon');
+    await executeStep(this.groupIcon, 'click', 'Click on groupIcon');
     await test.step('Verify that the Leave button is visible', async () => {
       await assertElementVisible(this.leave);
     });
-    await executeStep(this.leave, 'click', 'click on leave');
+    await executeStep(this.leave, 'click', 'Click on leave');
     await test.step('Verify that the Leave Confirmation Dialogue Model is visible', async () => {
       await assertElementVisible(this.leaveConfirmationDialogueModel);
     });
-    await executeStep(this.yesButton, 'click', 'click on Yes Button');
+    await executeStep(this.yesButton, 'click', 'Click on Yes Button');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     try {
       await test.step('Verify that the chat is no longer displayed in the list', async () => {
@@ -211,82 +211,82 @@ exports.ChatPage = class ChatPage {
     }
   }
   async loginUser(email, password) {
-    await executeStep(this.addAccount, 'click', 'click on add account');
-    await executeStep(this.enterUserName, 'fill', 'enter user name', [atob(email)]);
-    await executeStep(this.submitBtn, 'click', 'click on submit button');
-    await executeStep(this.enterPwd, 'fill', 'enter password', [atob(password)]);
-    await executeStep(this.submitBtn, 'click', 'click on submit button');
+    await executeStep(this.addAccount, 'click', 'Click on add account');
+    await executeStep(this.enterUserName, 'fill', 'Enter user name', [atob(email)]);
+    await executeStep(this.submitBtn, 'click', 'Click on submit button');
+    await executeStep(this.enterPwd, 'fill', 'Enter password', [atob(password)]);
+    await executeStep(this.submitBtn, 'click', 'Click on submit button');
   }
   async profileLogout() {
-    await executeStep(this.menuLine, 'click', 'click on menu line');
-    await executeStep(this.logOut, 'click', 'click on logout');
+    await executeStep(this.menuLine, 'click', 'Click on menu line');
+    await executeStep(this.logOut, 'click', 'Click on logout');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
   }
   async validateNotifications() {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await executeStep(this.notification, 'click', 'click on notification');
+    await executeStep(this.notification, 'click', 'Click on notification');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await executeStep(this.closeNotifications, 'click', 'click on close notification');
+    await executeStep(this.closeNotifications, 'click', 'Click on close notification');
   }
   async selectRecentChat() {
-    await executeStep(this.chatIcon, 'click', 'click on Chat Icon');
+    await executeStep(this.chatIcon, 'click', 'Click on Chat Icon');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.chatGrp, 'click', 'select chat from list');
+    await executeStep(this.chatGrp, 'click', 'Select chat from list');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async verifyChatsVisibility() {
-    await executeStep(this.chatIcon, 'click', 'click on Chat Icon');
+    await executeStep(this.chatIcon, 'click', 'Click on Chat Icon');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await test.step('Verify that the "All Chats"  are visible after clicking chats icon', async () => {
       await assertElementVisible(this.participantChatAll);
     });
   }
   async createChat() {
-    await executeStep(this.newChatIcon, 'click', 'click on new Chat Icon');
+    await executeStep(this.newChatIcon, 'click', 'Click on new Chat Icon');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.searchChatUser, 'fill', 'enter user name to select', [
+    await executeStep(this.searchChatUser, 'fill', 'Enter user name to select', [
       indexPage.lighthouse_data.chatUser1
     ]);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.participant1, 'click', 'click on participant1');
+    await executeStep(this.participant1, 'click', 'Click on participant1');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.participant2, 'click', 'click on participant2');
+    await executeStep(this.participant2, 'click', 'Click on participant2');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.createChatButton, 'click', 'click on createChatButton');
+    await executeStep(this.createChatButton, 'click', 'Click on createChatButton');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async sendMessageAndVerifyDetails() {
-    await executeStep(this.textArea, 'fill', 'enter the message from user1', [
+    await executeStep(this.textArea, 'fill', 'Enter the message from user1', [
       indexPage.lighthouse_data.firstMessage
     ]);
-    await executeStep(this.sendMsg, 'click', 'click on send message');
-    await executeStep(this.textArea, 'fill', 'enter the important message from user1', [
+    await executeStep(this.sendMsg, 'click', 'Click on send message');
+    await executeStep(this.textArea, 'fill', 'Enter the important message from user1', [
       indexPage.lighthouse_data.user1AlertMessage
     ]);
-    await executeStep(this.alertImportant, 'click', 'click on alert icon to make as important');
-    await executeStep(this.sendMsg, 'click', 'click on send icon');
+    await executeStep(this.alertImportant, 'click', 'Click on alert icon to make as important');
+    await executeStep(this.sendMsg, 'click', 'Click on send icon');
     await test.step('Verify that the message was sent successfully, including information about the timestamp and author', async () => {
       await assertElementVisible(this.user1TimeStamp);
     });
   }
   async selectUser2() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
+    await executeStep(this.selectLogOutMail, 'click', 'Select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.email, process.env.password);
     await this.selectRecentChat();
     await test.step('Verify that the message is received by User-2 successfully with all valid information.', async () => {
       await assertElementVisible(this.user1TimeStamp);
     });
-    await executeStep(this.textArea, 'fill', 'enter the message from user2', [
+    await executeStep(this.textArea, 'fill', 'Enter the message from user2', [
       indexPage.lighthouse_data.secondMessage
     ]);
-    await executeStep(this.sendMsg, 'click', 'click on send message');
-    await executeStep(this.textArea, 'fill', 'enter the message from user2', [
+    await executeStep(this.sendMsg, 'click', 'Click on send message');
+    await executeStep(this.textArea, 'fill', 'Enter the message from user2', [
       indexPage.lighthouse_data.user2AlertMessage
     ]);
-    await executeStep(this.alertImportant, 'click', 'click on alert icon to make as important');
-    await executeStep(this.sendMsg, 'click', 'click on send Icon');
+    await executeStep(this.alertImportant, 'click', 'Click on alert icon to make as important');
+    await executeStep(this.sendMsg, 'click', 'Click on send Icon');
     await test.step('Verify that the message was sent successfully, including information about the timestamp and author', async () => {
       await assertElementVisible(this.user2TimeStamp);
     });
@@ -294,12 +294,12 @@ exports.ChatPage = class ChatPage {
   }
   async selectUser1() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
+    await executeStep(this.selectLogOutMail, 'click', 'Select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.lighthouseEmail, process.env.lighthousePassword);
-    await executeStep(this.chatIcon, 'click', 'click on Chat Icon');
+    await executeStep(this.chatIcon, 'click', 'Click on Chat Icon');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.chatGrp, 'click', 'select chat from list');
+    await executeStep(this.chatGrp, 'click', 'Select chat from list');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await test.step('Verify that the message is received by User-1 successfully with all valid information.', async () => {
       await assertElementVisible(this.user2TimeStamp);
@@ -309,10 +309,10 @@ exports.ChatPage = class ChatPage {
     const input = await this.insertFile;
     const user1Image = process.cwd() + '//images//lighthouse.png';
     await input.setInputFiles(user1Image);
-    await executeStep(this.sendMsg, 'click', 'click on send message');
+    await executeStep(this.sendMsg, 'click', 'Click on send message');
     await this.profileLogout();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
+    await executeStep(this.selectLogOutMail, 'click', 'Select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.email, process.env.password);
     await this.selectRecentChat();
@@ -321,10 +321,10 @@ exports.ChatPage = class ChatPage {
     });
     const user2Image = process.cwd() + '//images//venue.png';
     await input.setInputFiles(user2Image);
-    await executeStep(this.sendMsg, 'click', 'click on send message');
+    await executeStep(this.sendMsg, 'click', 'Click on send message');
     await this.profileLogout();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
+    await executeStep(this.selectLogOutMail, 'click', 'Select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.lighthouseEmail, process.env.lighthousePassword);
     await this.selectRecentChat();
@@ -333,20 +333,20 @@ exports.ChatPage = class ChatPage {
     });
     const user1ImpImage = process.cwd() + '//images//office.png';
     await input.setInputFiles(user1ImpImage);
-    await executeStep(this.alertImportant, 'click', 'click on alert icon to make as important');
-    await executeStep(this.sendMsg, 'click', 'click on send message');
+    await executeStep(this.alertImportant, 'click', 'Click on alert icon to make as important');
+    await executeStep(this.sendMsg, 'click', 'Click on send message');
     await test.step('Verify that the important message is sent successfully, including information about the timestamp and author. The image should be displayed properly', async () => {
       await assertElementVisible(this.user1TimeStamp);
     });
     await this.profileLogout();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.selectLogOutMail, 'click', 'select mail to logout');
+    await executeStep(this.selectLogOutMail, 'click', 'Select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.email, process.env.password);
     await this.selectRecentChat();
     await test.step('Verify that the important message should be received by User2 successfully with all the valid information.', async () => {
       await assertElementVisible(this.user1TimeStamp);
     });
-    await executeStep(this.clickOnImg, 'click', 'click on image to check');
+    await executeStep(this.clickOnImg, 'click', 'Click on image to check');
   }
 };

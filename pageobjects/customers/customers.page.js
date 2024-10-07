@@ -328,11 +328,11 @@ exports.CustomersPage = class CustomersPage {
     await executeStep(this.selectRoom, 'click', 'Click on any room from the list', []);
   }
   async assertTouchPointTab() {
-    await executeStep(this.contactNameDiv, 'click', 'click on customer div');
+    await executeStep(this.contactNameDiv, 'click', 'Click on customer div');
     await executeStep(
       this.orderNameDiv(indexPage.navigator_data.order_name),
       'click',
-      'click on order div'
+      'Click on order div'
     );
     await test.step(`Verify that the "${utilConst.Const.tabNames[2]}" tab is visible`, async () => {
       await assertElementVisible(this.dynamicTabElement(utilConst.Const.tabNames[2]));
@@ -340,20 +340,20 @@ exports.CustomersPage = class CustomersPage {
     await executeStep(
       this.dynamicTabElement(utilConst.Const.tabNames[2]),
       'click',
-      'click on touch point in customers tab'
+      'Click on touch point in customers tab'
     );
     await test.step('Verify that the touch point button is displayed', async () => {
       await assertElementVisible(this.touchPointSpan);
     });
   }
   async addFirstTouchPoint() {
-    await executeStep(this.touchPointSpan, 'click', 'click on add touch point');
+    await executeStep(this.touchPointSpan, 'click', 'Click on add touch point');
     await test.step('Verify that the modal for adding the 1st touchpoint is displayed', async () => {
       await assertElementVisible(this.touchPointModal);
     });
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.happyIconInTouchPointModal, 'click', 'click happy icon in modal');
-    await executeStep(this.saveButton, 'click', 'click on save button');
+    await executeStep(this.happyIconInTouchPointModal, 'click', 'Click happy icon in modal');
+    await executeStep(this.saveButton, 'click', 'Click on save button');
     await test.step('Verify that the green color mood icon is displayed', async () => {
       await assertElementVisible(this.firstTouchPointIcon(utilConst.Const.greenIconText));
     });
@@ -374,48 +374,48 @@ exports.CustomersPage = class CustomersPage {
     await executeStep(
       this.dynamicTabElement(utilConst.Const.tabNames[2]),
       'click',
-      'click on touch point in customers tab'
+      'Click on touch point in customers tab'
     );
-    await executeStep(this.touchPointSpan, 'click', 'click on add touch point');
+    await executeStep(this.touchPointSpan, 'click', 'Click on add touch point');
     await test.step('Verify that the modal for adding the 1st touchpoint is displayed', async () => {
       await assertElementVisible(this.touchPointModal);
     });
-    await executeStep(this.neutralIconInTouchPointModal, 'click', 'click on neutral icon in modal');
-    await executeStep(this.saveButton, 'click', 'click save button');
+    await executeStep(this.neutralIconInTouchPointModal, 'click', 'Click on neutral icon in modal');
+    await executeStep(this.saveButton, 'click', 'Click save button');
     await test.step('Verify that the note requires message in the modal is displayed', async () => {
       await assertElementVisible(this.noteRequiresMsgInModal);
     });
-    await executeStep(this.noteInput, 'fill', 'enter the comment for neutral icon', [
+    await executeStep(this.noteInput, 'fill', 'Enter the comment for neutral icon', [
       indexPage.lighthouse_data.neutralComment
     ]);
-    await executeStep(this.saveButton, 'click', 'click on save button');
+    await executeStep(this.saveButton, 'click', 'Click on save button');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await test.step('Verify that the yellow color mood icon is displayed', async () => {
       await assertElementVisible(this.secondTouchPointIcon(utilConst.Const.yellowIconText));
     });
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     if (this.isMobile) {
-      await executeStep(this.backArrowBtn, 'click', 'click on back arrow button');
+      await executeStep(this.backArrowBtn, 'click', 'Click on back arrow button');
     }
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await executeStep(this.notificationIcon, 'click', 'click on notification msg');
+    await executeStep(this.notificationIcon, 'click', 'Click on notification msg');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await test.step('Verify that both in-app and push notifications appear after submitting a Neutral or Negative touchpoint', async () => {
       await assertElementVisible(this.notificationMsg(indexPage.lighthouse_data.neutralComment));
     });
-    await executeStep(this.notificationCloseBtn, 'click', 'click on notification close button');
+    await executeStep(this.notificationCloseBtn, 'click', 'Click on notification close button');
     if (this.isMobile) {
       await executeStep(
         this.orderNameDiv(indexPage.navigator_data.order_name),
         'click',
-        'click on order name'
+        'Click on order name'
       );
     }
     await this.page.reload();
     await executeStep(
       this.dynamicTabElement(utilConst.Const.tabNames[2]),
       'click',
-      'click on touch point in customers tab'
+      'Click on touch point in customers tab'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const afterCount = await this.touchPointCountDiv.textContent();
@@ -431,15 +431,15 @@ exports.CustomersPage = class CustomersPage {
     let isItem = true;
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     while (isItem) {
-      await executeStep(this.touchPointSpan, 'click', 'click the touch point');
+      await executeStep(this.touchPointSpan, 'click', 'Click the touch point');
 
       try {
         await assertElementVisible(this.touchPointModal);
-        await executeStep(this.angryIconInTouchPoint, 'click', 'click on angry icon in modal');
-        await executeStep(this.noteInput, 'fill', 'enter the msg in note input', [
+        await executeStep(this.angryIconInTouchPoint, 'click', 'Click on angry icon in modal');
+        await executeStep(this.noteInput, 'fill', 'Enter the msg in note input', [
           indexPage.lighthouse_data.angryComment
         ]);
-        await executeStep(this.saveButton, 'click', 'click on save button');
+        await executeStep(this.saveButton, 'click', 'Click on save button');
       } catch (error) {
         await this.page.waitForTimeout(parseInt(process.env.small_timeout));
         await test.step('Verify that the proper validation message is displayed when trying to add more than the allowed touchpoints', async () => {
@@ -453,10 +453,10 @@ exports.CustomersPage = class CustomersPage {
     await test.step('Verify that the touch point edit icon is displayed', async () => {
       await assertElementVisible(this.secondTouchPointEditIcon);
     });
-    await executeStep(this.secondTouchPointEditIcon, 'click', 'click on edit icon');
-    await executeStep(this.happyIconInTouchPointModal, 'click', 'click on happy icon');
-    await executeStep(this.noteInput, 'fill', 'enter the note', ['']);
-    await executeStep(this.saveButton, 'click', 'click on save button');
+    await executeStep(this.secondTouchPointEditIcon, 'click', 'Click on edit icon');
+    await executeStep(this.happyIconInTouchPointModal, 'click', 'Click on happy icon');
+    await executeStep(this.noteInput, 'fill', 'Enter the note', ['']);
+    await executeStep(this.saveButton, 'click', 'Click on save button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await test.step('Verify that the user can edit previously created Touchpoints by ensuring the green icon is displayed', async () => {
       await assertElementVisible(this.secondTouchPointIcon(utilConst.Const.greenIconText));
@@ -464,15 +464,15 @@ exports.CustomersPage = class CustomersPage {
   }
   async assertTouchPointForFuture() {
     if (this.isMobile) {
-      await executeStep(this.backArrowBtn, 'click', 'click on back arrow button');
+      await executeStep(this.backArrowBtn, 'click', 'Click on back arrow button');
     }
-    await executeStep(this.dateElement(nextDayDate()), 'click', 'click on next day date');
-    await executeStep(this.contactNameDiv, 'click', 'click on customer div');
-    await executeStep(this.firstOrderDiv, 'click', 'click on order');
+    await executeStep(this.dateElement(nextDayDate()), 'click', 'Click on next day date');
+    await executeStep(this.contactNameDiv, 'click', 'Click on customer div');
+    await executeStep(this.firstOrderDiv, 'click', 'Click on order');
     await executeStep(
       this.dynamicTabElement(utilConst.Const.tabNames[2]),
       'click',
-      'click on touch point in customers tab'
+      'Click on touch point in customers tab'
     );
     await test.step('Verify that the touch point button is not displayed for Past or Future dates, ensuring that touchpoints can only be submitted for the actual date', async () => {
       await assertElementNotVisible(this.touchPointSpan);
