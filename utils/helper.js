@@ -349,6 +349,15 @@ async function checkVisibleElementColors(page, selector, expectedColor) {
   }
 }
 
+async function verifyNavigationElements(page, locator, expectedArray,language) {
+  const navigationItems = await page.locator(locator);
+  for (let i = 0; i < expectedArray.length; i++) {
+      const itemText = await navigationItems.nth(i).textContent();
+      await test.step(`Verify that the value "${itemText.trim()}" is in "${language}"` , async () => {
+        await expect(itemText.trim()).toEqual(expectedArray[i]);
+      })
+  }
+}
 module.exports = {
   getTodayDate,
   generateRandString,
@@ -403,4 +412,5 @@ module.exports = {
   getPreviousWeekDateAndMonth,
   getNextWeekDateAndMonth,
   getFormattedTodayDate,
+  verifyNavigationElements
 };
