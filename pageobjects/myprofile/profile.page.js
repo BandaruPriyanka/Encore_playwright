@@ -1,13 +1,21 @@
 const { executeStep } = require('../../utils/action');
 const indexPage = require('../../utils/index.page');
+const { test } = require('@playwright/test');
+const utilConst = require('../../utils/const');
 const fs = require('node:fs/promises');
 const { test, expect } = require('@playwright/test');
 const {
-  assertElementVisible,
-  assertContainsValue,
-  validateLastSyncValue,
-  validateLastSyncedText
-} = require('../../utils/helper');
+    assertElementVisible,
+    assertContainsValue,
+    validateLastSyncValue,
+    assertNotEqualValues,
+    assertEqualValues,
+    assertElementNotVisible,
+    verifyNavigationElements,
+    validateLastSyncedText
+  } = require('../../utils/helper');
+let initialEquipmentDispalyValue,getequipmentTextByIntialDisplayValue,
+    getequipmentTextByChangedDisplayValue,initialScheduleViewValue,initialLanguageValue,spanishText,frenchText;
 
 exports.ProfilePage = class ProfilePage {
   constructor(page) {
@@ -98,7 +106,36 @@ exports.ProfilePage = class ProfilePage {
       "(//app-profile-content//div[contains(@class,'e2e_user_profile_sync_action') and normalize-space(text())='Resync'])[1]"
     );
     this.notificationMessage = this.page.locator('//mat-snack-bar-container');
-    this.selectedLocationValue = this;
+    this.getLocationFromHeader = this.page.locator("(//icon[@name='map_point_line'])[1]//parent::div");
+    this.getLocationFromGeneralTab = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_selected_location_value')]") 
+              : this.page.locator("//span[@class='e2e_user_profile_selected_location_value']");
+    this.selectedLocationChangeButton = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_selected_location_value')]//following-sibling::div");
+    this.equipmentDisplayChioceValue = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_value')]")
+              : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div/span");
+    this.equipmentValueChangeButton = this.isMobile ? this.page.locator("(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_action')]")
+              : this.page.locator("//div[contains(text(),'Equipment Display Choice')]/following-sibling::div[contains(text(),'Update')]");
+    this.flowsheetBtn = this.isMobile ? this.page.locator('//app-mobile-navigation//div[3]/app-mobile-navigation-item//icon')
+              : this.page.locator('//app-desktop-navigation//app-navigation-item[1]//span[contains(text(),Flowsheet)]');
+    this.equipmentText = this.page.locator("(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]");
+    this.backBtnInMobile = this.page.locator("//icon[contains(@class,'e2e_flowsheet_detail_back')]");
+    this.defaultScheduleViewValue = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_schedule_value')]")
+              : this.page.locator("//div[contains(@class,'e2e_user_profile_schedule_value')]");
+    this.defaultScheduleViewChangeBtn = this.isMobile ? this.page.locator("(//div[contains(@class,'e2e_user_profile_schedule_action')])[2]")
+              : this.page.locator("(//div[contains(@class,'e2e_user_profile_schedule_action')])[1]");
+    this.highlightedScheduleText = this.isMobile ? this.page.locator("//div[contains(@class,'text-encore-secondary-purple')]")
+              : this.page.locator("//mat-button-toggle[contains(@class,'mat-button-toggle-checked')]//button//span");
+    this.dismissBtn = this.page.locator("//span[contains(text(),'Dismiss')]");
+    this.getSelectedLanguageValue = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_language_value')]") 
+              : this.page.locator("//span[@class='e2e_user_profile_language_value']");
+    this.languageUpdateButton = this.isMobile ? this.page.locator("(//div[contains(@class,'e2e_user_profile_language_action')])[2]")
+              : this.page.locator("(//div[contains(@class,'e2e_user_profile_language_action')])[1]");
+    this.appLanguagerRequestModal = this.page.locator("//app-language-request");
+    this.requestModalCloseBtn = this.page.locator("//a[contains(@class,'e2e_location_request_close')]");
+    this.selectLanguage = (index) => this.page.locator(`//strong[contains(@class,'e2e_add_on_request_title')]/../following-sibling::ul/li[`+index+`]/span[2]`);
+    this.getTextOfSyncLabel = this.isMobile ? this.page.locator("(//div[contains(@class,'e2e_user_profile_sync_label')])[2]")
+              : this.page.locator("(//div[contains(@class,'e2e_user_profile_sync_label')])[1]")
+    this.firstnavigationItemTitleInUI = this.page.locator("(//span[contains(@class,'e2e_navigation_item_title')])[1]");
+    this.navigationElementsLocator = "//span[contains(@class,'e2e_navigation_item_title')]";
   }
   async navigateToProfileMenu() {
     await executeStep(this.menuIcon, 'click', 'Click on Profile Menu Icon');
@@ -198,6 +235,203 @@ exports.ProfilePage = class ProfilePage {
     let dashboardText = await this.dashboardPageText.textContent();
     await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedDashboardText}" is displayed after clicking on my profile option.`, async () => {
       await assertContainsValue(dashboardText, expectedDashboardText);
+    });
+  }
+
+  async assertEquipmentByIntialDisplayValue() {
+    initialEquipmentDispalyValue = await this.equipmentDisplayChioceValue.textContent();
+    await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
+    const flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(this.page);
+    await flowsheetCardAndTab.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    getequipmentTextByIntialDisplayValue = await this.equipmentText.textContent();
+  }
+
+  async assertEquipmentByChangedDisplayValue() {
+    if (this.isMobile) {
+      await executeStep(this.backBtnInMobile, 'click', 'click on back button in mobile');
+    }
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    const equipmentDisplayValue = await this.equipmentDisplayChioceValue.textContent();
+    if(equipmentDisplayValue === initialEquipmentDispalyValue) {
+      await executeStep(this.equipmentValueChangeButton,"click","change the equipment display value");
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const equipmentValueAfterChange = await this.equipmentDisplayChioceValue.textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await test.step(`Verify that 'Equipment Display Choice' option has been changed successfully. InitialValue: ${equipmentDisplayValue}, ChangedValue: ${equipmentValueAfterChange}`, async () => {
+      await assertNotEqualValues(equipmentDisplayValue, equipmentValueAfterChange);
+    });    
+    await executeStep(this.flowsheetBtn, 'click', 'click on flowsheet button');
+    const flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(this.page);
+    await flowsheetCardAndTab.performSearchFunction(indexPage.navigator_data.second_job_no,indexPage.navigator_data.second_job_no);
+    getequipmentTextByChangedDisplayValue = await this.equipmentText.textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await test.step("Verify that all equipment for the Flowsheets is displayed according to the selected option.", async () => {
+      await assertNotEqualValues(getequipmentTextByIntialDisplayValue, getequipmentTextByChangedDisplayValue);
+    });    
+  }
+
+  async changeEquipmentDisplayChoiceToInitialValue() {
+    if (this.isMobile) {
+      await executeStep(this.backBtnInMobile, 'click', 'click on back button in mobile');
+    }
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    const equipmentDisplayValue = await this.equipmentDisplayChioceValue.textContent();
+    if(equipmentDisplayValue !== initialEquipmentDispalyValue) {
+      await executeStep(this.equipmentValueChangeButton,"click","change the equipment display value");
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const equipmentValueAfterChange = await this.equipmentDisplayChioceValue.textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await test.step('Verifying that the equipment display value matches the initial value.', async () => {
+      await assertEqualValues(equipmentValueAfterChange, initialEquipmentDispalyValue);
+    }); 
+  }
+
+  async assertInitialDefaultSheduleView() {
+    initialScheduleViewValue = await this.defaultScheduleViewValue.textContent();
+    await executeStep(this.scheduleTab,"click","Click on 'Schedule icon'");
+    const getHighlighedTextFormSchedule = await this.highlightedScheduleText.textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await test.step('Verify that the correct Schedule tab is opened based on the Default Schedule View option.', async () => {
+      await assertEqualValues(getHighlighedTextFormSchedule, initialScheduleViewValue);
+    });    
+  }
+
+  async assertDefaultScheduleViewAfterChange() {
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const scheduleViewValue = await this.defaultScheduleViewValue.textContent();
+    if(scheduleViewValue === initialScheduleViewValue) {
+      await executeStep(this.defaultScheduleViewChangeBtn,"click","click on update button");
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const scheduleViewValueAfterChange = await this.defaultScheduleViewValue.textContent();
+    await test.step(`Verify that the 'Default Schedule View' option is changed successfully from "${scheduleViewValue}" to "${scheduleViewValueAfterChange}"`, async () => {
+      await assertNotEqualValues(scheduleViewValueAfterChange, scheduleViewValue);
+    });   
+    await executeStep(this.dismissBtn,"click","click on dismiss button"); 
+    await executeStep(this.scheduleTab,"click","Click on 'Schedule icon'");
+    const getHighlighedTextFormSchedule = await this.highlightedScheduleText.textContent();
+    await test.step('Verify that the correct Schedule tab is opened based on the Default Schedule View option.', async () => {
+      await assertEqualValues(getHighlighedTextFormSchedule, scheduleViewValueAfterChange);
+    });
+  }
+
+  async changeScheduleViewValueToIntialValue() {
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const scheduleViewValue = await this.defaultScheduleViewValue.textContent();
+    if(scheduleViewValue !== initialScheduleViewValue) {
+      await executeStep(this.defaultScheduleViewChangeBtn,"click","click on update button");
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const scheduleViewValueAfterChange = await this.defaultScheduleViewValue.textContent();
+    await test.step(`Verify that the 'Default Schedule View' option is changed successfully from "${scheduleViewValue}" to "${scheduleViewValueAfterChange}"`, async () => {
+      await assertEqualValues(scheduleViewValueAfterChange, initialScheduleViewValue);
+    }); 
+  }
+
+  async assertInitialLanguageValue() {
+    initialLanguageValue = await this.getSelectedLanguageValue.textContent();
+    await test.step('Make sure that all page elements are localized according to the selected option: English', async () => {
+      if(! this.isMobile) {
+        const navigationText  = await this.firstnavigationItemTitleInUI.textContent();
+        await assertEqualValues(navigationText.trim() , indexPage.lighthouse_data.flowsheetInEnglish);
+      }
+      const profileTitleText = await this.getTextOfSyncLabel.textContent();
+      await assertEqualValues(profileTitleText.trim(),indexPage.lighthouse_data.lastSyncedInEnglish);
+    });
+  }
+
+  async assertUpdateLanguageToSpanish() {
+    const getLanguageText = await this.getSelectedLanguageValue.textContent();
+    if(getLanguageText === initialLanguageValue) {
+      await executeStep(this.languageUpdateButton,"click","click on update button");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await test.step('Verify that the "Language selection modal" is displayed', async () => {
+        await assertElementVisible(this.appLanguagerRequestModal);
+      });    
+      await executeStep(this.requestModalCloseBtn,"click","click on close button");
+      await test.step("Verify that the 'Close' link works properly", async () => { 
+        await assertElementNotVisible(this.appLanguagerRequestModal);
+      });
+      await executeStep(this.languageUpdateButton,"click","click on update button");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await test.step('Verify that the "Language selection modal" is displayed', async () => {
+        await assertElementVisible(this.appLanguagerRequestModal);
+      });
+      await executeStep(this.selectLanguage(2),"click","select spanish language");
+      await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    }
+    spanishText = await this.getSelectedLanguageValue.textContent();
+    await test.step(`Verify that the selected language is updated successfully to Spanish. Expected: "${utilConst.Const.Languages[1]}", Actual: "${spanishText}"`, async () => {
+      await assertEqualValues(spanishText.trim(), utilConst.Const.Languages[1]);
+    });  
+    await test.step('Make sure that all page elements are localized according to the selected option: Spanish', async () => {
+      if(! this.isMobile) {
+        await verifyNavigationElements(this.page,this.navigationElementsLocator,indexPage.lighthouse_data.navigationElementsInSpanish,utilConst.Const.Languages[1]);
+      }
+    });
+    await test.step('Make sure that all My Profile page elements are localized according to the selected option: Spanish', async () => {
+      const profileTitleText = await this.getTextOfSyncLabel.textContent();
+      await assertEqualValues(profileTitleText.trim(),indexPage.lighthouse_data.lastSyncedInSpanish);
+    });
+  }
+
+  async assertUpdateLanguageToFrench() {
+    const getLanguageText = await this.getSelectedLanguageValue.textContent();
+    if(getLanguageText === spanishText) {
+      await executeStep(this.languageUpdateButton,"click","click on update button");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await test.step('Verify that the "Language selection modal" is displayed', async () => {
+        await assertElementVisible(this.appLanguagerRequestModal);
+      }); 
+      await executeStep(this.selectLanguage(3),"click","select spanish language");
+      await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    }
+    frenchText = await this.getSelectedLanguageValue.textContent();
+    await test.step(`Verify that the selected language is updated successfully to French. Expected: "${utilConst.Const.Languages[2]}", Actual: "${frenchText}"`, async () => {
+      await assertEqualValues(frenchText.trim(), utilConst.Const.Languages[2]);
+    });
+    await test.step('Make sure that all page elements are localized according to the selected option: French', async () => {
+      if(! this.isMobile) {
+        await verifyNavigationElements(this.page,this.navigationElementsLocator,indexPage.lighthouse_data.navigationElementsInFrench,utilConst.Const.Languages[2]);
+      }
+    });
+    await test.step('Make sure that all My Profile page elements are localized according to the selected option: French', async () => {
+      const profileTitleText = await this.getTextOfSyncLabel.textContent();
+      await assertEqualValues(profileTitleText.trim(),indexPage.lighthouse_data.lastSyncedInFrench);
+    });
+  }
+
+  async changeLanguageToIntialValue() {
+    const getLanguageText = await this.getSelectedLanguageValue.textContent();
+    if(getLanguageText !== initialLanguageValue) {
+      await executeStep(this.languageUpdateButton,"click","click on update button");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await test.step('Verify that the "Language selection modal" is displayed', async () => {
+        await assertElementVisible(this.appLanguagerRequestModal);
+      });
+      await executeStep(this.selectLanguage(1),"click","select spanish language");
+      await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    }
+    const englishText = await this.getSelectedLanguageValue.textContent();
+    await test.step(`Verify that the selected language is updated successfully to English. Expected: "${initialLanguageValue}", Actual: "${englishText}"`, async () => {
+      await assertEqualValues(englishText.trim(), initialLanguageValue.trim());
+    });
+    await test.step('Make sure that all page elements are localized according to the selected option: English', async () => {
+      if(! this.isMobile) {
+        await verifyNavigationElements(this.page,this.navigationElementsLocator,indexPage.lighthouse_data.navigationElementsInEnglish,utilConst.Const.Languages[0]);
+      }
+    });
+    await test.step('Make sure that all all My Profile page elements are localized according to the selected option: English', async () => {
+      const profileTitleText = await this.getTextOfSyncLabel.textContent();
+      await assertEqualValues(profileTitleText.trim(),indexPage.lighthouse_data.lastSyncedInEnglish);
     });
   }
 };

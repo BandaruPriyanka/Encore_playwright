@@ -24,7 +24,8 @@ const NavigatorConsts = {
   Contacts: 'Contacts',
   Add_Ons: 'Add Ons',
   Labor: 'Labor',
-  tabNames: ['Details', 'Contacts', 'Touchpoints', 'Room List', 'Previous Events']
+  tabNames: ['Details', 'Contacts', 'Touchpoints', 'Room List', 'Previous Events'],
+  Languages : ['English','Spanish','French']
 };
 
 exports.Const = NavigatorConsts;

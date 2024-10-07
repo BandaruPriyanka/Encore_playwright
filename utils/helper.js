@@ -3,8 +3,9 @@ const axios = require('axios');
 require('dotenv').config();
 const data = require('../data/apidata.json');
 const indexPage = require('./index.page');
-const { expect } = require('@playwright/test');
 let isValid;
+const { expect} = require('@playwright/test');
+
 function getTodayDate() {
   const date = new Date();
   const formattedDate = date.toISOString().split('T')[0];
@@ -349,7 +350,6 @@ async function checkVisibleElementColors(page, selector, expectedColor) {
 }
 async function validateLastSyncedText(lastSyncedText) {
   const match = lastSyncedText.match(/(\d+)([a-zA-Z]+)/);
-
   if (match) {
     const value = parseInt(match[1]);
     const unit = match[2].toLowerCase();
@@ -360,6 +360,15 @@ async function validateLastSyncedText(lastSyncedText) {
     return isValid;
   } else {
     throw new Error('Could not parse the last synced value.');
+  }
+}
+async function verifyNavigationElements(page, locator, expectedArray,language) {
+  const navigationItems = await page.locator(locator);
+  for (let i = 0; i < expectedArray.length; i++) {
+      const itemText = await navigationItems.nth(i).textContent();
+      await test.step(`Verify that the value "${itemText.trim()}" is in "${language}"` , async () => {
+        await expect(itemText.trim()).toEqual(expectedArray[i]);
+      })
   }
 }
 module.exports = {
@@ -416,5 +425,6 @@ module.exports = {
   getPreviousWeekDateAndMonth,
   getNextWeekDateAndMonth,
   getFormattedTodayDate,
-  validateLastSyncedText
+  validateLastSyncedText,
+  verifyNavigationElements
 };
