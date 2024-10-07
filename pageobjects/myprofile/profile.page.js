@@ -10,6 +10,7 @@ const {
     assertNotEqualValues,
     assertEqualValues,
     assertElementNotVisible,
+    verifyNavigationElements
   } = require('../../utils/helper');
 let initialEquipmentDispalyValue,getequipmentTextByIntialDisplayValue,
     getequipmentTextByChangedDisplayValue,initialScheduleViewValue,initialLanguageValue,spanishText,frenchText
@@ -138,6 +139,7 @@ exports.ProfilePage = class ProfilePage {
     this.getTextOfSyncLabel = this.isMobile ? this.page.locator("(//div[contains(@class,'e2e_user_profile_sync_label')])[2]")
               : this.page.locator("(//div[contains(@class,'e2e_user_profile_sync_label')])[1]")
     this.firstnavigationItemTitleInUI = this.page.locator("(//span[contains(@class,'e2e_navigation_item_title')])[1]");
+    this.navigationElementsLocator = "//span[contains(@class,'e2e_navigation_item_title')]";
   }
   async navigateToProfileMenu() {
     await executeStep(this.menuIcon, 'click', 'Click on Profile Menu Icon');
@@ -348,13 +350,14 @@ exports.ProfilePage = class ProfilePage {
     }
     spanishText = await this.getSelectedLanguageValue.textContent();
     await test.step(`Verify that the selected language is updated successfully to Spanish. Expected: "${utilConst.Const.Languages[1]}", Actual: "${spanishText}"`, async () => {
-      await assertEqualValues(spanishText, utilConst.Const.Languages[1]);
+      await assertEqualValues(spanishText.trim(), utilConst.Const.Languages[1]);
     });  
     await test.step('Make sure that all page elements are localized according to the selected option: Spanish', async () => {
       if(! this.isMobile) {
-        const navigationText  = await this.firstnavigationItemTitleInUI.textContent();
-        await assertEqualValues(navigationText.trim() , indexPage.lighthouse_data.flowsheetInSpanish);
+        await verifyNavigationElements(this.page,this.navigationElementsLocator,indexPage.lighthouse_data.navigationElementsInSpanish,utilConst.Const.Languages[1]);
       }
+    });
+    await test.step('Make sure that all My Profile page elements are localized according to the selected option: Spanish', async () => {
       const profileTitleText = await this.getTextOfSyncLabel.textContent();
       await assertEqualValues(profileTitleText.trim(),indexPage.lighthouse_data.lastSyncedInSpanish);
     });
@@ -373,13 +376,14 @@ exports.ProfilePage = class ProfilePage {
     }
     frenchText = await this.getSelectedLanguageValue.textContent();
     await test.step(`Verify that the selected language is updated successfully to French. Expected: "${utilConst.Const.Languages[2]}", Actual: "${frenchText}"`, async () => {
-      await assertEqualValues(frenchText, utilConst.Const.Languages[2]);
+      await assertEqualValues(frenchText.trim(), utilConst.Const.Languages[2]);
     });
     await test.step('Make sure that all page elements are localized according to the selected option: French', async () => {
       if(! this.isMobile) {
-        const navigationText  = await this.firstnavigationItemTitleInUI.textContent();
-        await assertEqualValues(navigationText.trim() , indexPage.lighthouse_data.flowsheetInFrench);
+        await verifyNavigationElements(this.page,this.navigationElementsLocator,indexPage.lighthouse_data.navigationElementsInFrench,utilConst.Const.Languages[2]);
       }
+    });
+    await test.step('Make sure that all My Profile page elements are localized according to the selected option: French', async () => {
       const profileTitleText = await this.getTextOfSyncLabel.textContent();
       await assertEqualValues(profileTitleText.trim(),indexPage.lighthouse_data.lastSyncedInFrench);
     });
@@ -398,13 +402,14 @@ exports.ProfilePage = class ProfilePage {
     }
     const englishText = await this.getSelectedLanguageValue.textContent();
     await test.step(`Verify that the selected language is updated successfully to English. Expected: "${initialLanguageValue}", Actual: "${englishText}"`, async () => {
-      await assertEqualValues(englishText, initialLanguageValue);
+      await assertEqualValues(englishText.trim(), initialLanguageValue.trim());
     });
     await test.step('Make sure that all page elements are localized according to the selected option: English', async () => {
       if(! this.isMobile) {
-        const navigationText  = await this.firstnavigationItemTitleInUI.textContent();
-        await assertEqualValues(navigationText.trim() , indexPage.lighthouse_data.flowsheetInEnglish);
+        await verifyNavigationElements(this.page,this.navigationElementsLocator,indexPage.lighthouse_data.navigationElementsInEnglish,utilConst.Const.Languages[0]);
       }
+    });
+    await test.step('Make sure that all all My Profile page elements are localized according to the selected option: English', async () => {
       const profileTitleText = await this.getTextOfSyncLabel.textContent();
       await assertEqualValues(profileTitleText.trim(),indexPage.lighthouse_data.lastSyncedInEnglish);
     });

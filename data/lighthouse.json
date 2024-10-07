@@ -65,5 +65,26 @@
     "flowsheetInFrench" : "Schéma de traitement",
     "lastSyncedInEnglish" : "Last Synced",
     "lastSyncedInSpanish" : "Última sincronización",
-    "lastSyncedInFrench" : "Dernière synchronisation"
+    "lastSyncedInFrench" : "Dernière synchronisation",
+    "navigationElementsInEnglish" : [
+        "Flowsheet",
+        "Schedule",
+        "Customers",
+        "Chat",
+        "Agendas"
+    ],
+    "navigationElementsInSpanish" : [
+        "Diagrama de flujo",
+        "Horario",
+        "Clientela",
+        "Charlar",
+        "Agendas"
+    ],
+    "navigationElementsInFrench" : [
+        "Schéma de traitement",
+        "Calendrier",
+        "Clients",
+        "Clavardage",
+        "Ordres du jour"
+    ]
 }
