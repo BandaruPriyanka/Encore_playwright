@@ -43,14 +43,35 @@
   "confirmed": "Confirmed",
   "cancel": "Cancel",
   "noResultsFound": "No data found",
-  "lastSyncedTime": "1hr",
+  "lastSyncedTime": "26mins",
   "resyncNotificationMessage": "User syncing can take up to 15 minutes to complete. Please allow up to 15 minutes for your user to be refreshed.\nOk",
-  "resyncJustNowStatus": "1hr",
+  "resyncJustNowStatus": "26mins",
   "expectedProfileText": "Profile",
   "expectedLocationText": "Location Profile ",
   "expectedLogsText": "Logs",
   "expectedDashboardText": "Additions Captured",
   "locationNameLower": "chicago",
   "locationNameUpper": "CHICAGO",
-  "invalidLocation": "abc"
+  "invalidLocation": "abc",
+  "flowsheetInEnglish": "Flowsheet",
+  "flowsheetInSpanish": "Diagrama de flujo",
+  "flowsheetInFrench": "Schéma de traitement",
+  "lastSyncedInEnglish": "Last Synced",
+  "lastSyncedInSpanish": "Última sincronización",
+  "lastSyncedInFrench": "Dernière synchronisation",
+  "navigationElementsInEnglish": ["Flowsheet", "Schedule", "Customers", "Chat", "Agendas"],
+  "navigationElementsInSpanish": [
+    "Diagrama de flujo",
+    "Horario",
+    "Clientela",
+    "Charlar",
+    "Agendas"
+  ],
+  "navigationElementsInFrench": [
+    "Schéma de traitement",
+    "Calendrier",
+    "Clients",
+    "Clavardage",
+    "Ordres du jour"
+  ]
 }

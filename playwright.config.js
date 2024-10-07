@@ -86,7 +86,7 @@ module.exports = defineConfig({
         'tests/my_profile.spec.js',
         'tests/location_profile.spec.js'
       ],
-      dependencies: ['global_setup', 'create_data1']
+     // dependencies: ['global_setup', 'create_data1']
     },
     {
       name: 'docusign_disabled_all_Desktop_Chrome',
@@ -95,7 +95,7 @@ module.exports = defineConfig({
         ...devices['Desktop Chrome'],
         storageState: './data/storageState.json'
       },
-      dependencies: ['global_setup', 'create_data2']
+      //dependencies: ['global_setup', 'create_data2']
     },
     {
       name: 'docusign_disabled_all_Pixel_7',
@@ -105,7 +105,7 @@ module.exports = defineConfig({
         isMobile: true,
         storageState: './data/storageState.json'
       },
-      dependencies: ['global_setup', 'create_data2']
+      //dependencies: ['global_setup', 'create_data2']
     },
     {
       name: 'docusign_disabled_all_iPhone_12',
@@ -115,7 +115,7 @@ module.exports = defineConfig({
         isMobile: true,
         storageState: './data/storageState.json'
       },
-      dependencies: ['global_setup', 'create_data2']
+     // dependencies: ['global_setup', 'create_data2']
     },
     {
       name: 'Mobile_Chrome',
@@ -132,7 +132,7 @@ module.exports = defineConfig({
         'tests/my_profile.spec.js',
         'tests/location_profile.spec.js'
       ],
-      dependencies: ['global_setup', 'create_data1']
+     // dependencies: ['global_setup', 'create_data1']
     },
     {
       name: 'Mobile_Safari',
@@ -150,7 +150,7 @@ module.exports = defineConfig({
         'tests/my_profile.spec.js',
         'tests/location_profile.spec.js'
       ],
-      dependencies: ['global_setup', 'create_data1']
+     // dependencies: ['global_setup', 'create_data1']
     }
   ]
 });
