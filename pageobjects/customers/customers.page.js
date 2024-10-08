@@ -123,6 +123,7 @@ exports.CustomersPage = class CustomersPage {
       " //div[contains(text(),'Event Description')]//following-sibling::div"
     );
     this.touchpointPieIcon =ordername=> this.page.locator(`(//span[text()='${ordername}'])[2]/../../app-mood-pia-chart`);
+    this.previousEventList=this.page.locator("//app-previous-events//ul[@role='list']");
   }
 
   async search(searchText) {
@@ -416,7 +417,7 @@ exports.CustomersPage = class CustomersPage {
     await executeStep(
       this.dynamicTabElement(utilConst.Const.tabNames[2]),
       'click',
-      'Click on touch point in customers tab'
+      'Click on touch point in Touchpoint tab'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const afterCount = await this.touchPointCountDiv.textContent();
@@ -473,7 +474,7 @@ exports.CustomersPage = class CustomersPage {
     await executeStep(
       this.dynamicTabElement(utilConst.Const.tabNames[2]),
       'click',
-      'Click on touch point in customers tab'
+      'Click on touch point in Touchpoint tab'
     );
     await test.step('Verify that the touch point button is not displayed for Past or Future dates, ensuring that touchpoints can only be submitted for the actual date', async () => {
       await assertElementNotVisible(this.touchPointSpan);
@@ -500,6 +501,19 @@ exports.CustomersPage = class CustomersPage {
     });
     await test.step(`Verify historical data text contains expected value: expected "${indexPage.opportunity_data.historicalData}", actual "${historicalDataText}"`, async () => {
       await assertContainsValue(historicalDataText, indexPage.opportunity_data.historicalData);
+    });
+  }
+  async verifyPreviousEventTab(){
+    await executeStep(this.customerCard, 'click', 'Click on any Customer Card from that list');
+    await executeStep(this.opportunityList, 'click', 'Click on any Opportunity from Customer list');
+    await executeStep(
+      this.dynamicTabElement(utilConst.Const.tabNames[4]),
+      'click',
+      'Click on Previous Events Tab'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await test.step('Verify that all Previous Events returned ', async () => {
+      await assertElementVisible(this.previousEventList);
     });
   }
 };
