@@ -55,8 +55,9 @@ test('Test_C56923: Verify customers calendar', async ({ page }) => {
 test('Test_C56924 : Verify test data on customer card', async ({ page }) => {
   await customersPage.verifyCustomerCardContent();
   await customersPage.assertTabNames();
+  const roomName=await customersPage.getRoomName.textContent();
   await test.step('Verify touchpoints pie icons should not be clickable from the customers page', async () => {
-    await assertElementAttributeContains(customersPage.touchpointPieIcon(indexPage.navigator_data.order_name), 'class', 'mr-2');
+    await assertElementAttributeContains(customersPage.touchpointPieIcon(roomName), 'class', 'mr-2');
   });
 });
 test('Test_C56925 : Verify details tab', async () => {

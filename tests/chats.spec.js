@@ -1,7 +1,7 @@
 const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
 const lighthouseData = require('../data/lighthouse.json');
-const { assertElementVisible, assertElementAttributeContains } = require('../utils/helper');
+const { assertElementVisible, assertElementAttributeContains,clickRemindMeTomorrowButton } = require('../utils/helper');
 
 test.describe('LightHouse Chat Search', () => {
   let chatpage, flowsheetPage, locationId, locationText;
@@ -60,5 +60,6 @@ test.describe('LightHouse Chat Search', () => {
     await chatpage.selectUser2();
     await chatpage.selectUser1();
     await chatpage.imageValidation();
+    await clickRemindMeTomorrowButton(chatpage.page);
   });
 });

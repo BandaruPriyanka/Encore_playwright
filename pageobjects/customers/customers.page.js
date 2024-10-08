@@ -40,6 +40,7 @@ exports.CustomersPage = class CustomersPage {
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
     this.customerCard = this.page.locator('(//app-customer-card)[1]');
     this.opportunityList = this.page.locator("(//div[@role='region']/div/div/div)[1]");
+    this.getRoomName=this.page.locator("((//div[@role='region']/div/div/div)[1]/div/span)[1]");
     this.orderName = this.page.locator("//span[contains(@class,'e2e_opportunity_order_name')]");
     this.customerName = this.page.locator(
       "//span[contains(@class,'e2e_opportunity_bill_to_account_name')]"

@@ -371,6 +371,16 @@ async function verifyNavigationElements(page, locator, expectedArray,language) {
       })
   }
 }
+async function clickRemindMeTomorrowButton(page) {
+  const buttonLocator = page.locator("//button[text()='Remind Me Tomorrow']");
+  try {
+    await buttonLocator.waitFor({ state: 'visible', timeout: 5000 }); 
+    await buttonLocator.click(); 
+  } catch (error) {
+    console.log("The 'Remind Me Tomorrow' button did not appear.");
+  }
+}
+
 module.exports = {
   getTodayDate,
   generateRandString,
@@ -426,5 +436,6 @@ module.exports = {
   getNextWeekDateAndMonth,
   getFormattedTodayDate,
   validateLastSyncedText,
-  verifyNavigationElements
+  verifyNavigationElements,
+  clickRemindMeTomorrowButton
 };
