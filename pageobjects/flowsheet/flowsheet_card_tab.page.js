@@ -329,9 +329,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   async verifyDocusignStatus(docusign, searchText, jobId) {
     await executeStep(this.menuIcon, 'click', 'Click on menu icon');
     await executeStep(this.locationProfile, 'click', 'Click on location profile in menu');
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await test.step(`Verify the DocuSign value is displayed: "${docusign}"`, async () => {
       await assertElementContainsText(this.docusignValue, docusign);
     });
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     beforeRoomCount = await this.roomsCount.textContent();

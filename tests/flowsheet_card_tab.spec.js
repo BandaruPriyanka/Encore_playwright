@@ -130,12 +130,13 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertEquipmentByName();
   });
 
-  test('Test_C56904: Verify Test Add-on creation (Docusign enabled) - Positive flow', async () => {
+  test('Test_C56904: Verify Test Add-on creation (Docusign enabled) - Positive flow', async ({ page }) => {
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
+    await page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await test.step('Verify that the "pass control" modal is visible', async () => {
       await assertElementVisible(flowsheetCardAndTab.textInModalForDocument);
     });
@@ -150,6 +151,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
+    await page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await test.step('Verify that the text in the document modal is visible', async () => {
       await assertElementVisible(this.textInModalForDocument);
     });
@@ -168,6 +170,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.navigator_data.second_job_no_complimentary,
       indexPage.navigator_data.second_job_no_complimentary
     );
+    await page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await test.step('Verify that the "pass control" modal is visible', async () => {
       await assertElementVisible(flowsheetCardAndTab.textInModalForDocument);
     });
