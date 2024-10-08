@@ -11,10 +11,14 @@ const {
     assertEqualValues,
     assertElementNotVisible,
     verifyNavigationElements,
-    validateLastSyncedText
+    validateLastSyncedText,
+    checkTimeFormat,
+    extractTime
   } = require('../../utils/helper');
+const { after } = require('node:test');
 let initialEquipmentDispalyValue,getequipmentTextByIntialDisplayValue,
-    getequipmentTextByChangedDisplayValue,initialScheduleViewValue,initialLanguageValue,spanishText,frenchText;
+    getequipmentTextByChangedDisplayValue,initialScheduleViewValue,initialLanguageValue,
+    spanishText,frenchText,initialTimeValue,afterTimeValue
 
 exports.ProfilePage = class ProfilePage {
   constructor(page) {
@@ -179,7 +183,18 @@ exports.ProfilePage = class ProfilePage {
     this.getValueOfMenuSlot5 = this.isMobile ? this.page.locator("//div[contains(@class,'e2e_user_profile_menu_5_value')]")
               : this.page.locator("//span[contains(@class,'e2e_user_profile_menu_5_value')]");
     this.getFlowsheetTextFromPage = this.page.locator("//div[contains(@class,'e2e_page_header_flowsheets')]/span");
-    this.getScheduleTextFromPage = this.page.locator("//div[contains(@class,'e2e_page_header_schedule')]")
+    this.getScheduleTextFromPage = this.page.locator("//div[contains(@class,'e2e_page_header_schedule')]");
+    this.timeValueFromProfile = this.isMobile ? this.page.locator("(//div[contains(@class,'e2e_user_profile_theme_value')])[2]")
+              : this.page.locator("(//span[@class='e2e_user_profile_theme_value'])[2]");
+    this.flowsheetSetTime = this.page.locator("(//span[contains(@class,'e2e_flowsheet_action_timeline_event_time')])[1]");
+    this.flowsheetLog = this.page.locator("//div[normalize-space()='Log']");
+    this.logCommentInput = this.page.locator("//input[@name='add-note-field']");
+    this.logSentButton = this.page.locator("//icon[@name='location_line']");
+    this.logTime = this.page.locator("(//div[contains(@class,'e2e_message_card_time')])[1]");
+    this.commandCenterIcon = this.page.locator("//icon[@name='tv_line']");
+    this.commandCenterTime =(location) => this.page.locator(`//div[normalize-space()='`+location+`']/following-sibling::div[1]//span`);
+    this.updateBtnForTime = this.isMobile ? this.page.locator("(//div[contains(@class,'e2e_user_profile_theme_action')])[4]") 
+              : this.page.locator("(//div[contains(@class,'e2e_user_profile_theme_action')])[3]"); 
   }
   async navigateToProfileMenu() {
     await executeStep(this.menuIcon, 'click', 'Click on Profile Menu Icon');
@@ -233,6 +248,9 @@ exports.ProfilePage = class ProfilePage {
     });
     await executeStep(this.menuText, 'click', 'Click on menuText');
     await executeStep(this.scheduleTab, 'click', 'Click on scheduleTab');
+    if (await this.dismissBtn.isVisible()) {
+      await executeStep(this.dismissBtn, 'click', 'Click on dismiss popup');
+    }
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await test.step('Verify that Menu Modal is displayed in Schedule page.', async () => {
       await assertElementVisible(this.menuModal);
@@ -339,6 +357,9 @@ exports.ProfilePage = class ProfilePage {
   async assertInitialDefaultSheduleView() {
     initialScheduleViewValue = await this.defaultScheduleViewValue.textContent();
     await executeStep(this.scheduleTab,"click","Click on 'Schedule icon'");
+    if (await this.dismissBtn.isVisible()) {
+      await executeStep(this.dismissBtn, 'click', 'Click on dismiss popup');
+    }
     const getHighlighedTextFormSchedule = await this.highlightedScheduleText.textContent();
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await test.step('Verify that the correct Schedule tab is opened based on the Default Schedule View option.', async () => {
@@ -512,4 +533,96 @@ exports.ProfilePage = class ProfilePage {
     await this.navigateToMyProfile();
     await executeStep(this.initialFavouriteMenuSlot,"click","Select the third menu slot as favourite")
   }
+
+  async assertTimeDisplayValue() {
+    await test.step('Verify that the time display element is visible', async () => {
+      await assertElementVisible(this.timeDisplayElement);
+    });
+    initialTimeValue = await this.timeValueFromProfile.textContent();
+    await test.step('Verify that the initial time value matches either the 12-hour or 24-hour format', async () => {
+      try {
+          assertEqualValues(initialTimeValue.trim(), indexPage.lighthouse_data['12Hours']);
+      } catch {
+          assertEqualValues(initialTimeValue.trim(), indexPage.lighthouse_data['24Hours']);
+      }
+    });
+  }
+
+  async assertTimeForFlowsheetSet(timeFormat) {
+      await executeStep(this.flowsheetBtn,"click","click on flowsheet button");
+      const flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(this.page);
+      await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
+      const getFlowsheetSetTime = await this.flowsheetSetTime.textContent();
+      const timeFormatForSetTime = await checkTimeFormat(getFlowsheetSetTime.trim());
+      await test.step(`Verify Flowsheets Set/Strike times time format: Expected TimeFormat is "${timeFormat.trim()}"`, async () => {
+        await assertEqualValues(timeFormatForSetTime, timeFormat.trim());
+      });    
+  }
+
+  async assertTimeForFlowsheetLogs(timeFormat) {
+    const flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(this.page);
+    await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await executeStep(this.flowsheetLog,"click","Click on  log in flowsheet tab");
+    await executeStep(this.logCommentInput,"fill","Enter any comment",[indexPage.lighthouse_data.logCommentMsg]);
+    await executeStep(this.logSentButton,"click","Click on sent button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const getTimeStampForLog = await this.logTime.textContent();
+    const getTimeFromLog = await extractTime(getTimeStampForLog);
+    const getTimeFormat = await checkTimeFormat(getTimeFromLog);
+    await test.step(`Verify that the Flowsheets logs time format: Expected TimeFormat is "${timeFormat.trim()}"`, async () => {
+      await assertEqualValues(getTimeFormat, timeFormat.trim());
+    });  
+  }
+
+  async assertTimeForCommandCenter(timeFormat) {
+    if(this.isMobile) {
+      await executeStep(this.backBtnInMobile,"click","click on back button");
+    }
+    await executeStep(this.commandCenterIcon,"click","click on command center icon");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const getCommandCeterTime = await this.commandCenterTime(indexPage.lighthouse_data.locationText_createData1).textContent();
+    const getTimeFormat = await checkTimeFormat(getCommandCeterTime.trim());
+    await test.step(`Verify Flowsheets Command Center time format: Expected TimeFormat is "${timeFormat.trim()}"`, async () => {
+      await assertEqualValues(getTimeFormat.trim(), timeFormat.trim());
+    });
+    await executeStep(this.commandCenterTime(indexPage.lighthouse_data.locationText_createData1),"click","click on command center page")
+  }
+
+  async assertDisplayTimeFormatForElements(timeFormat) {
+    await test.step('Verify that all times follow the selected time format across app sections', async () => {
+      await this.assertTimeForFlowsheetSet(timeFormat);
+      await this.assertTimeForFlowsheetLogs(timeFormat);
+      await this.assertTimeForCommandCenter(timeFormat);
+   });
+  }
+
+  async assertInitialTimeFormatForElements() {
+    await this.assertDisplayTimeFormatForElements(initialTimeValue);
+  }
+
+  async changeDisplayTimeValue() {
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    const getTimeValue = await this.timeValueFromProfile.textContent();
+    if(getTimeValue.trim() === initialTimeValue.trim()) {
+      await executeStep(this.updateBtnForTime,"click","click on update button");
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    afterTimeValue = await this.timeValueFromProfile.textContent();
+    await test.step(`Verify that the 'Time Display' option is changed successfully from ${getTimeValue} to ${afterTimeValue}`, async () => {
+      await assertNotEqualValues(afterTimeValue, getTimeValue);
+    });
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const getTimeAfterReload = await this.timeValueFromProfile.textContent();
+    await test.step(`Verify that the 'Time Display' remains unchanged after reload. Expected : "${afterTimeValue}"  Actual : "${getTimeAfterReload}"`, async () => {
+      await assertEqualValues(getTimeAfterReload , afterTimeValue);
+    });
+  }
+
+  async assertAfterTimeFormatForElements() {
+    await this.assertDisplayTimeFormatForElements(afterTimeValue);
+  }
+
 };

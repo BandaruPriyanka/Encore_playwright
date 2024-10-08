@@ -208,4 +208,11 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await profilePage.changeMenuSlot1ToFavouriteSlot();
     await profilePage.restoreToSelectedMenuSlot();
   })
+
+  test("TC_C57112 Check 'Time Display' selection" , async () => {
+    await profilePage.assertTimeDisplayValue();
+    await profilePage.assertInitialTimeFormatForElements();
+    await profilePage.changeDisplayTimeValue();
+    await profilePage.assertAfterTimeFormatForElements();
+  })
 });
