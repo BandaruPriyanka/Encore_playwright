@@ -381,6 +381,24 @@ async function clickRemindMeTomorrowButton(page) {
   }
 }
 
+function checkTimeFormat(time) {
+  const twelveHourFormatRegex = /^(0?[1-9]|1[0-2]):[0-5][0-9]\s?[APap][Mm]$/;
+  const twentyFourHourFormatRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+  if (twelveHourFormatRegex.test(time)) {
+      return '12 Hours';
+  } else if (twentyFourHourFormatRegex.test(time)) {
+      return '24 Hours';
+  } else {
+      return 'Invalid time format';
+  }
+}
+
+function extractTime(text) {
+  const timeRegex = /\b(\d{1,2}:\d{2}(?: ?[APMapm]{2})?)\b/;
+  const match = text.match(timeRegex);
+  return match ? match[0] : 'Time not found';
+}
+
 module.exports = {
   getTodayDate,
   generateRandString,
@@ -437,5 +455,7 @@ module.exports = {
   getFormattedTodayDate,
   validateLastSyncedText,
   verifyNavigationElements,
-  clickRemindMeTomorrowButton
+  clickRemindMeTomorrowButton,
+  checkTimeFormat,
+  extractTime
 };
