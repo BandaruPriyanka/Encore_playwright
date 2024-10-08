@@ -88,4 +88,7 @@ test('Test_C56927: Verify Touchpoints Tab', async () => {
   await customersPage.assertEditIcon();
   await customersPage.assertTouchPointForFuture();
 });
+test('Test_C56929: Verify Previous Events Tab', async () => {
+  await customersPage.verifyPreviousEventTab();
+});
 });
