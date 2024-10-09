@@ -130,7 +130,9 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertEquipmentByName();
   });
 
-  test('Test_C56904: Verify Test Add-on creation (Docusign enabled) - Positive flow', async ({ page }) => {
+  test('Test_C56904: Verify Test Add-on creation (Docusign enabled) - Positive flow', async ({
+    page
+  }) => {
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
       indexPage.navigator_data.second_job_no,
