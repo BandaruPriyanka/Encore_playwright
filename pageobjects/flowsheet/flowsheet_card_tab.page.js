@@ -281,37 +281,45 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   }
 
   async validateRoomCard(roomName, orderName, customerName) {
-    await test.step('Verify flowsheet card is displayed', async () => {
-      await assertElementVisible(this.flowsheetDetailsDiv);
-    });
+    await assertElementVisible(this.flowsheetDetailsDiv, 'Verify flowsheet card is displayed');
     const getRoomName = await this.roomNameSpan.textContent();
-    await test.step(`Verify room name is displayed in the flowsheet card details. Expected: "${roomName}", Actual: "${getRoomName}"`, async () => {
-      await assertElementContainsText(this.roomNameSpan, roomName);
-    });
+    await assertElementContainsText(
+      this.roomNameSpan,
+      roomName,
+      `Verify room name is displayed in the flowsheet card details. Expected: "${roomName}", Actual: "${getRoomName}"`
+    );
     const getOrderName = await this.orderNameSpan.textContent();
-    await test.step(`Verify order name is displayed in the flowsheet card details. Expected: "${orderName}", Actual: "${getOrderName}"`, async () => {
-      await assertElementContainsText(this.orderNameSpan, orderName);
-    });
+    await assertElementContainsText(
+      this.orderNameSpan,
+      orderName,
+      `Verify room name is displayed in the flowsheet card details. Expected: "${roomName}", Actual: "${getRoomName}"`
+    );
     const getCustomerName = await this.customerNameSpan.textContent();
-    await test.step(`Verify customer name is displayed in the flowsheet card details. Expected: "${customerName}", Actual: "${getCustomerName}"`, async () => {
-      await assertElementContainsText(this.customerNameSpan, customerName);
-    });
+    await assertElementContainsText(
+      this.customerNameSpan,
+      customerName,
+      `Verify customer name is displayed in the flowsheet card details. Expected: "${customerName}", Actual: "${getCustomerName}"`
+    );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Verify the mood change icon is visible in the flowsheet card', async () => {
-      await assertElementVisible(this.moodIconInPage);
-    });
+    await assertElementVisible(
+      this.moodIconInPage,
+      'Verify the mood change icon is visible in the flowsheet card'
+    );
     try {
-      await test.step('Verify comparison icon is visible when similar jobs are found', async () => {
-        await assertElementVisible(this.comparisonIcon);
-      });
+      await assertElementVisible(
+        this.comparisonIcon,
+        'Verify comparison icon is visible when similar jobs are found'
+      );
     } catch (error) {
-      await test.step('Verify green checkbox is visible when no similar jobs are found', async () => {
-        await assertElementVisible(this.greenColorCheckBox);
-      });
+      await assertElementVisible(
+        this.greenColorCheckBox,
+        'Verify green checkbox is visible when no similar jobs are found'
+      );
     }
-    await test.step('Verify the touch point indicator is displayed in the flowsheet card', async () => {
-      await assertElementVisible(this.touchPointElement);
-    });
+    await assertElementVisible(
+      this.touchPointElement,
+      'Verify the touch point indicator is displayed in the flowsheet card'
+    );
   }
 
   async clickOnContactAndValidate() {
@@ -320,9 +328,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       'click',
       'Click on the contacts'
     );
-    await test.step(`Verify the contact: "${indexPage.opportunity_data.userContactName}" is displayed`, async () => {
-      await assertElementVisible(this.contactName(indexPage.opportunity_data.userContactName));
-    });
+    await assertElementVisible(
+      this.contactName(indexPage.opportunity_data.userContactName),
+      `Verify the contact: "${indexPage.opportunity_data.userContactName}" is displayed`
+    );
     await executeStep(this.contactDiv, 'click', 'Click on first div from the list');
   }
 
@@ -330,9 +339,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.menuIcon, 'click', 'Click on menu icon');
     await executeStep(this.locationProfile, 'click', 'Click on location profile in menu');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step(`Verify the DocuSign value is displayed: "${docusign}"`, async () => {
-      await assertElementContainsText(this.docusignValue, docusign);
-    });
+    await assertElementContainsText(
+      this.docusignValue,
+      docusign,
+      `Verify the DocuSign value is displayed: "${docusign}"`
+    );
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
@@ -343,9 +354,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       'click',
       'Click on add ons in flowsheet tabs'
     );
-    await test.step('Verify the "New Add-On Request" button is visible', async () => {
-      await assertElementVisible(this.newAddOnRequestBtn);
-    });
+    await assertElementVisible(
+      this.newAddOnRequestBtn,
+      'Verify the "New Add-On Request" button is visible'
+    );
   }
 
   async addOnFunction(
@@ -356,9 +368,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     validQuantity
   ) {
     await executeStep(this.newAddOnRequestBtn, 'click', 'Click on new add-on request button');
-    await test.step('Verify "Add on request" modal should be displayed', async () => {
-      await assertElementVisible(this.addOnModalText);
-    });
+    await assertElementVisible(
+      this.addOnModalText,
+      'Verify "Add on request" modal should be displayed'
+    );
     await executeStep(this.requestedByInput, 'fill', 'Enter the username', [requestedBy]);
     await executeStep(this.searchProductInput, 'fill', 'Enter the individual product', [
       individualProduct
@@ -383,17 +396,19 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.requestedByInput, 'click', 'Click request by input');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     try {
-      await test.step('Verify proper validation message should be displayed for quantity.', async () => {
-        await assertElementVisible(this.quantityInvalidMsg);
-      });
+      await assertElementVisible(
+        this.quantityInvalidMsg,
+        'Verify proper validation message should be displayed for quantity.'
+      );
       if (this.quantityInvalidMsg.isVisible()) {
         await executeStep(this.quantityInput, 'fill', 'Clear the quantity', ['']);
         await executeStep(this.quantityInput, 'fill', 'Enter the valid qunatity', [validQuantity]);
       }
     } catch {
-      await test.step('Verify proper validation message should be displayed for quantity.', async () => {
-        await assertElementNotVisible(this.quantityInvalidMsg);
-      });
+      await assertElementNotVisible(
+        this.quantityInvalidMsg,
+        'Verify proper validation message should be displayed for quantity.'
+      );
     }
   }
 
@@ -402,55 +417,61 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       invalidDiscount
     ]);
     await this.discountInput.hover();
-    await test.step('Verify proper validation message should be displayed for discount.', async () => {
-      await assertElementVisible(this.discountInvalidMsg);
-    });
+    await assertElementVisible(
+      this.discountInvalidMsg,
+      'Verify proper validation message should be displayed for discount.'
+    );
     await executeStep(this.discountInput, 'fill', 'Clear on discount input', ['']);
     await executeStep(this.discountInput, 'fill', 'Enter the valid discount', [validDiscount]);
     const estimatedMoneyBeforeDiscount = await this.moneyElement.textContent();
     const originalPrice = parseFloat(estimatedMoneyBeforeDiscount.replace(/[^0-9.]/g, ''));
     await executeStep(this.discountInput, 'fill', 'Enter the valid discount', [validDiscount]);
     discountPrice = formatCurrency(calculateTotalAmountAfterDiscount(originalPrice, validDiscount));
-    await test.step(`Verify the element contains the discount price: "${discountPrice}"`, async () => {
-      await assertElementContainsText(this.moneyElement, discountPrice);
-    });
+    await assertElementContainsText(
+      this.moneyElement,
+      discountPrice,
+      `Verify the element contains the discount price: "${discountPrice}"`
+    );
     const addedProductsCount = await this.listOfProducts.count();
     const deleteIconCount = await this.listOfDeleteIcon.count();
-    await test.step(`Verify that the added products count (${addedProductsCount}) is equal to the delete icon count (${deleteIconCount})`, async () => {
-      await assertEqualValues(addedProductsCount, deleteIconCount);
-    });
+    await assertEqualValues(
+      addedProductsCount,
+      deleteIconCount,
+      `Verify that the added products count (${addedProductsCount}) is equal to the delete icon count (${deleteIconCount})`
+    );
     await executeStep(this.searchProductInput, 'fill', 'Enter the invalid text', [
       indexPage.lighthouse_data.invalidText
     ]);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the "No Result Found" message is visible', async () => {
-      await assertElementVisible(this.noResultSpan);
-    });
+    await assertElementVisible(
+      this.noResultSpan,
+      'Verify the "No Result Found" message is visible'
+    );
     await executeStep(this.productCrossLine, 'click', 'Click on cross button');
     await executeStep(this.nextButton, 'click', 'Click on next button');
   }
 
   async dateSelectModal(isNotComplimentary) {
-    await test.step('Verify the "date selection" modal is visible', async () => {
-      await assertElementVisible(this.dateSelectionModalText);
-    });
+    await assertElementVisible(
+      this.dateSelectionModalText,
+      'Verify the "date selection" modal is visible'
+    );
     await executeStep(this.arrowLineIcon, 'click', 'Click on arrow button');
-    await test.step('Verify the add-on modal is visible', async () => {
-      await assertElementVisible(this.addOnModalText);
-    });
+    await assertElementVisible(this.addOnModalText, 'Verify the add-on modal is visible');
     await executeStep(this.nextButton, 'click', 'Click on next button');
     await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Verify the "Select at least one date" error message is visible', async () => {
-      await assertElementVisible(this.selectOneDateErrorMsg);
-    });
+    await assertElementVisible(
+      this.selectOneDateErrorMsg,
+      'Verify the "Select at least one date" error message is visible'
+    );
     await executeStep(this.selectDate, 'click', 'Select today date');
     await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
     await test.step('Verify the confirmation page should be displayed with all the valid details.', async () => {
       if (isNotComplimentary) {
-        await assertElementContainsText(this.priceInConfirmationModal, discountPrice);
+        await assertElementContainsText(this.priceInConfirmationModal, discountPrice, '');
       }
-      await assertElementVisible(this.sendToNavigatorBtn);
+      await assertElementVisible(this.sendToNavigatorBtn, '');
     });
     await executeStep(this.sendToNavigatorBtn, 'click', 'Click on send to navigator button');
   }
@@ -458,17 +479,17 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   async dateSelectModalCheckingAndAssertRooms() {
     await this.dateSelectModal(true);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify that there are add-on requests present', async () => {
-      const addOnRequestsCount = await this.addOnRequestsList.count();
-      await assertGreaterThan(addOnRequestsCount, 0);
-    });
+    const addOnRequestsCount = await this.addOnRequestsList.count();
+    await assertGreaterThan(addOnRequestsCount, 0, 'Verify that there are add-on requests present');
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     afterRoomCount = await this.roomsCount.textContent();
     try {
-      await test.step(`Verify that afterRoomCount (${afterRoomCount}) is equal to beforeRoomCount (${beforeRoomCount}) + 1`, async () => {
-        await assertEqualValues(parseInt(afterRoomCount), parseInt(beforeRoomCount) + 1);
-      });
+      await assertEqualValues(
+        parseInt(afterRoomCount),
+        parseInt(beforeRoomCount) + 1,
+        `Verify that afterRoomCount (${afterRoomCount}) is equal to beforeRoomCount (${beforeRoomCount}) + 1`
+      );
     } catch {
       console.error('Romms count is not updated');
     }
@@ -484,13 +505,12 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   ) {
     await this.performSearchFunction(searchText, jobId);
     try {
-      await test.step('Verify the comparison icon is visible', async () => {
-        await assertElementVisible(this.comparisonIcon);
-      });
+      await assertElementVisible(this.comparisonIcon, 'Verify the comparison icon is visible');
     } catch (error) {
-      await test.step('Verify the green color checkbox is visible', async () => {
-        await assertElementVisible(this.greenColorCheckBox);
-      });
+      await assertElementVisible(
+        this.greenColorCheckBox,
+        'Verify the green color checkbox is visible'
+      );
       await executeStep(
         this.flowsheetTabElement(utilConst.Const.Add_Ons),
         'click',
@@ -506,43 +526,41 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await executeStep(this.nextButton, 'click', 'Click on next button');
       await executeStep(this.selectDate, 'click', 'Select today date');
       await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
-      await test.step('Verify the "Send to Navigator" button is visible', async () => {
-        await assertElementVisible(this.sendToNavigatorBtn);
-      });
+      await assertElementVisible(
+        this.sendToNavigatorBtn,
+        'Verify the "Send to Navigator" button is visible'
+      );
       await executeStep(this.sendToNavigatorBtn, 'click', 'Click on send to navigator button');
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
       await this.page.reload();
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-      await test.step('Verify the comparison icon is visible', async () => {
-        await assertElementVisible(this.comparisonIcon);
-      });
+      await assertElementVisible(this.comparisonIcon, 'Verify the comparison icon is visible');
     }
   }
 
   async comparisonIconFunctionality() {
     await executeStep(this.comparisonIcon, 'click', 'Click on comparision icon');
     try {
-      await test.step('Verify the "Several Prior Meetings" modal is visible', async () => {
-        await assertElementVisible(this.severalPriorMeetingsText);
-      });
+      await assertElementVisible(
+        this.severalPriorMeetingsText,
+        'Verify the "Several Prior Meetings" modal is visible'
+      );
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await this.selectFirstRowInAdditions.click({ force: true });
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await test.step('Verify the "Changes from Previous Meetings" modal is visible', async () => {
-        await assertElementVisible(this.changesFromPreviousMeetingsText);
-      });
-      await test.step('Verify the "Additions" are visible', async () => {
-        await assertElementVisible(this.additionsText);
-      });
+      await assertElementVisible(
+        this.changesFromPreviousMeetingsText,
+        'Verify the "Changes from Previous Meetings" modal is visible'
+      );
+      await assertElementVisible(this.additionsText, 'Verify the "Additions" are visible');
       await executeStep(this.RemovalsText, 'scroll', 'Scroll to the element if needed');
-      await test.step('Verify the "Removals" are visible', async () => {
-        await assertElementVisible(this.RemovalsText);
-      });
+      await assertElementVisible(this.RemovalsText, 'Verify the "Removals" are visible');
       await executeStep(this.backArrowBtn, 'click', 'Click back button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await test.step('Verify the "Several Prior Meetings" modal is visible', async () => {
-        await assertElementVisible(this.severalPriorMeetingsText);
-      });
+      await assertElementVisible(
+        this.severalPriorMeetingsText,
+        'Verify the "Several Prior Meetings" modal is visible'
+      );
       await this.selectFirstRowInAdditions.click({ force: true });
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await executeStep(this.closeButton, 'click', 'Click close button');
@@ -550,33 +568,29 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await executeStep(this.cancelButton, 'click', 'Click on cancel button');
     } catch (error) {
-      await test.step('Verify the "Changes from Previous Meetings" modal is visible', async () => {
-        await assertElementVisible(this.changesFromPreviousMeetingsText);
-      });
-      await test.step('Verify the "Additions" are visible', async () => {
-        await assertElementVisible(this.additionsText);
-      });
+      await assertElementVisible(
+        this.changesFromPreviousMeetingsText,
+        'Verify the "Changes from Previous Meetings" modal is visible'
+      );
+      await assertElementVisible(this.additionsText, 'Verify the "Additions" are visible');
       await executeStep(this.RemovalsText, 'scroll', 'Scroll to the element if needed');
-      await test.step('Verify the "Removals" are visible', async () => {
-        await assertElementVisible(this.RemovalsText);
-      });
+      await assertElementVisible(this.RemovalsText, 'Verify the "Removals" are visible');
       await executeStep(this.closeButton, 'click', 'Click on close button');
     }
   }
 
   async assertMoodChangeHappyIcon(searchText, jobId) {
     await this.performSearchFunction(searchText, jobId);
-    await test.step('Verify the mood change icon is visible', async () => {
-      await assertElementVisible(this.iconInPage(utilConst.Const.moodIconText));
-    });
+    await assertElementVisible(
+      this.iconInPage(utilConst.Const.moodIconText),
+      'Verify the mood change icon is visible'
+    );
     await executeStep(
       this.iconInPage(utilConst.Const.moodIconText),
       'click',
       'Click on mood chnage icon'
     );
-    await test.step('Verify the mood change modal is visible', async () => {
-      await assertElementVisible(this.moodModalText);
-    });
+    await assertElementVisible(this.moodModalText, 'Verify the mood change modal is visible');
     await executeStep(
       this.moodChangeIconInModal(utilConst.Const.greenIconText),
       'click',
@@ -584,14 +598,16 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
     await executeStep(this.submitButton, 'click', 'Click on submit button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the mood should be saved successfully - green icon should be displayed.', async () => {
-      await assertElementVisible(this.iconInPage(utilConst.Const.greenIconText));
-    });
+    await assertElementVisible(
+      this.iconInPage(utilConst.Const.greenIconText),
+      'Verify the mood should be saved successfully - green icon should be displayed.'
+    );
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the mood should be saved successfully - green icon should be displayed after reload.', async () => {
-      await assertElementVisible(this.iconInPage(utilConst.Const.greenIconText));
-    });
+    await assertElementVisible(
+      this.iconInPage(utilConst.Const.greenIconText),
+      'Verify the mood should be saved successfully - green icon should be displayed after reload.'
+    );
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Log),
       'click',
@@ -617,28 +633,32 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     ]);
     await executeStep(this.submitButton, 'click', 'Click on submit button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the mood should be saved successfully - yellow icon should be displayed.', async () => {
-      await assertElementVisible(this.iconInPage(utilConst.Const.yellowIconText));
-    });
+    await assertElementVisible(
+      this.iconInPage(utilConst.Const.yellowIconText),
+      'Verify the mood should be saved successfully - yellow icon should be displayed.'
+    );
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the mood should be saved successfully - yellow icon should be displayed after reload.', async () => {
-      await assertElementVisible(this.iconInPage(utilConst.Const.yellowIconText));
-    });
+    await assertElementVisible(
+      this.iconInPage(utilConst.Const.yellowIconText),
+      'Verify the mood should be saved successfully - yellow icon should be displayed after reload.'
+    );
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Log),
       'click',
       'Click on log in flowsheet tab'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step(`Verify the appropriate log record is created , log msg : "${utilConst.Const.neutralLogMsg}"`, async () => {
-      await assertElementVisible(this.logMsg(utilConst.Const.neutralLogMsg));
-    });
+    await assertElementVisible(
+      this.logMsg(utilConst.Const.neutralLogMsg),
+      `Verify the appropriate log record is created , log msg : "${utilConst.Const.neutralLogMsg}"`
+    );
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await executeStep(this.notificationIcon, 'click', 'Click on notification icon');
-    await test.step('Verify user notification should be received for the Neutral mood change.', async () => {
-      await assertElementVisible(this.notificationMsg(indexPage.lighthouse_data.neutralComment));
-    });
+    await assertElementVisible(
+      this.notificationMsg(indexPage.lighthouse_data.neutralComment),
+      'Verify user notification should be received for the Neutral mood change.'
+    );
     await executeStep(
       this.notificationCloseBtn,
       'click',
@@ -665,29 +685,33 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await executeStep(this.submitButton, 'click', 'Click on submit button');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the mood should be saved successfully - red icon should be displayed.', async () => {
-      await assertElementVisible(this.iconInPage(utilConst.Const.redIconText));
-    });
+    await assertElementVisible(
+      this.iconInPage(utilConst.Const.redIconText),
+      'Verify the mood should be saved successfully - red icon should be displayed.'
+    );
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the mood should be saved successfully - red icon should be displayed after reload.', async () => {
-      await assertElementVisible(this.iconInPage(utilConst.Const.redIconText));
-    });
+    await assertElementVisible(
+      this.iconInPage(utilConst.Const.redIconText),
+      'Verify the mood should be saved successfully - red icon should be displayed after reload.'
+    );
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Log),
       'click',
       'Click on log in flowsheet tab'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step(`Verify appropriate log record is created , log msg : "${utilConst.Const.angryLogMsg}"`, async () => {
-      await assertElementVisible(this.logMsg(utilConst.Const.angryLogMsg));
-    });
+    await assertElementVisible(
+      this.logMsg(utilConst.Const.angryLogMsg),
+      `Verify appropriate log record is created , log msg : "${utilConst.Const.angryLogMsg}"`
+    );
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await executeStep(this.notificationIcon, 'click', 'Click on notification button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Verify user notification should be received for the Dissatisfied mood change.', async () => {
-      await assertElementVisible(this.notificationMsg(indexPage.lighthouse_data.angryComment));
-    });
+    await assertElementVisible(
+      this.notificationMsg(indexPage.lighthouse_data.angryComment),
+      'Verify user notification should be received for the Dissatisfied mood change.'
+    );
     await executeStep(
       this.notificationCloseBtn,
       'click',
@@ -698,9 +722,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   async assertMoodChangeLogMsg(searchText, jobId) {
     await this.performSearchFunction(searchText, jobId);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Verify the Log tab is visible in the flowsheet', async () => {
-      assertElementVisible(this.flowsheetTabElement(utilConst.Const.Log));
-    });
+    await assertElementVisible(
+      this.flowsheetTabElement(utilConst.Const.Log),
+      'Verify the Log tab is visible in the flowsheet'
+    );
     await executeStep(
       this.iconInPage(utilConst.Const.moodIconText),
       'click',
@@ -721,9 +746,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       'Click on log in flowsheet tab'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Verify the happy log message is visible', async () => {
-      await assertElementVisible(this.logMsg(utilConst.Const.happyLogMsg));
-    });
+    await assertElementVisible(
+      this.logMsg(utilConst.Const.happyLogMsg),
+      'Verify the happy log message is visible'
+    );
   }
 
   async assertCommentSectionInLog(searchText, jobId) {
@@ -741,12 +767,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.commentSendBtn, 'click', 'Click on send button');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     const countOfLogAfterComment = await this.logMsgCount.textContent();
-    await test.step('Verify the log count increases by 1 after adding a comment', async () => {
-      await assertEqualValues(
-        parseInt(countOfLogAfterComment),
-        parseInt(countOfLogBeforeComment) + 1
-      );
-    });
+    await assertEqualValues(
+      parseInt(countOfLogAfterComment),
+      parseInt(countOfLogBeforeComment) + 1,
+      'Verify the log count increases by 1 after adding a comment'
+    );
   }
 
   async assertLogAfterAddOn(
@@ -779,27 +804,25 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const countOfLogAfterComment = await this.logMsgCount.textContent();
-    await test.step('Verify the log count has increased by 1 after the comment is added', async () => {
-      await assertEqualValues(
-        parseInt(countOfLogAfterComment),
-        parseInt(countOfLogBeforeComment) + 1
-      );
-    });
+    await assertEqualValues(
+      parseInt(countOfLogAfterComment),
+      parseInt(countOfLogBeforeComment) + 1,
+      'Verify the log count has increased by 1 after the comment is added'
+    );
   }
 
   async assertTouchPointIndicator(searchText, jobId) {
     await this.performSearchFunction(searchText, jobId);
-    await test.step('Verify the touch point indicator is visible', async () => {
-      await assertElementVisible(this.touchPointElement);
-    });
+    await assertElementVisible(
+      this.touchPointElement,
+      'Verify the touch point indicator is visible'
+    );
     await executeStep(
       this.touchPointElement,
       'click',
       'Click the touch point in flowsheet details'
     );
-    await test.step('Verify the touch point modal is visible', async () => {
-      await assertElementVisible(this.touchPointModal);
-    });
+    await assertElementVisible(this.touchPointModal, 'Verify the touch point modal is visible');
     await executeStep(this.happyIconInTouchPoint, 'click', 'Click on happy icon in modal');
     await executeStep(this.saveButton, 'click', 'Click on save button');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
@@ -821,15 +844,14 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       'click',
       'Click the touch point in flowsheet details'
     );
-    await test.step('Verify the touch point modal is visible', async () => {
-      await assertElementVisible(this.touchPointModal);
-    });
+    await assertElementVisible(this.touchPointModal, 'Verify the touch point modal is visible');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.neutralIconInTouchPoint, 'click', 'Click the neutral icon in modal');
     await executeStep(this.saveButton, 'click', 'Click on save button');
-    await test.step('Verify the note requires message in the modal is visible', async () => {
-      await assertElementVisible(this.noteRequiresMsgInModal);
-    });
+    await assertElementVisible(
+      this.noteRequiresMsgInModal,
+      'Verify the note requires message in the modal is visible'
+    );
     await executeStep(this.noteInput, 'fill', 'Enter the msg in note input', [
       indexPage.lighthouse_data.neutralComment
     ]);
@@ -861,18 +883,20 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       );
 
       try {
-        await test.step('Verify the touch point modal is displayed', async () => {
-          await assertElementVisible(this.touchPointModal);
-        });
+        await assertElementVisible(
+          this.touchPointModal,
+          'Verify the touch point modal is displayed'
+        );
         await executeStep(this.angryIconInTouchPoint, 'click', 'Click the angry icon in modal');
         await executeStep(this.noteInput, 'fill', 'Enter the msg in note input', [
           indexPage.lighthouse_data.angryComment
         ]);
         await executeStep(this.saveButton, 'click', 'Click on save button');
       } catch (error) {
-        await test.step('Verify the touch point limit message is visible', async () => {
-          await assertElementVisible(this.touchPointLimitMsg);
-        });
+        await assertElementVisible(
+          this.touchPointLimitMsg,
+          'Verify the touch point limit message is visible'
+        );
         isItem = false;
       }
     }
@@ -884,11 +908,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     } else {
       await executeStep(this.customerNameSpan, 'click', 'Click the customer name');
     }
-    await test.step(`Verify the touch point for the customer '${indexPage.opportunity_data.endUserAccount}' is visible after clicking`, async () => {
-      await assertElementVisible(
-        this.touchPointAfterClickingCustomer(indexPage.opportunity_data.endUserAccount)
-      );
-    });
+    await assertElementVisible(
+      this.touchPointAfterClickingCustomer(indexPage.opportunity_data.endUserAccount),
+      `Verify the touch point for the customer '${indexPage.opportunity_data.endUserAccount}' is visible after clicking`
+    );
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.tabNames[3]),
       'click',
@@ -898,9 +921,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertNotesTab(searchText, jobId) {
     await this.performSearchFunction(searchText, jobId);
-    await test.step('Verify the Notes flowsheet tab is visible', async () => {
-      await assertElementVisible(this.flowsheetTabElement(utilConst.Const.Notes));
-    });
+    await assertElementVisible(
+      this.flowsheetTabElement(utilConst.Const.Notes),
+      'Verify the Notes flowsheet tab is visible'
+    );
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Notes),
       'click',
@@ -910,32 +934,33 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     coverSheetText = await this.coversheetNotesTextDiv.textContent();
     try {
       if (jobNotesText !== null || coverSheetText !== null) {
-        await test.step('Verify the blue indicator is visible', async () => {
-          await assertElementVisible(this.blueIndicator);
-        });
+        await assertElementVisible(this.blueIndicator, 'Verify the blue indicator is visible');
       }
     } catch (error) {
-      await test.step('Verify the blue indicator is not visible', async () => {
-        await assertElementNotVisible(this.blueIndicator);
-      });
+      await assertElementNotVisible(this.blueIndicator, 'Verify the blue indicator is not visible');
     }
   }
 
   async assertFlowsheetTextAndNavigatorText() {
-    await test.step(`Verify job notes text is equal to the expected job notes. Expected: "${indexPage.opportunity_data.jobNotesTextArea}", Actual: "${jobNotesText}"`, async () => {
-      await assertEqualValues(jobNotesText, indexPage.opportunity_data.jobNotesTextArea);
-    });
-    await test.step(`Verify cover sheet text matches the expected value. Expected: "${indexPage.opportunity_data.coverSheetTextArea}", Actual: "${coverSheetText}"`, async () => {
-      await assertEqualValues(coverSheetText, indexPage.opportunity_data.coverSheetTextArea);
-    });
+    await assertEqualValues(
+      jobNotesText,
+      indexPage.opportunity_data.jobNotesTextArea,
+      `Verify job notes text is equal to the expected job notes. Expected: "${indexPage.opportunity_data.jobNotesTextArea}", Actual: "${jobNotesText}"`
+    );
+    await assertEqualValues(
+      coverSheetText,
+      indexPage.opportunity_data.coverSheetTextArea,
+      `Verify cover sheet text matches the expected value. Expected: "${indexPage.opportunity_data.coverSheetTextArea}", Actual: "${coverSheetText}"`
+    );
     await executeStep(this.historicalLessonsText, 'scroll', 'Scroll to that element if needed');
   }
 
   async assertEquipmentTab(searchText, jobId) {
     await this.performSearchFunction(searchText, jobId);
-    await test.step('Verify the Equipment flowsheet tab is visible', async () => {
-      await assertElementVisible(this.flowsheetTabElement(utilConst.Const.Equipment));
-    });
+    await assertElementVisible(
+      this.flowsheetTabElement(utilConst.Const.Equipment),
+      'Verify the Equipment flowsheet tab is visible'
+    );
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Equipment),
       'click',
@@ -944,9 +969,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     const countOfEquipmentsInTab = await this.countOfEquipments.textContent();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const countOfListOfEquipments = await this.listOfEquipments.count();
-    await test.step(`Verify that the count of equipments in the tab (${parseInt(countOfEquipmentsInTab)}) matches the count of equipments in the list (${countOfListOfEquipments})`, async () => {
-      await assertEqualValues(parseInt(countOfEquipmentsInTab), countOfListOfEquipments);
-    });
+    await assertEqualValues(
+      parseInt(countOfEquipmentsInTab),
+      countOfListOfEquipments,
+      `Verify that the count of equipments in the tab (${parseInt(countOfEquipmentsInTab)}) matches the count of equipments in the list (${countOfListOfEquipments})`
+    );
   }
 
   async assertEquipmentsInLightHouseAndNavigator() {
@@ -970,9 +997,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     } else {
       countOfEquipmentsInNavigator = (await createDataPage.equipmentRowsCount.count()) - 2;
     }
-    await test.step(`Verify that the count of equipments in Lighthouse (${countOfEquipmentsInLightHouse}) matches the count in Navigator (${countOfEquipmentsInNavigator})`, async () => {
-      await assertEqualValues(countOfEquipmentsInLightHouse, countOfEquipmentsInNavigator);
-    });
+    await assertEqualValues(
+      countOfEquipmentsInLightHouse,
+      countOfEquipmentsInNavigator,
+      `Verify that the count of equipments in Lighthouse (${countOfEquipmentsInLightHouse}) matches the count in Navigator (${countOfEquipmentsInNavigator})`
+    );
     await newPage.waitForTimeout(parseInt(process.env.small_timeout));
     await newPage.close();
   }
@@ -992,9 +1021,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
-    await test.step('Verify that the "Select All checkbox" is visible', async () => {
-      await assertElementVisible(this.selectAllCheckBox);
-    });
+    await assertElementVisible(
+      this.selectAllCheckBox,
+      'Verify that the "Select All checkbox" is visible'
+    );
     if (await this.selectAllCheckBox.isChecked()) {
       await this.selectAllCheckBox.uncheck();
     } else {
@@ -1067,9 +1097,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       indexPage.navigator_data.second_job_no
     );
     equipmentByName = await this.equipmentText.textContent();
-    await test.step(`Verify that the equipment by description (${equipmentByDescription}) is not equal to the equipment by name (${equipmentByName})`, async () => {
-      await assertNotEqualValues(equipmentByDescription, equipmentByName);
-    });
+    await assertNotEqualValues(
+      equipmentByDescription,
+      equipmentByName,
+      `Verify that the equipment by description (${equipmentByDescription}) is not equal to the equipment by name (${equipmentByName})`
+    );
   }
 
   async createAddOn(docusignValue, searchText, jobId) {
@@ -1099,26 +1131,27 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       }
       await executeStep(this.adoptAndSignBtn, 'click', 'Click on adopt and sign button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await test.step('Verify that the Finish button is visible', async () => {
-        await assertElementVisible(this.finishBtn);
-      });
+      await assertElementVisible(this.finishBtn, 'Verify that the Finish button is visible');
       await executeStep(this.finishBtn, 'click', 'Click on fnish button');
-      await test.step('Verify that the "Request a Copy" modal is visible', async () => {
-        await assertElementVisible(this.requestACopyModal);
-      });
+      await assertElementVisible(
+        this.requestACopyModal,
+        'Verify that the "Request a Copy" modal is visible'
+      );
       await executeStep(this.emailInput, 'fill', 'Enter the email id', [
         atob(process.env.lighthouseEmail)
       ]);
       await executeStep(this.continueButInRequestModal, 'click', 'Click on continue');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await test.step('Verify that the "Pass Control" modal is visible', async () => {
-        await assertElementVisible(this.passControlModal);
-      });
+      await assertElementVisible(
+        this.passControlModal,
+        'Verify that the "Pass Control" modal is visible'
+      );
       await executeStep(this.continueBtnInPassControlModal, 'click', 'Click on continue button');
       await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
-      await test.step('Verify that the Confirmation modal is visible for positive flow', async () => {
-        await assertElementVisible(this.confirmModalForPositive);
-      });
+      await assertElementVisible(
+        this.confirmModalForPositive,
+        'Verify that the Confirmation modal is visible for positive flow'
+      );
       await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     } else {
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -1132,9 +1165,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await executeStep(this.continueBtnForFinishLater, 'click', 'Click on continue button');
       await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
-      await test.step('Verify that the Confirmation modal is visible for negative flow', async () => {
-        await assertElementVisible(this.confirmModalForNegative);
-      });
+      await assertElementVisible(
+        this.confirmModalForNegative,
+        'Verify that the Confirmation modal is visible for negative flow'
+      );
     }
   }
 
@@ -1142,11 +1176,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     afterRoomCount = await this.roomsCount.textContent();
     try {
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await test.step(`Verify that after room count (${parseInt(afterRoomCount)}) is greater than before room count (${parseInt(beforeRoomCount)})`, async () => {
-        await assertGreaterThan(parseInt(afterRoomCount), parseInt(beforeRoomCount));
-      });
+      await assertGreaterThan(
+        parseInt(afterRoomCount),
+        parseInt(beforeRoomCount),
+        `Verify that after room count (${parseInt(afterRoomCount)}) is greater than before room count (${parseInt(beforeRoomCount)})`
+      );
     } catch {
-      console.error('Rooms not updated...');
+      test.info('Rooms not updated...');
     }
   }
 
@@ -1164,17 +1200,19 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     const createDataPage = new indexPage.CreateData(newPage);
     await createDataPage.searchWithJobId();
     if (scenario === 'positive') {
-      await test.step(`Verify that the status of the job (${indexPage.lighthouse_data.confirmed}) is visible in Navigator`, async () => {
-        await assertElementVisible(
-          createDataPage.statusOfJobInNavigator(indexPage.lighthouse_data.confirmed)
-        );
-      });
+      await assertElementVisible(
+        createDataPage.statusOfJobInNavigator(
+          indexPage.lighthouse_data.confirmed,
+          `Verify that the status of the job (${indexPage.lighthouse_data.confirmed}) is visible in Navigator`
+        )
+      );
     } else {
-      await test.step(`Verify that the status of the job (${indexPage.lighthouse_data.cancel}) is visible in Navigator`, async () => {
-        await assertElementVisible(
-          createDataPage.statusOfJobInNavigator(indexPage.lighthouse_data.cancel)
-        );
-      });
+      await assertElementVisible(
+        createDataPage.statusOfJobInNavigator(
+          indexPage.lighthouse_data.cancel,
+          `Verify that the status of the job (${indexPage.lighthouse_data.cancel}) is visible in Navigator`
+        )
+      );
     }
   }
 
@@ -1187,9 +1225,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       indexPage.lighthouse_data.invalidQuantity,
       indexPage.lighthouse_data.validQuantity
     );
-    await test.step('Verify that the discount input field is disabled for a complimentary job', async () => {
-      await assertElementDisabled(this.discountInput);
-    });
+    await assertElementDisabled(
+      this.discountInput,
+      'Verify that the discount input field is disabled for a complimentary job'
+    );
     await executeStep(this.nextButton, 'click', 'Click on next button');
     await this.dateSelectModal(false);
     await this.page.waitForTimeout(parseInt(process.env.default_timeout));

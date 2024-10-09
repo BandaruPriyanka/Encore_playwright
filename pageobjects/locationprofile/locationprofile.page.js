@@ -58,18 +58,22 @@ exports.LocationProfile = class LocationProfile {
   }
   async verifyTabs() {
     await test.step('Verify General Tab is opened by default', async () => {
-      await assertElementVisible(this.generalTab);
-      await assertElementAttributeContains(this.generalTab, 'class', 'dark:text');
+      await assertElementVisible(this.generalTab, '');
+      await assertElementAttributeContains(this.generalTab, 'class', 'dark:text', '');
     });
-    await test.step('Verify other Tabs available namely: Add ons Email Recipients & Flowsheet Groups ', async () => {
-      await assertElementVisible(this.addOnEmailRecipients);
-      await assertElementVisible(this.flowsheetGroups);
-    });
+    await assertElementVisible(
+      this.addOnEmailRecipients,
+      'Verify other Tabs available namely: Add ons Email Recipients & Flowsheet Groups '
+    );
+    await assertElementVisible(
+      this.flowsheetGroups,
+      'Verify other Tabs available namely: Add ons Email Recipients & Flowsheet Groups '
+    );
     await executeStep(this.generalTab, 'click', 'Click on General Tab');
     await test.step('Verify The next location settings should be displayed & available :Use Equipment Checklist,Notify us of job changes & Use DocuSign', async () => {
-      await assertElementVisible(this.equipmentChecklist);
-      await assertElementVisible(this.notifyJobChanges);
-      await assertElementVisible(this.useDocusign);
+      await assertElementVisible(this.equipmentChecklist, '');
+      await assertElementVisible(this.notifyJobChanges, '');
+      await assertElementVisible(this.useDocusign, '');
     });
   }
 
@@ -83,9 +87,10 @@ exports.LocationProfile = class LocationProfile {
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
-    await test.step('Verify that the "Select All checkbox" is visible', async () => {
-      await assertElementVisible(this.selectAllCheckBox);
-    });
+    await assertElementVisible(
+      this.selectAllCheckBox,
+      'Verify that the "Select All checkbox" is visible'
+    );
     if (await this.selectAllCheckBox.isChecked()) {
       await test.step('Making all items Uncheck', async () => {
         await this.selectAllCheckBox.uncheck();

@@ -1,7 +1,11 @@
 const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
 const lighthouseData = require('../data/lighthouse.json');
-const { assertElementVisible, assertElementAttributeContains,clickRemindMeTomorrowButton } = require('../utils/helper');
+const {
+  assertElementVisible,
+  assertElementAttributeContains,
+  clickRemindMeTomorrowButton
+} = require('../utils/helper');
 
 test.describe('LightHouse Chat Search', () => {
   let chatpage, flowsheetPage, locationId, locationText;
@@ -20,19 +24,20 @@ test.describe('LightHouse Chat Search', () => {
 
   test('Test_C56930: Verify chats search', async () => {
     await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
-    await test.step('Verify that the All Chats  are visible', async () => {
-      await assertElementVisible(chatpage.participantChatAll);
-    });
-    await test.step('Verify that the Search Chat Field is visible', async () => {
-      await assertElementVisible(chatpage.searchChat_Field);
-    });
-    await test.step(`Verify that the Search Chat Field contains the placeholder text: "${lighthouseData.ChatPlaceholder}"`, async () => {
-      await assertElementAttributeContains(
-        chatpage.searchChat_Field,
-        'placeholder',
-        lighthouseData.ChatPlaceholder
-      );
-    });
+    await assertElementVisible(
+      chatpage.participantChatAll,
+      `Verify that the "All Chats"  are visible`
+    );
+    await assertElementVisible(
+      chatpage.searchChat_Field,
+      `Verify that the "Search Chat Field" is visible`
+    );
+    await assertElementAttributeContains(
+      chatpage.searchChat_Field,
+      'placeholder',
+      lighthouseData.ChatPlaceholder,
+      `Verify that the Search Chat Field contains the placeholder text: "${lighthouseData.ChatPlaceholder}"`
+    );
     await chatpage.verifyingSearchFieldWithData(
       indexPage.lighthouse_data.ChatRandomText,
       indexPage.lighthouse_data.ChatParticipantName,

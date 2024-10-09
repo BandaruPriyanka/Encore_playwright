@@ -34,10 +34,8 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await flowsheetPage.changeLocation(locationId, locationText);
     await profilePage.navigateToProfileMenu();
     await page.waitForTimeout(parseInt(process.env.small_timeout));
-    test.step('Verify My Profile is visible', async () => {
-      await assertElementVisible(profilePage.myProfileBtn);
-      await profilePage.navigateToMyProfile();
-    });
+    await assertElementVisible(profilePage.myProfileBtn, 'Verify My Profile is visible');
+    await profilePage.navigateToMyProfile();
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
@@ -61,15 +59,12 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     );
   });
   test('Test_C57104: Check General Tab elements', async ({ page }) => {
-    await test.step('Verify General Tab is opened by default', async () => {
-      await assertElementVisible(profilePage.generalTab);
-    });
-
+    await assertElementVisible(profilePage.generalTab, 'Verify General Tab is opened by default');
     await test.step('Verify General page should consist of Profile, Preferences, More Options/Default Screen modules', async () => {
       await Promise.all([
-        assertElementVisible(profilePage.profileModule),
-        assertElementVisible(profilePage.preferencesModule),
-        assertElementVisible(profilePage.moreOptionsModule)
+        assertElementVisible(profilePage.profileModule, ''),
+        assertElementVisible(profilePage.preferencesModule, ''),
+        assertElementVisible(profilePage.moreOptionsModule, '')
       ]);
     });
 
@@ -100,7 +95,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await test.step('Check More Options/Default Screen menu slots', async () => {
       for (let i = 1; i <= 5; i++) {
         const menuSlotElement = profilePage.getMenuSlotElement(i);
-        await assertElementVisible(menuSlotElement);
+        await assertElementVisible(menuSlotElement, `Verify that ${menuSlotElement} is visible`);
       }
     });
   });
@@ -108,10 +103,11 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     test.step('Verify last sync date/time is previous', async () => {
       await profilePage.validatingLastSyncValue();
     });
-    test.step('Verify Sync is executed successfully ', async () => {
-      await profilePage.resyncTheTime();
-      await assertElementVisible(profilePage.notificationMessage);
-    });
+    await profilePage.resyncTheTime();
+    await assertElementVisible(
+      profilePage.notificationMessage,
+      'Verify Sync is executed successfully'
+    );
     test.step('Verify Sync status is Just now', async () => {
       await profilePage.resyncJustnowStatus();
       await profilePage.validatingNotification();
@@ -119,100 +115,106 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await page.reload();
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
-    test.step('Verify Last Synced Value Updates on Page Refresh', async () => {
-      lastSyncValue = await profilePage.lastSyncValue.innerText();
-      await assertNotEqualValues(lastSyncValue, indexPage.lighthouse_data.lastSyncedTime);
-    });
+    lastSyncValue = await profilePage.lastSyncValue.innerText();
+    await assertNotEqualValues(
+      lastSyncValue,
+      indexPage.lighthouse_data.lastSyncedTime,
+      'Verify Last Synced Value Updates on Page Refresh'
+    );
   });
   test('Test_C57106 Check "Location" selection', async () => {
     const locationFromHeader = await profilePage.getLocationFromHeader.textContent();
     const locationFromGeneralTab = await profilePage.getLocationFromGeneralTab.textContent();
-    await test.step(`Verify that a valid location is displayed as the default 'Selected location' value- Expected: "${locationFromGeneralTab.trim()}", Actual: "${locationFromHeader.trim()}"`, async () => {
-      await assertEqualValues(locationFromHeader.trim(), locationFromGeneralTab.trim());
-    });    
-    await test.step('Verify that the "Selected location change" button is not visible', async () => {
-      await assertElementNotVisible(profilePage.selectedLocationChangeButton);
-    });    
+    await assertEqualValues(
+      locationFromHeader.trim(),
+      locationFromGeneralTab.trim(),
+      `Verify that a valid location is displayed as the default 'Selected location' value- Expected: "${locationFromGeneralTab.trim()}", Actual: "${locationFromHeader.trim()}"`
+    );
+    await assertElementNotVisible(
+      profilePage.selectedLocationChangeButton,
+      'Verify that the "Selected location change" button is not visible'
+    );
   });
-  test('Test_C57108 Check "Equipment Display Choice" selection', async() => {
+  test('Test_C57108 Check "Equipment Display Choice" selection', async () => {
     await profilePage.assertEquipmentByIntialDisplayValue();
     await profilePage.assertEquipmentByChangedDisplayValue();
     await profilePage.changeEquipmentDisplayChoiceToInitialValue();
-  })
+  });
   test('Test_C57110 Check "Default Schedule View" selection', async () => {
     await profilePage.assertInitialDefaultSheduleView();
     await profilePage.assertDefaultScheduleViewAfterChange();
     await profilePage.changeScheduleViewValueToIntialValue();
-  })
-  test('Test_C57107 Check "Language" selection' , async() => {
+  });
+  test('Test_C57107 Check "Language" selection', async () => {
     await profilePage.assertInitialLanguageValue();
     await profilePage.assertUpdateLanguageToSpanish();
     await profilePage.assertUpdateLanguageToFrench();
     await profilePage.changeLanguageToIntialValue();
-  })
+  });
   test('Test_C57115:Verify Notification Location Tab elements', async () => {
     await notificationPage.clickOnNotification();
     await test.step('The Notification Location page should consist : Notification location tab , location list , search field', async () => {
-      await assertElementVisible(notificationPage.notificationLocation);
-      await assertElementVisible(notificationPage.locationList);
-      await assertElementVisible(notificationPage.addLocation);
+      await assertElementVisible(notificationPage.notificationLocation, '');
+      await assertElementVisible(notificationPage.locationList, '');
+      await assertElementVisible(notificationPage.addLocation, '');
     });
-    await test.step('Verify that one location is marked with "Home" icon and cannot be removed', async () => {
-      await assertElementVisible(notificationPage.homeIcon);
-    });
+    await assertElementVisible(
+      notificationPage.homeIcon,
+      'Verify that one location is marked with "Home" icon and cannot be removed'
+    );
     await test.step('Verify that other non-home locations can be removed from the list', async () => {
-      await assertElementVisible(notificationPage.deleteIcon);
-      await assertElementEnabled(notificationPage.deleteIcon);
+      await assertElementVisible(notificationPage.deleteIcon, '');
+      await assertElementEnabled(notificationPage.deleteIcon, '');
     });
   });
   test('Test_C57116:Verify Notification Location search functionality', async () => {
     await notificationPage.clickOnNotification();
-    await test.step('Verify search field is displayed as the last row ', async () => {
-      await assertElementVisible(notificationPage.addLocation);
-    });
-    await test.step('Verify search field has Add Location placeholder', async () => {
-      await assertElementAttributeContains(
-        notificationPage.addLocation,
-        'placeholder',
-        'Add Location'
-      );
-    });
+    await assertElementVisible(
+      notificationPage.addLocation,
+      'Verify search field is displayed as the last row '
+    );
+    await assertElementAttributeContains(
+      notificationPage.addLocation,
+      'placeholder',
+      'Add Location',
+      'Verify search field has Add Location placeholder'
+    );
     await notificationPage.verifyAddLocationField();
   });
 
   test('Test_C57117 :Verify adding locations on Notification Location tab', async () => {
     await notificationPage.clickOnNotification();
-    await test.step('Verify search field is displayed as the last row ', async () => {
-      await assertElementVisible(notificationPage.addLocation);
-    });
-    await test.step('Verify search field has Add Location placeholder', async () => {
-      await assertElementAttributeContains(
-        notificationPage.addLocation,
-        'placeholder',
-        'Add Location'
-      );
-    });
+    await assertElementVisible(
+      notificationPage.addLocation,
+      'Verify search field is displayed as the last row '
+    );
+    await assertElementAttributeContains(
+      notificationPage.addLocation,
+      'placeholder',
+      'Add Location',
+      'Verify search field has Add Location placeholder'
+    );
     await notificationPage.verifyAddingLocation();
   });
   test('Test_C57118: Verify removing locations on Notification Location tab', async () => {
     await notificationPage.clickOnNotification();
     await test.step('Verify that other non-home locations can be removed from the list', async () => {
-      await assertElementVisible(notificationPage.deleteIcon);
-      await assertElementEnabled(notificationPage.deleteIcon);
+      await assertElementVisible(notificationPage.deleteIcon, '');
+      await assertElementEnabled(notificationPage.deleteIcon, '');
     });
     await notificationPage.verifyRemovingLocation();
   });
 
-  test.skip("Test_C57114 Verify 'Favourite Slot' selection" , async () => {
+  test.skip("Test_C57114 Verify 'Favourite Slot' selection", async () => {
     await profilePage.assertInitialFavouriteMenuSlot();
     await profilePage.changeMenuSlot1ToFavouriteSlot();
     await profilePage.restoreToSelectedMenuSlot();
-  })
+  });
 
-  test("TC_C57112 Verify 'Time Display' selection" , async () => {
+  test("TC_C57112 Verify 'Time Display' selection", async () => {
     await profilePage.assertTimeDisplayValue();
     await profilePage.assertInitialTimeFormatForElements();
     await profilePage.changeDisplayTimeValue();
     await profilePage.assertAfterTimeFormatForElements();
-  })
+  });
 });

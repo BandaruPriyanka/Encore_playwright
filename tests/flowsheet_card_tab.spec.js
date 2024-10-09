@@ -34,35 +34,37 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.opportunity_data.endUserAccount
     );
     for (const tabText of indexPage.lighthouse_data.flowsheetTabs) {
-      await test.step('In the flowsheet tab: ' + tabText + ' is displayed', async () => {
-        await assertElementVisible(flowsheetCardAndTab.flowsheetTabElement(tabText));
-      });
+      await assertElementVisible(
+        flowsheetCardAndTab.flowsheetTabElement(tabText),
+        'In the flowsheet tab: ' + tabText + ' is displayed'
+      );
     }
   });
 
   test('Test_C56910: Verify contacts tab', async ({ page }) => {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
-    await test.step('Verify the "Contacts" flowsheet tab is visible', async () => {
-      await assertElementVisible(flowsheetCardAndTab.flowsheetTabElement(utilConst.Const.Contacts));
-    });
+    await assertElementVisible(
+      flowsheetCardAndTab.flowsheetTabElement(utilConst.Const.Contacts),
+      'Verify the "Contacts" flowsheet tab is visible'
+    );
     await flowsheetCardAndTab.clickOnContactAndValidate();
     await page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step(`Verify the modal contains the text: "${indexPage.lighthouse_data.contactModalText}"`, async () => {
-      await assertElementContainsText(
-        flowsheetCardAndTab.textInModal,
-        indexPage.lighthouse_data.contactModalText
-      );
-    });
+    await assertElementContainsText(
+      flowsheetCardAndTab.textInModal,
+      indexPage.lighthouse_data.contactModalText,
+      `Verify the modal contains the text: "${indexPage.lighthouse_data.contactModalText}"`
+    );
   });
   test('Test_C56891: Verify Test Mood change logic', async () => {
     await flowsheetCardAndTab.assertMoodChangeHappyIcon(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
-    await test.step(`Verify the appropriate log record was created. log msg : "${utilConst.Const.happyLogMsg}" `, async () => {
-      await assertElementVisible(flowsheetCardAndTab.logMsg(utilConst.Const.happyLogMsg));
-    });
+    await assertElementVisible(
+      flowsheetCardAndTab.logMsg(utilConst.Const.happyLogMsg),
+      `Verify the appropriate log record was created. log msg : "${utilConst.Const.happyLogMsg}" `
+    );
     await flowsheetCardAndTab.assertMoodChangeNeutralIcon(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -123,23 +125,27 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertEquipmentsInLightHouseAndNavigator();
     await flowsheetCardAndTab.assertEquipmentCheckList();
     await flowsheetCardAndTab.assertCheckBox();
-    await test.step('Verify that the "Select All checkbox" is not visible', async () => {
-      await assertElementNotVisible(flowsheetCardAndTab.selectAllCheckBox);
-    });
+    await assertElementNotVisible(
+      flowsheetCardAndTab.selectAllCheckBox,
+      'Verify that the "Select All checkbox" is not visible'
+    );
     await flowsheetCardAndTab.assertEquipmentByDescription();
     await flowsheetCardAndTab.assertEquipmentByName();
   });
 
-  test('Test_C56904: Verify Test Add-on creation (Docusign enabled) - Positive flow', async ({ page }) => {
+  test('Test_C56904: Verify Test Add-on creation (Docusign enabled) - Positive flow', async ({
+    page
+  }) => {
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
     await page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Verify that the "pass control" modal is visible', async () => {
-      await assertElementVisible(flowsheetCardAndTab.textInModalForDocument);
-    });
+    await assertElementVisible(
+      flowsheetCardAndTab.textInModalForDocument,
+      'Verify that the "pass control" modal is visible'
+    );
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.positive);
     await flowsheetCardAndTab.assertRoomCountAfterAddOn();
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.positive);
@@ -152,15 +158,16 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.navigator_data.second_job_no
     );
     await page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Verify that the text in the document modal is visible', async () => {
-      await assertElementVisible(this.textInModalForDocument);
-    });
+    await assertElementVisible(
+      this.textInModalForDocument,
+      'Verify that the text in the document modal is visible'
+    );
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.negative);
     await flowsheetCardAndTab.assertRoomCountAfterAddOn();
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.negative);
   });
 
-  test('Verify complimentary job', async () => {
+  test('Verify complimentary job', async ({ page }) => {
     await flowsheetPage.changeLocation(
       indexPage.lighthouse_data.locationId_createData1,
       indexPage.lighthouse_data.locationText_createData1
@@ -171,9 +178,10 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.navigator_data.second_job_no_complimentary
     );
     await page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Verify that the "pass control" modal is visible', async () => {
-      await assertElementVisible(flowsheetCardAndTab.textInModalForDocument);
-    });
+    await assertElementVisible(
+      flowsheetCardAndTab.textInModalForDocument,
+      'Verify that the "pass control" modal is visible'
+    );
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.negative);
     await flowsheetCardAndTab.assertRoomCountAfterAddOn();
   });

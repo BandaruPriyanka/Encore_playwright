@@ -23,80 +23,66 @@ test.describe('Performing actions on Flowsheet', () => {
   test('Test_C56878: Verify Flowsheet status', async ({ page, isMobile }) => {
     test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
     await flowsheetPage.searchFunctionality();
-    test.step('Verify status icon is visible', async () => {
-      await assertElementVisible(flowsheetPage.statusIcon);
-    });
-    test.step('Verify group icon is visible', async () => {
-      await assertElementVisible(flowsheetPage.groupIcon);
-    });
+    await assertElementVisible(flowsheetPage.statusIcon, 'Verify status icon is visible');
+    await assertElementVisible(flowsheetPage.groupIcon, 'Verify group icon is visible');
     await flowsheetPage.setStatus();
-    test.step('Check if carryOver is visible before page reload', async () => {
-      await assertElementVisible(flowsheetPage.carryOver);
-    });
+    await assertElementVisible(
+      flowsheetPage.carryOver,
+      'Check if carryOver is visible before page reload'
+    );
     await page.reload();
     await flowsheetPage.searchFunctionality();
-    test.step('Check if carryOver is visible after page reload', async () => {
-      await assertElementVisible(flowsheetPage.carryOver);
-    });
+    await assertElementVisible(
+      flowsheetPage.carryOver,
+      'Check if carryOver is visible after page reload'
+    );
     await flowsheetPage.changestatus();
   });
   test('Test_C56880 : Verify Flowsheet groups', async ({ isMobile }) => {
     test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
     await flowsheetPage.searchFunctionality();
-    test.step('Verify status icon is visible', async () => {
-      await assertElementVisible(flowsheetPage.statusIcon);
-    });
-    test.step('Verify group icon is visible', async () => {
-      await assertElementVisible(flowsheetPage.groupIcon);
-    });
+    await assertElementVisible(flowsheetPage.statusIcon, 'Verify status icon is visible');
+    await assertElementVisible(flowsheetPage.groupIcon, 'Verify group icon is visible');
     await flowsheetPage.verifyGroup();
     await flowsheetPage.deleteGroupData();
   });
 
   test('Test_C56882: Verify lighthouse flowsheet search functionality', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.large_timeout));
-    await test.step('Assert that rooms count is visible', async () => {
-      await assertElementVisible(flowsheetPage.roomsCount);
-    });
-    test.step('Verify search input is visible', async () => {
-      await assertElementVisible(flowsheetPage.searchInput);
-    });
+    await assertElementVisible(flowsheetPage.roomsCount, 'Assert that rooms count is visible');
+    await assertElementVisible(flowsheetPage.searchInput, 'Verify search input is visible');
     await flowsheetPage.checkingSearchFunctionality();
   });
 
   test('Test_C56885: Verify Flowsheets filtering', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Assert that rooms count is visible', async () => {
-      await assertElementVisible(flowsheetPage.roomsCount);
-    });
-    await test.step('Assert filter icon is visible', async () => {
-      await assertElementVisible(flowsheetPage.filterIcon);
-    });
+    await assertElementVisible(flowsheetPage.roomsCount, 'Assert that rooms count is visible');
+    await assertElementVisible(flowsheetPage.filterIcon, 'Assert filter icon is visible');
     await flowsheetPage.flowsheetFilter();
     filtercount_before_pagereload = await flowsheetPage.filterCount.textContent();
     await page.reload();
     filtercount_after_pagereload = await flowsheetPage.filterCount.textContent();
-    await test.step(`Assert that the filter count before page reload "${filtercount_before_pagereload}" matches the filter count after reload "${filtercount_after_pagereload}"`, async () => {
-      await assertEqualValues(filtercount_before_pagereload, filtercount_after_pagereload);
-    });
+    await assertEqualValues(
+      filtercount_before_pagereload,
+      filtercount_after_pagereload,
+      `Assert that the filter count before page reload "${filtercount_before_pagereload}" matches the filter count after reload "${filtercount_after_pagereload}"`
+    );
     await flowsheetPage.sorting();
   });
 
   test('Test_C56886: Verify Flowsheets calendar', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify visibility of the calendar', async () => {
-      await assertElementVisible(flowsheetPage.calendarDiv);
-    });
-    await test.step('Verify visibility of the next week icon', async () => {
-      await assertElementVisible(flowsheetPage.nextweekIcon);
-    });
-    await test.step('Verify visibility of the previous week icon', async () => {
-      await assertElementVisible(flowsheetPage.previousweekIcon);
-    });
+    await assertElementVisible(flowsheetPage.calendarDiv, 'Verify visibility of the calendar');
+    await assertElementVisible(
+      flowsheetPage.nextweekIcon,
+      'Verify visibility of the next week icon'
+    );
+    await assertElementVisible(
+      flowsheetPage.previousweekIcon,
+      'Verify visibility of the previous week icon'
+    );
     await flowsheetPage.clickonPreviousWeek();
-    await test.step('Verify visibility of the today button', async () => {
-      await assertElementVisible(flowsheetPage.todayButton);
-    });
+    await assertElementVisible(flowsheetPage.todayButton, 'Verify visibility of the today button');
     await test.step('Verify the calendar has the correct dates', async () => {
       await flowsheetPage.assertCalendarHasDates();
     });
@@ -104,9 +90,10 @@ test.describe('Performing actions on Flowsheet', () => {
 
   test('Test_C56888: Verify Flowsheets calendar widget', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify visibility of the calendar widget', async () => {
-      await assertElementVisible(flowsheetPage.calendarDiv);
-    });
+    await assertElementVisible(
+      flowsheetPage.calendarDiv,
+      'Verify visibility of the calendar widget'
+    );
     await test.step('Verifying a unique flowsheet list is returned for each date', async () => {
       await flowsheetPage.asserRoomsWhileDateChange();
     });

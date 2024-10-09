@@ -50,9 +50,10 @@ exports.NotificationPage = class NotificationPage {
   }
   async verifyAddLocationField() {
     await executeStep(this.addLocation, 'click', 'Click on that add location row');
-    await test.step('Verify that the location selection modal is displayed.', async () => {
-      await assertElementVisible(this.listBox);
-    });
+    await assertElementVisible(
+      this.listBox,
+      'Verify that the location selection modal is displayed.'
+    );
     await test.step('Verify that Locations list should be scrollable', async () => {
       await this.scrollAction();
     });
@@ -62,33 +63,37 @@ exports.NotificationPage = class NotificationPage {
       'Fill the search location field with invalid data',
       [indexPage.lighthouse_data.invalidLocation]
     );
-    await test.step(`Verify that the list should not be displayed within the modal after entering invalid data like "${indexPage.lighthouse_data.invalidLocation}"`, async () => {
-      await assertElementNotVisible(this.listBox);
-    });
+    await assertElementNotVisible(
+      this.listBox,
+      `Verify that the list should not be displayed within the modal after entering invalid data like "${indexPage.lighthouse_data.invalidLocation}"`
+    );
     await executeStep(this.addLocation, 'fill', 'Enter valid lowercase location data', [
       indexPage.lighthouse_data.locationNameLower
     ]);
-    await test.step(`Verify that the list should be displayed within the modal after entering :"${indexPage.lighthouse_data.locationNameLower}"`, async () => {
-      await assertElementVisible(this.listBox);
-    });
-
+    await assertElementVisible(
+      this.listBox,
+      `Verify that the list should be displayed within the modal after entering :"${indexPage.lighthouse_data.locationNameLower}"`
+    );
     await executeStep(this.addLocation, 'fill', 'Enter valid uppercase location data', [
       indexPage.lighthouse_data.locationNameUpper
     ]);
-    await test.step(`Verify that the list should be displayed within the modal after entering :"${indexPage.lighthouse_data.locationNameUpper}"`, async () => {
-      await assertElementVisible(this.listBox);
-    });
+    await assertElementVisible(
+      this.listBox,
+      `Verify that the list should be displayed within the modal after entering :"${indexPage.lighthouse_data.locationNameUpper}"`
+    );
     const location = await this.exisitingLocation.textContent();
     await executeStep(this.addLocation, 'fill', 'enetr existing location', [location]);
-    await test.step(`Verify that the existing location "${location}" is excluded from the search results`, async () => {
-      await assertElementVisible(this.searchExistingLocation(location));
-    });
+    await assertElementVisible(
+      this.searchExistingLocation(location),
+      `Verify that the existing location "${location}" is excluded from the search results`
+    );
   }
   async verifyAddingLocation() {
     await executeStep(this.addLocation, 'click', 'Click on that add location row');
-    await test.step('Verify that the location selection modal is displayed.', async () => {
-      await assertElementVisible(this.listBox);
-    });
+    await assertElementVisible(
+      this.listBox,
+      'Verify that the location selection modal is displayed.'
+    );
     await executeStep(this.addLocation, 'fill', 'Enter valid location', [
       indexPage.lighthouse_data.locationNameLower
     ]);
@@ -98,29 +103,33 @@ exports.NotificationPage = class NotificationPage {
       'click',
       'Click on some location from the search results'
     );
-    await test.step(`Verify location : "${locationDetails}" should be added successfully`, async () => {
-      await assertElementVisible(this.searchExistingLocation(locationDetails));
-    });
+    await assertElementVisible(
+      this.searchExistingLocation(locationDetails),
+      `Verify location : "${locationDetails}" should be added successfully`
+    );
     await test.step('Refreshing page here', async () => {
       await this.page.reload();
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     });
-    await test.step(`Verify previously added location is still there after refreshing page : "${locationDetails}"`, async () => {
-      await assertElementVisible(this.searchExistingLocation(locationDetails));
-    });
+    await assertElementVisible(
+      this.searchExistingLocation(locationDetails),
+      `Verify previously added location is still there after refreshing page : "${locationDetails}"`
+    );
   }
   async verifyRemovingLocation() {
     const deletedLocationDetails = await this.selectRecentlyDeletedLocation.textContent();
     await executeStep(this.deleteIcon, 'click', 'Click on delete Icon for some location');
-    await test.step(`Verify location : "${deletedLocationDetails}" should be removed successfully from the list`, async () => {
-      await assertElementNotVisible(this.searchExistingLocation(deletedLocationDetails));
-    });
+    await assertElementNotVisible(
+      this.searchExistingLocation(deletedLocationDetails),
+      `Verify location : "${deletedLocationDetails}" should be removed successfully from the list`
+    );
     await test.step('Refreshing page here', async () => {
       await this.page.reload();
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     });
-    await test.step(`Verify previously deleted location is not displayed within the list after refreshing page : "${deletedLocationDetails}"`, async () => {
-      await assertElementNotVisible(this.searchExistingLocation(deletedLocationDetails));
-    });
+    await assertElementNotVisible(
+      this.searchExistingLocation(deletedLocationDetails),
+      `Verify previously deleted location is not displayed within the list after refreshing page : "${deletedLocationDetails}"`
+    );
   }
 };

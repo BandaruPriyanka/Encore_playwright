@@ -40,7 +40,7 @@ exports.CustomersPage = class CustomersPage {
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
     this.customerCard = this.page.locator('(//app-customer-card)[1]');
     this.opportunityList = this.page.locator("(//div[@role='region']/div/div/div)[1]");
-    this.getRoomName=this.page.locator("((//div[@role='region']/div/div/div)[1]/div/span)[1]");
+    this.getRoomName = this.page.locator("((//div[@role='region']/div/div/div)[1]/div/span)[1]");
     this.orderName = this.page.locator("//span[contains(@class,'e2e_opportunity_order_name')]");
     this.customerName = this.page.locator(
       "//span[contains(@class,'e2e_opportunity_bill_to_account_name')]"
@@ -122,8 +122,9 @@ exports.CustomersPage = class CustomersPage {
     this.eventDescriptionData = this.page.locator(
       " //div[contains(text(),'Event Description')]//following-sibling::div"
     );
-    this.touchpointPieIcon =ordername=> this.page.locator(`(//span[text()='${ordername}'])[2]/../../app-mood-pia-chart`);
-    this.previousEventList=this.page.locator("//app-previous-events//ul[@role='list']");
+    this.touchpointPieIcon = ordername =>
+      this.page.locator(`(//span[text()='${ordername}'])[2]/../../app-mood-pia-chart`);
+    this.previousEventList = this.page.locator("//app-previous-events//ul[@role='list']");
   }
 
   async search(searchText) {
@@ -137,7 +138,11 @@ exports.CustomersPage = class CustomersPage {
     await executeStep(this.dateSpan(nextDayDate()), 'click', 'click on next day');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const inputValueAfterDateChange = await this.customerSearchInput.inputValue();
-    await assertEqualValues(inputValueBeforeDateChange, inputValueAfterDateChange);
+    await assertEqualValues(
+      inputValueBeforeDateChange,
+      inputValueAfterDateChange,
+      `Verify that the applied search remains sticky after the date change. Expected: ${inputValueBeforeDateChange}, Actual: ${inputValueAfterDateChange}`
+    );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 
@@ -155,26 +160,28 @@ exports.CustomersPage = class CustomersPage {
       await this.search(indexPage.lighthouse_data.invalidText);
     });
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Assert no data placeholder is visible after searching for invalid entry', async () => {
-      await assertElementVisible(this.noDataPlaceholder);
-    });
+    await assertElementVisible(
+      this.noDataPlaceholder,
+      'Assert no data placeholder is visible after searching for invalid entry'
+    );
     await test.step('Perform search with valid text', async () => {
       await this.search(indexPage.opportunity_data.userContactName);
     });
-    await test.step('Assert customer list is visible after valid search', async () => {
-      await assertElementVisible(this.customerList);
-    });
-    await test.step('Check date changes', async () => {
-      await this.dateChangeChecking();
-    });
+    await assertElementVisible(
+      this.customerList,
+      'Assert customer list is visible after valid search'
+    );
+    await this.dateChangeChecking();
     await executeStep(this.dateSpan(todayDate()), 'click', 'Click on today date');
     await executeStep(this.crossIcon, 'click', 'Clear the search input');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const afterCustomerCount = await this.listOfCustomers.count();
     try {
-      await test.step(`Verify customer counts before and after clearing search: expected "${beforeCustomerCount}", actual "${afterCustomerCount}"`, async () => {
-        await assertEqualValues(beforeCustomerCount, afterCustomerCount);
-      });
+      await assertEqualValues(
+        beforeCustomerCount,
+        afterCustomerCount,
+        `Verify customer counts before and after clearing search: expected "${beforeCustomerCount}", actual "${afterCustomerCount}"`
+      );
     } catch {
       console.error('Loading issue....');
     }
@@ -190,9 +197,11 @@ exports.CustomersPage = class CustomersPage {
     });
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const customerCount_upperCase = await this.listOfCustomers.count();
-    await test.step(`Verify customer counts for lowercase and uppercase names are equal: expected "${customerCount_lowerCase}", actual "${customerCount_upperCase}"`, async () => {
-      await assertEqualValues(customerCount_lowerCase, customerCount_upperCase);
-    });
+    await assertEqualValues(
+      customerCount_lowerCase,
+      customerCount_upperCase,
+      `Verify customer counts for lowercase and uppercase names are equal: expected "${customerCount_lowerCase}", actual "${customerCount_upperCase}"`
+    );
   }
 
   async dateChangeChecking() {
@@ -225,51 +234,50 @@ exports.CustomersPage = class CustomersPage {
   }
   async assertCalendarHasDates() {
     await executeStep(this.previousweekIcon, 'click', 'Click on previous icon', []);
-    await test.step('Assert that the calendar div is visible after clicking on previous week icon', async () => {
-      await assertElementVisible(this.calendarDiv);
-    });
+    await assertElementVisible(
+      this.calendarDiv,
+      'Assert that the calendar div is visible after clicking on previous week icon'
+    );
     await executeStep(this.todayButton, 'click', 'Click on today button', []);
     const datelocator = await this.dateElement(todayDate()).textContent();
     const getTodayDate = todayDate();
-    await assertEqualValues(datelocator, getTodayDate);
-    const dateLocatorHighlighted = this.dateHighlighted(todayDate());
-    await test.step("Assert that today's date is highlighted by checking for the highlight class", async () => {
-      await assertElementAttributeContains(
-        dateLocatorHighlighted,
-        'class',
-        'bg-encore-accent-blue'
-      );
-    });
-    await test.step('Change the dates', async () => {
-      await this.dateChangeChecking();
-    });
-    await test.step('Verify proper Customers are returned based on dates', async () => {
-      await assertElementVisible(this.existingCustomers);
-    });
+    await assertEqualValues(
+      datelocator,
+      getTodayDate,
+      `Verify visibility of today date. Actual : ${datelocator} Expected : ${getTodayDate}`
+    );
+    const dateLocatorHighlighted = await this.dateHighlighted(todayDate());
+    await assertElementAttributeContains(
+      dateLocatorHighlighted,
+      'class',
+      'bg-encore-accent-blue',
+      "Assert that today's date is highlighted by checking for the highlight class"
+    );
+    await this.dateChangeChecking();
+    await assertElementVisible(
+      this.existingCustomers,
+      'Verify proper Customers are returned based on dates'
+    );
     await this.backToTodayDate();
   }
   async verifyCustomerCardContent() {
     await executeStep(this.customerCard, 'click', 'Click on any customer from that list');
-    await test.step('Assert that the opportunity list is visible after selecting a customer', async () => {
-      await assertElementVisible(this.opportunityList);
-    });
+    await assertElementVisible(
+      this.opportunityList,
+      'Assert that the opportunity list is visible after selecting a customer'
+    );
     await executeStep(this.opportunityList, 'click', 'Click on any opportunity from that list');
-    await test.step('Assert that the order name is visible', async () => {
-      await assertElementVisible(this.orderName);
-    });
-    await test.step('Assert that the customer name is visible', async () => {
-      await assertElementVisible(this.customerName);
-    });
-    await test.step('Assert that the opportunity dates & opportunity # are visible', async () => {
-      await assertElementVisible(this.opportunityDates);
-    });
+    await assertElementVisible(this.orderName, 'Assert that the order name is visible');
+    await assertElementVisible(this.customerName, 'Assert that the customer name is visible');
+    await assertElementVisible(
+      this.opportunityDates,
+      'Assert that the opportunity dates & opportunity # are visible'
+    );
   }
   async assertTabNames() {
     for (let tabName of utilConst.Const.tabNames) {
-      await test.step(`Assert that the "${tabName}" tab is displayed`, async () => {
-        const isVisible = await this.dynamicTabElement(tabName).isVisible();
-        await assertEqualValues(isVisible, true, `"${tabName}" tab should be visible.`);
-      });
+      const isVisible = await this.dynamicTabElement(tabName).isVisible();
+      await assertEqualValues(isVisible, true, `Assert that the "${tabName}" tab is displayed`);
     }
   }
   async clickOnCustomerBusinessCard() {
@@ -294,9 +302,10 @@ exports.CustomersPage = class CustomersPage {
         'click',
         'Click on Contact Tab from that list'
       );
-      await test.step('Verify that No Contacts should be displayed', async () => {
-        await assertElementVisible(this.noDataFoundEle);
-      });
+      await assertElementVisible(
+        this.noDataFoundEle,
+        'Verify that No Contacts should be displayed'
+      );
     } catch {
       console.error('No bussiness cards found');
     }
@@ -310,18 +319,17 @@ exports.CustomersPage = class CustomersPage {
   async verifyRoomTab() {
     try {
       await this.clickOnCustomerBusinessCard();
-      await test.step('The Room List Tab should be opened ', async () => {
-        await executeStep(
-          this.dynamicTabElement(utilConst.Const.tabNames[3]),
-          'click',
-          'Click on room tab from that list',
-          []
-        );
-      });
+      await executeStep(
+        this.dynamicTabElement(utilConst.Const.tabNames[3]),
+        'click',
+        'Click on room tab from that list',
+        []
+      );
       let roomsqty = await this.roomCount(utilConst.Const.tabNames[3]).textContent();
-      await test.step(`The counter should display actual Rooms qty from the List: "${roomsqty}"`, async () => {
-        await assertIsNumber(roomsqty);
-      });
+      await assertIsNumber(
+        roomsqty,
+        `The counter should display actual Rooms qty from the List: "${roomsqty}"`
+      );
     } catch {
       console.error('No bussiness cards found');
     }
@@ -336,29 +344,33 @@ exports.CustomersPage = class CustomersPage {
       'click',
       'Click on order div'
     );
-    await test.step(`Verify that the "${utilConst.Const.tabNames[2]}" tab is visible`, async () => {
-      await assertElementVisible(this.dynamicTabElement(utilConst.Const.tabNames[2]));
-    });
+    await assertElementVisible(
+      this.dynamicTabElement(utilConst.Const.tabNames[2]),
+      `Verify that the "${utilConst.Const.tabNames[2]}" tab is visible`
+    );
     await executeStep(
       this.dynamicTabElement(utilConst.Const.tabNames[2]),
       'click',
       'Click on touch point in customers tab'
     );
-    await test.step('Verify that the touch point button is displayed', async () => {
-      await assertElementVisible(this.touchPointSpan);
-    });
+    await assertElementVisible(
+      this.touchPointSpan,
+      'Verify that the touch point button is displayed'
+    );
   }
   async addFirstTouchPoint() {
     await executeStep(this.touchPointSpan, 'click', 'Click on add touch point');
-    await test.step('Verify that the modal for adding the 1st touchpoint is displayed', async () => {
-      await assertElementVisible(this.touchPointModal);
-    });
+    await assertElementVisible(
+      this.touchPointModal,
+      'Verify that the modal for adding the 1st touchpoint is displayed'
+    );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.happyIconInTouchPointModal, 'click', 'Click happy icon in modal');
     await executeStep(this.saveButton, 'click', 'Click on save button');
-    await test.step('Verify that the green color mood icon is displayed', async () => {
-      await assertElementVisible(this.firstTouchPointIcon(utilConst.Const.greenIconText));
-    });
+    await assertElementVisible(
+      this.firstTouchPointIcon(utilConst.Const.greenIconText),
+      'Verify that the green color mood icon is displayed'
+    );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -367,9 +379,10 @@ exports.CustomersPage = class CustomersPage {
       'click',
       'click on touch point in customers tab'
     );
-    await test.step('Verify that the green color mood icon is displayed after reload', async () => {
-      await assertElementVisible(this.firstTouchPointIcon(utilConst.Const.greenIconText));
-    });
+    await assertElementVisible(
+      this.firstTouchPointIcon(utilConst.Const.greenIconText),
+      'Verify that the green color mood icon is displayed after reload'
+    );
   }
   async addSecondTouchPoint() {
     const beforeCount = await this.touchPointCountDiv.textContent();
@@ -379,22 +392,25 @@ exports.CustomersPage = class CustomersPage {
       'Click on touch point in customers tab'
     );
     await executeStep(this.touchPointSpan, 'click', 'Click on add touch point');
-    await test.step('Verify that the modal for adding the 1st touchpoint is displayed', async () => {
-      await assertElementVisible(this.touchPointModal);
-    });
+    await assertElementVisible(
+      this.touchPointModal,
+      'Verify that the modal for adding the 1st touchpoint is displayed'
+    );
     await executeStep(this.neutralIconInTouchPointModal, 'click', 'Click on neutral icon in modal');
     await executeStep(this.saveButton, 'click', 'Click save button');
-    await test.step('Verify that the note requires message in the modal is displayed', async () => {
-      await assertElementVisible(this.noteRequiresMsgInModal);
-    });
+    await assertElementVisible(
+      this.noteRequiresMsgInModal,
+      'Verify that the note requires message in the modal is displayed'
+    );
     await executeStep(this.noteInput, 'fill', 'Enter the comment for neutral icon', [
       indexPage.lighthouse_data.neutralComment
     ]);
     await executeStep(this.saveButton, 'click', 'Click on save button');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Verify that the yellow color mood icon is displayed', async () => {
-      await assertElementVisible(this.secondTouchPointIcon(utilConst.Const.yellowIconText));
-    });
+    await assertElementVisible(
+      this.secondTouchPointIcon(utilConst.Const.yellowIconText),
+      'Verify that the yellow color mood icon is displayed'
+    );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     if (this.isMobile) {
       await executeStep(this.backArrowBtn, 'click', 'Click on back arrow button');
@@ -402,9 +418,10 @@ exports.CustomersPage = class CustomersPage {
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await executeStep(this.notificationIcon, 'click', 'Click on notification msg');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify that both in-app and push notifications appear after submitting a Neutral or Negative touchpoint', async () => {
-      await assertElementVisible(this.notificationMsg(indexPage.lighthouse_data.neutralComment));
-    });
+    await assertElementVisible(
+      this.notificationMsg(indexPage.lighthouse_data.neutralComment),
+      'Verify that both in-app and push notifications appear after submitting a Neutral or Negative touchpoint'
+    );
     await executeStep(this.notificationCloseBtn, 'click', 'Click on notification close button');
     if (this.isMobile) {
       await executeStep(
@@ -421,22 +438,27 @@ exports.CustomersPage = class CustomersPage {
     );
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const afterCount = await this.touchPointCountDiv.textContent();
-    await test.step('Verify that the Touchpoints counter works properly: expected count to be one more than before', async () => {
-      await assertEqualValues(parseInt(afterCount), parseInt(beforeCount) + 1);
-    });
+    await assertEqualValues(
+      parseInt(afterCount),
+      parseInt(beforeCount) + 1,
+      'Verify that the Touchpoints counter works properly: expected count to be one more than before'
+    );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Verify that the yellow color mood icon is displayed after reload', async () => {
-      await assertElementVisible(this.secondTouchPointIcon(utilConst.Const.yellowIconText));
-    });
+    await assertElementVisible(
+      this.secondTouchPointIcon(utilConst.Const.yellowIconText),
+      'Verify that the yellow color mood icon is displayed after reload'
+    );
   }
   async addRemainingTouchPoints() {
     let isItem = true;
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     while (isItem) {
       await executeStep(this.touchPointSpan, 'click', 'Click the touch point');
-
       try {
-        await assertElementVisible(this.touchPointModal);
+        await assertElementVisible(
+          this.touchPointModal,
+          'Verify that the touch point modal is visible'
+        );
         await executeStep(this.angryIconInTouchPoint, 'click', 'Click on angry icon in modal');
         await executeStep(this.noteInput, 'fill', 'Enter the msg in note input', [
           indexPage.lighthouse_data.angryComment
@@ -444,25 +466,28 @@ exports.CustomersPage = class CustomersPage {
         await executeStep(this.saveButton, 'click', 'Click on save button');
       } catch (error) {
         await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-        await test.step('Verify that the proper validation message is displayed when trying to add more than the allowed touchpoints', async () => {
-          await assertElementVisible(this.touchPointLimitMsg);
-        });
+        await assertElementVisible(
+          this.touchPointLimitMsg,
+          'Verify that the proper validation message is displayed when trying to add more than the allowed touchpoints'
+        );
         isItem = false;
       }
     }
   }
   async assertEditIcon() {
-    await test.step('Verify that the touch point edit icon is displayed', async () => {
-      await assertElementVisible(this.secondTouchPointEditIcon);
-    });
+    await assertElementVisible(
+      this.secondTouchPointEditIcon,
+      'Verify that the touch point edit icon is displayed'
+    );
     await executeStep(this.secondTouchPointEditIcon, 'click', 'Click on edit icon');
     await executeStep(this.happyIconInTouchPointModal, 'click', 'Click on happy icon');
     await executeStep(this.noteInput, 'fill', 'Enter the note', ['']);
     await executeStep(this.saveButton, 'click', 'Click on save button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Verify that the user can edit previously created Touchpoints by ensuring the green icon is displayed', async () => {
-      await assertElementVisible(this.secondTouchPointIcon(utilConst.Const.greenIconText));
-    });
+    await assertElementVisible(
+      this.secondTouchPointIcon(utilConst.Const.greenIconText),
+      'Verify that the user can edit previously created Touchpoints by ensuring the green icon is displayed'
+    );
   }
   async assertTouchPointForFuture() {
     if (this.isMobile) {
@@ -476,9 +501,10 @@ exports.CustomersPage = class CustomersPage {
       'click',
       'Click on touch point in Touchpoint tab'
     );
-    await test.step('Verify that the touch point button is not displayed for Past or Future dates, ensuring that touchpoints can only be submitted for the actual date', async () => {
-      await assertElementNotVisible(this.touchPointSpan);
-    });
+    await assertElementNotVisible(
+      this.touchPointSpan,
+      'Verify that the touch point button is not displayed for Past or Future dates, ensuring that touchpoints can only be submitted for the actual date'
+    );
   }
 
   async verifyDetailsTab() {
@@ -493,17 +519,23 @@ exports.CustomersPage = class CustomersPage {
     const eventDescriptionText = await this.eventDescriptionData.textContent();
     const eventObjectiveText = await this.eventObjectiveData.textContent();
     const historicalDataText = await this.historicalData.textContent();
-    await test.step(`Verify event description text contains expected value: expected "${indexPage.opportunity_data.eventDescription}", actual "${eventDescriptionText}"`, async () => {
-      await assertContainsValue(eventDescriptionText, indexPage.opportunity_data.eventDescription);
-    });
-    await test.step(`Verify event objective text contains expected value: expected "${indexPage.opportunity_data.eventObjective}", actual "${eventObjectiveText}"`, async () => {
-      await assertContainsValue(eventObjectiveText, indexPage.opportunity_data.eventObjective);
-    });
-    await test.step(`Verify historical data text contains expected value: expected "${indexPage.opportunity_data.historicalData}", actual "${historicalDataText}"`, async () => {
-      await assertContainsValue(historicalDataText, indexPage.opportunity_data.historicalData);
-    });
+    await assertContainsValue(
+      eventDescriptionText,
+      indexPage.opportunity_data.eventDescription,
+      `Verify event description text contains expected value: expected "${indexPage.opportunity_data.eventDescription}", actual "${eventDescriptionText}"`
+    );
+    await assertContainsValue(
+      eventObjectiveText,
+      indexPage.opportunity_data.eventObjective,
+      `Verify event objective text contains expected value: expected "${indexPage.opportunity_data.eventObjective}", actual "${eventObjectiveText}"`
+    );
+    await assertContainsValue(
+      historicalDataText,
+      indexPage.opportunity_data.historicalData,
+      `Verify historical data text contains expected value: expected "${indexPage.opportunity_data.historicalData}", actual "${historicalDataText}"`
+    );
   }
-  async verifyPreviousEventTab(){
+  async verifyPreviousEventTab() {
     await executeStep(this.customerCard, 'click', 'Click on any Customer Card from that list');
     await executeStep(this.opportunityList, 'click', 'Click on any Opportunity from Customer list');
     await executeStep(
@@ -512,8 +544,6 @@ exports.CustomersPage = class CustomersPage {
       'Click on Previous Events Tab'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Verify that all Previous Events returned ', async () => {
-      await assertElementVisible(this.previousEventList);
-    });
+    await assertElementVisible(this.previousEventList, 'Verify that all Previous Events returned');
   }
 };

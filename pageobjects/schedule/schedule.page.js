@@ -9,7 +9,9 @@ const {
   getFormattedTodayDate,
   getTodayDateAndMonth,
   getPreviousWeekDateAndMonth,
-  getNextWeekDateAndMonth
+  getNextWeekDateAndMonth,
+  assertContainsValue,
+  assertEqualValues
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 exports.SchedulePage = class SchedulePage {
@@ -117,33 +119,34 @@ exports.SchedulePage = class SchedulePage {
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     const actualMsg = indexPage.lighthouse_data.scheduleErrorMsg;
     const errorMessageText = await this.errorMessage.textContent();
-    await test.step(`Assert error message is displayed: Expected error message should contain "${actualMsg}", Actual error message: "${errorMessageText}"`, async () => {
-      await assertElementContainsText(this.errorMessage, actualMsg);
-    });
+    await assertElementContainsText(
+      this.errorMessage,
+      actualMsg,
+      `Assert error message is displayed: Expected error message should contain "${actualMsg}", Actual error message: "${errorMessageText}"`
+    );
   }
   async assertScheduleTab(hightlightedText) {
     await executeStep(this.scheduleTab, 'click', 'Click on scheduleTab');
     await executeStep(this.teamScheduleTab, 'click', 'Click on teamSchedule Tab');
-    await test.step('Assert team schedule table is visible', async () => {
-      await assertElementVisible(this.teamScheduleTable);
-    });
+    await assertElementVisible(this.teamScheduleTable, 'Assert team schedule table is visible');
     const actualDateText = await this.todayDate.textContent();
     const expectedDateText = getFormattedTodayDate();
-    await test.step(`Assert today's date is displayed Expected today's date: "${expectedDateText}", Actual today's date: "${actualDateText}"`, async () => {
-      await assertElementContainsText(this.todayDate, expectedDateText);
-    });
-
+    await assertElementContainsText(
+      this.todayDate,
+      expectedDateText,
+      `Assert today's date is displayed Expected today's date: "${expectedDateText}", Actual today's date: "${actualDateText}"`
+    );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const todayDateclass = await this.todayDate.getAttribute('class');
-    await test.step(`Assert class contains highlighted text: "${hightlightedText}"`, async () => {
-      expect(todayDateclass).toContain(hightlightedText);
-    });
+    await assertContainsValue(
+      todayDateclass,
+      hightlightedText,
+      `Assert class contains highlighted text: "${hightlightedText}"`
+    );
   }
   async verifyingEventcard() {
     await executeStep(this.eventCard, 'click', 'Click on event card');
-    await test.step('Assert event details model is visible', async () => {
-      await assertElementVisible(this.detailsModel);
-    });
+    await assertElementVisible(this.detailsModel, 'Assert event details model is visible');
     const highlightedEmployeeName = await this.highlightedFieldEmployeeName.textContent();
     await executeStep(
       this.highlightedFieldEmployeeName,
@@ -151,15 +154,15 @@ exports.SchedulePage = class SchedulePage {
       'Click on highlighted employee name'
     );
     const employeeDetailsName = await this.employeeDetailsEmployeeName.textContent();
-    await test.step(`Assert employee names match: expected "${highlightedEmployeeName}", actual "${employeeDetailsName}"`, async () => {
-      expect(highlightedEmployeeName).toBe(employeeDetailsName);
-    });
+    await assertEqualValues(
+      highlightedEmployeeName,
+      employeeDetailsName,
+      `Assert employee names match: expected "${highlightedEmployeeName}", actual "${employeeDetailsName}"`
+    );
     await executeStep(this.crossButton, 'click', 'Click on cross button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.eventCard, 'click', 'Click on event card again');
-    await test.step('Assert event details model is visible again', async () => {
-      await assertElementVisible(this.detailsModel);
-    });
+    await assertElementVisible(this.detailsModel, 'Assert event details model is visible again');
     const highlightedWorkingFor = await this.highlightedFieldWorkingFor.textContent();
     await executeStep(
       this.highlightedFieldWorkingFor,
@@ -168,15 +171,18 @@ exports.SchedulePage = class SchedulePage {
     );
     const employeeDetailsLocationWorkingFor =
       await this.employeeDetailsEmployeeLocationWorkingFor.textContent();
-    await test.step(`Assert working for names match: expected "${highlightedWorkingFor}", actual "${employeeDetailsLocationWorkingFor}"`, async () => {
-      expect(highlightedWorkingFor).toBe(employeeDetailsLocationWorkingFor);
-    });
+    await assertEqualValues(
+      highlightedWorkingFor,
+      employeeDetailsLocationWorkingFor,
+      `Assert working for names match: expected "${highlightedWorkingFor}", actual "${employeeDetailsLocationWorkingFor}"`
+    );
     await executeStep(this.crossButton, 'click', 'Click on cross button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.eventCard, 'click', 'Click on event card again');
-    await test.step('Assert event details model is visible for working at', async () => {
-      await assertElementVisible(this.detailsModel);
-    });
+    await assertElementVisible(
+      this.detailsModel,
+      'Assert event details model is visible for working at'
+    );
     try {
       const highlightedWorkingAt = await this.highlightedFieldWorkingAt.textContent();
       await executeStep(
@@ -185,13 +191,9 @@ exports.SchedulePage = class SchedulePage {
         'Click on highlighted working at field'
       );
       const getLocationText = await this.getEmployeeWorkingLocation.textContent();
-      await test.step(`Assert working at location contains highlighted text: expected "${highlightedWorkingAt}", actual "${getLocationText}"`, async () => {
-        expect(getLocationText).toContain(highlightedWorkingAt);
-      });
+      await assertContainsValue(getLocationText, highlightedWorkingAt);
     } catch (error) {
-      await test.step('Error occurred while checking working at details', async () => {
-        console.error('Error:', error);
-      });
+      console.error('Error:', error);
     } finally {
       await executeStep(this.crossButton, 'click', 'Click on cross button to close modal');
     }
@@ -200,30 +202,28 @@ exports.SchedulePage = class SchedulePage {
 
   async verifyingFilterFunctionality() {
     await executeStep(this.filterIcon, 'click', 'Click on filter icon');
-    await test.step('Assert filters model is visible', async () => {
-      await assertElementVisible(this.filtersModel);
-    });
+    await assertElementVisible(this.filtersModel, 'Assert filters model is visible');
     await executeStep(this.clearFilterOption, 'click', 'Click on clear filter option');
-    await test.step('Assert filters model is not visible', async () => {
-      await assertElementNotVisible(this.filtersModel);
-    });
+    await assertElementNotVisible(this.filtersModel, 'Assert filters model is not visible');
   }
   async verifyingPreviousNextWeekDates() {
     await executeStep(this.leftArrow, 'click', 'Click on left arrow');
     const expectedPreviousDate = getPreviousWeekDateAndMonth();
-    await test.step(`Assert previous week date is displayed correctly: expected "${expectedPreviousDate}", actual "${await this.previousWeekDate.textContent()}"`, async () => {
-      await assertElementContainsText(this.previousWeekDate, expectedPreviousDate);
-    });
+    await assertElementContainsText(
+      this.previousWeekDate,
+      expectedPreviousDate,
+      `Assert previous week date is displayed correctly: expected "${expectedPreviousDate}", actual "${await this.previousWeekDate.textContent()}"`
+    );
     await executeStep(this.rightArrow, 'click', 'Click on right arrow');
     await executeStep(this.rightArrow, 'click', 'Click on right arrow again');
     const expectedNextDate = getNextWeekDateAndMonth();
-    await test.step(`Assert next week date is displayed correctly: expected "${expectedNextDate}", actual "${await this.nextWeekDate.textContent()}"`, async () => {
-      await assertElementContainsText(this.nextWeekDate, expectedNextDate);
-    });
+    await assertElementContainsText(
+      this.nextWeekDate,
+      expectedNextDate,
+      `Assert next week date is displayed correctly: expected "${expectedNextDate}", actual "${await this.nextWeekDate.textContent()}"`
+    );
     await executeStep(this.todayLink, 'click', 'Click on today link');
-    await test.step('Assert today date is visible', async () => {
-      await assertElementVisible(this.todayDate);
-    });
+    await assertElementVisible(this.todayDate, 'Assert today date is visible');
   }
 
   async verifyingScheduleTabs(scheduleTabActiveMobile, scheduleTabActiveWeb) {
@@ -239,18 +239,20 @@ exports.SchedulePage = class SchedulePage {
     await executeStep(this.scheduleTab, 'click', 'Click on schedule tab');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     if (scheduletype == ' My Schedule ') {
-      await test.step('Assert active schedule tab for mobile or web', async () => {
-        const myScheduleTabclass = await this.myScheduleTab.getAttribute('class');
-        if (this.isMobile) {
-          await test.step(`Assert mobile schedule tab class: expected "${scheduleTabActiveMobile}", actual "${myScheduleTabclass}"`, async () => {
-            expect(myScheduleTabclass).toContain(scheduleTabActiveMobile);
-          });
-        } else {
-          await test.step(`Assert web schedule tab class: expected "${scheduleTabActiveWeb}", actual "${myScheduleTabclass}"`, async () => {
-            expect(myScheduleTabclass).toContain(scheduleTabActiveWeb);
-          });
-        }
-      });
+      const myScheduleTabclass = await this.myScheduleTab.getAttribute('class');
+      if (this.isMobile) {
+        await assertContainsValue(
+          myScheduleTabclass,
+          scheduleTabActiveMobile,
+          `Assert mobile schedule tab class: expected "${scheduleTabActiveMobile}", actual "${myScheduleTabclass}"`
+        );
+      } else {
+        await assertContainsValue(
+          myScheduleTabclass,
+          scheduleTabActiveWeb,
+          `Assert web schedule tab class: expected "${scheduleTabActiveWeb}", actual "${myScheduleTabclass}"`
+        );
+      }
     }
   }
 };
