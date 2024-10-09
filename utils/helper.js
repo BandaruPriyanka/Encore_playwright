@@ -4,7 +4,7 @@ require('dotenv').config();
 const data = require('../data/apidata.json');
 const indexPage = require('./index.page');
 let isValid;
-const { expect} = require('@playwright/test');
+const { expect } = require('@playwright/test');
 
 function getTodayDate() {
   const date = new Date();
@@ -362,20 +362,20 @@ async function validateLastSyncedText(lastSyncedText) {
     throw new Error('Could not parse the last synced value.');
   }
 }
-async function verifyNavigationElements(page, locator, expectedArray,language) {
+async function verifyNavigationElements(page, locator, expectedArray, language) {
   const navigationItems = await page.locator(locator);
   for (let i = 0; i < expectedArray.length; i++) {
-      const itemText = await navigationItems.nth(i).textContent();
-      await test.step(`Verify that the value "${itemText.trim()}" is in "${language}"` , async () => {
-        await expect(itemText.trim()).toEqual(expectedArray[i]);
-      })
+    const itemText = await navigationItems.nth(i).textContent();
+    await test.step(`Verify that the value "${itemText.trim()}" is in "${language}"`, async () => {
+      await expect(itemText.trim()).toEqual(expectedArray[i]);
+    });
   }
 }
 async function clickRemindMeTomorrowButton(page) {
   const buttonLocator = page.locator("//button[text()='Remind Me Tomorrow']");
   try {
-    await buttonLocator.waitFor({ state: 'visible', timeout: 5000 }); 
-    await buttonLocator.click(); 
+    await buttonLocator.waitFor({ state: 'visible', timeout: 5000 });
+    await buttonLocator.click();
   } catch (error) {
     console.log("The 'Remind Me Tomorrow' button did not appear.");
   }
@@ -385,11 +385,11 @@ function checkTimeFormat(time) {
   const twelveHourFormatRegex = /^(0?[1-9]|1[0-2]):[0-5][0-9]\s?[APap][Mm]$/;
   const twentyFourHourFormatRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
   if (twelveHourFormatRegex.test(time)) {
-      return '12 Hours';
+    return '12 Hours';
   } else if (twentyFourHourFormatRegex.test(time)) {
-      return '24 Hours';
+    return '24 Hours';
   } else {
-      return 'Invalid time format';
+    return 'Invalid time format';
   }
 }
 

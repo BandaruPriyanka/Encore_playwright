@@ -129,27 +129,27 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     const locationFromGeneralTab = await profilePage.getLocationFromGeneralTab.textContent();
     await test.step(`Verify that a valid location is displayed as the default 'Selected location' value- Expected: "${locationFromGeneralTab.trim()}", Actual: "${locationFromHeader.trim()}"`, async () => {
       await assertEqualValues(locationFromHeader.trim(), locationFromGeneralTab.trim());
-    });    
+    });
     await test.step('Verify that the "Selected location change" button is not visible', async () => {
       await assertElementNotVisible(profilePage.selectedLocationChangeButton);
-    });    
+    });
   });
-  test('Test_C57108 Check "Equipment Display Choice" selection', async() => {
+  test('Test_C57108 Check "Equipment Display Choice" selection', async () => {
     await profilePage.assertEquipmentByIntialDisplayValue();
     await profilePage.assertEquipmentByChangedDisplayValue();
     await profilePage.changeEquipmentDisplayChoiceToInitialValue();
-  })
+  });
   test('Test_C57110 Check "Default Schedule View" selection', async () => {
     await profilePage.assertInitialDefaultSheduleView();
     await profilePage.assertDefaultScheduleViewAfterChange();
     await profilePage.changeScheduleViewValueToIntialValue();
-  })
-  test('Test_C57107 Check "Language" selection' , async() => {
+  });
+  test('Test_C57107 Check "Language" selection', async () => {
     await profilePage.assertInitialLanguageValue();
     await profilePage.assertUpdateLanguageToSpanish();
     await profilePage.assertUpdateLanguageToFrench();
     await profilePage.changeLanguageToIntialValue();
-  })
+  });
   test('Test_C57115:Verify Notification Location Tab elements', async () => {
     await notificationPage.clickOnNotification();
     await test.step('The Notification Location page should consist : Notification location tab , location list , search field', async () => {
@@ -203,16 +203,16 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await notificationPage.verifyRemovingLocation();
   });
 
-  test.skip("Test_C57114 Verify 'Favourite Slot' selection" , async () => {
+  test.skip("Test_C57114 Verify 'Favourite Slot' selection", async () => {
     await profilePage.assertInitialFavouriteMenuSlot();
     await profilePage.changeMenuSlot1ToFavouriteSlot();
     await profilePage.restoreToSelectedMenuSlot();
-  })
+  });
 
-  test("TC_C57112 Verify 'Time Display' selection" , async () => {
+  test("TC_C57112 Verify 'Time Display' selection", async () => {
     await profilePage.assertTimeDisplayValue();
     await profilePage.assertInitialTimeFormatForElements();
     await profilePage.changeDisplayTimeValue();
     await profilePage.assertAfterTimeFormatForElements();
-  })
+  });
 });

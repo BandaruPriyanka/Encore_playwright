@@ -1,7 +1,11 @@
 const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
 const lighthouseData = require('../data/lighthouse.json');
-const { assertElementVisible, assertElementAttributeContains,clickRemindMeTomorrowButton } = require('../utils/helper');
+const {
+  assertElementVisible,
+  assertElementAttributeContains,
+  clickRemindMeTomorrowButton
+} = require('../utils/helper');
 
 test.describe('LightHouse Chat Search', () => {
   let chatpage, flowsheetPage, locationId, locationText;

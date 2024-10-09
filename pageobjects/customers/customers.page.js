@@ -40,7 +40,7 @@ exports.CustomersPage = class CustomersPage {
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
     this.customerCard = this.page.locator('(//app-customer-card)[1]');
     this.opportunityList = this.page.locator("(//div[@role='region']/div/div/div)[1]");
-    this.getRoomName=this.page.locator("((//div[@role='region']/div/div/div)[1]/div/span)[1]");
+    this.getRoomName = this.page.locator("((//div[@role='region']/div/div/div)[1]/div/span)[1]");
     this.orderName = this.page.locator("//span[contains(@class,'e2e_opportunity_order_name')]");
     this.customerName = this.page.locator(
       "//span[contains(@class,'e2e_opportunity_bill_to_account_name')]"
@@ -122,8 +122,9 @@ exports.CustomersPage = class CustomersPage {
     this.eventDescriptionData = this.page.locator(
       " //div[contains(text(),'Event Description')]//following-sibling::div"
     );
-    this.touchpointPieIcon =ordername=> this.page.locator(`(//span[text()='${ordername}'])[2]/../../app-mood-pia-chart`);
-    this.previousEventList=this.page.locator("//app-previous-events//ul[@role='list']");
+    this.touchpointPieIcon = ordername =>
+      this.page.locator(`(//span[text()='${ordername}'])[2]/../../app-mood-pia-chart`);
+    this.previousEventList = this.page.locator("//app-previous-events//ul[@role='list']");
   }
 
   async search(searchText) {
@@ -503,7 +504,7 @@ exports.CustomersPage = class CustomersPage {
       await assertContainsValue(historicalDataText, indexPage.opportunity_data.historicalData);
     });
   }
-  async verifyPreviousEventTab(){
+  async verifyPreviousEventTab() {
     await executeStep(this.customerCard, 'click', 'Click on any Customer Card from that list');
     await executeStep(this.opportunityList, 'click', 'Click on any Opportunity from Customer list');
     await executeStep(

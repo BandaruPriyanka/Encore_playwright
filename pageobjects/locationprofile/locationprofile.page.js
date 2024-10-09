@@ -1,7 +1,6 @@
 const { executeStep } = require('../../utils/action');
 const {
   assertElementVisible,
-  assertElementNotVisible,
   assertElementAttributeContains
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
@@ -17,12 +16,24 @@ exports.LocationProfile = class LocationProfile {
     this.locationProfileBtn = this.page.locator(
       "//span[normalize-space()='Location Profile']//parent::div"
     );
-    this.generalTab = this.getDynamicLocator('General');
-    this.addOnEmailRecipients = this.getDynamicLocator('Add Ons Email Recipients');
-    this.flowsheetGroups = this.getDynamicLocator('Flowsheet Groups');
-    this.equipmentChecklist = this.getDynamicTextLocator('Use Equipment Checklist');
-    this.notifyJobChanges = this.getDynamicTextLocator('Notify us of job changes');
-    this.useDocusign = this.getDynamicTextLocator('Use Docusign');
+    this.generalTab = this.isMobile
+      ? this.getDynamicLocator('General', 1)
+      : this.getDynamicLocator('General', 2);
+    this.addOnEmailRecipients = this.isMobile
+      ? this.getDynamicLocator('Add Ons Email Recipients', 1)
+      : this.getDynamicLocator('Add Ons Email Recipients', 2);
+    this.flowsheetGroups = this.isMobile
+      ? this.getDynamicLocator('Flowsheet Groups', 1)
+      : this.getDynamicLocator('Flowsheet Groups', 2);
+    this.equipmentChecklist = this.isMobile
+      ? this.getDynamicTextLocator('e2e_user_profile_equipment_checklist_label', 2)
+      : this.getDynamicTextLocator('e2e_user_profile_equipment_checklist_label', 1);
+    this.notifyJobChanges = this.isMobile
+      ? this.getDynamicTextLocator('e2e_user_profile_job_changes', 2)
+      : this.getDynamicTextLocator('e2e_user_profile_job_changes', 1);
+    this.useDocusign = this.isMobile
+      ? this.getDynamicTextLocator('e2e_user_profile_docusign_label', 2)
+      : this.getDynamicTextLocator('e2e_user_profile_docusign_label', 1);
     this.equipmentCheckListOption = this.isMobile
       ? this.page.locator("//div[contains(@class,'e2e_user_profile_equipment_checklist_value')]")
       : this.page.locator("//span[@class='e2e_user_profile_equipment_checklist_value']");
@@ -46,11 +57,11 @@ exports.LocationProfile = class LocationProfile {
       "//span[@class='e2e_flowsheet_equipment_package font-semibold'][1]/../following-sibling::div//input[@type='checkbox']"
     );
   }
-  getDynamicLocator = label => {
-    return this.page.locator(`(//span[normalize-space()='${label}']//parent::li)[2]`);
+  getDynamicLocator = (label, index) => {
+    return this.page.locator(`(//span[normalize-space()='${label}']//parent::li)[${index}]`);
   };
-  getDynamicTextLocator = text => {
-    return this.page.locator(`//div[text()='${text}']`);
+  getDynamicTextLocator = (text, index) => {
+    return this.page.locator(`(//div[contains(@class,'${text}')])[${index}]`);
   };
   async clickOnLocationProfile() {
     await executeStep(this.menuIcon, 'click', 'Click on Menu Icon');

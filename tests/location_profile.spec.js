@@ -1,7 +1,12 @@
 const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
 require('dotenv').config();
-const { assertElementVisible, assertElementNotVisible, invalidDiscountGenerator, validDiscountGenerator } = require('../utils/helper');
+const {
+  assertElementVisible,
+  assertElementNotVisible,
+  invalidDiscountGenerator,
+  validDiscountGenerator
+} = require('../utils/helper');
 test.describe('Performing actions on Location Profile Tab', () => {
   let locationProfilePage, flowsheetPage, locationId, locationText, flowsheetCardAndTab;
 
@@ -28,7 +33,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
       await assertElementNotVisible(locationProfilePage.selectAllCheckBox);
     });
   });
-  test("Test_C57122 Check 'Use Docusign' functionality",async ({ page }) => {
+  test("Test_C57122 Check 'Use Docusign' functionality", async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
@@ -41,21 +46,27 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await page.goBack();
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     const flowsheet = new indexPage.FlowSheetPage(page);
-    await flowsheet.changeLocation(indexPage.lighthouse_data.locationId_createData2,indexPage.lighthouse_data.locationText_createData2);
+    await flowsheet.changeLocation(
+      indexPage.lighthouse_data.locationId_createData2,
+      indexPage.lighthouse_data.locationText_createData2
+    );
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await flowsheetCardAndTab.verifyDocusignStatus(
-    indexPage.lighthouse_data.turnOff,
-    indexPage.navigator_data.second_job_no_createData2,
-    indexPage.navigator_data.second_job_no_createData2
-  );
-  await flowsheetCardAndTab.addOnFunction(
-    indexPage.lighthouse_data.requestedBy,
-    indexPage.lighthouse_data.individualProduct,
-    indexPage.lighthouse_data.packageProduct,
-    indexPage.lighthouse_data.invalidQuantity,
-    indexPage.lighthouse_data.validQuantity
-  );
-  await flowsheetCardAndTab.discountChecking(invalidDiscountGenerator(), validDiscountGenerator());
-  await flowsheetCardAndTab.dateSelectModalCheckingAndAssertRooms();
-  })
+      indexPage.lighthouse_data.turnOff,
+      indexPage.navigator_data.second_job_no_createData2,
+      indexPage.navigator_data.second_job_no_createData2
+    );
+    await flowsheetCardAndTab.addOnFunction(
+      indexPage.lighthouse_data.requestedBy,
+      indexPage.lighthouse_data.individualProduct,
+      indexPage.lighthouse_data.packageProduct,
+      indexPage.lighthouse_data.invalidQuantity,
+      indexPage.lighthouse_data.validQuantity
+    );
+    await flowsheetCardAndTab.discountChecking(
+      invalidDiscountGenerator(),
+      validDiscountGenerator()
+    );
+    await flowsheetCardAndTab.dateSelectModalCheckingAndAssertRooms();
+  });
 });
