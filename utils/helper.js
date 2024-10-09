@@ -7,9 +7,6 @@ let isValid;
 const { expect, test } = require('@playwright/test');
 const { allure } = require('allure-playwright');
 
-function colorText(text, color) {
-  return `<span style='color: ${color}'>${text}</span>`;
-}
 
 function getTodayDate() {
   const date = new Date();
