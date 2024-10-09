@@ -4,7 +4,9 @@ require('dotenv').config();
 const data = require('../data/apidata.json');
 const indexPage = require('./index.page');
 let isValid;
-const { expect } = require('@playwright/test');
+const { expect, test } = require('@playwright/test');
+const { allure } = require('allure-playwright');
+
 
 function getTodayDate() {
   const date = new Date();
@@ -195,51 +197,74 @@ async function scrollElement(element, scrollTo) {
   }, scrollTo);
 }
 
-async function assertElementVisible(element) {
-  await expect(element).toBeVisible();
+async function assertElementVisible(element, customText) {
+  await test.step(customText, async () => {
+    await expect(element).toBeVisible();
+  });
 }
 
-async function assertElementNotVisible(element) {
-  await expect(element).not.toBeVisible();
+async function assertElementNotVisible(element, customText) {
+  await test.step(customText, async () => {
+    await expect(element).not.toBeVisible();
+  });
 }
 
-async function assertEqualValues(value1, value2) {
-  await expect(value1).toEqual(value2);
+async function assertEqualValues(value1, value2, customText) {
+  await test.step(customText, async () => {
+    await expect(value1).toEqual(value2);
+  });
 }
-async function assertContainsValue(value1, value2) {
-  expect(value1).toContain(value2);
+async function assertContainsValue(value1, value2, customText) {
+  await test.step(customText, async () => {
+    await expect(value1).toContain(value2);
+  });
 }
 
-async function assertNotEqualValues(value1, value2) {
-  await expect(value1).not.toEqual(value2);
+async function assertNotEqualValues(value1, value2, customText) {
+  await test.step(customText, async () => {
+    await expect(value1).not.toEqual(value2);
+  });
 }
 
-async function assertElementHidden(page, selector) {
+async function assertElementHidden(page, selector, customText) {
+  await test.step(customText, async () => {
+    await expect(value1).not.toEqual(value2);
+  });
   const element = await page.$(selector);
   await expect(element).not.toBeNull();
   await expect(element).toBeHidden();
 }
 
-async function assertTextPresent(page, text) {
-  await expect(page.locator(`text=${text}`)).toBeVisible();
+async function assertTextPresent(page, text, customText) {
+  await test.step(customText, async () => {
+    await expect(page.locator(`text=${text}`)).toBeVisible();
+  });
 }
 
-async function assertElementHaveText(page, selector, text) {
-  const element = await page.locator(selector);
-  await expect(element).toHaveText(text);
+async function assertElementHaveText(page, selector, text, customText) {
+  await test.step(customText, async () => {
+    const element = await page.locator(selector);
+    await expect(element).toHaveText(text);
+  });
 }
 
-async function assertElementContainsText(element, text) {
-  await expect(element).toContainText(text);
+async function assertElementContainsText(element, text, customText) {
+  await test.step(customText, async () => {
+    await expect(element).toContainText(text);
+  });
 }
 
-async function assertUrlContains(page, substring) {
-  const url = page.url();
-  expect(url).toContain(substring);
+async function assertUrlContains(page, substring, customText) {
+  await test.step(customText, async () => {
+    const url = page.url();
+    expect(url).toContain(substring);
+  });
 }
 
-async function assertGreaterThan(value1, value2) {
-  await expect(value1).toBeGreaterThan(value2);
+async function assertGreaterThan(value1, value2, customText) {
+  await test.step(customText, async () => {
+    await expect(value1).toBeGreaterThan(value2);
+  });
 }
 
 async function screenshotElement(page, selector, path) {
@@ -255,31 +280,41 @@ async function waitForElementHidden(page, selector, timeout = 30000) {
   await page.locator(selector).waitFor({ state: 'hidden', timeout });
 }
 
-async function assertElementAttribute(page, selector, attribute, value) {
-  const element = await page.locator(selector);
-  const attributeValue = await element.getAttribute(attribute);
-  expect(attributeValue).toBe(value);
+async function assertElementAttribute(page, selector, attribute, value, customText) {
+  await test.step(customText, async () => {
+    const element = await page.locator(selector);
+    const attributeValue = await element.getAttribute(attribute);
+    expect(attributeValue).toBe(value);
+  });
 }
 
-async function assertElementAttributeContains(locator, attribute, value) {
-  const attributeValue = await locator.getAttribute(attribute);
-  expect(attributeValue).toContain(value);
+async function assertElementAttributeContains(locator, attribute, value, customText) {
+  await test.step(customText, async () => {
+    const attributeValue = await locator.getAttribute(attribute);
+    expect(attributeValue).toContain(value);
+  });
 }
 
-async function assertElementEnabled(element) {
-  const isEnabled = await element.isEnabled();
-  expect(isEnabled).toBe(true);
+async function assertElementEnabled(element, customText) {
+  await test.step(customText, async () => {
+    const isEnabled = await element.isEnabled();
+    expect(isEnabled).toBe(true);
+  });
 }
 
-async function assertElementDisabled(element) {
-  const isDisabled = await element.isDisabled();
-  expect(isDisabled).toBe(true);
+async function assertElementDisabled(element, customText) {
+  await test.step(customText, async () => {
+    const isDisabled = await element.isDisabled();
+    expect(isDisabled).toBe(true);
+  });
 }
 
-async function assertInputValue(page, selector, value) {
-  const element = await page.locator(selector);
-  const inputValue = await element.inputValue();
-  expect(inputValue).toBe(value);
+async function assertInputValue(page, selector, value, customText) {
+  await test.step(customText, async () => {
+    const element = await page.locator(selector);
+    const inputValue = await element.inputValue();
+    expect(inputValue).toBe(value);
+  });
 }
 
 async function clickAndWaitForNavigation(page, selector, timeout = 30000) {
@@ -287,22 +322,28 @@ async function clickAndWaitForNavigation(page, selector, timeout = 30000) {
   return response;
 }
 
-async function assertCheckboxChecked(page, selector) {
-  const element = await page.locator(selector);
-  const isChecked = await element.isChecked();
-  expect(isChecked).toBe(true);
+async function assertCheckboxChecked(page, selector, customText) {
+  await test.step(customText, async () => {
+    const element = await page.locator(selector);
+    const isChecked = await element.isChecked();
+    expect(isChecked).toBe(true);
+  });
 }
 
-async function assertCheckboxUnchecked(page, selector) {
-  const element = await page.locator(selector);
-  const isChecked = await element.isChecked();
-  expect(isChecked).toBe(false);
+async function assertCheckboxUnchecked(page, selector, customText) {
+  await test.step(customText, async () => {
+    const element = await page.locator(selector);
+    const isChecked = await element.isChecked();
+    expect(isChecked).toBe(false);
+  });
 }
 
-async function assertElementInnerHtml(page, selector, html) {
-  const element = await page.locator(selector);
-  const innerHtml = await element.innerHTML();
-  expect(innerHtml).toBe(html);
+async function assertElementInnerHtml(page, selector, html, customText) {
+  await test.step(customText, async () => {
+    const element = await page.locator(selector);
+    const innerHtml = await element.innerHTML();
+    expect(innerHtml).toBe(html);
+  });
 }
 
 async function waitForElementClass(page, selector, className, timeout = 30000) {
@@ -323,9 +364,11 @@ async function readFileSync(filePath) {
 function appendFileSync(filePath, content) {
   fs.appendFileSync(filePath, content, 'utf8');
 }
-async function assertIsNumber(value) {
-  const numberValue = Number(value);
-  expect(typeof numberValue).toBe('number'); // Assert that it is of type 'number'
+async function assertIsNumber(value, customText) {
+  await test.step(customText, async () => {
+    const numberValue = Number(value);
+    expect(typeof numberValue).toBe('number');
+  });
 }
 function getTodayDateAndYear() {
   const date = new Date();
@@ -334,19 +377,21 @@ function getTodayDateAndYear() {
   const formattedDate = `${day}, ${year}`;
   return formattedDate;
 }
-async function checkVisibleElementColors(page, selector, expectedColor) {
-  const elements = await page.$$(selector);
-  let visibleElementCount = 0;
-  for (const element of elements) {
-    const isVisible = await element.isVisible();
-    if (isVisible) {
-      const elementColor = await element.evaluate(
-        el => getComputedStyle(el).fill || getComputedStyle(el).color
-      );
-      expect(elementColor).toBe(expectedColor);
-      visibleElementCount++;
+async function checkVisibleElementColors(page, selector, expectedColor, customText) {
+  await test.step(customText, async () => {
+    const elements = await page.$$(selector);
+    let visibleElementCount = 0;
+    for (const element of elements) {
+      const isVisible = await element.isVisible();
+      if (isVisible) {
+        const elementColor = await element.evaluate(
+          el => getComputedStyle(el).fill || getComputedStyle(el).color
+        );
+        expect(elementColor).toBe(expectedColor);
+        visibleElementCount++;
+      }
     }
-  }
+  });
 }
 async function validateLastSyncedText(lastSyncedText) {
   const match = lastSyncedText.match(/(\d+)([a-zA-Z]+)/);
@@ -457,5 +502,6 @@ module.exports = {
   verifyNavigationElements,
   clickRemindMeTomorrowButton,
   checkTimeFormat,
-  extractTime
+  extractTime,
+  colorText
 };

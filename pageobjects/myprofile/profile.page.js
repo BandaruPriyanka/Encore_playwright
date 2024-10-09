@@ -276,13 +276,11 @@ exports.ProfilePage = class ProfilePage {
     indexPage.lighthouse_data.lastSyncedTime = lastSyncedText;
     await fs.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
     const isValid = await validateLastSyncedText(lastSyncedText);
-
-    await test.step(`Verify that the 'Last synced' value represents a past time: "${lastSyncedText}"`, async () => {
-      expect(isValid).toBe(
-        true,
-        `The 'Last synced' value "${lastSyncedText}" is not valid, as it should represent a past time frame.`
-      );
-    });
+    await assertEqualValues(
+      isValid,
+      true,
+      `Verify that the 'Last synced' value represents a past time: "${lastSyncedText}"`
+    );
   }
   async resyncTheTime() {
     await executeStep(this.resyncLink, 'click', 'Click on Resync Link');
@@ -303,67 +301,72 @@ exports.ProfilePage = class ProfilePage {
     expectedLogsText,
     expectedDashboardText
   ) {
-    await test.step('Verify that Menu Icon is displayed.', async () => {
-      await assertElementVisible(this.menuIcon);
-    });
+    await assertElementVisible(this.menuIcon, 'Verify that Menu Icon is displayed.');
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
-    await test.step('Verify that Menu Modal is displayed.', async () => {
-      await assertElementVisible(this.menuModal);
-    });
+    await assertElementVisible(this.menuModal, 'Verify that Menu Modal is displayed.');
     await executeStep(this.menuText, 'click', 'Click on menuText');
     await executeStep(this.scheduleTab, 'click', 'Click on scheduleTab');
     if (await this.dismissBtn.isVisible()) {
       await executeStep(this.dismissBtn, 'click', 'Click on dismiss popup');
     }
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
-    await test.step('Verify that Menu Modal is displayed in Schedule page.', async () => {
-      await assertElementVisible(this.menuModal);
-    });
+    await assertElementVisible(
+      this.menuModal,
+      'Verify that Menu Modal is displayed in Schedule page.'
+    );
     await executeStep(this.menuText, 'click', 'Click on menuText');
     await executeStep(this.customersIcon, 'click', 'Click on customersIcon');
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
-    await test.step('Verify that Menu Modal is displayed in Customers page.', async () => {
-      await assertElementVisible(this.menuModal);
-    });
+    await assertElementVisible(
+      this.menuModal,
+      'Verify that Menu Modal is displayed in Customers page.'
+    );
     await executeStep(this.menuText, 'click', 'Click on menuText');
     await executeStep(this.chatIcon, 'click', 'Click on chatIcon');
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
-    await test.step('Verify that Menu Modal is displayed in Chat page.', async () => {
-      await assertElementVisible(this.menuModal);
-    });
+    await assertElementVisible(this.menuModal, 'Verify that Menu Modal is displayed in Chat page.');
     await executeStep(this.menuText, 'click', 'Click on menuText');
     await executeStep(this.AgendasIcon, 'click', 'Click on AgendasIcon');
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
-    await test.step('Verify that Menu Modal is displayed in Agendas page.', async () => {
-      await assertElementVisible(this.menuModal);
-    });
+    await assertElementVisible(
+      this.menuModal,
+      'Verify that Menu Modal is displayed in Agendas page.'
+    );
     await executeStep(this.myProfileBtn, 'click', 'Click on myProfileOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let profileText = await this.profileModule.textContent();
-    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedProfileText}" is displayed after clicking on my profile option.`, async () => {
-      await assertContainsValue(profileText, expectedProfileText);
-    });
+    await assertContainsValue(
+      profileText,
+      expectedProfileText,
+      `Verify that Profile page text "${indexPage.lighthouse_data.expectedProfileText}" is displayed after clicking on my profile option.`
+    );
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await executeStep(this.locationProfileOption, 'click', 'Click on locationProfileOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let locationText = await this.locationHeading.textContent();
-    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedLocationText}" is displayed after clicking on my profile option.`, async () => {
-      await assertContainsValue(locationText, expectedLocationText);
-    });
+    await assertContainsValue(
+      locationText,
+      expectedLocationText,
+      `Verify that Profile page text "${indexPage.lighthouse_data.expectedLocationText}" is displayed after clicking on my profile option.`
+    );
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await executeStep(this.logsOption, 'click', 'Click on logsOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let logsText = await this.logsHeading.textContent();
-    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedLogsText}" is displayed after clicking on my profile option.`, async () => {
-      await assertContainsValue(logsText, expectedLogsText);
-    });
+    await assertContainsValue(
+      logsText,
+      expectedLogsText,
+      `Verify that Profile page text "${indexPage.lighthouse_data.expectedLogsText}" is displayed after clicking on my profile option.`
+    );
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await executeStep(this.dashboardOption, 'click', 'Click on dashboardOption');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let dashboardText = await this.dashboardPageText.textContent();
-    await test.step(`Verify that Profile page text "${indexPage.lighthouse_data.expectedDashboardText}" is displayed after clicking on my profile option.`, async () => {
-      await assertContainsValue(dashboardText, expectedDashboardText);
-    });
+    await assertContainsValue(
+      dashboardText,
+      expectedDashboardText,
+      `Verify that Profile page text "${indexPage.lighthouse_data.expectedDashboardText}" is displayed after clicking on my profile option.`
+    );
   }
 
   async assertEquipmentByIntialDisplayValue() {
@@ -394,9 +397,11 @@ exports.ProfilePage = class ProfilePage {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const equipmentValueAfterChange = await this.equipmentDisplayChioceValue.textContent();
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step(`Verify that 'Equipment Display Choice' option has been changed successfully. InitialValue: ${equipmentDisplayValue}, ChangedValue: ${equipmentValueAfterChange}`, async () => {
-      await assertNotEqualValues(equipmentDisplayValue, equipmentValueAfterChange);
-    });
+    await assertNotEqualValues(
+      equipmentDisplayValue,
+      equipmentValueAfterChange,
+      `Verify that 'Equipment Display Choice' option has been changed successfully. InitialValue: ${equipmentDisplayValue}, ChangedValue: ${equipmentValueAfterChange}`
+    );
     await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
     const flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(this.page);
     await flowsheetCardAndTab.performSearchFunction(
@@ -405,12 +410,11 @@ exports.ProfilePage = class ProfilePage {
     );
     getequipmentTextByChangedDisplayValue = await this.equipmentText.textContent();
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Verify that all equipment for the Flowsheets is displayed according to the selected option.', async () => {
-      await assertNotEqualValues(
-        getequipmentTextByIntialDisplayValue,
-        getequipmentTextByChangedDisplayValue
-      );
-    });
+    await assertNotEqualValues(
+      getequipmentTextByIntialDisplayValue,
+      getequipmentTextByChangedDisplayValue,
+      'Verify that all equipment for the Flowsheets is displayed according to the selected option.'
+    );
   }
 
   async changeEquipmentDisplayChoiceToInitialValue() {
@@ -430,9 +434,11 @@ exports.ProfilePage = class ProfilePage {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const equipmentValueAfterChange = await this.equipmentDisplayChioceValue.textContent();
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Verifying that the equipment display value matches the initial value.', async () => {
-      await assertEqualValues(equipmentValueAfterChange, initialEquipmentDispalyValue);
-    });
+    await assertEqualValues(
+      equipmentValueAfterChange,
+      initialEquipmentDispalyValue,
+      'Verifying that the equipment display value matches the initial value.'
+    );
   }
 
   async assertInitialDefaultSheduleView() {
@@ -443,9 +449,11 @@ exports.ProfilePage = class ProfilePage {
     }
     const getHighlighedTextFormSchedule = await this.highlightedScheduleText.textContent();
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Verify that the correct Schedule tab is opened based on the Default Schedule View option.', async () => {
-      await assertEqualValues(getHighlighedTextFormSchedule, initialScheduleViewValue);
-    });
+    await assertEqualValues(
+      getHighlighedTextFormSchedule,
+      initialScheduleViewValue,
+      'Verify that the correct Schedule tab is opened based on the Default Schedule View option.'
+    );
   }
 
   async assertDefaultScheduleViewAfterChange() {
@@ -458,15 +466,19 @@ exports.ProfilePage = class ProfilePage {
     }
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const scheduleViewValueAfterChange = await this.defaultScheduleViewValue.textContent();
-    await test.step(`Verify that the 'Default Schedule View' option is changed successfully from "${scheduleViewValue}" to "${scheduleViewValueAfterChange}"`, async () => {
-      await assertNotEqualValues(scheduleViewValueAfterChange, scheduleViewValue);
-    });
+    await assertNotEqualValues(
+      scheduleViewValueAfterChange,
+      scheduleViewValue,
+      `Verify that the 'Default Schedule View' option is changed successfully from "${scheduleViewValue}" to "${scheduleViewValueAfterChange}"`
+    );
     await executeStep(this.dismissBtn, 'click', 'Click on dismiss button');
     await executeStep(this.scheduleTab, 'click', "Click on 'Schedule icon'");
     const getHighlighedTextFormSchedule = await this.highlightedScheduleText.textContent();
-    await test.step('Verify that the correct Schedule tab is opened based on the Default Schedule View option.', async () => {
-      await assertEqualValues(getHighlighedTextFormSchedule, scheduleViewValueAfterChange);
-    });
+    await assertEqualValues(
+      getHighlighedTextFormSchedule,
+      scheduleViewValueAfterChange,
+      'Verify that the correct Schedule tab is opened based on the Default Schedule View option.'
+    );
   }
 
   async changeScheduleViewValueToIntialValue() {
@@ -479,27 +491,29 @@ exports.ProfilePage = class ProfilePage {
     }
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const scheduleViewValueAfterChange = await this.defaultScheduleViewValue.textContent();
-    await test.step(`Verify that the 'Default Schedule View' option is changed successfully from "${scheduleViewValue}" to "${scheduleViewValueAfterChange}"`, async () => {
-      await assertEqualValues(scheduleViewValueAfterChange, initialScheduleViewValue);
-    });
+    await assertEqualValues(
+      scheduleViewValueAfterChange,
+      initialScheduleViewValue,
+      `Verify that the 'Default Schedule View' option is changed successfully from "${scheduleViewValue}" to "${scheduleViewValueAfterChange}"`
+    );
   }
 
   async assertInitialLanguageValue() {
     initialLanguageValue = await this.getSelectedLanguageValue.textContent();
-    await test.step('Make sure that all page elements are localized according to the selected option: English', async () => {
-      if (!this.isMobile) {
-        const navigationText = await this.firstnavigationItemTitleInUI.textContent();
-        await assertEqualValues(
-          navigationText.trim(),
-          indexPage.lighthouse_data.flowsheetInEnglish
-        );
-      }
-      const profileTitleText = await this.getTextOfSyncLabel.textContent();
+    if (!this.isMobile) {
+      const navigationText = await this.firstnavigationItemTitleInUI.textContent();
       await assertEqualValues(
-        profileTitleText.trim(),
-        indexPage.lighthouse_data.lastSyncedInEnglish
+        navigationText.trim(),
+        indexPage.lighthouse_data.flowsheetInEnglish,
+        'Make sure that all page elements are localized according to the selected option: English'
       );
-    });
+    }
+    const profileTitleText = await this.getTextOfSyncLabel.textContent();
+    await assertEqualValues(
+      profileTitleText.trim(),
+      indexPage.lighthouse_data.lastSyncedInEnglish,
+      'Make sure that all page elements are localized according to the selected option: English'
+    );
   }
 
   async assertUpdateLanguageToSpanish() {
@@ -507,25 +521,30 @@ exports.ProfilePage = class ProfilePage {
     if (getLanguageText === initialLanguageValue) {
       await executeStep(this.languageUpdateButton, 'click', 'Click on update button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await test.step('Verify that the "Language selection modal" is displayed', async () => {
-        await assertElementVisible(this.appLanguagerRequestModal);
-      });
+      await assertElementVisible(
+        this.appLanguagerRequestModal,
+        'Verify that the "Language selection modal" is displayed'
+      );
       await executeStep(this.requestModalCloseBtn, 'click', 'Click on close button');
-      await test.step("Verify that the 'Close' link works properly", async () => {
-        await assertElementNotVisible(this.appLanguagerRequestModal);
-      });
+      await assertElementNotVisible(
+        this.appLanguagerRequestModal,
+        "Verify that the 'Close' link works properly"
+      );
       await executeStep(this.languageUpdateButton, 'click', 'Click on update button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await test.step('Verify that the "Language selection modal" is displayed', async () => {
-        await assertElementVisible(this.appLanguagerRequestModal);
-      });
+      await assertElementVisible(
+        this.appLanguagerRequestModal,
+        'Verify that the "Language selection modal" is displayed'
+      );
       await executeStep(this.selectLanguage(2), 'click', 'Select spanish language');
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     }
     spanishText = await this.getSelectedLanguageValue.textContent();
-    await test.step(`Verify that the selected language is updated successfully to Spanish. Expected: "${utilConst.Const.Languages[1]}", Actual: "${spanishText}"`, async () => {
-      await assertEqualValues(spanishText.trim(), utilConst.Const.Languages[1]);
-    });
+    await assertEqualValues(
+      spanishText.trim(),
+      utilConst.Const.Languages[1],
+      `Verify that the selected language is updated successfully to Spanish. Expected: "${utilConst.Const.Languages[1]}", Actual: "${spanishText}"`
+    );
     await test.step('Make sure that all page elements are localized according to the selected option: Spanish', async () => {
       if (!this.isMobile) {
         await verifyNavigationElements(
@@ -536,13 +555,12 @@ exports.ProfilePage = class ProfilePage {
         );
       }
     });
-    await test.step('Make sure that all My Profile page elements are localized according to the selected option: Spanish', async () => {
-      const profileTitleText = await this.getTextOfSyncLabel.textContent();
-      await assertEqualValues(
-        profileTitleText.trim(),
-        indexPage.lighthouse_data.lastSyncedInSpanish
-      );
-    });
+    const profileTitleText = await this.getTextOfSyncLabel.textContent();
+    await assertEqualValues(
+      profileTitleText.trim(),
+      indexPage.lighthouse_data.lastSyncedInSpanish,
+      'Make sure that all My Profile page elements are localized according to the selected option: Spanish'
+    );
   }
 
   async assertUpdateLanguageToFrench() {
@@ -550,16 +568,19 @@ exports.ProfilePage = class ProfilePage {
     if (getLanguageText === spanishText) {
       await executeStep(this.languageUpdateButton, 'click', 'Click on update button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await test.step('Verify that the "Language selection modal" is displayed', async () => {
-        await assertElementVisible(this.appLanguagerRequestModal);
-      });
+      await assertElementVisible(
+        this.appLanguagerRequestModal,
+        'Verify that the "Language selection modal" is displayed'
+      );
       await executeStep(this.selectLanguage(3), 'click', 'Select spanish language');
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     }
     frenchText = await this.getSelectedLanguageValue.textContent();
-    await test.step(`Verify that the selected language is updated successfully to French. Expected: "${utilConst.Const.Languages[2]}", Actual: "${frenchText}"`, async () => {
-      await assertEqualValues(frenchText.trim(), utilConst.Const.Languages[2]);
-    });
+    await assertEqualValues(
+      frenchText.trim(),
+      utilConst.Const.Languages[2],
+      `Verify that the selected language is updated successfully to French. Expected: "${utilConst.Const.Languages[2]}", Actual: "${frenchText}"`
+    );
     await test.step('Make sure that all page elements are localized according to the selected option: French', async () => {
       if (!this.isMobile) {
         await verifyNavigationElements(
@@ -570,13 +591,12 @@ exports.ProfilePage = class ProfilePage {
         );
       }
     });
-    await test.step('Make sure that all My Profile page elements are localized according to the selected option: French', async () => {
-      const profileTitleText = await this.getTextOfSyncLabel.textContent();
-      await assertEqualValues(
-        profileTitleText.trim(),
-        indexPage.lighthouse_data.lastSyncedInFrench
-      );
-    });
+    const profileTitleText = await this.getTextOfSyncLabel.textContent();
+    await assertEqualValues(
+      profileTitleText.trim(),
+      indexPage.lighthouse_data.lastSyncedInFrench,
+      'Make sure that all My Profile page elements are localized according to the selected option: French'
+    );
   }
 
   async changeLanguageToIntialValue() {
@@ -584,16 +604,19 @@ exports.ProfilePage = class ProfilePage {
     if (getLanguageText !== initialLanguageValue) {
       await executeStep(this.languageUpdateButton, 'click', 'Click on update button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await test.step('Verify that the "Language selection modal" is displayed', async () => {
-        await assertElementVisible(this.appLanguagerRequestModal);
-      });
+      await assertElementVisible(
+        this.appLanguagerRequestModal,
+        'Verify that the "Language selection modal" is displayed'
+      );
       await executeStep(this.selectLanguage(1), 'click', 'Select spanish language');
       await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     }
     const englishText = await this.getSelectedLanguageValue.textContent();
-    await test.step(`Verify that the selected language is updated successfully to English. Expected: "${initialLanguageValue}", Actual: "${englishText}"`, async () => {
-      await assertEqualValues(englishText.trim(), initialLanguageValue.trim());
-    });
+    await assertEqualValues(
+      englishText.trim(),
+      initialLanguageValue.trim(),
+      `Verify that the selected language is updated successfully to English. Expected: "${initialLanguageValue}", Actual: "${englishText}"`
+    );
     await test.step('Make sure that all page elements are localized according to the selected option: English', async () => {
       if (!this.isMobile) {
         await verifyNavigationElements(
@@ -604,13 +627,12 @@ exports.ProfilePage = class ProfilePage {
         );
       }
     });
-    await test.step('Make sure that all all My Profile page elements are localized according to the selected option: English', async () => {
-      const profileTitleText = await this.getTextOfSyncLabel.textContent();
-      await assertEqualValues(
-        profileTitleText.trim(),
-        indexPage.lighthouse_data.lastSyncedInEnglish
-      );
-    });
+    const profileTitleText = await this.getTextOfSyncLabel.textContent();
+    await assertEqualValues(
+      profileTitleText.trim(),
+      indexPage.lighthouse_data.lastSyncedInEnglish,
+      'Make sure that all all My Profile page elements are localized according to the selected option: English'
+    );
   }
 
   async assertInitialFavouriteMenuSlot() {
@@ -618,9 +640,11 @@ exports.ProfilePage = class ProfilePage {
     await this.page.goto(process.env.lighthouseUrl);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const textFromPage = await this.getFlowsheetTextFromPage.textContent();
-    await test.step('Verify that the appropriate page is opened based on the Favourite option From Menu Slot 3', async () => {
-      await assertEqualValues(textFromPage, getMenuSlotValue);
-    });
+    await assertEqualValues(
+      textFromPage,
+      getMenuSlotValue,
+      'Verify that the appropriate page is opened based on the Favourite option From Menu Slot 3'
+    );
   }
 
   async changeMenuSlot1ToFavouriteSlot() {
@@ -638,9 +662,11 @@ exports.ProfilePage = class ProfilePage {
     await this.page.goto(process.env.lighthouseUrl);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const textFromPage = await this.getScheduleTextFromPage.textContent();
-    await test.step('Verify that the appropriate page is opened based on the Favourite option From Menu Slot 1', async () => {
-      await assertEqualValues(textFromPage, getMenuSlotValue);
-    });
+    await assertEqualValues(
+      textFromPage,
+      getMenuSlotValue,
+      'Verify that the appropriate page is opened based on the Favourite option From Menu Slot 1'
+    );
   }
 
   async restoreToSelectedMenuSlot() {
@@ -654,17 +680,24 @@ exports.ProfilePage = class ProfilePage {
   }
 
   async assertTimeDisplayValue() {
-    await test.step('Verify that the time display element is visible', async () => {
-      await assertElementVisible(this.timeDisplayElement);
-    });
+    await assertElementVisible(
+      this.timeDisplayElement,
+      'Verify that the time display element is visible'
+    );
     initialTimeValue = await this.timeValueFromProfile.textContent();
-    await test.step('Verify that the initial time value matches either the 12-hour or 24-hour format', async () => {
-      try {
-        assertEqualValues(initialTimeValue.trim(), indexPage.lighthouse_data['12Hours']);
-      } catch {
-        assertEqualValues(initialTimeValue.trim(), indexPage.lighthouse_data['24Hours']);
-      }
-    });
+    try {
+      assertEqualValues(
+        initialTimeValue.trim(),
+        indexPage.lighthouse_data['12Hours'],
+        'Verify that the initial time value matches either the 12-hour or 24-hour format'
+      );
+    } catch {
+      assertEqualValues(
+        initialTimeValue.trim(),
+        indexPage.lighthouse_data['24Hours'],
+        'Verify that the initial time value matches either the 12-hour or 24-hour format'
+      );
+    }
   }
 
   async assertTimeForFlowsheetSet(timeFormat) {
@@ -673,9 +706,11 @@ exports.ProfilePage = class ProfilePage {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     const getFlowsheetSetTime = await this.flowsheetSetTime.textContent();
     const timeFormatForSetTime = await checkTimeFormat(getFlowsheetSetTime.trim());
-    await test.step(`Verify Flowsheets Set/Strike times time format: Expected TimeFormat is "${timeFormat.trim()}"`, async () => {
-      await assertEqualValues(timeFormatForSetTime, timeFormat.trim());
-    });
+    await assertEqualValues(
+      timeFormatForSetTime,
+      timeFormat.trim(),
+      `Verify Flowsheets Set/Strike times time format: Expected TimeFormat is "${timeFormat.trim()}"`
+    );
   }
 
   async assertTimeForFlowsheetLogs(timeFormat) {
@@ -691,9 +726,11 @@ exports.ProfilePage = class ProfilePage {
     const getTimeStampForLog = await this.logTime.textContent();
     const getTimeFromLog = await extractTime(getTimeStampForLog);
     const getTimeFormat = await checkTimeFormat(getTimeFromLog);
-    await test.step(`Verify that the Flowsheets logs time format: Expected TimeFormat is "${timeFormat.trim()}"`, async () => {
-      await assertEqualValues(getTimeFormat, timeFormat.trim());
-    });
+    await assertEqualValues(
+      getTimeFormat,
+      timeFormat.trim(),
+      `Verify that the Flowsheets logs time format: Expected TimeFormat is "${timeFormat.trim()}"`
+    );
   }
 
   async assertTimeForCommandCenter(timeFormat) {
@@ -706,9 +743,11 @@ exports.ProfilePage = class ProfilePage {
       indexPage.lighthouse_data.locationText_createData1
     ).textContent();
     const getTimeFormat = await checkTimeFormat(getCommandCeterTime.trim());
-    await test.step(`Verify Flowsheets Command Center time format: Expected TimeFormat is "${timeFormat.trim()}"`, async () => {
-      await assertEqualValues(getTimeFormat.trim(), timeFormat.trim());
-    });
+    await assertEqualValues(
+      getTimeFormat.trim(),
+      timeFormat.trim(),
+      `Verify Flowsheets Command Center time format: Expected TimeFormat is "${timeFormat.trim()}"`
+    );
     await executeStep(
       this.commandCenterTime(indexPage.lighthouse_data.locationText_createData1),
       'click',
@@ -737,15 +776,19 @@ exports.ProfilePage = class ProfilePage {
     }
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     afterTimeValue = await this.timeValueFromProfile.textContent();
-    await test.step(`Verify that the 'Time Display' option is changed successfully from ${getTimeValue} to ${afterTimeValue}`, async () => {
-      await assertNotEqualValues(afterTimeValue, getTimeValue);
-    });
+    await assertNotEqualValues(
+      afterTimeValue,
+      getTimeValue,
+      `Verify that the 'Time Display' option is changed successfully from ${getTimeValue} to ${afterTimeValue}`
+    );
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const getTimeAfterReload = await this.timeValueFromProfile.textContent();
-    await test.step(`Verify that the 'Time Display' remains unchanged after reload. Expected : "${afterTimeValue}"  Actual : "${getTimeAfterReload}"`, async () => {
-      await assertEqualValues(getTimeAfterReload, afterTimeValue);
-    });
+    await assertEqualValues(
+      getTimeAfterReload,
+      afterTimeValue,
+      `Verify that the 'Time Display' remains unchanged after reload. Expected : "${afterTimeValue}"  Actual : "${getTimeAfterReload}"`
+    );
   }
 
   async assertAfterTimeFormatForElements() {

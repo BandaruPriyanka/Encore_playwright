@@ -295,7 +295,7 @@ exports.CreateData = class CreateData {
         'select the venue from the dropdown'
       );
     }
-    await assertElementVisible(this.saveButton);
+    await assertElementVisible(this.saveButton, '');
     await this.saveButton.click();
     try {
       await executeStep(this.ignoreAndSaveButton, 'click', 'click the save button');
@@ -384,9 +384,9 @@ exports.CreateData = class CreateData {
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
     if (this.isCreateData1) {
-      await assertEqualValues(indexPage.navigator_data.navigatorUrl_createdata1, navigationUrl);
+      await assertEqualValues(indexPage.navigator_data.navigatorUrl_createdata1, navigationUrl, '');
     } else {
-      await assertEqualValues(indexPage.navigator_data.navigatorUrl_createdata2, navigationUrl);
+      await assertEqualValues(indexPage.navigator_data.navigatorUrl_createdata2, navigationUrl, '');
     }
     await newPage.close();
   }
@@ -454,7 +454,7 @@ exports.CreateData = class CreateData {
     }
     await fs.writeFile('./data/navigator.json', JSON.stringify(indexPage.navigator_data));
     const itemName = indexPage.navigator_data.item_name;
-    await assertEqualValues(textContent, itemName);
+    await assertEqualValues(textContent, itemName, '');
     await executeStep(this.saveBtn, 'click', 'click on save button');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
   }

@@ -29,9 +29,10 @@ test.describe('Performing actions on Location Profile Tab', () => {
   test('TC_C57120 : Verify Use Equipment Checklist functionality', async () => {
     await locationProfilePage.assertEquipmentCheckList();
     await flowsheetCardAndTab.assertCheckBox();
-    await test.step('Verify that the "Select All checkbox" is not visible', async () => {
-      await assertElementNotVisible(locationProfilePage.selectAllCheckBox);
-    });
+    await assertElementNotVisible(
+      locationProfilePage.selectAllCheckBox,
+      'Verify that the "Select All checkbox" is not visible'
+    );
   });
   test("Test_C57122 Check 'Use Docusign' functionality", async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -40,9 +41,10 @@ test.describe('Performing actions on Location Profile Tab', () => {
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
-    await test.step('Verify that the "pass control" modal is visible', async () => {
-      await assertElementVisible(flowsheetCardAndTab.textInModalForDocument);
-    });
+    await assertElementVisible(
+      flowsheetCardAndTab.textInModalForDocument,
+      'Verify that the "pass control" modal is visible'
+    );
     await page.goBack();
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     const flowsheet = new indexPage.FlowSheetPage(page);

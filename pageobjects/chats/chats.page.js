@@ -8,7 +8,8 @@ const {
   assertElementContainsText,
   assertElementNotVisible,
   scrollElement,
-  assertEqualValues
+  assertEqualValues,
+  assertContainsValue
 } = require('../../utils/helper');
 exports.ChatPage = class ChatPage {
   constructor(page) {
@@ -20,7 +21,6 @@ exports.ChatPage = class ChatPage {
     this.HighlightedChatIcon = this.isMobile
       ? this.page.locator('(//app-mobile-navigation-item)[4]/div')
       : this.page.locator('(//span[normalize-space(text())="Chat"]/parent::div)[2]');
-
     this.participantChatAll = this.page.locator('//app-thread-card/parent::div');
     this.participantChat = this.page.locator('(//app-thread-card)[1]');
     this.searchChat_Field = this.page.locator('//input[@placeholder="Search Chat"]');
@@ -87,9 +87,11 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.chatIcon, 'click', 'Click on Chat Icon');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const classAttribute = await this.HighlightedChatIcon.getAttribute('class');
-    await test.step(`Verify The chat icon should be highlighted : "${highlightedText}"`, async () => {
-      expect(classAttribute).toContain(highlightedText);
-    });
+    await assertContainsValue(
+      classAttribute,
+      highlightedText,
+      `Verify The chat icon should be highlighted : "${highlightedText}"`
+    );
   }
   async verifyingSearchFieldWithData(
     randomText,
@@ -100,49 +102,48 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.searchChat_Field, 'fill', 'Enter the invalid text in the search input', [
       randomText
     ]);
-    await test.step('Verify that the "No Results Found" message is displayed', async () => {
-      await assertElementContainsText(
-        this.noResultsFound_Text,
-        indexPage.lighthouse_data.noResultsFound
-      );
-    });
+    await assertElementContainsText(
+      this.noResultsFound_Text,
+      indexPage.lighthouse_data.noResultsFound,
+      'Verify that the "No Results Found" message is displayed'
+    );
     await executeStep(this.searchChat_Field, 'fill', 'Enter the participant name', [
       participantname
     ]);
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeouts));
-    await test.step('Verify that the Participant Chat is visible and valid search results are returned', async () => {
-      await assertElementVisible(this.participantChat);
-    });
+    await assertElementVisible(
+      this.participantChat,
+      'Verify that the Participant Chat is visible and valid search results are returned'
+    );
     await executeStep(this.searchChat_Field, 'fill', 'Enter the phrase from the chat', [
       phraseFromChat
     ]);
-    await test.step('Verify that searching using a valid phrase from the chat returns an appropriate chats list', async () => {
-      await assertElementVisible(this.participantChat);
-    });
+    await assertElementVisible(
+      this.participantChat,
+      'Verify that searching using a valid phrase from the chat returns an appropriate chats list'
+    );
     await executeStep(this.crossMark, 'click', 'Click on cross Mark');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Verify that the All Chats  are visible after clicking cross icon', async () => {
-      await assertElementVisible(this.participantChatAll);
-    });
+    await assertElementVisible(
+      this.participantChatAll,
+      'Verify that the All Chats  are visible after clicking cross icon'
+    );
     await executeStep(this.searchChat_Field, 'fill', 'Enter the valid text in the search input', [
       casesensitiveText
     ]);
-    await test.step('Verify that the Participant Chat is visible and the search is case-insensitive, returning appropriate results regardless of case', async () => {
-      await assertElementVisible(this.participantChat);
-    });
+    await assertElementVisible(
+      this.participantChat,
+      'Verify that the Participant Chat is visible and the search is case-insensitive, returning appropriate results regardless of case'
+    );
     await scrollElement(this.participantChatAll, 'bottom');
     await executeStep(this.participantChat, 'click', 'Click on participant Chat');
   }
 
   async createNewChat(count) {
-    await test.step('Verify that the New Chat icon is visible', async () => {
-      await assertElementVisible(this.newChatIcon);
-    });
+    await assertElementVisible(this.newChatIcon, 'Verify that the New Chat icon is visible');
     await executeStep(this.newChatIcon, 'click', 'Click on new Chat Icon');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeouts));
-    await test.step('Verify that Participant 1 is visible', async () => {
-      await assertElementVisible(this.participant1);
-    });
+    await assertElementVisible(this.participant1, 'Verify that Participant 1 is visible');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.participant1, 'click', 'Click on participant1');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -151,27 +152,36 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.createChatButton, 'click', 'Click on createChatButton');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const quantity = await this.quantityCount.textContent();
-    await test.step(`Verify that the quantity (${quantity}) matches the expected count (${count})`, async () => {
-      await assertEqualValues(parseInt(quantity), parseInt(count));
-    });
+    await assertEqualValues(
+      parseInt(quantity),
+      parseInt(count),
+      `Verify that the quantity (${quantity}) matches the expected count (${parseInt(count)})`
+    );
   }
   async AddParticipants(validParticipant, randomdata, demogroup, noresultFound) {
     await executeStep(this.groupIcon, 'click', 'Click on groupIcon');
-    await test.step('Verify that the Participants modal is displayed with participant names, "Add participant", and "Leave" options', async () => {
-      await assertElementVisible(this.leave);
-      await assertElementVisible(this.addParticipants);
-    });
+    await assertElementVisible(
+      this.leave,
+      `Verify that the Participants modal is displayed with participant names, "Add participant", and "Leave" options`
+    );
+    await assertElementVisible(
+      this.addParticipants,
+      `Verify that the Participants modal is displayed with participant names, "Add participant", and "Leave" options`
+    );
     await executeStep(this.addParticipants, 'click', 'Click on addParticipants');
-    await test.step('Verify that "Add Participant" modal should be displayed', async () => {
-      await assertElementVisible(this.participantsModel);
-    });
+    await assertElementVisible(
+      this.participantsModel,
+      `Verify that "Add Participant" modal should be displayed`
+    );
     await executeStep(this.searchUsersField, 'click', 'Click on search Users Field');
     await executeStep(this.searchUsersField, 'fill', 'Enter valid user', [validParticipant]);
     await executeStep(this.searchUsersField, 'fill', 'Empty the search field', [' ']);
     await executeStep(this.searchUsersField, 'fill', 'Enter random data', [randomdata]);
-    await test.step('Verify that the "No Results Found" message is displayed in Add Participants', async () => {
-      await assertElementContainsText(this.noResultsFoundTextInAddParticipants, noresultFound);
-    });
+    await assertElementContainsText(
+      this.noResultsFoundTextInAddParticipants,
+      noresultFound,
+      `Verify that the "No Results Found" message is displayed in Add Participants`
+    );
     await executeStep(this.searchUsersField, 'fill', 'Empty the search field', [' ']);
     await executeStep(this.participant1, 'click', 'Click on participant1');
     await executeStep(this.searchUsersField, 'click', 'Click on search Users Field');
@@ -187,25 +197,27 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.saveButton, 'click', 'Click on saveButton');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const groupName = await this.updatedGroupName.textContent();
-    await test.step(`Verify that the group name ("${groupName}") matches the expected group name ("${demogroup}")`, async () => {
-      await assertEqualValues(groupName, demogroup);
-    });
+    await assertEqualValues(
+      groupName,
+      demogroup,
+      `Verify that the group name ("${groupName}") matches the expected group name ("${demogroup}")`
+    );
   }
   async leaveChat() {
     await executeStep(this.groupIcon, 'click', 'Click on groupIcon');
-    await test.step('Verify that the Leave button is visible', async () => {
-      await assertElementVisible(this.leave);
-    });
+    await assertElementVisible(this.leave, `Verify that the "Leave button" is visible`);
     await executeStep(this.leave, 'click', 'Click on leave');
-    await test.step('Verify that the Leave Confirmation Dialogue Model is visible', async () => {
-      await assertElementVisible(this.leaveConfirmationDialogueModel);
-    });
+    await assertElementVisible(
+      this.leaveConfirmationDialogueModel,
+      `Verify that the "Leave Confirmation Dialogue Model" is visible`
+    );
     await executeStep(this.yesButton, 'click', 'Click on Yes Button');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     try {
-      await test.step('Verify that the chat is no longer displayed in the list', async () => {
-        await assertElementNotVisible(this.updatedGroupName);
-      });
+      await assertElementNotVisible(
+        this.updatedGroupName,
+        'Verify that the chat is no longer displayed in the list'
+      );
     } catch {
       console.error('Group is not deleted...');
     }
@@ -237,9 +249,10 @@ exports.ChatPage = class ChatPage {
   async verifyChatsVisibility() {
     await executeStep(this.chatIcon, 'click', 'Click on Chat Icon');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Verify that the "All Chats"  are visible after clicking chats icon', async () => {
-      await assertElementVisible(this.participantChatAll);
-    });
+    await assertElementVisible(
+      this.participantChatAll,
+      `Verify that the "All Chats"  are visible after clicking chats icon`
+    );
   }
   async createChat() {
     await executeStep(this.newChatIcon, 'click', 'Click on new Chat Icon');
@@ -265,9 +278,10 @@ exports.ChatPage = class ChatPage {
     ]);
     await executeStep(this.alertImportant, 'click', 'Click on alert icon to make as important');
     await executeStep(this.sendMsg, 'click', 'Click on send icon');
-    await test.step('Verify that the message was sent successfully, including information about the timestamp and author', async () => {
-      await assertElementVisible(this.user1TimeStamp);
-    });
+    await assertElementVisible(
+      this.user1TimeStamp,
+      'Verify that the message was sent successfully, including information about the timestamp and author'
+    );
   }
   async selectUser2() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -275,9 +289,10 @@ exports.ChatPage = class ChatPage {
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.email, process.env.password);
     await this.selectRecentChat();
-    await test.step('Verify that the message is received by User-2 successfully with all valid information.', async () => {
-      await assertElementVisible(this.user1TimeStamp);
-    });
+    await assertElementVisible(
+      this.user1TimeStamp,
+      'Verify that the message is received by User-2 successfully with all valid information.'
+    );
     await executeStep(this.textArea, 'fill', 'Enter the message from user2', [
       indexPage.lighthouse_data.secondMessage
     ]);
@@ -287,9 +302,10 @@ exports.ChatPage = class ChatPage {
     ]);
     await executeStep(this.alertImportant, 'click', 'Click on alert icon to make as important');
     await executeStep(this.sendMsg, 'click', 'Click on send Icon');
-    await test.step('Verify that the message was sent successfully, including information about the timestamp and author', async () => {
-      await assertElementVisible(this.user2TimeStamp);
-    });
+    await assertElementVisible(
+      this.user2TimeStamp,
+      'Verify that the message was sent successfully, including information about the timestamp and author'
+    );
     await this.profileLogout();
   }
   async selectUser1() {
@@ -301,9 +317,10 @@ exports.ChatPage = class ChatPage {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.chatGrp, 'click', 'Select chat from list');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Verify that the message is received by User-1 successfully with all valid information.', async () => {
-      await assertElementVisible(this.user2TimeStamp);
-    });
+    await assertElementVisible(
+      this.user2TimeStamp,
+      'Verify that the message is received by User-1 successfully with all valid information.'
+    );
   }
   async imageValidation() {
     const input = await this.insertFile;
@@ -316,9 +333,10 @@ exports.ChatPage = class ChatPage {
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.email, process.env.password);
     await this.selectRecentChat();
-    await test.step('Verify that the message is sent successfully with information about the timestamp and author. The image should be displayed properly.', async () => {
-      await assertElementVisible(this.user1TimeStamp);
-    });
+    await assertElementVisible(
+      this.user1TimeStamp,
+      'Verify that the message is sent successfully with information about the timestamp and author. The image should be displayed properly.'
+    );
     const user2Image = process.cwd() + '//images//venue.png';
     await input.setInputFiles(user2Image);
     await executeStep(this.sendMsg, 'click', 'Click on send message');
@@ -328,25 +346,28 @@ exports.ChatPage = class ChatPage {
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.lighthouseEmail, process.env.lighthousePassword);
     await this.selectRecentChat();
-    await test.step('Verify that the message is received by User 1 successfully with all valid information. The image should be displayed properly', async () => {
-      await assertElementVisible(this.user2TimeStamp);
-    });
+    await assertElementVisible(
+      this.user2TimeStamp,
+      'Verify that the message is received by User 1 successfully with all valid information. The image should be displayed properly'
+    );
     const user1ImpImage = process.cwd() + '//images//office.png';
     await input.setInputFiles(user1ImpImage);
     await executeStep(this.alertImportant, 'click', 'Click on alert icon to make as important');
     await executeStep(this.sendMsg, 'click', 'Click on send message');
-    await test.step('Verify that the important message is sent successfully, including information about the timestamp and author. The image should be displayed properly', async () => {
-      await assertElementVisible(this.user1TimeStamp);
-    });
+    await assertElementVisible(
+      this.user1TimeStamp,
+      'Verify that the important message is sent successfully, including information about the timestamp and author. The image should be displayed properly'
+    );
     await this.profileLogout();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.selectLogOutMail, 'click', 'Select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.email, process.env.password);
     await this.selectRecentChat();
-    await test.step('Verify that the important message should be received by User2 successfully with all the valid information.', async () => {
-      await assertElementVisible(this.user1TimeStamp);
-    });
+    await assertElementVisible(
+      this.user1TimeStamp,
+      'Verify that the important message should be received by User2 successfully with all the valid information.'
+    );
     await executeStep(this.clickOnImg, 'click', 'Click on image to check');
   }
 };
