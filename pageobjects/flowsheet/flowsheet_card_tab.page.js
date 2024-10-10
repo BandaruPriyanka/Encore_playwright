@@ -426,7 +426,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     const estimatedMoneyBeforeDiscount = await this.moneyElement.textContent();
     const originalPrice = parseFloat(estimatedMoneyBeforeDiscount.replace(/[^0-9.]/g, ''));
     await executeStep(this.discountInput, 'fill', 'Enter the valid discount', [validDiscount]);
-    discountPrice = formatCurrency(calculateTotalAmountAfterDiscount(originalPrice, validDiscount));
+    discountPrice = formatCurrency(calculateTotalAmountAfterDiscount(originalPrice, parseInt(validDiscount)));
     await assertElementContainsText(
       this.moneyElement,
       discountPrice,
