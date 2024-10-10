@@ -22,7 +22,7 @@ test.describe('Performing actions on Schedule Tab', () => {
     await schedulePage.actionsOnSchedule();
   });
 
-  test('Test_C56916: Verify Team Schedule', async () => {
+  test.only('Test_C56916: Verify Team Schedule', async () => {
     await schedulePage.assertScheduleTab(indexPage.lighthouse_data.scheduleHighlightedDate);
     await schedulePage.verifyingEventcard();
     await schedulePage.verifyingFilterFunctionality();
