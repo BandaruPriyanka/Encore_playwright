@@ -56,6 +56,14 @@ exports.LocationProfile = class LocationProfile {
     this.checkBoxForPackage = this.page.locator(
       "//span[@class='e2e_flowsheet_equipment_package font-semibold'][1]/../following-sibling::div//input[@type='checkbox']"
     );
+    this.locationHeader=this.page.locator("//app-profile-header");
+    this.groupList=this.page.locator("//th[text()='Group name']");
+    this.daysExpire=this.page.locator("//th[text()='Days until expiration']");
+    this.addGrpField=this.page.locator("//input[@placeholder='Add Group']");
+    this.createButton=this.page.locator("//span[normalize-space()='Create']//parent::button");
+    this.binIcon=this.page.locator("//icon[@name='trah_bin_line']");
+    this.addEmail=this.page.locator("//input[@placeholder='Add Email']");
+    this.addBtn=this.page.locator("//span[normalize-space()='Add']//parent::button");
   }
   getDynamicLocator = (label, index) => {
     return this.page.locator(`(//span[normalize-space()='${label}']//parent::li)[${index}]`);
@@ -121,5 +129,20 @@ exports.LocationProfile = class LocationProfile {
       await this.checkBoxForPackage.check();
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     }
+  }
+
+  async verifyAddOnesEmailRecipients(){
+    await executeStep(this.flowsheetGroups, 'click', 'Click on Flowsheet Groups');
+    await assertElementVisible(this.locationHeader, 'Verify Location header');
+    await assertElementVisible(this.daysExpire, 'Verify Groups list with the days until expiration');
+    await assertElementVisible(this.addGrpField, 'Verify Footer field to add Groups');
+  }
+
+  async verifyGroupsCanBeRemoved(){
+    await executeStep(this.addGrpField, 'fill', 'Enter the Group Name', [
+      indexPage.lighthouse_data.groupName
+    ]);
+    await executeStep(this.createButton, 'click', 'Click on Create button');
+    await assertElementVisible(this.binIcon, 'Remove icon is present');
   }
 };
