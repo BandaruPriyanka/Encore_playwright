@@ -474,7 +474,6 @@ exports.ProfilePage = class ProfilePage {
     if (this.dismissBtn.isVisible()) {
       await executeStep(this.dismissBtn, 'click', 'Click on dismiss button');
     }
-    await executeStep(this.dismissBtn, 'click', 'Click on dismiss button');
     await executeStep(this.scheduleTab, 'click', "Click on 'Schedule icon'");
     const getHighlighedTextFormSchedule = await this.highlightedScheduleText.textContent();
     await assertEqualValues(

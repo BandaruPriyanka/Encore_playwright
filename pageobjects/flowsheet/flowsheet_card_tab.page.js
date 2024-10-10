@@ -292,7 +292,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await assertElementContainsText(
       this.orderNameSpan,
       orderName,
-      `Verify room name is displayed in the flowsheet card details. Expected: "${roomName}", Actual: "${getRoomName}"`
+      `Verify room name is displayed in the flowsheet card details. Expected: "${orderNameSpan}", Actual: "${orderName}"`
     );
     const getCustomerName = await this.customerNameSpan.textContent();
     await assertElementContainsText(
@@ -798,7 +798,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.nextButton, 'click', 'Click on next button');
     await executeStep(this.selectDate, 'click', 'Select today date');
     await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
-    await assertElementVisible(this.sendToNavigatorBtn);
+    await assertElementVisible(this.sendToNavigatorBtn,"Verify that the 'Send to navigator' button is visible");
     await executeStep(this.sendToNavigatorBtn, 'click', 'Click on send to navigator button');
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     await this.page.reload();
