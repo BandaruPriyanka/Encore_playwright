@@ -471,6 +471,9 @@ exports.ProfilePage = class ProfilePage {
       scheduleViewValue,
       `Verify that the 'Default Schedule View' option is changed successfully from "${scheduleViewValue}" to "${scheduleViewValueAfterChange}"`
     );
+    if(this.dismissBtn.isVisible()) {
+      await executeStep(this.dismissBtn, 'click', 'Click on dismiss button');
+    }
     await executeStep(this.dismissBtn, 'click', 'Click on dismiss button');
     await executeStep(this.scheduleTab, 'click', "Click on 'Schedule icon'");
     const getHighlighedTextFormSchedule = await this.highlightedScheduleText.textContent();
