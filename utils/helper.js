@@ -502,6 +502,5 @@ module.exports = {
   verifyNavigationElements,
   clickRemindMeTomorrowButton,
   checkTimeFormat,
-  extractTime,
-  colorText
+  extractTime
 };

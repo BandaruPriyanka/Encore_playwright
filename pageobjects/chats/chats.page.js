@@ -219,7 +219,7 @@ exports.ChatPage = class ChatPage {
         'Verify that the chat is no longer displayed in the list'
       );
     } catch {
-      console.error('Group is not deleted...');
+      test.info('Group is not deleted...');
     }
   }
   async loginUser(email, password) {

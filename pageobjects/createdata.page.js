@@ -143,7 +143,7 @@ exports.CreateData = class CreateData {
         state: 'visible',
         timeout: parseInt(process.env.element_locator_timeout)
       })
-      .catch(err => console.error('Element not found:', err));
+      .catch(err => test.info('Element not found:', err));
     await this.page
       .frameLocator('iframe#AppLandingPage')
       .locator("//div[text()='Compass']")
@@ -300,7 +300,7 @@ exports.CreateData = class CreateData {
     try {
       await executeStep(this.ignoreAndSaveButton, 'click', 'click the save button');
     } catch (error) {
-      console.error('Element is not there in the DOM');
+      test.info('Element is not there in the DOM');
     } finally {
       await this.page.waitForTimeout(parseInt(process.env.large_timeout));
       await executeStep(this.eventLearning, 'click', 'click the event learning button');
