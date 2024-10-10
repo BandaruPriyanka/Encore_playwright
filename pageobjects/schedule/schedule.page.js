@@ -11,7 +11,10 @@ const {
   getPreviousWeekDateAndMonth,
   getNextWeekDateAndMonth,
   assertContainsValue,
-  assertEqualValues
+  assertEqualValues,
+  previousWeekDate,
+  nextWeekDate,
+  todayDate
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 exports.SchedulePage = class SchedulePage {
@@ -38,14 +41,18 @@ exports.SchedulePage = class SchedulePage {
       ? this.page.locator('//div[contains(@class,"mbsc-event-list")]')
       : this.page.locator('//mbsc-timeline');
     this.todayDate = this.isMobile
-      ? this.page.locator(`(//div[contains(text(),'${getTodayDateAndMonth()}')])[2]`)
+      ? this.page.locator(`//div[contains(@class,'mbsc-calendar-today')]`)
       : this.page.locator(`(//div[contains(text(),'${getTodayDateAndYear()}')])[1]`);
-    this.previousWeekDate = this.page.locator(
-      `(//div[contains(text(),'${getPreviousWeekDateAndMonth()}')])[1]`
-    );
-    this.nextWeekDate = this.page.locator(
-      `(//div[contains(text(),'${getNextWeekDateAndMonth()}')])[1]`
-    );
+    this.previousWeekDate = this.isMobile
+      ? this.page.locator(
+          `//div[contains(@class, 'mbsc-calendar-day-text') and normalize-space(text())='${previousWeekDate()}']`
+        )
+      : this.page.locator(`(//div[contains(text(),'${getPreviousWeekDateAndMonth()}')])[1]`);
+    this.nextWeekDate = this.isMobile
+      ? this.page.locator(
+          `//div[contains(@class, 'mbsc-calendar-day-text') and normalize-space(text())='${nextWeekDate()}']`
+        )
+      : this.page.locator(`(//div[contains(text(),'${getNextWeekDateAndMonth()}')])[1]`);
 
     this.eventCard = this.isMobile
       ? this.page.locator('(//app-events-agenda/div)[1]')
@@ -131,18 +138,26 @@ exports.SchedulePage = class SchedulePage {
     await assertElementVisible(this.teamScheduleTable, 'Assert team schedule table is visible');
     const actualDateText = await this.todayDate.textContent();
     const expectedDateText = getFormattedTodayDate();
-    await assertElementContainsText(
-      this.todayDate,
-      expectedDateText,
-      `Assert today's date is displayed Expected today's date: "${expectedDateText}", Actual today's date: "${actualDateText}"`
-    );
+    const expectedOnlyDate=todayDate();
+    if(this.isMobile){
+        await assertElementContainsText(this.todayDate, expectedOnlyDate,`Assert today's date is displayed Expected today's date: "${expectedDateText}", Actual today's date: "${actualDateText}"`);
+    }
+    else{
+          await assertElementContainsText(this.todayDate, expectedDateText,`Assert today's date is displayed Expected today's date: "${expectedDateText}", Actual today's date: "${actualDateText}"`);
+      }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const todayDateclass = await this.todayDate.getAttribute('class');
-    await assertContainsValue(
-      todayDateclass,
-      hightlightedText,
+    if(this.isMobile){
+      await assertElementVisible(this.todayDate,`Assert class contains highlighted text: "${hightlightedText}"`);
+    }
+    else{
+       await assertContainsValue(
+       todayDateclass,
+       hightlightedText,
       `Assert class contains highlighted text: "${hightlightedText}"`
     );
+    }
+  
   }
   async verifyingEventcard() {
     await executeStep(this.eventCard, 'click', 'Click on event card');
@@ -171,7 +186,7 @@ exports.SchedulePage = class SchedulePage {
     );
     const employeeDetailsLocationWorkingFor =
       await this.employeeDetailsEmployeeLocationWorkingFor.textContent();
-    await assertEqualValues(
+      await assertEqualValues(
       highlightedWorkingFor,
       employeeDetailsLocationWorkingFor,
       `Assert working for names match: expected "${highlightedWorkingFor}", actual "${employeeDetailsLocationWorkingFor}"`
@@ -191,7 +206,7 @@ exports.SchedulePage = class SchedulePage {
         'Click on highlighted working at field'
       );
       const getLocationText = await this.getEmployeeWorkingLocation.textContent();
-      await assertContainsValue(getLocationText, highlightedWorkingAt);
+      await assertContainsValue(getLocationText, highlightedWorkingAt,'Verifying location details');
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -209,19 +224,22 @@ exports.SchedulePage = class SchedulePage {
   async verifyingPreviousNextWeekDates() {
     await executeStep(this.leftArrow, 'click', 'Click on left arrow');
     const expectedPreviousDate = getPreviousWeekDateAndMonth();
-    await assertElementContainsText(
-      this.previousWeekDate,
-      expectedPreviousDate,
-      `Assert previous week date is displayed correctly: expected "${expectedPreviousDate}", actual "${await this.previousWeekDate.textContent()}"`
-    );
+    if(this.isMobile){
+      await assertElementContainsText(this.previousWeekDate, previousWeekDate(), `Assert previous week date is displayed correctly: expected "${previousWeekDate}", actual "${await this.previousWeekDate.textContent()}"`);
+    }
+    else{
+      await assertElementContainsText(this.previousWeekDate, expectedPreviousDate, `Assert previous week date is displayed correctly: expected "${expectedPreviousDate}", actual "${await this.previousWeekDate.textContent()}"`);
+    }
     await executeStep(this.rightArrow, 'click', 'Click on right arrow');
     await executeStep(this.rightArrow, 'click', 'Click on right arrow again');
     const expectedNextDate = getNextWeekDateAndMonth();
-    await assertElementContainsText(
-      this.nextWeekDate,
-      expectedNextDate,
-      `Assert next week date is displayed correctly: expected "${expectedNextDate}", actual "${await this.nextWeekDate.textContent()}"`
-    );
+    if(this.isMobile){
+      await assertElementContainsText(this.nextWeekDate, nextWeekDate(),`Assert next week date is displayed correctly: expected "${nextWeekDate()}", actual "${await this.nextWeekDate.textContent()}"`);
+     }
+     else{
+      await assertElementContainsText(this.nextWeekDate, expectedNextDate,`Assert next week date is displayed correctly: expected "${expectedNextDate}", actual "${await this.nextWeekDate.textContent()}"`);
+     }
+   
     await executeStep(this.todayLink, 'click', 'Click on today link');
     await assertElementVisible(this.todayDate, 'Assert today date is visible');
   }
