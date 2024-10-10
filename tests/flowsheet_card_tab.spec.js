@@ -141,7 +141,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
-    await page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(
       flowsheetCardAndTab.textInModalForDocument,
       'Verify that the "pass control" modal is visible'
@@ -151,7 +151,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.positive);
   });
 
-  test('Test_C56906: Verify Test Add-on creation (Docusign enabled) - Negative flow', async () => {
+  test('Test_C56906: Verify Test Add-on creation (Docusign enabled) - Negative flow', async ({page}) => {
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
       indexPage.navigator_data.second_job_no,
@@ -177,7 +177,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
       indexPage.navigator_data.second_job_no_complimentary,
       indexPage.navigator_data.second_job_no_complimentary
     );
-    await page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(
       flowsheetCardAndTab.textInModalForDocument,
       'Verify that the "pass control" modal is visible'
