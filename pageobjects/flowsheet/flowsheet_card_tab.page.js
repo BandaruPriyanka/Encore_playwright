@@ -491,7 +491,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
         `Verify that afterRoomCount (${afterRoomCount}) is equal to beforeRoomCount (${beforeRoomCount}) + 1`
       );
     } catch {
-      console.error('Romms count is not updated');
+      test.info('Romms count is not updated');
     }
   }
   async assertComparisonIcon(
