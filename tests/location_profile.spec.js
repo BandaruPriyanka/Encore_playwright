@@ -72,12 +72,22 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await flowsheetCardAndTab.dateSelectModalCheckingAndAssertRooms();
   });
 
-  test("C57126 Check 'Flowsheets Groups' Tab elements", async ({page})=>{
+  test("C57126 Check 'Flowsheets Groups' Tab elements", async () => {
     await test.step("Check the 'Flowsheets Groups' page structure", async () => {
-      await locationProfilePage.verifyAddOnesEmailRecipients()
-    })
-    await test.step("Make sure that all added Groups can be removed from the list (remove icon is present)", async () => {
-      await locationProfilePage.verifyGroupsCanBeRemoved()
-    })
+      await locationProfilePage.verifyAddOnesEmailRecipients();
+    });
+    await test.step('Make sure that all added Groups can be removed from the list (remove icon is present)', async () => {
+      await locationProfilePage.verifyGroupsCanBeRemoved();
+    });
+  });
+
+  test('C57127 Check Adding Groups functionality', async () => {
+    await locationProfilePage.clickOnFlowsheetGroups();
+    await locationProfilePage.addingGroupFunctionality();
+  });
+
+  test('C57128 Check Removing Groups functionality', async () => {
+    await locationProfilePage.clickOnFlowsheetGroups();
+    await locationProfilePage.removingGroupFunctionality();
   });
 });

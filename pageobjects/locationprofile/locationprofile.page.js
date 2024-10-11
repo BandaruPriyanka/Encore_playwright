@@ -1,7 +1,12 @@
 const { executeStep } = require('../../utils/action');
 const {
   assertElementVisible,
-  assertElementAttributeContains
+  assertElementAttributeContains,
+  assertElementNotVisible,
+  assertElementEnabled,
+  assertElementFocused,
+  assertValueToBe,
+  scrollElement
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 const { test } = require('@playwright/test');
@@ -53,17 +58,29 @@ exports.LocationProfile = class LocationProfile {
       "//span[text()='Select All']//following-sibling::input[@type='checkbox']"
     );
     this.yesButton = this.page.locator("//span[text()='Yes']");
+    this.noButton = this.page.locator("//span[text()='No']");
     this.checkBoxForPackage = this.page.locator(
       "//span[@class='e2e_flowsheet_equipment_package font-semibold'][1]/../following-sibling::div//input[@type='checkbox']"
     );
-    this.locationHeader=this.page.locator("//app-profile-header");
-    this.groupList=this.page.locator("//th[text()='Group name']");
-    this.daysExpire=this.page.locator("//th[text()='Days until expiration']");
-    this.addGrpField=this.page.locator("//input[@placeholder='Add Group']");
-    this.createButton=this.page.locator("//span[normalize-space()='Create']//parent::button");
-    this.binIcon=this.page.locator("//icon[@name='trah_bin_line']");
-    this.addEmail=this.page.locator("//input[@placeholder='Add Email']");
-    this.addBtn=this.page.locator("//span[normalize-space()='Add']//parent::button");
+    this.locationHeader = this.page.locator('//app-profile-header');
+    this.groupList = this.page.locator("//th[text()='Group name']");
+    this.daysExpire = this.isMobile
+      ? this.page.locator("//span[normalize-space()='Create']/parent::button/preceding-sibling::span[normalize-space()='Days until expiration:']")
+      : this.page.locator("//th[text()='Days until expiration']");
+    this.addGrpField = this.page.locator("//input[@placeholder='Add Group']");
+    this.createButton = this.page.locator("//span[normalize-space()='Create']//parent::button");
+    this.binIcon = name =>
+      this.page.locator(`//div[normalize-space()='` + name + `']//icon[@name='trah_bin_line']`);
+    this.addEmail = this.page.locator("//input[@placeholder='Add Email']");
+    this.addBtn = this.page.locator("//span[normalize-space()='Add']//parent::button");
+    this.expireDaysInputField = this.page.locator("//input[@type='number']");
+    this.roomsFirstCard = this.page.locator('//app-flowsheet-action-card[1]');
+    this.groupsIcon = this.page.locator(
+      "(//app-flowsheet-action-card[1]//span[normalize-space()='groups'])[2]"
+    );
+    this.groupName = name =>
+      this.page.locator(`//ul[@role='list']//span[normalize-space()='` + name + `']`);
+    this.areYouSurePop = this.page.locator("//p[normalize-space()='Are you sure?']");
   }
   getDynamicLocator = (label, index) => {
     return this.page.locator(`(//span[normalize-space()='${label}']//parent::li)[${index}]`);
@@ -131,18 +148,132 @@ exports.LocationProfile = class LocationProfile {
     }
   }
 
-  async verifyAddOnesEmailRecipients(){
-    await executeStep(this.flowsheetGroups, 'click', 'Click on Flowsheet Groups');
-    await assertElementVisible(this.locationHeader, 'Verify Location header');
-    await assertElementVisible(this.daysExpire, 'Verify Groups list with the days until expiration');
-    await assertElementVisible(this.addGrpField, 'Verify Footer field to add Groups');
+  async clickOnFlowsheetGroups() {
+    await executeStep(
+      this.flowsheetGroups,
+      'click',
+      "The 'Flowsheet Groups' page should be opened"
+    );
   }
 
-  async verifyGroupsCanBeRemoved(){
+  async verifyAddOnesEmailRecipients() {
+    await this.clickOnFlowsheetGroups();
+    await assertElementVisible(this.locationHeader, 'Verify Location header');
     await executeStep(this.addGrpField, 'fill', 'Enter the Group Name', [
       indexPage.lighthouse_data.groupName
     ]);
+    const ele = await this.daysExpire;
+    await scrollElement(ele, 'bottom');
+    await assertElementVisible(
+      this.daysExpire,
+      'Verify Groups list with the days until expiration'
+    );
+    await assertElementVisible(this.addGrpField, 'Verify Footer field to add Groups');
+  }
+
+  async verifyGroupsCanBeRemoved() {
     await executeStep(this.createButton, 'click', 'Click on Create button');
-    await assertElementVisible(this.binIcon, 'Remove icon is present');
+    await assertElementVisible(
+      this.binIcon(indexPage.lighthouse_data.groupName),
+      'Remove icon is present'
+    );
+    await executeStep(
+      this.binIcon(indexPage.lighthouse_data.groupName),
+      'click',
+      'Remove Group for clean up'
+    );
+    await executeStep(this.yesButton, 'click', 'Confirm Remove Group for clean up');
+    await assertElementNotVisible(
+      this.binIcon(indexPage.lighthouse_data.groupName),
+      'Remove icon is not present'
+    );
+  }
+
+  async addingGroupFunctionality() {
+    await executeStep(this.addGrpField, 'click', "Click on 'Add group' row");
+    await assertElementFocused(
+      this.addGrpField,
+      'Cursor should be displayed & the field should be highlighted.'
+    );
+    await test.step('Make sure that user is NOT able to create Group without Name', async () => {
+      await assertElementNotVisible(this.createButton, 'Create button should be disabled.');
+    });
+    await executeStep(this.addGrpField, 'fill', 'Input some valid Group name', [
+      indexPage.lighthouse_data.groupName
+    ]);
+    await assertElementEnabled(this.createButton, 'Add button should be enabled.');
+    const actual = await this.expireDaysInputField.inputValue();
+    await assertValueToBe(
+      actual,
+      'Default value for expiration days = 7',
+      indexPage.lighthouse_data.expirationDays
+    );
+    await executeStep(this.createButton, 'click', 'Click on Create button');
+    await assertElementVisible(
+      this.binIcon(indexPage.lighthouse_data.groupName),
+      'Group should be added to the list successfully.'
+    );
+    await test.step('Refresh the page to make sure that changes were properly saved.', async () => {
+      await this.page.reload();
+    });
+    await assertElementVisible(
+      this.binIcon(indexPage.lighthouse_data.groupName),
+      'Group should be added to the list successfully After Reload.'
+    );
+    await executeStep(this.flowsheetBtn, 'click', 'Click on Flowsheet Button');
+    await executeStep(this.roomsFirstCard, 'hover', 'Hover on Flowheet card');
+    if (!this.isMobile) {
+      await executeStep(this.groupsIcon, 'click', 'Click on Group Icon');
+      const actual_text = (
+        await this.groupName(indexPage.lighthouse_data.groupName).textContent()
+      ).trim();
+      await assertValueToBe(
+        actual_text,
+        'A newly added Group should be displayed within the modal.',
+        indexPage.lighthouse_data.groupName
+      );
+    }
+  }
+
+  async removingGroupFunctionality() {
+    await assertElementVisible(this.locationHeader, "Verify The 'Flowsheet Groups' page Header is Visible");
+    await executeStep(
+      this.binIcon(indexPage.lighthouse_data.groupName),
+      'click',
+      "Click on 'Remove' icon for some previously added Group"
+    );
+    await assertElementVisible(this.areYouSurePop, 'Confirmation modal should be displayed.');
+    await executeStep(this.noButton, 'click', "Select 'No' option within the modal");
+    await assertElementVisible(
+      this.binIcon(indexPage.lighthouse_data.groupName),
+      'Previously added Group should stil be present on the list.'
+    );
+    await executeStep(
+      this.binIcon(indexPage.lighthouse_data.groupName),
+      'click',
+      "Again click on 'Remove' icon for some previously added Group"
+    );
+    await assertElementVisible(this.areYouSurePop, 'Confirmation modal should be displayed.');
+    await executeStep(this.yesButton, 'click', "Select 'Yes' option within the modal");
+    await assertElementNotVisible(
+      this.binIcon(indexPage.lighthouse_data.groupName),
+      'Previously added Group should be removed successfully from the list.'
+    );
+    await test.step('Refresh the page to make sure that Group was removed successfully.', async () => {
+      await this.page.reload();
+    });
+    await assertElementNotVisible(
+      this.binIcon(indexPage.lighthouse_data.groupName),
+      'Group should be removed from the list successfully After Reload.'
+    );
+    await executeStep(this.flowsheetBtn, 'click', 'Click on Flowsheet Button');
+    await executeStep(this.roomsFirstCard, 'hover', 'Hover on Flowheet card');
+    if (!this.isMobile) {
+      await executeStep(this.groupsIcon, 'click', 'Click on Group Icon');
+      await assertElementNotVisible(
+        this.groupName(indexPage.lighthouse_data.groupName),
+        'A removed Group should NOT be displayed within the modal..'
+      );
+    }
   }
 };
