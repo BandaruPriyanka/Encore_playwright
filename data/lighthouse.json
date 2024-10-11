@@ -76,5 +76,7 @@
   ],
   "12Hours": "12 Hours",
   "24Hours": "24 Hours",
-  "groupName": "My Group 1"
+  "groupName": "My Group 1",
+  "mySchedule" : "My Schedule",
+  "teamSchedule" : "Team Schedule"
 }
