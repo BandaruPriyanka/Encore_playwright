@@ -33,6 +33,9 @@ export async function executeStep(element, action, description, data, timeout = 
       case 'doubleclick':
         await element.dblclick();
         break;
+      case 'hover':
+        await element.hover();
+        break;
     }
   });
 }

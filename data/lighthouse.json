@@ -78,5 +78,6 @@
   "24Hours": "24 Hours",
   "groupName": "My Group 1",
   "mySchedule" : "My Schedule",
-  "teamSchedule" : "Team Schedule"
+  "teamSchedule" : "Team Schedule",
+  "expirationDays" : "7"
 }

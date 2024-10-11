@@ -203,9 +203,21 @@ async function assertElementVisible(element, customText) {
   });
 }
 
+async function assertValueToBe(actual, customText, expected) {
+  await test.step(customText, async () => {
+    await expect(expected).toBe(actual);
+  });
+}
+
 async function assertElementNotVisible(element, customText) {
   await test.step(customText, async () => {
     await expect(element).not.toBeVisible();
+  });
+}
+
+async function assertElementFocused(element, customText) {
+  await test.step(customText, async () => {
+    await expect(element).toBeFocused();
   });
 }
 
@@ -475,6 +487,8 @@ module.exports = {
   waitForElementHidden,
   assertElementAttribute,
   assertElementEnabled,
+  assertElementFocused,
+  assertValueToBe,
   assertElementDisabled,
   assertInputValue,
   clickAndWaitForNavigation,
