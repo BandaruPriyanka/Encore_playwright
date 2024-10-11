@@ -371,6 +371,11 @@ exports.ProfilePage = class ProfilePage {
 
   async assertEquipmentByIntialDisplayValue() {
     initialEquipmentDispalyValue = await this.equipmentDisplayChioceValue.textContent();
+    try {
+      await assertEqualValues(initialEquipmentDispalyValue.trim(),indexPage.lighthouse_data.equipmentName,`Verify that a valid option is displayed as the default "Equipment Display Choice" , Selected Option : "${indexPage.lighthouse_data.equipmentName}"`);
+    }catch {
+      await assertEqualValues(initialEquipmentDispalyValue.trim(),indexPage.lighthouse_data.equipmentDescription,`Verify that a valid option is displayed as the default "Equipment Display Choice" , Selected Option : "${indexPage.lighthouse_data.equipmentDescription}"`);
+    }
     await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
     const flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(this.page);
     await flowsheetCardAndTab.performSearchFunction(
@@ -443,6 +448,11 @@ exports.ProfilePage = class ProfilePage {
 
   async assertInitialDefaultSheduleView() {
     initialScheduleViewValue = await this.defaultScheduleViewValue.textContent();
+    try{
+      await assertEqualValues(initialScheduleViewValue.trim(),indexPage.lighthouse_data.mySchedule,`Verify that a valid option is displayed as the "Default Schedule View", Selected Option : "${indexPage.lighthouse_data.mySchedule}"`);
+    }catch(error) {
+      await assertEqualValues(initialScheduleViewValue.trim(),indexPage.lighthouse_data.teamSchedule,`Verify that a valid option is displayed as the "Default Schedule View" Selected Option : "${indexPage.lighthouse_data.teamSchedule}"`);
+    }
     await executeStep(this.scheduleTab, 'click', "Click on 'Schedule icon'");
     if (await this.dismissBtn.isVisible()) {
       await executeStep(this.dismissBtn, 'click', 'Click on dismiss popup');
