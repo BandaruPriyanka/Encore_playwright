@@ -159,7 +159,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     );
     await page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await assertElementVisible(
-      this.textInModalForDocument,
+      flowsheetCardAndTab.textInModalForDocument,
       'Verify that the text in the document modal is visible'
     );
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.negative);
