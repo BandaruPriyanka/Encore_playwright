@@ -39,7 +39,7 @@ exports.CustomersPage = class CustomersPage {
     this.nextweekIcon = this.page.locator("//icon[@title='Next week']");
     this.previousweekIcon = this.page.locator("//icon[@title='Previous week']");
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
-    this.customerCard = this.page.locator('(//app-customer-card)[1]');
+    this.customerCard = this.page.locator("//div[text()='Angelina Wood']");
     this.opportunityList = this.page.locator("(//div[@role='region']/div/div/div)[1]");
     this.getRoomName = this.page.locator("((//div[@role='region']/div/div/div)[1]/div/span)[1]");
     this.orderName = this.page.locator("//span[contains(@class,'e2e_opportunity_order_name')]");
