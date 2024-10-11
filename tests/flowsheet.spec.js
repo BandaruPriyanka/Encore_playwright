@@ -20,7 +20,7 @@ test.describe('Performing actions on Flowsheet', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await flowsheetPage.changeLocation(locationId, locationText);
   });
-  test('Test_C56878: Verify Flowsheet status', async ({ page, isMobile }) => {
+  test.only('Test_C56878: Verify Flowsheet status', async ({ page, isMobile }) => {
     test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
     await flowsheetPage.searchFunctionality();
     await assertElementVisible(flowsheetPage.statusIcon, 'Verify status icon is visible');
@@ -38,7 +38,7 @@ test.describe('Performing actions on Flowsheet', () => {
     );
     await flowsheetPage.changestatus();
   });
-  test('Test_C56880 : Verify Flowsheet groups', async ({ isMobile }) => {
+  test.only('Test_C56880 : Verify Flowsheet groups', async ({ isMobile }) => {
     test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
     await flowsheetPage.searchFunctionality();
     await assertElementVisible(flowsheetPage.statusIcon, 'Verify status icon is visible');
@@ -47,7 +47,7 @@ test.describe('Performing actions on Flowsheet', () => {
     await flowsheetPage.deleteGroupData();
   });
 
-  test('Test_C56882: Verify lighthouse flowsheet search functionality', async ({ page }) => {
+  test.only('Test_C56882: Verify lighthouse flowsheet search functionality', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.large_timeout));
     await assertElementVisible(flowsheetPage.roomsCount, 'Assert that rooms count is visible');
     await assertElementVisible(flowsheetPage.searchInput, 'Verify search input is visible');
@@ -70,7 +70,7 @@ test.describe('Performing actions on Flowsheet', () => {
     await flowsheetPage.sorting();
   });
 
-  test('Test_C56886: Verify Flowsheets calendar', async ({ page }) => {
+  test.only('Test_C56886: Verify Flowsheets calendar', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetPage.calendarDiv, 'Verify visibility of the calendar');
     await assertElementVisible(
@@ -88,7 +88,7 @@ test.describe('Performing actions on Flowsheet', () => {
     });
   });
 
-  test('Test_C56888: Verify Flowsheets calendar widget', async ({ page }) => {
+  test.only('Test_C56888: Verify Flowsheets calendar widget', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(
       flowsheetPage.calendarDiv,

@@ -292,7 +292,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await assertElementContainsText(
       this.orderNameSpan,
       orderName,
-      `Verify room name is displayed in the flowsheet card details. Expected: "${orderNameSpan}", Actual: "${orderName}"`
+      `Verify room name is displayed in the flowsheet card details. Expected: "${orderName}", Actual: "${getOrderName}"`
     );
     const getCustomerName = await this.customerNameSpan.textContent();
     await assertElementContainsText(

@@ -37,7 +37,7 @@ test.describe('Performing actions on Customer Tab', () => {
     );
     await customersPage.searchFunctionality();
   });
-  test('Test_C56923: Verify customers calendar', async ({ page }) => {
+  test.only('Test_C56923: Verify customers calendar', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(
       customersPage.existingCustomers,
@@ -63,10 +63,10 @@ test.describe('Performing actions on Customer Tab', () => {
       'Verify touchpoints pie icons should not be clickable from the customers page'
     );
   });
-  test('Test_C56925 : Verify details tab', async () => {
+  test.only('Test_C56925 : Verify details tab', async () => {
     await customersPage.verifyDetailsTab();
   });
-  test('Test_C56926: Verify contacts tab', async () => {
+  test.only('Test_C56926: Verify contacts tab', async () => {
     await customersPage.checkNoContactsDisplayed();
   });
   test('Test_C56928 : Verify room list tab', async () => {
@@ -91,7 +91,7 @@ test.describe('Performing actions on Customer Tab', () => {
     await customersPage.assertEditIcon();
     await customersPage.assertTouchPointForFuture();
   });
-  test('Test_C56929: Verify Previous Events Tab', async () => {
+  test.only('Test_C56929: Verify Previous Events Tab', async () => {
     await customersPage.verifyPreviousEventTab();
   });
 });

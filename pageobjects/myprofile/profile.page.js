@@ -16,6 +16,7 @@ const {
   extractTime
 } = require('../../utils/helper');
 const { after } = require('node:test');
+const { addAbortListener } = require('node:events');
 let initialEquipmentDispalyValue,
   getequipmentTextByIntialDisplayValue,
   getequipmentTextByChangedDisplayValue,
@@ -453,6 +454,9 @@ exports.ProfilePage = class ProfilePage {
     }catch(error) {
       await assertEqualValues(initialScheduleViewValue.trim(),indexPage.lighthouse_data.teamSchedule,`Verify that a valid option is displayed as the "Default Schedule View" Selected Option : "${indexPage.lighthouse_data.teamSchedule}"`);
     }
+    if (await this.dismissBtn.isVisible()) {
+      await executeStep(this.dismissBtn, 'click', 'Click on dismiss popup');
+    }
     await executeStep(this.scheduleTab, 'click', "Click on 'Schedule icon'");
     if (await this.dismissBtn.isVisible()) {
       await executeStep(this.dismissBtn, 'click', 'Click on dismiss popup');
@@ -472,7 +476,7 @@ exports.ProfilePage = class ProfilePage {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const scheduleViewValue = await this.defaultScheduleViewValue.textContent();
     if (scheduleViewValue === initialScheduleViewValue) {
-      await executeStep(this.defaultScheduleViewChangeBtn, 'click', 'Click on update button');
+      await executeStep(this.defaultScheduleViewChangeBtn, 'click', 'Click on Update link');
     }
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const scheduleViewValueAfterChange = await this.defaultScheduleViewValue.textContent();
@@ -481,8 +485,8 @@ exports.ProfilePage = class ProfilePage {
       scheduleViewValue,
       `Verify that the 'Default Schedule View' option is changed successfully from "${scheduleViewValue}" to "${scheduleViewValueAfterChange}"`
     );
-    if (this.dismissBtn.isVisible()) {
-      await executeStep(this.dismissBtn, 'click', 'Click on dismiss button');
+    if (await this.dismissBtn.isVisible()) {
+      await executeStep(this.dismissBtn, 'click', 'Click on dismiss popup');
     }
     await executeStep(this.scheduleTab, 'click', "Click on 'Schedule icon'");
     const getHighlighedTextFormSchedule = await this.highlightedScheduleText.textContent();
@@ -499,7 +503,7 @@ exports.ProfilePage = class ProfilePage {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const scheduleViewValue = await this.defaultScheduleViewValue.textContent();
     if (scheduleViewValue !== initialScheduleViewValue) {
-      await executeStep(this.defaultScheduleViewChangeBtn, 'click', 'Click on update button');
+      await executeStep(this.defaultScheduleViewChangeBtn, 'click', 'Click on Update link');
     }
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const scheduleViewValueAfterChange = await this.defaultScheduleViewValue.textContent();
@@ -517,32 +521,32 @@ exports.ProfilePage = class ProfilePage {
       await assertEqualValues(
         navigationText.trim(),
         indexPage.lighthouse_data.flowsheetInEnglish,
-        'Make sure that all page elements are localized according to the selected option: English'
+        'Make sure that all page elements are localized according to the selected option: "English" '
       );
     }
     const profileTitleText = await this.getTextOfSyncLabel.textContent();
     await assertEqualValues(
       profileTitleText.trim(),
       indexPage.lighthouse_data.lastSyncedInEnglish,
-      'Make sure that all page elements are localized according to the selected option: English'
+      'Make sure that all page elements are localized according to the selected option:"English" '
     );
   }
 
   async assertUpdateLanguageToSpanish() {
     const getLanguageText = await this.getSelectedLanguageValue.textContent();
     if (getLanguageText === initialLanguageValue) {
-      await executeStep(this.languageUpdateButton, 'click', 'Click on update button');
+      await executeStep(this.languageUpdateButton, 'click', 'Click on Update link');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await assertElementVisible(
         this.appLanguagerRequestModal,
         'Verify that the "Language selection modal" is displayed'
       );
-      await executeStep(this.requestModalCloseBtn, 'click', 'Click on close button');
+      await executeStep(this.requestModalCloseBtn, 'click', 'Click on Close link');
       await assertElementNotVisible(
         this.appLanguagerRequestModal,
         "Verify that the 'Close' link works properly"
       );
-      await executeStep(this.languageUpdateButton, 'click', 'Click on update button');
+      await executeStep(this.languageUpdateButton, 'click', 'Again Click on Update link');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await assertElementVisible(
         this.appLanguagerRequestModal,
@@ -557,7 +561,7 @@ exports.ProfilePage = class ProfilePage {
       utilConst.Const.Languages[1],
       `Verify that the selected language is updated successfully to Spanish. Expected: "${utilConst.Const.Languages[1]}", Actual: "${spanishText}"`
     );
-    await test.step('Make sure that all page elements are localized according to the selected option: Spanish', async () => {
+    await test.step('Make sure that all page elements are localized according to the selected option: "Spanish" ', async () => {
       if (!this.isMobile) {
         await verifyNavigationElements(
           this.page,
@@ -571,14 +575,14 @@ exports.ProfilePage = class ProfilePage {
     await assertEqualValues(
       profileTitleText.trim(),
       indexPage.lighthouse_data.lastSyncedInSpanish,
-      'Make sure that all My Profile page elements are localized according to the selected option: Spanish'
+      'Make sure that all My Profile page elements are localized according to the selected option: "Spanish" '
     );
   }
 
   async assertUpdateLanguageToFrench() {
     const getLanguageText = await this.getSelectedLanguageValue.textContent();
     if (getLanguageText === spanishText) {
-      await executeStep(this.languageUpdateButton, 'click', 'Click on update button');
+      await executeStep(this.languageUpdateButton, 'click', 'Click on Update link');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await assertElementVisible(
         this.appLanguagerRequestModal,
@@ -593,7 +597,7 @@ exports.ProfilePage = class ProfilePage {
       utilConst.Const.Languages[2],
       `Verify that the selected language is updated successfully to French. Expected: "${utilConst.Const.Languages[2]}", Actual: "${frenchText}"`
     );
-    await test.step('Make sure that all page elements are localized according to the selected option: French', async () => {
+    await test.step('Make sure that all page elements are localized according to the selected option: "French" ', async () => {
       if (!this.isMobile) {
         await verifyNavigationElements(
           this.page,
@@ -607,14 +611,14 @@ exports.ProfilePage = class ProfilePage {
     await assertEqualValues(
       profileTitleText.trim(),
       indexPage.lighthouse_data.lastSyncedInFrench,
-      'Make sure that all My Profile page elements are localized according to the selected option: French'
+      'Make sure that all My Profile page elements are localized according to the selected option: "French" '
     );
   }
 
   async changeLanguageToIntialValue() {
     const getLanguageText = await this.getSelectedLanguageValue.textContent();
     if (getLanguageText !== initialLanguageValue) {
-      await executeStep(this.languageUpdateButton, 'click', 'Click on update button');
+      await executeStep(this.languageUpdateButton, 'click', 'Click on Update link');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await assertElementVisible(
         this.appLanguagerRequestModal,
@@ -629,7 +633,7 @@ exports.ProfilePage = class ProfilePage {
       initialLanguageValue.trim(),
       `Verify that the selected language is updated successfully to English. Expected: "${initialLanguageValue}", Actual: "${englishText}"`
     );
-    await test.step('Make sure that all page elements are localized according to the selected option: English', async () => {
+    await test.step('Make sure that all page elements are localized according to the selected option: "English" ', async () => {
       if (!this.isMobile) {
         await verifyNavigationElements(
           this.page,
@@ -643,7 +647,7 @@ exports.ProfilePage = class ProfilePage {
     await assertEqualValues(
       profileTitleText.trim(),
       indexPage.lighthouse_data.lastSyncedInEnglish,
-      'Make sure that all all My Profile page elements are localized according to the selected option: English'
+      'Make sure that all all My Profile page elements are localized according to the selected option: "English" '
     );
   }
 
@@ -784,7 +788,7 @@ exports.ProfilePage = class ProfilePage {
     await this.navigateToMyProfile();
     const getTimeValue = await this.timeValueFromProfile.textContent();
     if (getTimeValue.trim() === initialTimeValue.trim()) {
-      await executeStep(this.updateBtnForTime, 'click', 'click on update button');
+      await executeStep(this.updateBtnForTime, 'click', 'Click on Update link');
     }
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     afterTimeValue = await this.timeValueFromProfile.textContent();
