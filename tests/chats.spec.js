@@ -22,7 +22,7 @@ test.describe('LightHouse Chat Search', () => {
     await flowsheetPage.changeLocation(locationId, locationText);
   });
 
-  test.only('Test_C56930: Verify chats search', async () => {
+  test('Test_C56930: Verify chats search', async () => {
     await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
     await assertElementVisible(
       chatpage.participantChatAll,

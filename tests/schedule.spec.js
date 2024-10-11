@@ -18,11 +18,11 @@ test.describe('Performing actions on Schedule Tab', () => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
   });
 
-  test.only('Test_C56915: Verify Actions on My Schedule', async () => {
+  test('Test_C56915: Verify Actions on My Schedule', async () => {
     await schedulePage.actionsOnSchedule();
   });
 
-  test.only('Test_C56916: Verify Team Schedule', async () => {
+  test('Test_C56916: Verify Team Schedule', async () => {
     await schedulePage.assertScheduleTab(indexPage.lighthouse_data.scheduleHighlightedDate);
     await schedulePage.verifyingEventcard();
     await schedulePage.verifyingFilterFunctionality();
