@@ -83,7 +83,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
       });
     });
 
-    test.only('Test_C57127: Check Adding Groups functionality', async () => {
+    test('Test_C57127: Check Adding Groups functionality', async () => {
       await locationProfilePage.clickOnFlowsheetGroups();
       await locationProfilePage.addingGroupFunctionality();
     });
