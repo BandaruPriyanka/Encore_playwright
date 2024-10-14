@@ -39,7 +39,8 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
       indexPage.navigator_data.second_job_no,
-      indexPage.navigator_data.second_job_no
+      indexPage.navigator_data.second_job_no,
+      false
     );
     await assertElementVisible(
       flowsheetCardAndTab.textInModalForDocument,
@@ -67,7 +68,8 @@ test.describe('Performing actions on Location Profile Tab', () => {
     );
     await flowsheetCardAndTab.discountChecking(
       invalidDiscountGenerator(),
-      validDiscountGenerator()
+      validDiscountGenerator(),
+      false
     );
     await flowsheetCardAndTab.dateSelectModalCheckingAndAssertRooms();
   });
@@ -90,4 +92,46 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await locationProfilePage.clickOnFlowsheetGroups();
     await locationProfilePage.removingGroupFunctionality();
   });
+
+  test('Test_C57123 Check "Add Ons Email Recipients" Tab elements' , async () => {
+    await locationProfilePage.verifyAddOnsEmailRecipientsElements();
+  });
+
+  test('Test_C57124 Check Adding emails functionality', async ({ page }) => {
+    await locationProfilePage.assertEmailRecipients();
+    await locationProfilePage.assertEmailInput();
+    await flowsheetCardAndTab.createAddOn(
+      indexPage.lighthouse_data.turnOn,
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no,
+      false
+    );
+    await page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await assertElementVisible(
+      flowsheetCardAndTab.textInModalForDocument,
+      'Verify that the "pass control" modal is visible'
+    );
+    await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.positive);
+    await flowsheetCardAndTab.assertRoomCountAfterAddOn();
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
+  });
+
+  test('Test_C57125 	Check Removing emails functionality', async ({page}) => {
+    await locationProfilePage.assertEmailRecipients();
+    await locationProfilePage.deleteEmail();
+    await flowsheetCardAndTab.createAddOn(
+      indexPage.lighthouse_data.turnOn,
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no,
+      false
+    );
+    await page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await assertElementVisible(
+      flowsheetCardAndTab.textInModalForDocument,
+      'Verify that the "pass control" modal is visible'
+    );
+    await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.positive);
+    await flowsheetCardAndTab.assertRoomCountAfterAddOn();
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
+  })
 });

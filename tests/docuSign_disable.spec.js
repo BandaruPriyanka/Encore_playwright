@@ -31,7 +31,7 @@ test('Test_C56895: Verify Add-on creation (Docusign disabled)', async () => {
     indexPage.lighthouse_data.invalidQuantity,
     indexPage.lighthouse_data.validQuantity
   );
-  await flowsheetCardAndTab.discountChecking(invalidDiscountGenerator(), validDiscountGenerator());
+  await flowsheetCardAndTab.discountChecking(invalidDiscountGenerator(), validDiscountGenerator(),true);
   await flowsheetCardAndTab.dateSelectModalCheckingAndAssertRooms();
 });
 

@@ -79,5 +79,8 @@
   "groupName": "My Group 1",
   "mySchedule" : "My Schedule",
   "teamSchedule" : "Team Schedule",
-  "expirationDays" : "7"
+  "expirationDays" : "7",
+  "addOnEmail" : "test@gmail.com",
+  "addOnEmailRecipients" : "Add Ons Email Recipients",
+  "invalidEmail" : "testing.gmail.com"
 }
