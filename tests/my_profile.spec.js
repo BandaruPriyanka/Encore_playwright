@@ -201,7 +201,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await notificationPage.verifyAddLocationField();
   });
 
-  test('Test_C57117 :Verify adding locations on Notification Location tab', async () => {
+  test.only('Test_C57117 :Verify adding locations on Notification Location tab', async () => {
     await notificationPage.clickOnNotification();
     await assertElementVisible(
       notificationPage.addLocation,

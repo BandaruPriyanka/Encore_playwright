@@ -23,7 +23,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await flowsheetPage.changeLocation(locationId, locationText);
     await locationProfilePage.clickOnLocationProfile();
   });
-  test.only('Test_C57119 : Verify Location Profile page elements', async () => {
+  test('Test_C57119 : Verify Location Profile page elements', async () => {
     await locationProfilePage.verifyTabs();
   });
   test('Test_C57120 : Verify Use Equipment Checklist functionality', async () => {
