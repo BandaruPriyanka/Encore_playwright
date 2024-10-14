@@ -2,8 +2,15 @@ const { executeStep } = require('../../utils/action');
 const { expect, test } = require('@playwright/test');
 const indexPage = require('../../utils/index.page');
 require('dotenv').config();
-const atob = require('atob');
-const { assertElementVisible, assertElementEnabled } = require('../../utils/helper');
+const {
+  assertElementVisible,
+  assertElementEnabled,
+  getTodayDateAndMonth,
+  addDaysToCurrentDate,
+  assertContainsValue,
+  assertElementAttributeContains,
+  todayDate
+} = require('../../utils/helper');
 exports.EventAgendas = class EventAgendas {
   constructor(page) {
     this.page = page;
@@ -19,8 +26,8 @@ exports.EventAgendas = class EventAgendas {
       .first();
     this.searchInput = this.page.locator("input[placeholder='Search by Event Name...']");
     this.filterIcon = this.page.locator("eui-icon[name='filter_bulk']");
-    this.glCentersDropdown = this.page.locator("button.e2e_gl_center_multi_select");
-    this.venuesDropdown = this.page.locator("button.e2e_venues_center_multi_select");
+    this.glCentersDropdown = this.page.locator('button.e2e_gl_center_multi_select');
+    this.venuesDropdown = this.page.locator('button.e2e_venues_center_multi_select');
     this.projectManagerDropdown = this.page.locator('button.e2e_project_managers_multi_select');
     this.checkBox = this.page.locator("input[type='checkbox']");
     this.agendaRows = this.isMobile
@@ -35,6 +42,17 @@ exports.EventAgendas = class EventAgendas {
     );
     this.checkDropDown = this.page.locator('input#chk_0');
     this.resetFilterButton = this.page.locator("button[look='flat']");
+    this.calendarModal = this.page
+      .locator("eui-mbsc-date-time-range[formcontrolname='dateFilter']>div>div")
+      .first();
+    this.dateCell = date =>
+      this.page.locator(`mbsc-calendar-day.mbsc-selected:has-text("${date}")`);
+    this.startDate = this.page.locator('mbsc-button div.mbsc-range-control-value').first();
+    this.endDate = this.page.locator('mbsc-button div.mbsc-range-control-value').last();
+    this.updateBtn = this.page.locator('button.e2e_date_range_update_button');
+    this.previousPage = this.page.locator("[aria-label='Previous page']");
+    this.previousDate = this.page.locator("mbsc-calendar-day.mbsc-selected:has-text('1')");
+    this.cancelButton = this.page.locator('button.e2e_date_range_cancel_button');
   }
   async actionsOnEventAgendas() {
     if (this.isMobile) {
@@ -85,6 +103,9 @@ exports.EventAgendas = class EventAgendas {
         'Verify Printer icon should be clickable and working properly'
       );
     }
+    await this.verifyFilteredData();
+  }
+  async verifyFilteredData() {
     const rowCount = await this.agendaRows.count();
     for (let i = 0; i < rowCount; i++) {
       const agendaRow = this.agendaRows.nth(i);
@@ -94,5 +115,57 @@ exports.EventAgendas = class EventAgendas {
         `Verify Agenda row ${i + 1} (${rowText}) should be visible`
       );
     }
+  }
+  async verifyCalendarWidget() {
+    await executeStep(this.calendarWidget, 'click', 'Click on Calendar widget');
+    const startDateEle = await this.startDate.innerText();
+    const endDateEle = await this.endDate.innerText();
+    const presentDate = getTodayDateAndMonth();
+    const endDate = addDaysToCurrentDate(30);
+    await assertContainsValue(
+      presentDate,
+      startDateEle,
+      `Verify Start date :${startDateEle} = Current date:${presentDate}`
+    );
+    await assertContainsValue(
+      endDate,
+      endDateEle,
+      `Verify  End date :${endDateEle} = Current date + 30 days added :${endDate}`
+    );
+    await assertElementEnabled(
+      this.checkBox,
+      'Verify "Active only" checkbox should be enabled by the default'
+    );
+  }
+  async verifyDateSelection() {
+    await executeStep(this.startDate, 'click', 'Click on Start Date');
+    await executeStep(this.endDate, 'click', 'Click on End Date');
+    await executeStep(
+      this.previousPage,
+      'click',
+      'Click on Next page to select earlier Date than the Start date'
+    );
+    await executeStep(
+      this.previousPage,
+      'click',
+      'Click on Next page to select earlier Date than the Start date'
+    );
+    await executeStep(this.previousDate, 'click', 'Click on earlier than the Start date');
+    await assertElementAttributeContains(
+      this.updateBtn,
+      'class',
+      'disabled',
+      'User should NOT be able to select the End date earlier than the Start date'
+    );
+    await executeStep(
+      this.cancelButton,
+      'click',
+      'Verify "Cancel" button should revert all previous changes & restore last confirmed dates selection'
+    );
+    await executeStep(this.calendarWidget, 'click', 'Click on Calendar widget');
+    await executeStep(this.dateCell(todayDate()), 'click', 'Select one date in start date');
+    await executeStep(this.dateCell(19), 'click', 'Select one date in start date');
+    await executeStep(this.updateBtn, 'click', 'Click on Update button ');
+    await this.verifyFilteredData();
   }
 };
