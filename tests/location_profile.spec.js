@@ -23,10 +23,10 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await flowsheetPage.changeLocation(locationId, locationText);
     await locationProfilePage.clickOnLocationProfile();
   });
-  test('TC_C57119 : Verify Location Profile page elements', async () => {
+  test('Test_C57119 : Verify Location Profile page elements', async () => {
     await locationProfilePage.verifyTabs();
   });
-  test('TC_C57120 : Verify Use Equipment Checklist functionality', async () => {
+  test('Test_C57120 : Verify Use Equipment Checklist functionality', async () => {
     await locationProfilePage.assertEquipmentCheckList();
     await flowsheetCardAndTab.assertCheckBox();
     await assertElementNotVisible(
@@ -73,24 +73,25 @@ test.describe('Performing actions on Location Profile Tab', () => {
     );
     await flowsheetCardAndTab.dateSelectModalCheckingAndAssertRooms();
   });
-
-  test("C57126 Check 'Flowsheets Groups' Tab elements", async () => {
-    await test.step("Check the 'Flowsheets Groups' page structure", async () => {
-      await locationProfilePage.verifyAddOnesEmailRecipients();
+  test.describe('Flowsheets Groups Tab ', () => {
+    test("Test_C57126 Check 'Flowsheets Groups' Tab elements", async () => {
+      await test.step("Check the 'Flowsheets Groups' page structure", async () => {
+        await locationProfilePage.verifyAddOnesEmailRecipients();
+      });
+      await test.step('Make sure that all added Groups can be removed from the list (remove icon is present)', async () => {
+        await locationProfilePage.verifyGroupsCanBeRemoved();
+      });
     });
-    await test.step('Make sure that all added Groups can be removed from the list (remove icon is present)', async () => {
-      await locationProfilePage.verifyGroupsCanBeRemoved();
+
+    test('Test_C57127 Check Adding Groups functionality', async () => {
+      await locationProfilePage.clickOnFlowsheetGroups();
+      await locationProfilePage.addingGroupFunctionality();
     });
-  });
 
-  test('C57127 Check Adding Groups functionality', async () => {
-    await locationProfilePage.clickOnFlowsheetGroups();
-    await locationProfilePage.addingGroupFunctionality();
-  });
-
-  test('C57128 Check Removing Groups functionality', async () => {
-    await locationProfilePage.clickOnFlowsheetGroups();
-    await locationProfilePage.removingGroupFunctionality();
+    test('Test_C57128 Check Removing Groups functionality', async () => {
+      await locationProfilePage.clickOnFlowsheetGroups();
+      await locationProfilePage.removingGroupFunctionality();
+    });
   });
 
   test('Test_C57123 Check "Add Ons Email Recipients" Tab elements' , async () => {
