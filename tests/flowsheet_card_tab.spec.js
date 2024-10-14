@@ -139,7 +139,8 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
       indexPage.navigator_data.second_job_no,
-      indexPage.navigator_data.second_job_no
+      indexPage.navigator_data.second_job_no,
+      true
     );
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(
@@ -155,7 +156,8 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
       indexPage.navigator_data.second_job_no,
-      indexPage.navigator_data.second_job_no
+      indexPage.navigator_data.second_job_no,
+      true
     );
     await page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await assertElementVisible(
