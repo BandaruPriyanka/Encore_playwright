@@ -1,6 +1,5 @@
 const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
-const lighthouseData = require('../data/lighthouse.json');
 const {
   assertElementVisible,
   assertElementAttributeContains,
@@ -35,8 +34,8 @@ test.describe('LightHouse Chat Search', () => {
     await assertElementAttributeContains(
       chatpage.searchChat_Field,
       'placeholder',
-      lighthouseData.ChatPlaceholder,
-      `Verify that the Search Chat Field contains the placeholder text: "${lighthouseData.ChatPlaceholder}"`
+      indexPage.lighthouse_data.ChatPlaceholder,
+      `Verify that the Search Chat Field contains the placeholder text: "${indexPage.lighthouse_data.ChatPlaceholder}"`
     );
     await chatpage.verifyingSearchFieldWithData(
       indexPage.lighthouse_data.ChatRandomText,
@@ -46,7 +45,7 @@ test.describe('LightHouse Chat Search', () => {
     );
   });
 
-  test.only('Test_C56931: Create New Chat / Add participant / Leave Chat', async () => {
+  test('Test_C56931: Create New Chat / Add participant / Leave Chat', async () => {
     await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
     await chatpage.createNewChat(indexPage.lighthouse_data.count);
     await chatpage.AddParticipants(

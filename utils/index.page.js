@@ -10,6 +10,7 @@ import { ChatPage } from '../pageobjects/chats/chats.page';
 import { ProfilePage } from '../pageobjects/myprofile/profile.page';
 import { NotificationPage } from '../pageobjects/myprofile/notification.page';
 import { LocationProfile } from '../pageobjects/locationprofile/locationprofile.page';
+import { EventAgendas } from '../pageobjects/agendas/agendas.page';
 
 //datafile
 import api_data from '../data/apidata.json';
@@ -32,5 +33,6 @@ export {
   api_data,
   lighthouse_data,
   navigator_data,
-  opportunity_data
+  opportunity_data,
+  EventAgendas
 };
