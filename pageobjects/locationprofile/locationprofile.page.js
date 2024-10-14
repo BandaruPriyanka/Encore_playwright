@@ -65,7 +65,9 @@ exports.LocationProfile = class LocationProfile {
     this.locationHeader = this.page.locator('//app-profile-header');
     this.groupList = this.page.locator("//th[text()='Group name']");
     this.daysExpire = this.isMobile
-      ? this.page.locator("//span[normalize-space()='Create']/parent::button/preceding-sibling::span[normalize-space()='Days until expiration:']")
+      ? this.page.locator(
+          "//span[normalize-space()='Create']/parent::button/preceding-sibling::span[normalize-space()='Days until expiration:']"
+        )
       : this.page.locator("//th[text()='Days until expiration']");
     this.addGrpField = this.page.locator("//input[@placeholder='Add Group']");
     this.createButton = this.page.locator("//span[normalize-space()='Create']//parent::button");
@@ -236,7 +238,10 @@ exports.LocationProfile = class LocationProfile {
   }
 
   async removingGroupFunctionality() {
-    await assertElementVisible(this.locationHeader, "Verify The 'Flowsheet Groups' page Header is Visible");
+    await assertElementVisible(
+      this.locationHeader,
+      "Verify The 'Flowsheet Groups' page Header is Visible"
+    );
     await executeStep(
       this.binIcon(indexPage.lighthouse_data.groupName),
       'click',

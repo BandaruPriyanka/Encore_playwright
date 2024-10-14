@@ -40,7 +40,9 @@ exports.CustomersPage = class CustomersPage {
     this.previousweekIcon = this.page.locator("//icon[@title='Previous week']");
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
     this.customerCard = this.page.locator("//div[text()='Angelina Wood']");
-    this.opportunityList = this.page.locator("//div[text()='Angelina Wood']//ancestor::mat-expansion-panel-header/following::div[contains(@class,'e2e_customer_card_opportunity')][1]");
+    this.opportunityList = this.page.locator(
+      "//div[text()='Angelina Wood']//ancestor::mat-expansion-panel-header/following::div[contains(@class,'e2e_customer_card_opportunity')][1]"
+    );
     this.getRoomName = this.page.locator("((//div[@role='region']/div/div/div)[1]/div/span)[1]");
     this.orderName = this.page.locator("//span[contains(@class,'e2e_opportunity_order_name')]");
     this.customerName = this.page.locator(
@@ -110,7 +112,9 @@ exports.CustomersPage = class CustomersPage {
       "//div[contains(text(),'Touchpoints')]/following-sibling::div"
     );
     this.dateElement = date => this.page.locator(`//span[text()='` + date + `']`);
-    this.firstOrderDiv = this.page.locator("//div[text()='Angelina Wood']//ancestor::mat-expansion-panel-header/following::div[contains(@class,'e2e_customer_card_opportunity')][1]");
+    this.firstOrderDiv = this.page.locator(
+      "//div[text()='Angelina Wood']//ancestor::mat-expansion-panel-header/following::div[contains(@class,'e2e_customer_card_opportunity')][1]"
+    );
     this.cardsDiv = this.page.locator("//div[@role='region']/div");
     this.dynamicOpportunity = orderName =>
       this.page.locator(`//span[contains(text(),'${orderName}')]/../..`);
@@ -184,7 +188,7 @@ exports.CustomersPage = class CustomersPage {
         `Verify customer counts before and after clearing search: expected "${beforeCustomerCount}", actual "${afterCustomerCount}"`
       );
     } catch {
-      test.info("'Loading issue....'")
+      test.info("'Loading issue....'");
     }
     await test.step('Verify that scrolling works properly', async () => {
       await this.scrollAction();
@@ -228,9 +232,9 @@ exports.CustomersPage = class CustomersPage {
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const customerCount = await this.listOfCustomers.count();
     try {
-      await assertGreaterThan(customerCount,0,"Verify that the customers are present");
-    }catch {
-      test.info("No customers found");
+      await assertGreaterThan(customerCount, 0, 'Verify that the customers are present');
+    } catch {
+      test.info('No customers found');
     }
   }
   async assertCalendarHasDates() {
