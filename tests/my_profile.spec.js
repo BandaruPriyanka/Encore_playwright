@@ -206,12 +206,6 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await notificationPage.verifyRemovingLocation();
   });
 
-  test.skip("Test_C57114 Verify 'Favourite Slot' selection", async () => {
-    await profilePage.assertInitialFavouriteMenuSlot();
-    await profilePage.changeMenuSlot1ToFavouriteSlot();
-    await profilePage.restoreToSelectedMenuSlot();
-  });
-
   test("TC_C57112 Verify 'Time Display' selection", async () => {
     await profilePage.assertTimeDisplayValue();
     await profilePage.assertInitialTimeFormatForElements();

@@ -85,7 +85,7 @@ module.exports = defineConfig({
         'tests/chats.spec.js',
         'tests/my_profile.spec.js',
         'tests/location_profile.spec.js',
-        'tests/event_agendas.spec.js'
+        'tests/lhs_event_agendas.spec.js'
       ],
        //dependencies: ['global_setup','create_data1']
     },
@@ -133,7 +133,7 @@ module.exports = defineConfig({
         'tests/chats.spec.js',
         'tests/my_profile.spec.js',
         'tests/location_profile.spec.js',
-        'tests/event_agendas.spec.js'
+        'tests/lhs_event_agendas.spec.js'
       ]
       // dependencies: ['global_setup', 'create_data1']
     },
@@ -152,7 +152,7 @@ module.exports = defineConfig({
         'tests/chats.spec.js',
         'tests/my_profile.spec.js',
         'tests/location_profile.spec.js',
-        'tests/event_agendas.spec.js'
+        'tests/lhs_event_agendas.spec.js'
       ]
       // dependencies: ['global_setup', 'create_data1']
     }
