@@ -46,7 +46,7 @@ module.exports = defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     actionTimeout: 120000,
-    headless: true,
+    headless: false,
     video: 'on',
     logLevel: 'error',
     screenshot: 'only-on-failure'
@@ -84,7 +84,8 @@ module.exports = defineConfig({
         'tests/customers.spec.js',
         'tests/chats.spec.js',
         'tests/my_profile.spec.js',
-        'tests/location_profile.spec.js'
+        'tests/location_profile.spec.js',
+        'tests/event_agendas.spec.js'
       ],
        //dependencies: ['global_setup','create_data1']
     },
@@ -129,9 +130,10 @@ module.exports = defineConfig({
         'tests/flowsheet_card_tab.spec.js',
         'tests/schedule.spec.js',
         'tests/customers.spec.js',
+        'tests/chats.spec.js',
         'tests/my_profile.spec.js',
         'tests/location_profile.spec.js',
-        'tests/chats.spec.js'
+        'tests/event_agendas.spec.js'
       ]
       // dependencies: ['global_setup', 'create_data1']
     },
@@ -149,7 +151,8 @@ module.exports = defineConfig({
         'tests/customers.spec.js',
         'tests/chats.spec.js',
         'tests/my_profile.spec.js',
-        'tests/location_profile.spec.js'
+        'tests/location_profile.spec.js',
+        'tests/event_agendas.spec.js'
       ]
       // dependencies: ['global_setup', 'create_data1']
     }
