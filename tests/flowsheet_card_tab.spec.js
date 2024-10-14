@@ -9,7 +9,7 @@ const {
 const utilConst = require('../utils/const');
 require('dotenv').config();
 
-test.describe('LightHouse Flowsheet card and tab operations', () => {
+test.describe('Performing actions on Flowsheet card and tab operations', () => {
   let flowsheetCardAndTab, flowsheetPage, locationId, locationText;
 
   test.beforeEach(async ({ page }) => {
@@ -25,7 +25,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test('Test_C56890 :Verify test data on flowsheet card', async () => {
+  test.only('Test_C56890 :Verify test data on flowsheet card', async () => {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.validateRoomCard(
@@ -41,7 +41,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     }
   });
 
-  test('Test_C56910: Verify contacts tab', async ({ page }) => {
+  test.only('Test_C56910: Verify contacts tab', async ({ page }) => {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
     await assertElementVisible(
@@ -109,7 +109,7 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     });
   });
 
-  test('Test_C56908 : Verify Notes Tab', async () => {
+  test.only('Test_C56908 : Verify Notes Tab', async () => {
     await flowsheetCardAndTab.assertNotesTab(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no

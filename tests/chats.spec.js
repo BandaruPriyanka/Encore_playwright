@@ -6,7 +6,7 @@ const {
   clickRemindMeTomorrowButton
 } = require('../utils/helper');
 
-test.describe('LightHouse Chat Search', () => {
+test.describe('Performing actions on Chat Search', () => {
   let chatpage, flowsheetPage, locationId, locationText;
 
   test.beforeEach(async ({ page }) => {
@@ -21,7 +21,7 @@ test.describe('LightHouse Chat Search', () => {
     await flowsheetPage.changeLocation(locationId, locationText);
   });
 
-  test('Test_C56930: Verify chats search', async () => {
+  test.only('Test_C56930: Verify chats search', async () => {
     await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
     await assertElementVisible(
       chatpage.participantChatAll,
@@ -45,7 +45,7 @@ test.describe('LightHouse Chat Search', () => {
     );
   });
 
-  test('Test_C56931: Create New Chat / Add participant / Leave Chat', async () => {
+  test.only('Test_C56931: Create New Chat / Add participant / Leave Chat', async () => {
     await chatpage.clickOnChatIcon(indexPage.lighthouse_data.highlightedText);
     await chatpage.createNewChat(indexPage.lighthouse_data.count);
     await chatpage.AddParticipants(

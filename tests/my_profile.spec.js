@@ -39,7 +39,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test('Test_C57103 Verify Menu navigation desktop', async ({ isMobile }) => {
+  test.only('Test_C57103 Verify Menu navigation desktop', async ({ isMobile }) => {
     test.skip(isMobile, 'Skipping Verify Menu navigation on mobile devices');
     await profilePage.verifyingMenuNavigation(
       indexPage.lighthouse_data.expectedProfileText,
@@ -49,7 +49,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     );
   });
 
-  test('Test_C57109 Verify Menu navigation mobile', async ({ isMobile }) => {
+  test.only('Test_C57109 Verify Menu navigation mobile', async ({ isMobile }) => {
     test.skip(!isMobile, 'Skipping Flowsheet status on desktop devices');
     await profilePage.verifyingMenuNavigation(
       indexPage.lighthouse_data.expectedProfileText,
@@ -58,7 +58,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
       indexPage.lighthouse_data.expectedDashboardText
     );
   });
-  test('Test_C57104: Check General Tab elements', async ({ page }) => {
+  test.only('Test_C57104: Check General Tab elements', async ({ page }) => {
     await assertElementVisible(profilePage.generalTab, 'Verify General Tab is opened by default');
     await test.step('Verify General page should consist of Profile, Preferences, More Options/Default Screen modules', async () => {
       await Promise.all([
@@ -154,23 +154,23 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
       'Verify that the "Selected location change" button is not visible'
     );
   });
-  test('Test_C57108 Check "Equipment Display Choice" selection', async () => {
+  test.only('Test_C57108 Check "Equipment Display Choice" selection', async () => {
     await profilePage.assertEquipmentByIntialDisplayValue();
     await profilePage.assertEquipmentByChangedDisplayValue();
     await profilePage.changeEquipmentDisplayChoiceToInitialValue();
   });
-  test('Test_C57110 Check "Default Schedule View" selection', async () => {
+  test.only('Test_C57110 Check "Default Schedule View" selection', async () => {
     await profilePage.assertInitialDefaultSheduleView();
     await profilePage.assertDefaultScheduleViewAfterChange();
     await profilePage.changeScheduleViewValueToIntialValue();
   });
-  test('Test_C57107 Check "Language" selection', async () => {
+  test.only('Test_C57107 Check "Language" selection', async () => {
     await profilePage.assertInitialLanguageValue();
     await profilePage.assertUpdateLanguageToSpanish();
     await profilePage.assertUpdateLanguageToFrench();
     await profilePage.changeLanguageToIntialValue();
   });
-  test('Test_C57115:Verify Notification Location Tab elements', async () => {
+  test.only('Test_C57115:Verify Notification Location Tab elements', async () => {
     await notificationPage.clickOnNotification();
     await test.step('The Notification Location page should consist : Notification location tab , location list , search field', async () => {
       await assertElementVisible(notificationPage.notificationLocation, '');
@@ -186,7 +186,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
       await assertElementEnabled(notificationPage.deleteIcon, '');
     });
   });
-  test('Test_C57116:Verify Notification Location search functionality', async () => {
+  test.only('Test_C57116:Verify Notification Location search functionality', async () => {
     await notificationPage.clickOnNotification();
     await assertElementVisible(
       notificationPage.addLocation,

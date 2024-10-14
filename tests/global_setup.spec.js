@@ -9,7 +9,7 @@ const storageStatePath = path.join(__dirname, '../data/storageState.json');
 if (fs.existsSync(storageStatePath)) {
   fs.writeFileSync(storageStatePath, JSON.stringify({}), 'utf-8');
 } else {
-  console.log(`No storage state file found at: ${storageStatePath}, it will be created.`);
+  test.info(`No storage state file found at: ${storageStatePath}, it will be created.`);
 }
 test.describe('LightHouse Operations', () => {
   let lighthouseLogin, flowsheetSearch;
@@ -28,7 +28,7 @@ test.describe('LightHouse Operations', () => {
     if (currentUrl.includes(process.env.lighthouseUrl)) {
       await page.context().storageState({ path: storageStatePath });
     } else {
-      console.log(`Skipping session storage for this URL: ${currentUrl}`);
+      test.info(`Skipping session storage for this URL: ${currentUrl}`);
     }
   });
 });
