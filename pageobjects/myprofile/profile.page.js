@@ -2,7 +2,7 @@ const { executeStep } = require('../../utils/action');
 const indexPage = require('../../utils/index.page');
 const utilConst = require('../../utils/const');
 const fs = require('node:fs/promises');
-const { test, expect } = require('@playwright/test');
+const { test} = require('@playwright/test');
 const {
   assertElementVisible,
   assertContainsValue,
@@ -223,7 +223,6 @@ exports.ProfilePage = class ProfilePage {
       "(//span[contains(@class,'e2e_navigation_item_title')])[1]"
     );
     this.navigationElementsLocator = "//span[contains(@class,'e2e_navigation_item_title')]";
-    // C57114
     this.initialFavouriteMenuSlot = this.isMobile
       ? this.page.locator("//div[text()='Menu Slot 3']//following-sibling::div")
       : this.page.locator("(//div[contains(@class,'e2e_profile_content_favorite')])[3]");

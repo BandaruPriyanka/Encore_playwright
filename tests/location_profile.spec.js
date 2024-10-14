@@ -94,7 +94,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     });
   });
 
-  test.only('Test_C57123 Check "Add Ons Email Recipients" Tab elements' , async () => {
+  test('Test_C57123 Check "Add Ons Email Recipients" Tab elements' , async () => {
     await locationProfilePage.verifyAddOnsEmailRecipientsElements();
   });
 

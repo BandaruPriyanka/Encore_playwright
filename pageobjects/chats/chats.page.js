@@ -1,5 +1,5 @@
 const { executeStep } = require('../../utils/action');
-const { expect, test } = require('@playwright/test');
+const { test } = require('@playwright/test');
 const indexPage = require('../../utils/index.page');
 require('dotenv').config();
 const atob = require('atob');

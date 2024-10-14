@@ -4,7 +4,6 @@ const {
   assertElementNotVisible,
   scrollElement
 } = require('../../utils/helper');
-const utilConst = require('../../utils/const');
 const indexPage = require('../../utils/index.page');
 const { test } = require('@playwright/test');
 exports.NotificationPage = class NotificationPage {
@@ -29,7 +28,7 @@ exports.NotificationPage = class NotificationPage {
     this.exisitingLocation = this.page.locator("(//table[@id='location-tbl']//tbody//tr//div)[1]");
     this.searchExistingLocation = location =>
       this.page.locator(
-        `//table[@id='location-tbl']//tbody//tr//div[contains(text(),'` + location + `')]`
+        `//table[@id='location-tbl']//tbody//tr//div[contains(text(),"` + location + `")]`
       );
     this.selectLocation = this.page.locator("(//div[@role='listbox']/mat-option)[1]");
   }

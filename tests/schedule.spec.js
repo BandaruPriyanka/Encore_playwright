@@ -18,7 +18,7 @@ test.describe('Performing actions on Schedule Tab', () => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
   });
 
-  test.only('Test_C56915: Verify Actions on My Schedule', async () => {
+  test('Test_C56915: Verify Actions on My Schedule', async () => {
     await schedulePage.actionsOnSchedule();
   });
 

@@ -25,7 +25,7 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test.only('Test_C56890 :Verify test data on flowsheet card', async () => {
+  test('Test_C56890 :Verify test data on flowsheet card', async () => {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.validateRoomCard(
@@ -41,7 +41,7 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
     }
   });
 
-  test.only('Test_C56910: Verify contacts tab', async ({ page }) => {
+  test('Test_C56910: Verify contacts tab', async ({ page }) => {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
     await assertElementVisible(
@@ -109,7 +109,7 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
     });
   });
 
-  test.only('Test_C56908 : Verify Notes Tab', async () => {
+  test('Test_C56908 : Verify Notes Tab', async () => {
     await flowsheetCardAndTab.assertNotesTab(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no

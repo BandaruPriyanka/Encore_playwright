@@ -270,7 +270,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   }
 
   async clickOnJob(jobId) {
-    await executeStep(this.jobIdElement(jobId), 'click', 'Click the room div');
+    await executeStep(this.jobIdElement(jobId), 'click', 'Click the customer from list');
   }
 
   async performSearchFunction(searchText, jobId) {
