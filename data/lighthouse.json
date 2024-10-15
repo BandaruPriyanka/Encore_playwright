@@ -82,5 +82,6 @@
   "expirationDays" : "7",
   "addOnEmail" : "test@gmail.com",
   "addOnEmailRecipients" : "Add Ons Email Recipients",
-  "invalidEmail" : "testing.gmail.com"
+  "invalidEmail" : "testing.gmail.com",
+  "grpField":"test"
 }
