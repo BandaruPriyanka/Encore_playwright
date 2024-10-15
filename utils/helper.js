@@ -188,12 +188,6 @@ function addDaysToCurrentDate(days) {
   today.setDate(today.getDate() + days);
   return formatDate(today);
 }
-function getDateBasedOnDays(days) {
-  const today = new Date();
-  today.setDate(today.getDate() + days);
-  const getDate = today.getDate();
-  return getDate;
-}
 function getPreviousWeekDateAndMonth() {
   const today = new Date();
   const previousWeek = new Date(today);

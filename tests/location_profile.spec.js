@@ -101,7 +101,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
   test('Test_C57124: Verify Adding emails functionality', async ({ page }) => {
     await locationProfilePage.assertEmailRecipients();
     await locationProfilePage.assertEmailInput();
-    await flowsheetCardAndTab.createAddOn(https://github.com/BandaruPriyanka/Encore_playwright/pull/78/conflict?name=tests%252Flocation_profile.spec.js&ancestor_oid=febf19bf0f7b82316b2b1f246910cf90951a0d4a&base_oid=ec6c989374841c5f1be547b2794d0dd41132c913&head_oid=245c72932eb15e046a4e7829b00c4ef56eb608e9
+    await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no,
