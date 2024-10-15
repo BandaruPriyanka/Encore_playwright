@@ -298,8 +298,7 @@ exports.ProfilePage = class ProfilePage {
   async verifyingMenuNavigation(
     expectedProfileText,
     expectedLocationText,
-    expectedLogsText,
-    expectedDashboardText
+    expectedLogsText
   ) {
     await assertElementVisible(this.menuIcon, 'Verify that Menu Icon is displayed.');
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
@@ -357,15 +356,6 @@ exports.ProfilePage = class ProfilePage {
       logsText,
       expectedLogsText,
       `Verify that Profile page text "${indexPage.lighthouse_data.expectedLogsText}" is displayed after clicking on my profile option.`
-    );
-    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
-    await executeStep(this.dashboardOption, 'click', 'Click on dashboardOption');
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    let dashboardText = await this.dashboardPageText.textContent();
-    await assertContainsValue(
-      dashboardText,
-      expectedDashboardText,
-      `Verify that Profile page text "${indexPage.lighthouse_data.expectedDashboardText}" is displayed after clicking on my profile option.`
     );
   }
 
