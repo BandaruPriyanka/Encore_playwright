@@ -61,4 +61,4 @@ exports.DashboardPage = class DashboardPage {
     });
     await assertElementNotVisible(this.additionsCaptureSelectBtn, "Verify the 'Additions Captured' widget should NOT be displayed on the Dashboard page.");
   }
-}
+};

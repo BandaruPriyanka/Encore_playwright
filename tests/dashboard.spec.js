@@ -27,3 +27,4 @@ test.describe('Dashboard', () => {
     await dashboardPage.removeWidgets();
   })
 });
+

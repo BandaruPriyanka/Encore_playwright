@@ -89,9 +89,10 @@ exports.LocationProfile = class LocationProfile {
     );
     this.groupName = name =>
       this.page.locator(`//ul[@role='list']//span[normalize-space()='` + name + `']`);
-    this.areYouSurePop = this.page.locator("//app-confirm-dialog//p[normalize-space()='Are you sure?']");
-    this.emailRecipientsIcon = this.isMobile ? this.page.locator("(//icon[@name='letter_line'])[1]") 
-              : this.page.locator("(//icon[@name='letter_line'])[2]");
+    this.areYouSurePop = this.page.locator("//p[normalize-space()='Are you sure?']");
+    this.emailRecipientsIcon = this.isMobile
+      ? this.page.locator("(//icon[@name='letter_line'])[1]")
+      : this.page.locator("(//icon[@name='letter_line'])[2]");
     this.locationHeader = this.page.locator("//span[contains(@class,'e2e_selected_location')]");
     this.headerTitle = this.page.locator("//div[contains(@class,'e2e_profile_header_title')]");
     this.emailRecipientsList = this.page.locator(
@@ -101,7 +102,6 @@ exports.LocationProfile = class LocationProfile {
     this.deleteIcon = email =>
       this.page.locator(`//div[contains(text(),'${email}')]/../../following-sibling::div/icon`);
     this.confirmationModal = this.page.locator('//app-confirm-dialog');
-    //C57121
     this.notifyUsOfJobChangesDiv = this.isMobile
       ? this.page.locator("(//div[contains(@class,'e2e_user_profile_job_changes')])[2]")
       : this.page.locator("(//div[contains(@class,'e2e_user_profile_job_changes')])[1]");
@@ -348,6 +348,16 @@ exports.LocationProfile = class LocationProfile {
         "Verify that the 'Email recipients list' is visible"
       );
     }
+    await executeStep(
+      this.deleteIcon(indexPage.lighthouse_data.addOnEmail),
+      'click',
+      'Delete the email'
+    );
+    await executeStep(this.yesButton, 'click', 'Click on yes button');
+    await assertElementNotVisible(
+      this.emailRecipientsList,
+      'Verify that all added emails can be removed from the list'
+    );
     await assertElementVisible(this.addEmail,"Verify that the 'Footer Field' is visible");
     await executeStep(this.deleteIcon(indexPage.lighthouse_data.addOnEmail),"click","Delete the email");
     await executeStep(this.yesButton,"click","Click on yes button");
