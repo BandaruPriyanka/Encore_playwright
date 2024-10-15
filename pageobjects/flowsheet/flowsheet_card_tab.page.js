@@ -1208,17 +1208,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await createDataPage.searchWithJobId();
     if (scenario === 'positive') {
       await assertElementVisible(
-        createDataPage.statusOfJobInNavigator(
-          indexPage.lighthouse_data.confirmed,
-          `Verify that the status of the job (${indexPage.lighthouse_data.confirmed}) is visible in Navigator`
-        )
+        createDataPage.statusOfJob(indexPage.lighthouse_data.confirmed),
+        `Verify that the status of the job (${indexPage.lighthouse_data.confirmed}) is visible in Navigator`
       );
     } else {
       await assertElementVisible(
-        createDataPage.statusOfJobInNavigator(
-          indexPage.lighthouse_data.cancel,
-          `Verify that the status of the job (${indexPage.lighthouse_data.cancel}) is visible in Navigator`
-        )
+        createDataPage.statusOfJob(indexPage.lighthouse_data.cancel),
+        `Verify that the status of the job (${indexPage.lighthouse_data.cancel}) is visible in Navigator`
       );
     }
   }
