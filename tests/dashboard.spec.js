@@ -17,12 +17,12 @@ test.describe('Dashboard', () => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
   });
 
-  test("Test_C57130 : Check Adding widgets functionality",async ()=>{
+  test.only("Test_C57130 : Check Adding widgets functionality",async ()=>{
     await dashboardPage.navigateToDashboard();
     await dashboardPage.addingWidgets();
   })
 
-  test("Test_C57150 : Check Removing widgets functionality",async ()=>{
+  test.only("Test_C57150 : Check Removing widgets functionality",async ()=>{
     await dashboardPage.navigateToDashboard();
     await dashboardPage.removeWidgets();
   })
