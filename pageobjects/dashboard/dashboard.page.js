@@ -7,4 +7,4 @@ exports.DashboardPage = class DashboardPage {
     this.page = page;
     this.isMobile = this.page.context()._options.isMobile;
   }
-}
+};

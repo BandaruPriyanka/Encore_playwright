@@ -187,6 +187,12 @@ function getDateBasedOnDays(days) {
   const getDate = today.getDate();
   return getDate;
 }
+function getDayNameBasedOnDays(days) {
+  const today = new Date();
+  today.setDate(today.getDate() + days);
+  const options = { weekday: 'long' };
+  return today.toLocaleDateString('default', options);
+}
 function getPreviousWeekDateAndMonth() {
   const today = new Date();
   const previousWeek = new Date(today);
@@ -464,7 +470,37 @@ function extractTime(text) {
   const match = text.match(timeRegex);
   return match ? match[0] : 'Time not found';
 }
+function getLastWeekRange() {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const lastSundayOffset = dayOfWeek === 0 ? -7 : -(dayOfWeek + 0);
+  const startDate = addDaysToCurrentDate(lastSundayOffset); // Last week's Sunday
+  const endDate = addDaysToCurrentDate(lastSundayOffset + 6); // Last week's Saturday
+  return { startDate, endDate };
+}
 
+function getWeekBeforeLastRange() {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const weekBeforeLastSundayOffset = dayOfWeek === 0 ? -14 : -(dayOfWeek + 7);
+  const startDate = addDaysToCurrentDate(weekBeforeLastSundayOffset);
+  const endDate = addDaysToCurrentDate(weekBeforeLastSundayOffset + 6);
+  return { startDate, endDate };
+}
+
+function getCurrentMonthRange() {
+  const today = new Date();
+  const startDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1)); // First day of the month
+  const endDate = formatDate(new Date(today.getFullYear(), today.getMonth() + 1, 0)); // Last day of the month
+  return { startDate, endDate };
+}
+
+function getPreviousMonthRange() {
+  const today = new Date();
+  const startDate = formatDate(new Date(today.getFullYear(), today.getMonth() - 1, 1)); // First day of previous month
+  const endDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0)); // Last day of previous month
+  return { startDate, endDate };
+}
 module.exports = {
   getTodayDate,
   generateRandString,
@@ -527,5 +563,10 @@ module.exports = {
   clickRemindMeTomorrowButton,
   checkTimeFormat,
   extractTime,
-  getDateBasedOnDays
+  getDateBasedOnDays,
+  getDayNameBasedOnDays,
+  getLastWeekRange,
+  getWeekBeforeLastRange,
+  getCurrentMonthRange,
+  getPreviousMonthRange
 };

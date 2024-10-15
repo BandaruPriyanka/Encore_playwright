@@ -94,7 +94,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     });
   });
 
-  test('Test_C57123 Check "Add Ons Email Recipients" Tab elements' , async () => {
+  test('Test_C57123 Check "Add Ons Email Recipients" Tab elements', async () => {
     await locationProfilePage.verifyAddOnsEmailRecipientsElements();
   });
 
@@ -117,7 +117,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test('Test_C57125 	Check Removing emails functionality', async ({page}) => {
+  test('Test_C57125 	Check Removing emails functionality', async ({ page }) => {
     await locationProfilePage.assertEmailRecipients();
     await locationProfilePage.deleteEmail();
     await flowsheetCardAndTab.createAddOn(
@@ -134,5 +134,5 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.positive);
     await flowsheetCardAndTab.assertRoomCountAfterAddOn();
     await page.waitForTimeout(parseInt(process.env.small_timeout));
-  })
+  });
 });

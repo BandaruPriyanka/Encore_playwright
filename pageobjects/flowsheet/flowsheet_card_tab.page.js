@@ -412,12 +412,12 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     }
   }
 
-  async discountChecking(invalidDiscount, validDiscount,isNecessary) {
+  async discountChecking(invalidDiscount, validDiscount, isNecessary) {
     await executeStep(this.discountInput, 'fill', 'Enter the discount percentage', [
       invalidDiscount
     ]);
     await this.discountInput.hover();
-    if(isNecessary) {
+    if (isNecessary) {
       await assertElementVisible(
         this.discountInvalidMsg,
         'Verify proper validation message should be displayed for discount.'
@@ -1111,7 +1111,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
   }
 
-  async createAddOn(docusignValue, searchText, jobId,isNecessary) {
+  async createAddOn(docusignValue, searchText, jobId, isNecessary) {
     await this.verifyDocusignStatus(docusignValue, searchText, jobId);
     await this.addOnFunction(
       indexPage.lighthouse_data.requestedBy,
@@ -1120,7 +1120,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       indexPage.lighthouse_data.invalidQuantity,
       indexPage.lighthouse_data.validQuantity
     );
-    await this.discountChecking(invalidDiscountGenerator(), validDiscountGenerator(),isNecessary);
+    await this.discountChecking(invalidDiscountGenerator(), validDiscountGenerator(), isNecessary);
     await this.dateSelectModal(true);
     await this.page.waitForTimeout(parseInt(process.env.default_timeout));
   }

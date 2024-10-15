@@ -17,7 +17,7 @@ module.exports = defineConfig({
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-   forbidOnly: !!process.env.CI,
+  forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
@@ -86,8 +86,8 @@ module.exports = defineConfig({
         'tests/my_profile.spec.js',
         'tests/location_profile.spec.js',
         'tests/lhs_event_agendas.spec.js'
-      ],
-       //dependencies: ['global_setup','create_data1']
+      ]
+      //dependencies: ['global_setup','create_data1']
     },
     {
       name: 'docusign_disabled_all_Desktop_Chrome',

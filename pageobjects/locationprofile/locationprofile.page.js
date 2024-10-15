@@ -87,14 +87,18 @@ exports.LocationProfile = class LocationProfile {
     this.groupName = name =>
       this.page.locator(`//ul[@role='list']//span[normalize-space()='` + name + `']`);
     this.areYouSurePop = this.page.locator("//p[normalize-space()='Are you sure?']");
-    this.emailRecipientsIcon = this.isMobile ? this.page.locator("(//icon[@name='letter_line'])[1]") 
-              : this.page.locator("(//icon[@name='letter_line'])[2]");
+    this.emailRecipientsIcon = this.isMobile
+      ? this.page.locator("(//icon[@name='letter_line'])[1]")
+      : this.page.locator("(//icon[@name='letter_line'])[2]");
     this.locationHeader = this.page.locator("//span[contains(@class,'e2e_selected_location')]");
     this.headerTitle = this.page.locator("//div[contains(@class,'e2e_profile_header_title')]");
-    this.emailRecipientsList = this.page.locator("//div[contains(@class,'e2e_recipients_row_name')]");
-    this.emailDiv = (email) => this.page.locator(`//div[contains(text(),'${email}')]`);
-    this.deleteIcon = (email) => this.page.locator(`//div[contains(text(),'${email}')]/../../following-sibling::div/icon`)
-    this.confirmationModal = this.page.locator("//app-confirm-dialog");
+    this.emailRecipientsList = this.page.locator(
+      "//div[contains(@class,'e2e_recipients_row_name')]"
+    );
+    this.emailDiv = email => this.page.locator(`//div[contains(text(),'${email}')]`);
+    this.deleteIcon = email =>
+      this.page.locator(`//div[contains(text(),'${email}')]/../../following-sibling::div/icon`);
+    this.confirmationModal = this.page.locator('//app-confirm-dialog');
   }
   getDynamicLocator = (label, index) => {
     return this.page.locator(`(//span[normalize-space()='${label}']//parent::li)[${index}]`);
@@ -295,70 +299,139 @@ exports.LocationProfile = class LocationProfile {
   }
 
   async verifyAddOnsEmailRecipientsElements() {
-    await executeStep(this.emailRecipientsIcon,"click","Click on 'Email Recipient'");
-    await assertElementVisible(this.locationHeader,"Verify that the 'Location header' is visible");
+    await executeStep(this.emailRecipientsIcon, 'click', "Click on 'Email Recipient'");
+    await assertElementVisible(this.locationHeader, "Verify that the 'Location header' is visible");
     try {
-      await assertElementVisible(this.emailRecipientsList,"Verify that the 'Email recipients list' is visible");
-    }catch {
-      await executeStep(this.addEmail,"fill","Enter the email",[indexPage.lighthouse_data.addOnEmail]);
-      await executeStep(this.addBtn,"click","Click on add button");
+      await assertElementVisible(
+        this.emailRecipientsList,
+        "Verify that the 'Email recipients list' is visible"
+      );
+    } catch {
+      await executeStep(this.addEmail, 'fill', 'Enter the email', [
+        indexPage.lighthouse_data.addOnEmail
+      ]);
+      await executeStep(this.addBtn, 'click', 'Click on add button');
       await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-      await assertElementVisible(this.emailRecipientsList,"Verify that the 'Email recipients list' is visible");
+      await assertElementVisible(
+        this.emailRecipientsList,
+        "Verify that the 'Email recipients list' is visible"
+      );
     }
-    await executeStep(this.deleteIcon(indexPage.lighthouse_data.addOnEmail),"click","Delete the email");
-    await executeStep(this.yesButton,"click","Click on yes button");
-    await assertElementNotVisible(this.emailRecipientsList,'Verify that all added emails can be removed from the list');
+    await executeStep(
+      this.deleteIcon(indexPage.lighthouse_data.addOnEmail),
+      'click',
+      'Delete the email'
+    );
+    await executeStep(this.yesButton, 'click', 'Click on yes button');
+    await assertElementNotVisible(
+      this.emailRecipientsList,
+      'Verify that all added emails can be removed from the list'
+    );
   }
 
   async assertEmailRecipients() {
-    await executeStep(this.emailRecipientsIcon,"click","Click on 'Email Recipient'");
+    await executeStep(this.emailRecipientsIcon, 'click', "Click on 'Email Recipient'");
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementContainsText(this.headerTitle,indexPage.lighthouse_data.addOnEmailRecipients,"Verify that the 'Add Ons Email Recipients' page should be opened");
+    await assertElementContainsText(
+      this.headerTitle,
+      indexPage.lighthouse_data.addOnEmailRecipients,
+      "Verify that the 'Add Ons Email Recipients' page should be opened"
+    );
   }
 
   async assertEmailInput() {
-    await executeStep(this.addEmail,"click","Click on 'Add email' row");
-    await assertElementFocused(this.addEmail,"Verify that the Cursor should be displayed & the field should be highlighted");
+    await executeStep(this.addEmail, 'click', "Click on 'Add email' row");
+    await assertElementFocused(
+      this.addEmail,
+      'Verify that the Cursor should be displayed & the field should be highlighted'
+    );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.addEmail,"fill","Enter the invalid email",[indexPage.lighthouse_data.invalidEmail]);
+    await executeStep(this.addEmail, 'fill', 'Enter the invalid email', [
+      indexPage.lighthouse_data.invalidEmail
+    ]);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementDisabled(this.addBtn,"Verify that the 'Add button' should be disabled if the email format is invalid.");
-    await executeStep(this.addEmail,"fill","Clear the invalid mail",[""]);
-    await executeStep(this.addEmail,"fill","Enter the valid email",[indexPage.lighthouse_data.addOnEmail]);
+    await assertElementDisabled(
+      this.addBtn,
+      "Verify that the 'Add button' should be disabled if the email format is invalid."
+    );
+    await executeStep(this.addEmail, 'fill', 'Clear the invalid mail', ['']);
+    await executeStep(this.addEmail, 'fill', 'Enter the valid email', [
+      indexPage.lighthouse_data.addOnEmail
+    ]);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementEnabled(this.addBtn,"Verift that 'Add button' should be enabled.");
-    await executeStep(this.addBtn,"click","Click on 'Add Button'");
+    await assertElementEnabled(this.addBtn, "Verift that 'Add button' should be enabled.");
+    await executeStep(this.addBtn, 'click', "Click on 'Add Button'");
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await assertElementVisible(this.emailDiv(indexPage.lighthouse_data.addOnEmail),"Verify that 'Email' should be added to the list successfully.");
+    await assertElementVisible(
+      this.emailDiv(indexPage.lighthouse_data.addOnEmail),
+      "Verify that 'Email' should be added to the list successfully."
+    );
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await assertElementVisible(this.emailDiv(indexPage.lighthouse_data.addOnEmail),"Verify that 'Email' should be added to the list successfully.");
+    await assertElementVisible(
+      this.emailDiv(indexPage.lighthouse_data.addOnEmail),
+      "Verify that 'Email' should be added to the list successfully."
+    );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.flowsheetBtn,"click","Click on Flowsheet Icon");
+    await executeStep(this.flowsheetBtn, 'click', 'Click on Flowsheet Icon');
   }
 
   async deleteEmail() {
     try {
-      await assertElementVisible(this.emailDiv(indexPage.lighthouse_data.addOnEmail),"Verify that 'Email' should be added to the list successfully.");
-    }catch {
-      await executeStep(this.addEmail,"fill","Enter the valid email",[indexPage.lighthouse_data.addOnEmail]);
-      await executeStep(this.addBtn,"click","Click on 'Add Button'");
+      await assertElementVisible(
+        this.emailDiv(indexPage.lighthouse_data.addOnEmail),
+        "Verify that 'Email' should be added to the list successfully."
+      );
+    } catch {
+      await executeStep(this.addEmail, 'fill', 'Enter the valid email', [
+        indexPage.lighthouse_data.addOnEmail
+      ]);
+      await executeStep(this.addBtn, 'click', "Click on 'Add Button'");
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await assertElementVisible(this.emailDiv(indexPage.lighthouse_data.addOnEmail),"Verify that 'Email' should be added to the list successfully.");
+      await assertElementVisible(
+        this.emailDiv(indexPage.lighthouse_data.addOnEmail),
+        "Verify that 'Email' should be added to the list successfully."
+      );
     }
-    await executeStep(this.deleteIcon(indexPage.lighthouse_data.addOnEmail),"click","Click on delete icon");
-    await assertElementVisible(this.confirmationModal,"Verify that 'Confirmation modal' should be displayed.");
-    await executeStep(this.noButton,"click","Click on 'No button'");
-    await assertElementVisible(this.emailDiv(indexPage.lighthouse_data.addOnEmail),"Verify that 'Email' should not be removed.");
+    await executeStep(
+      this.deleteIcon(indexPage.lighthouse_data.addOnEmail),
+      'click',
+      'Click on delete icon'
+    );
+    await assertElementVisible(
+      this.confirmationModal,
+      "Verify that 'Confirmation modal' should be displayed."
+    );
+    await executeStep(this.noButton, 'click', "Click on 'No button'");
+    await assertElementVisible(
+      this.emailDiv(indexPage.lighthouse_data.addOnEmail),
+      "Verify that 'Email' should not be removed."
+    );
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await assertElementVisible(this.emailDiv(indexPage.lighthouse_data.addOnEmail),"Verify that 'Email' should not be removed after reload.");
-    await executeStep(this.deleteIcon(indexPage.lighthouse_data.addOnEmail),"click","Click on delete icon");
-    await assertElementVisible(this.confirmationModal,"Verify that 'Confirmation modal' should be displayed.");
-    await executeStep(this.yesButton,"click","Click on 'Yes Button'");
-    await assertElementNotVisible(this.emailDiv(indexPage.lighthouse_data.addOnEmail),"Verify that 'Email' should be removed from the list successfully.");
+    await assertElementVisible(
+      this.emailDiv(indexPage.lighthouse_data.addOnEmail),
+      "Verify that 'Email' should not be removed after reload."
+    );
+    await executeStep(
+      this.deleteIcon(indexPage.lighthouse_data.addOnEmail),
+      'click',
+      'Click on delete icon'
+    );
+    await assertElementVisible(
+      this.confirmationModal,
+      "Verify that 'Confirmation modal' should be displayed."
+    );
+    await executeStep(this.yesButton, 'click', "Click on 'Yes Button'");
+    await assertElementNotVisible(
+      this.emailDiv(indexPage.lighthouse_data.addOnEmail),
+      "Verify that 'Email' should be removed from the list successfully."
+    );
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await assertElementNotVisible(this.emailDiv(indexPage.lighthouse_data.addOnEmail),"Verify that 'Email' should be removed from the list successfully after reload.");
+    await assertElementNotVisible(
+      this.emailDiv(indexPage.lighthouse_data.addOnEmail),
+      "Verify that 'Email' should be removed from the list successfully after reload."
+    );
   }
 };

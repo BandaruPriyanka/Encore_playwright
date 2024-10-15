@@ -77,10 +77,12 @@
   "12Hours": "12 Hours",
   "24Hours": "24 Hours",
   "groupName": "My Group 1",
-  "mySchedule" : "My Schedule",
-  "teamSchedule" : "Team Schedule",
-  "expirationDays" : "7",
-  "addOnEmail" : "test@gmail.com",
-  "addOnEmailRecipients" : "Add Ons Email Recipients",
-  "invalidEmail" : "testing.gmail.com"
+  "mySchedule": "My Schedule",
+  "teamSchedule": "Team Schedule",
+  "expirationDays": "7",
+  "addOnEmail": "test@gmail.com",
+  "addOnEmailRecipients": "Add Ons Email Recipients",
+  "invalidEmail": "testing.gmail.com",
+  "daysUptoToday": "4",
+  "daysStartingToday": "6"
 }

@@ -25,7 +25,7 @@ test.describe('LightHouse Event Agendas', () => {
   test('Test_C56934 : Verify Event Agendas page elements', async () => {
     await agendasPage.verifyEventAgendasPage();
   });
-  test.skip('Test_C56938	: Verify Event Agendas calendar widget + active checkbox', async () => {
+  test('Test_C56938	: Verify Event Agendas calendar widget + active checkbox', async () => {
     await agendasPage.verifyCalendarWidget();
     await assertElementVisible(agendasPage.calendarModal, 'Calendar modal should be displayed');
     const todayDateEle = todayDate();
@@ -37,5 +37,6 @@ test.describe('LightHouse Event Agendas', () => {
     );
     await assertElementVisible(agendasPage.updateBtn, 'Update button should be displayed');
     await agendasPage.verifyDateSelection();
+    await agendasPage.DateRangeOptions();
   });
 });
