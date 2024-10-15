@@ -7,19 +7,10 @@ const {
   assertEqualValues,
   assertElementNotVisible,
   assertElementEnabled,
-  assertElementDisabled,
   assertElementAttributeContains
 } = require('../utils/helper');
 test.describe('Performing actions on My Profile Tab & Notifications Tab', () => {
-  let profilePage,
-    flowsheetPage,
-    notificationPage,
-    locationId,
-    locationText,
-    lastSyncValue,
-    profileModule,
-    preferencesModule,
-    moreOptionsModule;
+  let profilePage, flowsheetPage, notificationPage, locationId, locationText, lastSyncValue;
 
   test.beforeEach(async ({ page }) => {
     profilePage = new indexPage.ProfilePage(page);
@@ -32,11 +23,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await flowsheetPage.changeLocation(locationId, locationText);
-    await profilePage.navigateToProfileMenu();
-    await page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementVisible(profilePage.myProfileBtn, 'Verify My Profile is visible');
-    await profilePage.navigateToMyProfile();
-    await page.waitForTimeout(parseInt(process.env.small_timeout));
+    await profilePage.myProfileTab();
   });
 
   test('Test_C57103 Verify Menu navigation desktop', async ({ isMobile }) => {
@@ -62,41 +49,59 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await assertElementVisible(profilePage.generalTab, 'Verify General Tab is opened by default');
     await test.step('Verify General page should consist of Profile, Preferences, More Options/Default Screen modules', async () => {
       await Promise.all([
-        assertElementVisible(profilePage.profileModule, 'Verify that the Profile Module is visible'),
-        assertElementVisible(profilePage.preferencesModule, 'Verify that the Preference Module is visible'),
-        assertElementVisible(profilePage.moreOptionsModule, 'Verify that the More Options Module is visible')
+        assertElementVisible(
+          profilePage.profileModule,
+          'Verify that the Profile Module is visible'
+        ),
+        assertElementVisible(
+          profilePage.preferencesModule,
+          'Verify that the Preference Module is visible'
+        ),
+        assertElementVisible(
+          profilePage.moreOptionsModule,
+          'Verify that the More Options Module is visible'
+        )
       ]);
     });
     await test.step('Check the Profile section elements', async () => {
       const elementsToCheck = [
         { element: profilePage.lastSyncText, text: 'Verify Last Synced Field' },
-        { element: profilePage.notificationsAllowedText, text: 'Verify Notifications allowed button' },
+        {
+          element: profilePage.notificationsAllowedText,
+          text: 'Verify Notifications allowed button'
+        },
         { element: profilePage.displayName, text: 'Verify Display Name' },
         { element: profilePage.emailText, text: 'Verify Email Field' },
         { element: profilePage.userNameText, text: 'Verify UserName Field' },
         { element: profilePage.defaultLocationText, text: 'Verify Default Location Field' },
         { element: profilePage.selectedLocationText, text: 'Verify Selected Location Field' }
       ];
-      
-      await Promise.all(elementsToCheck.map(({ element, text }) => assertElementVisible(element, text)));
+
+      await Promise.all(
+        elementsToCheck.map(({ element, text }) => assertElementVisible(element, text))
+      );
     });
-    
 
     await test.step('Check Preference section elements', async () => {
       const elementsToCheck = [
         { element: profilePage.languageElement, text: 'Verify Language Field' },
-        { element: profilePage.equipmentDisplayChoiceElement, text: 'Verify Equipment Display Choice Field' },
+        {
+          element: profilePage.equipmentDisplayChoiceElement,
+          text: 'Verify Equipment Display Choice Field'
+        },
         { element: profilePage.themeElement, text: 'Verify Theme Field' },
         { element: profilePage.timeDisplayElement, text: 'Verify Time Display Field' },
         { element: profilePage.defaultScheduleViewElement, text: 'Verify Default Schedule View' }
-      ]; 
-      await Promise.all(elementsToCheck.map(({ element, text }) => assertElementVisible(element, text)));
+      ];
+      await Promise.all(
+        elementsToCheck.map(({ element, text }) => assertElementVisible(element, text))
+      );
     });
-    
+
     await test.step('Check More Options/Default Screen menu slots', async () => {
       for (let i = 1; i <= 5; i++) {
         const menuSlotElement = profilePage.getMenuSlotElement(i);
-        await assertElementVisible(menuSlotElement, `Verify that Menu slot :${(i)} is visible`);
+        await assertElementVisible(menuSlotElement, `Verify that Menu slot :${i} is visible`);
       }
     });
   });
@@ -211,5 +216,21 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await profilePage.assertInitialTimeFormatForElements();
     await profilePage.changeDisplayTimeValue();
     await profilePage.assertAfterTimeFormatForElements();
+  });
+  test('Test_C57111 : Verify Theme selection', async ({ page }) => {
+    await profilePage.selectDarkTheme();
+    await test.step('Verify that the all elements are displayed in the Dark Theme', async () => {
+      await profilePage.allPageElements();
+      await test.step('Verify that the Theme option should be changed Successfully (ex-to Light)', async () => {
+        await profilePage.updateToLightTheme();
+      });
+      await test.step('Verify that refreshing the page confirms the Light theme was saved properly', async () => {
+        await profilePage.refreshThePage();
+      });
+      await test.step('Verify that the all elements are displayed in the Light Theme', async () => {
+        await profilePage.allElementsInLight();
+      });
+      await profilePage.changeToDefaultColor();
+    });
   });
 });

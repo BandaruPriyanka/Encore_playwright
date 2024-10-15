@@ -152,7 +152,9 @@ test.describe('LightHouse Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.positive);
   });
 
-  test('Test_C56906: Verify Test Add-on creation (Docusign enabled) - Negative flow', async ({page}) => {
+  test('Test_C56906: Verify Test Add-on creation (Docusign enabled) - Negative flow', async ({
+    page
+  }) => {
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
       indexPage.navigator_data.second_job_no,

@@ -19,8 +19,8 @@ exports.EventAgendas = class EventAgendas {
       .first();
     this.searchInput = this.page.locator("input[placeholder='Search by Event Name...']");
     this.filterIcon = this.page.locator("eui-icon[name='filter_bulk']");
-    this.glCentersDropdown = this.page.locator("button.e2e_gl_center_multi_select");
-    this.venuesDropdown = this.page.locator("button.e2e_venues_center_multi_select");
+    this.glCentersDropdown = this.page.locator('button.e2e_gl_center_multi_select');
+    this.venuesDropdown = this.page.locator('button.e2e_venues_center_multi_select');
     this.projectManagerDropdown = this.page.locator('button.e2e_project_managers_multi_select');
     this.checkBox = this.page.locator("input[type='checkbox']");
     this.agendaRows = this.isMobile

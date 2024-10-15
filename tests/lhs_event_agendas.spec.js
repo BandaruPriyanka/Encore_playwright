@@ -3,7 +3,7 @@ const indexPage = require('../utils/index.page');
 const {
   assertElementVisible,
   assertElementAttributeContains,
-  assertElementEnabled,
+  assertElementEnabled
 } = require('../utils/helper');
 
 test.describe('LightHouse Event Agendas', () => {
@@ -25,5 +25,4 @@ test.describe('LightHouse Event Agendas', () => {
     await agendasPage.actionsOnEventAgendas();
     await agendasPage.verifyEventAgendasPage();
   });
-
 });
