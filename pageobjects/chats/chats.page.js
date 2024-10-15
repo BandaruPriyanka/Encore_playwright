@@ -1,5 +1,5 @@
 const { executeStep } = require('../../utils/action');
-const { expect, test } = require('@playwright/test');
+const { test } = require('@playwright/test');
 const indexPage = require('../../utils/index.page');
 require('dotenv').config();
 const atob = require('atob');
@@ -153,8 +153,10 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.createChatButton, 'click', 'Click on createChatButton');
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const quantity = await this.quantityCount.textContent();
-    await assertIsNumber(parseInt(quantity),`Verify that the quantity should be updated properly(${quantity})`)
-
+    await assertIsNumber(
+      parseInt(quantity),
+      `Verify that the quantity should be updated properly(${quantity})`
+    );
   }
   async AddParticipants(validParticipant, randomdata, demogroup, noresultFound) {
     await executeStep(this.groupIcon, 'click', 'Click on groupIcon');

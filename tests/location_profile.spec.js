@@ -34,7 +34,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
       'Verify that the "Select All checkbox" is not visible'
     );
   });
-  test("Test_C57122 Check 'Use Docusign' functionality", async ({ page }) => {
+  test("Test_C57122: Verify 'Use Docusign' functionality", async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
@@ -83,12 +83,12 @@ test.describe('Performing actions on Location Profile Tab', () => {
       });
     });
 
-    test('Test_C57127 Check Adding Groups functionality', async () => {
+    test('Test_C57127: Check Adding Groups functionality', async () => {
       await locationProfilePage.clickOnFlowsheetGroups();
       await locationProfilePage.addingGroupFunctionality();
     });
 
-    test('Test_C57128 Check Removing Groups functionality', async () => {
+    test('Test_C57128 : Check Removing Groups functionality', async () => {
       await locationProfilePage.clickOnFlowsheetGroups();
       await locationProfilePage.removingGroupFunctionality();
     });
@@ -98,7 +98,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await locationProfilePage.verifyAddOnsEmailRecipientsElements();
   });
 
-  test('Test_C57124 Check Adding emails functionality', async ({ page }) => {
+  test('Test_C57124: Verify Adding emails functionality', async ({ page }) => {
     await locationProfilePage.assertEmailRecipients();
     await locationProfilePage.assertEmailInput();
     await flowsheetCardAndTab.createAddOn(
@@ -117,7 +117,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test('Test_C57125 	Check Removing emails functionality', async ({page}) => {
+  test('Test_C57125 :Verify Removing emails functionality', async ({page}) => {
     await locationProfilePage.assertEmailRecipients();
     await locationProfilePage.deleteEmail();
     await flowsheetCardAndTab.createAddOn(

@@ -11,7 +11,6 @@ import { ProfilePage } from '../pageobjects/myprofile/profile.page';
 import { NotificationPage } from '../pageobjects/myprofile/notification.page';
 import { LocationProfile } from '../pageobjects/locationprofile/locationprofile.page';
 import { EventAgendas } from '../pageobjects/agendas/agendas.page';
-import {DashboardPage} from '../pageobjects/dashboard/dashboard.page'
 
 //datafile
 import api_data from '../data/apidata.json';
@@ -31,7 +30,6 @@ export {
   ProfilePage,
   NotificationPage,
   LocationProfile,
-  DashboardPage,
   api_data,
   lighthouse_data,
   navigator_data,

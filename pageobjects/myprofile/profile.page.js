@@ -2,7 +2,7 @@ const { executeStep } = require('../../utils/action');
 const indexPage = require('../../utils/index.page');
 const utilConst = require('../../utils/const');
 const fs = require('node:fs/promises');
-const { test, expect } = require('@playwright/test');
+const { test} = require('@playwright/test');
 const {
   assertElementVisible,
   assertContainsValue,
@@ -223,7 +223,6 @@ exports.ProfilePage = class ProfilePage {
       "(//span[contains(@class,'e2e_navigation_item_title')])[1]"
     );
     this.navigationElementsLocator = "//span[contains(@class,'e2e_navigation_item_title')]";
-    // C57114
     this.initialFavouriteMenuSlot = this.isMobile
       ? this.page.locator("//div[text()='Menu Slot 3']//following-sibling::div")
       : this.page.locator("(//div[contains(@class,'e2e_profile_content_favorite')])[3]");
@@ -363,9 +362,17 @@ exports.ProfilePage = class ProfilePage {
   async assertEquipmentByIntialDisplayValue() {
     initialEquipmentDispalyValue = await this.equipmentDisplayChioceValue.textContent();
     try {
-      await assertEqualValues(initialEquipmentDispalyValue.trim(),indexPage.lighthouse_data.equipmentName,`Verify that a valid option is displayed as the default "Equipment Display Choice" , Selected Option : "${indexPage.lighthouse_data.equipmentName}"`);
-    }catch {
-      await assertEqualValues(initialEquipmentDispalyValue.trim(),indexPage.lighthouse_data.equipmentDescription,`Verify that a valid option is displayed as the default "Equipment Display Choice" , Selected Option : "${indexPage.lighthouse_data.equipmentDescription}"`);
+      await assertEqualValues(
+        initialEquipmentDispalyValue.trim(),
+        indexPage.lighthouse_data.equipmentName,
+        `Verify that a valid option is displayed as the default "Equipment Display Choice" , Selected Option : "${indexPage.lighthouse_data.equipmentName}"`
+      );
+    } catch {
+      await assertEqualValues(
+        initialEquipmentDispalyValue.trim(),
+        indexPage.lighthouse_data.equipmentDescription,
+        `Verify that a valid option is displayed as the default "Equipment Display Choice" , Selected Option : "${indexPage.lighthouse_data.equipmentDescription}"`
+      );
     }
     await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
     const flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(this.page);
@@ -439,10 +446,18 @@ exports.ProfilePage = class ProfilePage {
 
   async assertInitialDefaultSheduleView() {
     initialScheduleViewValue = await this.defaultScheduleViewValue.textContent();
-    try{
-      await assertEqualValues(initialScheduleViewValue.trim(),indexPage.lighthouse_data.mySchedule,`Verify that a valid option is displayed as the "Default Schedule View", Selected Option : "${indexPage.lighthouse_data.mySchedule}"`);
-    }catch(error) {
-      await assertEqualValues(initialScheduleViewValue.trim(),indexPage.lighthouse_data.teamSchedule,`Verify that a valid option is displayed as the "Default Schedule View" Selected Option : "${indexPage.lighthouse_data.teamSchedule}"`);
+    try {
+      await assertEqualValues(
+        initialScheduleViewValue.trim(),
+        indexPage.lighthouse_data.mySchedule,
+        `Verify that a valid option is displayed as the "Default Schedule View", Selected Option : "${indexPage.lighthouse_data.mySchedule}"`
+      );
+    } catch (error) {
+      await assertEqualValues(
+        initialScheduleViewValue.trim(),
+        indexPage.lighthouse_data.teamSchedule,
+        `Verify that a valid option is displayed as the "Default Schedule View" Selected Option : "${indexPage.lighthouse_data.teamSchedule}"`
+      );
     }
     if (await this.dismissBtn.isVisible()) {
       await executeStep(this.dismissBtn, 'click', 'Click on dismiss popup');

@@ -7,7 +7,6 @@ const {
   assertElementFocused,
   assertValueToBe,
   scrollElement,
-  assertContainsValue,
   assertElementDisabled,
   assertElementContainsText
 } = require('../../utils/helper');
@@ -69,7 +68,9 @@ exports.LocationProfile = class LocationProfile {
     this.locationHeader = this.page.locator('//app-profile-header');
     this.groupList = this.page.locator("//th[text()='Group name']");
     this.daysExpire = this.isMobile
-      ? this.page.locator("//span[normalize-space()='Create']/parent::button/preceding-sibling::span[normalize-space()='Days until expiration:']")
+      ? this.page.locator(
+          "//span[normalize-space()='Create']/parent::button/preceding-sibling::span[normalize-space()='Days until expiration:']"
+        )
       : this.page.locator("//th[text()='Days until expiration']");
     this.addGrpField = this.page.locator("//input[@placeholder='Add Group']");
     this.createButton = this.page.locator("//span[normalize-space()='Create']//parent::button");
@@ -248,7 +249,10 @@ exports.LocationProfile = class LocationProfile {
   }
 
   async removingGroupFunctionality() {
-    await assertElementVisible(this.locationHeader, "Verify The 'Flowsheet Groups' page Header is Visible");
+    await assertElementVisible(
+      this.locationHeader,
+      "Verify The 'Flowsheet Groups' page Header is Visible"
+    );
     await executeStep(
       this.binIcon(indexPage.lighthouse_data.groupName),
       'click',
@@ -300,6 +304,7 @@ exports.LocationProfile = class LocationProfile {
       await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
       await assertElementVisible(this.emailRecipientsList,"Verify that the 'Email recipients list' is visible");
     }
+    await assertElementVisible(this.addEmail,"Verify that the 'Footer Field' is visible");
     await executeStep(this.deleteIcon(indexPage.lighthouse_data.addOnEmail),"click","Delete the email");
     await executeStep(this.yesButton,"click","Click on yes button");
     await assertElementNotVisible(this.emailRecipientsList,'Verify that all added emails can be removed from the list');
