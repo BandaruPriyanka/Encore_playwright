@@ -17,7 +17,8 @@ const {
   getFormattedTime,
   getCurrentMonth,
   assertElementNotVisible,
-  assertContainsValue
+  assertContainsValue,
+  getFlowsheetCard
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 
@@ -140,6 +141,66 @@ exports.FlowSheetPage = class FlowSheetPage {
       "(//div[normalize-space()='Transfers']//following-sibling::div)[1]"
     );
     this.noDataFoundText = this.page.locator("(//span[contains(text(),'No data found')])[1]");
+    this.menuIcon = this.page.locator('//app-side-menu');
+    this.locationProfileBtn = this.page.locator(
+      "//app-side-menu//span[normalize-space(text())='Location Profile']"
+    );
+    this.generalTab = this.page.locator(
+      "(//aside//li[contains(@class, 'text-purple-500') and contains(@class, 'bg-gray-300')]//span[text()='General'])[2]"
+    );
+    this.useEquipmentChecklistStatus = this.isMobile
+      ? this.page.locator(
+          "//app-profile-content//div[contains(@class,'e2e_user_profile_equipment_checklist_value')]"
+        )
+      : this.page.locator(
+          "//app-profile-content//span[contains(@class,'e2e_user_profile_equipment_checklist_value')]"
+        );
+    this.turnOnLink = this.isMobile
+      ? this.page.locator("(//app-profile-content//div[normalize-space()='Turn On'])[2]")
+      : this.page.locator("(//app-profile-content//div[normalize-space()='Turn On'])[1]");
+    this.flowsheetIcon = this.isMobile
+      ? this.page.locator('//app-mobile-navigation//div[3]/app-mobile-navigation-item//icon')
+      : this.page.locator("//app-navigation-item//span[normalize-space()='Flowsheet']");
+    this.flowsheetCardOrder = this.page.locator(
+      "(//app-flowsheet-action-card[1]//div//div[contains(@class,'truncate')])[3]"
+    );
+    this.flowsheetCardLocator = index =>
+      `//app-flowsheet-action-card[${index}]//div[1]//div[7]//div[1]//div[3]//div[1]//div[1]`;
+    this.jobNumberLocator = index =>
+      `//app-flowsheet-action-card[${index}]/div[1]/div[7]/div[1]/div[1]/div/span`;
+    this.totalFlowsheetCards = '//app-flowsheet-action-card';
+    this.equipmentTab = this.page.locator("//mat-tab-header//div[normalize-space()='Equipment']");
+    this.equipmentItemsCheckbox = this.page.locator("(//input[@type='checkbox'])[1]");
+    this.allEquipmentCheckboxes = this.page.locator("//input[@type='checkbox']");
+    this.confirmYes = this.page.locator("//app-confirm-dialog//span[text()='Yes']");
+    this.greenIcon = this.isMobile
+      ? this.page.locator(
+          "//app-flowsheet-detail//app-flowsheet-action-timeline//div//div[contains(@class, 'e2e_flowsheet_action_timeline_event')][1]//following-sibling::icon[contains(@class, 'text-green-500')]"
+        )
+      : this.page.locator(
+          "(//app-flowsheet-action-timeline//div[contains(@class, 'flowsheet-action-timeline')]//div[contains(@class, 'e2e_flowsheet_action_timeline_event')][1]//icon[contains(@class, 'text-green-500')])[1]"
+        );
+    this.deSelectEquipmentItem = this.page.locator("(//input[@type='checkbox'])[3]");
+    this.redIcon = this.isMobile
+      ? this.page.locator(
+          "(//app-flowsheet-detail//app-flowsheet-action-timeline//icon[contains(@class,'text-red-500')])[1]"
+        )
+      : this.page.locator(
+          "(//app-flowsheet-action-timeline//icon[contains(@class,'text-red-500')])[1]"
+        );
+    this.blueIcon = this.page.locator(
+      "(//app-flowsheet-action-timeline//icon[contains(@class,'text-blue-500')])[1]"
+    );
+    this.whiteIcon = this.page.locator(
+      "(//app-flowsheet-action-timeline//icon[contains(@class,'text-white-500')])[1]"
+    );
+    this.flowsheet = this.page.locator('//app-flowsheet-action-card');
+
+    this.jobIdElement = jobId => this.page.locator(`//span[text()=' #` + jobId + ` ']`);
+    this.changeToGreen = index =>
+      this.page.locator(
+        `//app-flowsheet-action-card[${index}]//app-flowsheet-action-timeline//div[contains(@class, 'flowsheet-action-timeline')]//div[contains(@class, 'e2e_flowsheet_action_timeline_event')][1]//icon[contains(@class, 'text-green-500')]`
+      );
   }
 
   async changeLocation(locationId, locationName) {
@@ -581,5 +642,97 @@ exports.FlowSheetPage = class FlowSheetPage {
     } catch {
       await assertElementVisible(this.noDataFoundText, 'Assert no data found text is visible');
     }
+  }
+  async navigateToProfileMenu() {
+    await executeStep(this.menuIcon, 'click', 'Click on Profile Menu Icon');
+    await executeStep(this.locationProfileBtn, 'click', 'Click on Location Profile');
+  }
+  async toggleEquipmentChecklistOn() {
+    const statusText = await this.useEquipmentChecklistStatus.textContent();
+    if (statusText.trim() === 'Off') {
+      await executeStep(this.turnOnLink, 'click', 'Click on Turn On Link');
+    }
+    await executeStep(this.flowsheetIcon, 'click', 'Click on Flowsheet Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+  async clickOnJob(jobId) {
+    await executeStep(this.jobIdElement(jobId), 'click', 'Click the room div');
+  }
+  async clickOnFlowsheet() {
+    await executeStep(this.flowsheetIcon, 'click', 'Click on Flowsheet Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+  async searchFlowsheetCard() {
+    try {
+      await this.searchFunction(indexPage.lighthouse_data.nonTestJobNumber);
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await this.clickOnJob(indexPage.lighthouse_data.nonTestJobNumber);
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    } catch (error) {
+      test.info('No business flowsheet Cards found to perform actions');
+    }
+  }
+  secondJobNumber = indexPage.navigator_data.second_job_no;
+  async getFlowsheetCard() {
+    return await getFlowsheetCard(
+      this.page,
+      this.totalFlowsheetCards,
+      this.flowsheetCardLocator,
+      this.jobNumberLocator,
+      this.secondJobNumber
+    );
+  }
+  async selectFlowsheetCard() {
+    let xpathString = await this.getFlowsheetCard();
+    try {
+      if (xpathString) {
+        const xpathLocator = await this.page.locator(xpathString);
+        let nonTestJobNumber = await xpathLocator.textContent();
+        nonTestJobNumber = nonTestJobNumber.replace('#', '').trim();
+
+        indexPage.lighthouse_data.nonTestJobNumber = nonTestJobNumber;
+        await fs.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
+        await xpathLocator.waitFor({ state: 'visible' });
+      }
+    } catch (error) {
+      test.info('No valid Flowsheet cards found to perform actions');
+    }
+  }
+  async equipmentItemsClickable() {
+    await executeStep(this.equipmentItemsCheckbox, 'click', 'Click on Select all items');
+    await executeStep(this.confirmYes, 'click', 'Confirm Select all items');
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+  }
+  async backToSearch() {
+    if (this.isMobile) {
+      await executeStep(this.backarrow, 'click', 'Click on back arrow button');
+    }
+  }
+  async pageReloadChanges() {
+    await this.backToSearch();
+    await this.searchFunction(indexPage.lighthouse_data.nonTestJobNumber);
+    await this.clickOnJob(indexPage.lighthouse_data.nonTestJobNumber);
+    await test.step('Assert that first Icon updates to Green color', async () => {
+      await assertElementVisible(this.greenIcon);
+    });
+  }
+  async deSelectAnyEquipmentItem() {
+    await executeStep(this.deSelectEquipmentItem, 'click', 'DeSelect the one Equipment item');
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await test.step('Assert that first Icon updates to Red color', async () => {
+      await assertElementVisible(this.redIcon);
+    });
+  }
+  async deSelectLastEquipmentAsset() {
+    const checkboxes = this.allEquipmentCheckboxes;
+    const checkboxCount = await checkboxes.count();
+    if (checkboxCount > 0) {
+      const lastCheckbox = checkboxes.nth(checkboxCount - 1);
+      await test.step('Verify the last Equipment Item is Clickable', async () => {
+        await lastCheckbox.click();
+      });
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await test.step('Assert that Icon');
   }
 };

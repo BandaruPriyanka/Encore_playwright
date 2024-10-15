@@ -263,6 +263,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.confirmModalForNegative = this.page.locator(
       "//div[contains(text(),'While this particular opportunity may not have been a perfect fit')]"
     );
+    this.greenNotificationMsg = this.page.locator(
+      "//span[normalize-space()='Please remain on this page while we are generating a document for you. This usually takes up to a minute.']"
+    );
   }
 
   async searchFunction(searchText) {
@@ -412,12 +415,12 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     }
   }
 
-  async discountChecking(invalidDiscount, validDiscount,isNecessary) {
+  async discountChecking(invalidDiscount, validDiscount, isNecessary) {
     await executeStep(this.discountInput, 'fill', 'Enter the discount percentage', [
       invalidDiscount
     ]);
     await this.discountInput.hover();
-    if(isNecessary) {
+    if (isNecessary) {
       await assertElementVisible(
         this.discountInvalidMsg,
         'Verify proper validation message should be displayed for discount.'
@@ -482,6 +485,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async dateSelectModalCheckingAndAssertRooms() {
     await this.dateSelectModal(true);
+    await assertElementNotVisible(
+      this.greenNotificationMsg,
+      'Verify that NO Green notification message should be displayed'
+    );
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const addOnRequestsCount = await this.addOnRequestsList.count();
     await assertGreaterThan(addOnRequestsCount, 0, 'Verify that there are add-on requests present');
@@ -1111,7 +1118,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
   }
 
-  async createAddOn(docusignValue, searchText, jobId,isNecessary) {
+  async createAddOn(docusignValue, searchText, jobId, isNecessary) {
     await this.verifyDocusignStatus(docusignValue, searchText, jobId);
     await this.addOnFunction(
       indexPage.lighthouse_data.requestedBy,
@@ -1120,9 +1127,14 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       indexPage.lighthouse_data.invalidQuantity,
       indexPage.lighthouse_data.validQuantity
     );
-    await this.discountChecking(invalidDiscountGenerator(), validDiscountGenerator(),isNecessary);
+    await this.discountChecking(invalidDiscountGenerator(), validDiscountGenerator(), isNecessary);
     await this.dateSelectModal(true);
+    await assertElementVisible(
+      this.greenNotificationMsg,
+      'Verify that Green notification message should be displayed while the document is being generated.'
+    );
     await this.page.waitForTimeout(parseInt(process.env.default_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
   }
 
   async assertDocument(scenario) {
