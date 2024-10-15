@@ -183,7 +183,17 @@ function getTodayDateAndMonth() {
   const today = new Date();
   return formatDate(today);
 }
-
+function addDaysToCurrentDate(days) {
+  const today = new Date();
+  today.setDate(today.getDate() + days);
+  return formatDate(today);
+}
+function getDateBasedOnDays(days) {
+  const today = new Date();
+  today.setDate(today.getDate() + days);
+  const getDate = today.getDate();
+  return getDate;
+}
 function getPreviousWeekDateAndMonth() {
   const today = new Date();
   const previousWeek = new Date(today);
@@ -440,7 +450,7 @@ async function clickRemindMeTomorrowButton(page) {
     await buttonLocator.waitFor({ state: 'visible', timeout: 5000 });
     await buttonLocator.click();
   } catch (error) {
-    console.log("The 'Remind Me Tomorrow' button did not appear.");
+    test.info("The 'Remind Me Tomorrow' button did not appear.");
   }
 }
 
@@ -575,6 +585,7 @@ module.exports = {
   checkVisibleElementColors,
   assertContainsValue,
   getTodayDateAndYear,
+  addDaysToCurrentDate,
   todayDateWithoutMonthYear,
   getTodayDateAndMonth,
   getPreviousWeekDateAndMonth,

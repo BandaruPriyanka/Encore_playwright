@@ -7,7 +7,6 @@ const {
   assertElementFocused,
   assertValueToBe,
   scrollElement,
-  assertContainsValue,
   assertElementDisabled,
   assertElementContainsText,
   nextDayDate,
@@ -90,10 +89,9 @@ exports.LocationProfile = class LocationProfile {
     );
     this.groupName = name =>
       this.page.locator(`//ul[@role='list']//span[normalize-space()='` + name + `']`);
-    this.areYouSurePop = this.page.locator("//p[normalize-space()='Are you sure?']");
-    this.emailRecipientsIcon = this.isMobile
-      ? this.page.locator("(//icon[@name='letter_line'])[1]")
-      : this.page.locator("(//icon[@name='letter_line'])[2]");
+    this.areYouSurePop = this.page.locator("//app-confirm-dialog//p[normalize-space()='Are you sure?']");
+    this.emailRecipientsIcon = this.isMobile ? this.page.locator("(//icon[@name='letter_line'])[1]") 
+              : this.page.locator("(//icon[@name='letter_line'])[2]");
     this.locationHeader = this.page.locator("//span[contains(@class,'e2e_selected_location')]");
     this.headerTitle = this.page.locator("//div[contains(@class,'e2e_profile_header_title')]");
     this.emailRecipientsList = this.page.locator(
@@ -295,6 +293,7 @@ exports.LocationProfile = class LocationProfile {
       'click',
       "Click on 'Remove' icon for some previously added Group"
     );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(this.areYouSurePop, 'Confirmation modal should be displayed.');
     await executeStep(this.noButton, 'click', "Select 'No' option within the modal");
     await assertElementVisible(
@@ -349,16 +348,10 @@ exports.LocationProfile = class LocationProfile {
         "Verify that the 'Email recipients list' is visible"
       );
     }
-    await executeStep(
-      this.deleteIcon(indexPage.lighthouse_data.addOnEmail),
-      'click',
-      'Delete the email'
-    );
-    await executeStep(this.yesButton, 'click', 'Click on yes button');
-    await assertElementNotVisible(
-      this.emailRecipientsList,
-      'Verify that all added emails can be removed from the list'
-    );
+    await assertElementVisible(this.addEmail,"Verify that the 'Footer Field' is visible");
+    await executeStep(this.deleteIcon(indexPage.lighthouse_data.addOnEmail),"click","Delete the email");
+    await executeStep(this.yesButton,"click","Click on yes button");
+    await assertElementNotVisible(this.emailRecipientsList,'Verify that all added emails can be removed from the list');
   }
 
   async assertEmailRecipients() {
@@ -466,7 +459,6 @@ exports.LocationProfile = class LocationProfile {
       "Verify that 'Email' should be removed from the list successfully after reload."
     );
   }
-  // C57121
   async moodChangeFunctionality(icon, comment) {
     await executeStep(this.moodChangeIcon, 'click', 'Click on mood change icon');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));

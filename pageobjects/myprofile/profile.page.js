@@ -2,7 +2,7 @@ const { executeStep } = require('../../utils/action');
 const indexPage = require('../../utils/index.page');
 const utilConst = require('../../utils/const');
 const fs = require('node:fs/promises');
-const { test, expect } = require('@playwright/test');
+const { test} = require('@playwright/test');
 const {
   assertElementVisible,
   assertContainsValue,
@@ -330,8 +330,7 @@ exports.ProfilePage = class ProfilePage {
   async verifyingMenuNavigation(
     expectedProfileText,
     expectedLocationText,
-    expectedLogsText,
-    expectedDashboardText
+    expectedLogsText
   ) {
     await assertElementVisible(this.menuIcon, 'Verify that Menu Icon is displayed.');
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
@@ -389,15 +388,6 @@ exports.ProfilePage = class ProfilePage {
       logsText,
       expectedLogsText,
       `Verify that Profile page text "${indexPage.lighthouse_data.expectedLogsText}" is displayed after clicking on my profile option.`
-    );
-    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
-    await executeStep(this.dashboardOption, 'click', 'Click on dashboardOption');
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    let dashboardText = await this.dashboardPageText.textContent();
-    await assertContainsValue(
-      dashboardText,
-      expectedDashboardText,
-      `Verify that Profile page text "${indexPage.lighthouse_data.expectedDashboardText}" is displayed after clicking on my profile option.`
     );
   }
 

@@ -23,10 +23,10 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await flowsheetPage.changeLocation(locationId, locationText);
     await locationProfilePage.clickOnLocationProfile();
   });
-  test('TC_C57119 : Verify Location Profile page elements', async () => {
+  test('Test_C57119 : Verify Location Profile page elements', async () => {
     await locationProfilePage.verifyTabs();
   });
-  test('TC_C57120 : Verify Use Equipment Checklist functionality', async () => {
+  test('Test_C57120 : Verify Use Equipment Checklist functionality', async () => {
     await locationProfilePage.assertEquipmentCheckList();
     await flowsheetCardAndTab.assertCheckBox();
     await assertElementNotVisible(
@@ -34,7 +34,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
       'Verify that the "Select All checkbox" is not visible'
     );
   });
-  test("Test_C57122 Check 'Use Docusign' functionality", async ({ page }) => {
+  test("Test_C57122: Verify 'Use Docusign' functionality", async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
@@ -73,34 +73,35 @@ test.describe('Performing actions on Location Profile Tab', () => {
     );
     await flowsheetCardAndTab.dateSelectModalCheckingAndAssertRooms();
   });
-
-  test("C57126 Check 'Flowsheets Groups' Tab elements", async () => {
-    await test.step("Check the 'Flowsheets Groups' page structure", async () => {
-      await locationProfilePage.verifyAddOnesEmailRecipients();
+  test.describe('Flowsheets Groups Tab ', () => {
+    test("Test_C57126 Check 'Flowsheets Groups' Tab elements", async () => {
+      await test.step("Check the 'Flowsheets Groups' page structure", async () => {
+        await locationProfilePage.verifyAddOnesEmailRecipients();
+      });
+      await test.step('Make sure that all added Groups can be removed from the list (remove icon is present)', async () => {
+        await locationProfilePage.verifyGroupsCanBeRemoved();
+      });
     });
-    await test.step('Make sure that all added Groups can be removed from the list (remove icon is present)', async () => {
-      await locationProfilePage.verifyGroupsCanBeRemoved();
+
+    test('Test_C57127: Check Adding Groups functionality', async () => {
+      await locationProfilePage.clickOnFlowsheetGroups();
+      await locationProfilePage.addingGroupFunctionality();
     });
-  });
 
-  test('C57127 Check Adding Groups functionality', async () => {
-    await locationProfilePage.clickOnFlowsheetGroups();
-    await locationProfilePage.addingGroupFunctionality();
-  });
-
-  test('C57128 Check Removing Groups functionality', async () => {
-    await locationProfilePage.clickOnFlowsheetGroups();
-    await locationProfilePage.removingGroupFunctionality();
+    test('Test_C57128 : Check Removing Groups functionality', async () => {
+      await locationProfilePage.clickOnFlowsheetGroups();
+      await locationProfilePage.removingGroupFunctionality();
+    });
   });
 
   test('Test_C57123 Check "Add Ons Email Recipients" Tab elements', async () => {
     await locationProfilePage.verifyAddOnsEmailRecipientsElements();
   });
 
-  test('Test_C57124 Check Adding emails functionality', async ({ page }) => {
+  test('Test_C57124: Verify Adding emails functionality', async ({ page }) => {
     await locationProfilePage.assertEmailRecipients();
     await locationProfilePage.assertEmailInput();
-    await flowsheetCardAndTab.createAddOn(
+    await flowsheetCardAndTab.createAddOn(https://github.com/BandaruPriyanka/Encore_playwright/pull/78/conflict?name=tests%252Flocation_profile.spec.js&ancestor_oid=febf19bf0f7b82316b2b1f246910cf90951a0d4a&base_oid=ec6c989374841c5f1be547b2794d0dd41132c913&head_oid=245c72932eb15e046a4e7829b00c4ef56eb608e9
       indexPage.lighthouse_data.turnOn,
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no,
@@ -116,7 +117,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test('Test_C57125 	Check Removing emails functionality', async ({ page }) => {
+  test('Test_C57125 :Verify Removing emails functionality', async ({page}) => {
     await locationProfilePage.assertEmailRecipients();
     await locationProfilePage.deleteEmail();
     await flowsheetCardAndTab.createAddOn(

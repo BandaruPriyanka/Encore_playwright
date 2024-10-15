@@ -9,7 +9,7 @@ const {
 const utilConst = require('../utils/const');
 require('dotenv').config();
 
-test.describe('LightHouse Flowsheet card and tab operations', () => {
+test.describe('Performing actions on Flowsheet card and tab operations', () => {
   let flowsheetCardAndTab, flowsheetPage, locationId, locationText;
 
   test.beforeEach(async ({ page }) => {

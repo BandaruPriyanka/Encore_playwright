@@ -83,5 +83,6 @@
   "addOnEmail": "test@gmail.com",
   "addOnEmailRecipients": "Add Ons Email Recipients",
   "invalidEmail": "testing.gmail.com",
-  "nonTestJobNumber": "54787"
+  "nonTestJobNumber": "54787",
+  "grpField":"test"
 }
