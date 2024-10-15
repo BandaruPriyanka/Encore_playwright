@@ -85,7 +85,7 @@ exports.LocationProfile = class LocationProfile {
     );
     this.groupName = name =>
       this.page.locator(`//ul[@role='list']//span[normalize-space()='` + name + `']`);
-    this.areYouSurePop = this.page.locator("//p[normalize-space()='Are you sure?']");
+    this.areYouSurePop = this.page.locator("//app-confirm-dialog//p[normalize-space()='Are you sure?']");
     this.emailRecipientsIcon = this.isMobile ? this.page.locator("(//icon[@name='letter_line'])[1]") 
               : this.page.locator("(//icon[@name='letter_line'])[2]");
     this.locationHeader = this.page.locator("//span[contains(@class,'e2e_selected_location')]");
@@ -258,6 +258,7 @@ exports.LocationProfile = class LocationProfile {
       'click',
       "Click on 'Remove' icon for some previously added Group"
     );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(this.areYouSurePop, 'Confirmation modal should be displayed.');
     await executeStep(this.noButton, 'click', "Select 'No' option within the modal");
     await assertElementVisible(

@@ -74,7 +74,8 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.iconMenu = this.page.locator("(//icon[@name='menu_line'])[1]");
     this.clickOnLocationProfile = this.page.locator("//span[text()='Location Profile']");
     this.flowsheetGroups = this.page.locator("(//span[text()='Flowsheet Groups'])[2]");
-    this.binLine = this.page.locator("//icon[@name='trah_bin_line']");
+    this.binLine = name =>
+      this.page.locator(`//div[normalize-space()='` + name + `']//icon[@name='trah_bin_line']`);
     this.clickOnYes = this.page.locator("//span[text()='Yes']");
     this.statusSetRefreshComplete = this.page.locator(
       "//app-select-status-sheet//li[.//span[text()='Set Refresh - Complete']]"
@@ -382,7 +383,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     const isLinkVisible = await this.clickOnLink.isVisible();
     if (isLinkVisible) {
       await executeStep(this.clickOnLink, 'click', 'Click on link', []);
-      await executeStep(this.placeholder, 'fill', 'Fill the data', ['test']);
+      await executeStep(this.placeholder, 'fill', 'Fill the data', [indexPage.lighthouse_data.grpField]);
       await executeStep(this.createButton, 'click', 'Click on create button', []);
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await executeStep(this.flowsheetButton, 'click', 'Click on create button', []);
@@ -409,7 +410,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     await executeStep(this.iconMenu, 'click', 'Click on icon menu', []);
     await executeStep(this.clickOnLocationProfile, 'click', 'Click on groupIcon button', []);
     await executeStep(this.flowsheetGroups, 'click', 'Click on location profile', []);
-    await executeStep(this.binLine, 'click', 'Delete the group item', []);
+    await executeStep(this.binLine(indexPage.lighthouse_data.grpField), 'click', 'Delete the group item', []);
     await executeStep(this.clickOnYes, 'click', 'Select yes to proceed', []);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
