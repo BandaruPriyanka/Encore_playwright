@@ -116,14 +116,6 @@ function nextDayDate() {
   const nextDayDate = today.getDate();
   return nextDayDate;
 }
-
-function getDateBasedOnDays(days) {
-  const today = new Date();
-  today.setDate(today.getDate() + days);
-  const getDate = today.getDate();
-  return getDate;
-}
-
 function validDiscountGenerator() {
   const randomNumber = Math.floor(Math.random() * 25) + 1;
   return randomNumber.toString();

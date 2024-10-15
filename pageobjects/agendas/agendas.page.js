@@ -1,5 +1,7 @@
 const { executeStep } = require('../../utils/action');
 require('dotenv').config();
+const { test } = require('@playwright/test');
+const indexPage = require('../../utils/index.page');
 const {
   assertElementVisible,
   assertElementEnabled,

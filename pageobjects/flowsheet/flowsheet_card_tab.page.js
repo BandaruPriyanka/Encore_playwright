@@ -1153,7 +1153,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await assertElementVisible(this.finishBtn, 'Verify that the Finish button is visible');
       await executeStep(this.finishBtn, 'click', 'Click on fnish button');
       await assertElementVisible(
-        this.requestACopyModal,
+        this.requestACopyModal, 
         'Verify that the "Request a Copy" modal is visible'
       );
       await executeStep(this.emailInput, 'fill', 'Enter the email id', [
