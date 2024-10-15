@@ -638,7 +638,7 @@ module.exports = {
   getLastWeekRange,
   getWeekBeforeLastRange,
   getCurrentMonthRange,
-  getPreviousMonthRange
+  getPreviousMonthRange,
   assertElementTrue,
   assertElementColor,
   verifyBackgroundColor,
