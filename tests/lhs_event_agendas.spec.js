@@ -3,6 +3,7 @@ const indexPage = require('../utils/index.page');
 const {
   assertElementVisible,
   assertElementAttributeContains,
+  assertElementEnabled,
   todayDate
 } = require('../utils/helper');
 
@@ -26,6 +27,7 @@ test.describe('LightHouse Event Agendas', () => {
     await agendasPage.verifyEventAgendasPage();
   });
   test('Test_C56938	: Verify Event Agendas calendar widget + active checkbox', async () => {
+
     await agendasPage.verifyCalendarWidget();
     await assertElementVisible(agendasPage.calendarModal, 'Calendar modal should be displayed');
     const todayDateEle = todayDate();
@@ -39,4 +41,5 @@ test.describe('LightHouse Event Agendas', () => {
     await agendasPage.verifyDateSelection();
     await agendasPage.DateRangeOptions();
   });
+
 });

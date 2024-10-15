@@ -2,18 +2,21 @@ const { executeStep } = require('../../utils/action');
 const indexPage = require('../../utils/index.page');
 const utilConst = require('../../utils/const');
 const fs = require('node:fs/promises');
-const { test, expect } = require('@playwright/test');
+const { test} = require('@playwright/test');
 const {
   assertElementVisible,
   assertContainsValue,
-  validateLastSyncValue,
   assertNotEqualValues,
   assertEqualValues,
   assertElementNotVisible,
   verifyNavigationElements,
   validateLastSyncedText,
   checkTimeFormat,
-  extractTime
+  extractTime,
+  assertElementTrue,
+  assertElementColor,
+  verifyBackgroundColor,
+  assertValueToBe
 } = require('../../utils/helper');
 const { after } = require('node:test');
 const { addAbortListener } = require('node:events');
@@ -223,7 +226,6 @@ exports.ProfilePage = class ProfilePage {
       "(//span[contains(@class,'e2e_navigation_item_title')])[1]"
     );
     this.navigationElementsLocator = "//span[contains(@class,'e2e_navigation_item_title')]";
-    // C57114
     this.initialFavouriteMenuSlot = this.isMobile
       ? this.page.locator("//div[text()='Menu Slot 3']//following-sibling::div")
       : this.page.locator("(//div[contains(@class,'e2e_profile_content_favorite')])[3]");
@@ -260,6 +262,35 @@ exports.ProfilePage = class ProfilePage {
     this.updateBtnForTime = this.isMobile
       ? this.page.locator("(//div[contains(@class,'e2e_user_profile_theme_action')])[4]")
       : this.page.locator("(//div[contains(@class,'e2e_user_profile_theme_action')])[3]");
+    this.selectedTheme = this.isMobile
+      ? this.page.locator("(//div[contains(@class,'e2e_user_profile_theme_value')])[1]")
+      : this.page.locator("(//span[contains(@class,'e2e_user_profile_theme_value')])[1]");
+    this.themeUpdateBtn = this.isMobile
+      ? page.locator("(//div[contains(@class,'e2e_user_profile_theme_action')])[2]")
+      : this.page.locator("(//div[contains(@class, 'e2e_user_profile_theme_action')])[1]");
+    this.bodyTag = this.page.locator("//body[contains(@class,'dark')]");
+    this.bodyLightTag = this.page.locator('//body');
+    this.flowsheetIcon = this.isMobile
+      ? this.page.locator('//app-mobile-navigation//div[3]/app-mobile-navigation-item//icon')
+      : this.page.locator("//app-navigation-item//span[normalize-space()='Flowsheet']");
+    this.flowsheetTitle = this.page.locator("//span[contains(@class,'e2e_flowsheet_title')]");
+    this.scheduleTitle = this.page.locator("//main//div[normalize-space()='Schedule']");
+    this.customersTab = this.isMobile
+      ? this.page.locator('//app-mobile-navigation//div[1]/app-mobile-navigation-item')
+      : this.page.locator("//span[normalize-space()='Customers']");
+    this.customersTitle = this.page.locator(
+      "//app-page-frame//span[normalize-space()='Customers']"
+    );
+    this.chatTab = this.isMobile
+      ? this.page.locator('(//app-mobile-navigation-item)[4]')
+      : this.page.locator("//app-navigation-item//span[normalize-space()='Chat']");
+    this.chatTitle = this.page.locator("//span[contains(@class,'e2e_chat_title')]");
+    this.agendasTab = this.isMobile
+      ? this.page.locator("(//span[normalize-space()='Agendas'])[1]")
+      : this.page.locator("//app-navigation-item//span[normalize-space()='Agendas']");
+    this.eventAgendaTitle = this.page.locator('agenda-list>div>div').nth(4);
+    this.menuBg = '.dark\\:bg-sky-900';
+    this.menuText = this.page.locator("//span[text()='Menu']");
   }
   async navigateToProfileMenu() {
     await executeStep(this.menuIcon, 'click', 'Click on Profile Menu Icon');
@@ -299,8 +330,7 @@ exports.ProfilePage = class ProfilePage {
   async verifyingMenuNavigation(
     expectedProfileText,
     expectedLocationText,
-    expectedLogsText,
-    expectedDashboardText
+    expectedLogsText
   ) {
     await assertElementVisible(this.menuIcon, 'Verify that Menu Icon is displayed.');
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
@@ -358,15 +388,6 @@ exports.ProfilePage = class ProfilePage {
       logsText,
       expectedLogsText,
       `Verify that Profile page text "${indexPage.lighthouse_data.expectedLogsText}" is displayed after clicking on my profile option.`
-    );
-    await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
-    await executeStep(this.dashboardOption, 'click', 'Click on dashboardOption');
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    let dashboardText = await this.dashboardPageText.textContent();
-    await assertContainsValue(
-      dashboardText,
-      expectedDashboardText,
-      `Verify that Profile page text "${indexPage.lighthouse_data.expectedDashboardText}" is displayed after clicking on my profile option.`
     );
   }
 
@@ -825,5 +846,179 @@ exports.ProfilePage = class ProfilePage {
 
   async assertAfterTimeFormatForElements() {
     await this.assertDisplayTimeFormatForElements(afterTimeValue);
+  }
+  async myProfileTab() {
+    await this.navigateToProfileMenu();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.myProfileBtn, 'Verify My Profile is visible');
+    await this.navigateToMyProfile();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+  async isDarkTheme() {
+    const hasDarkClass = await this.bodyTag.evaluate(el => el.classList.contains('dark'));
+    return hasDarkClass;
+  }
+  async isLightTheme() {
+    const hasDarkClass = await this.bodyLightTag.evaluate(el => el.classList.contains('dark'));
+    return !hasDarkClass;
+  }
+
+  async selectDarkTheme() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const selectedTheme = await this.selectedTheme.textContent();
+    if (selectedTheme.trim() === 'Light') {
+      await executeStep(this.themeUpdateBtn, 'click', 'Click on Update button');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+    const selectedDarkTheme = await this.selectedTheme.textContent();
+    const expectedTheme = 'Dark';
+    await test.step('Verify default selected theme is Dark', async () => {
+      await assertValueToBe(
+        selectedDarkTheme.trim(),
+        'Assert selected theme is Dark',
+        expectedTheme
+      );
+    });
+    await test.step('Verify that the Page should be displayed in Dark Theme', async () => {
+      const isDark = await this.isDarkTheme();
+      await assertElementTrue(isDark);
+    });
+  }
+  async isDarkDivVisible() {
+    const shadowHost = this.page.locator('agenda-sessions');
+
+    const shadowRootHandle = await shadowHost.evaluateHandle(host => host.shadowRoot);
+    const darkDivHandle = await shadowRootHandle.$('div.dark');
+    let isVisible = false;
+
+    if (darkDivHandle) {
+      isVisible = await darkDivHandle.isVisible();
+    }
+    await shadowRootHandle.dispose();
+    return isVisible;
+  }
+  async allPageElements() {
+    await executeStep(this.flowsheetIcon, 'click', 'Click on Flowsheet Tab');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const flowsheetColor = utilConst.Const.flowsheetDarkColor;
+    await assertElementColor(this.flowsheetTitle, flowsheetColor);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+
+    const scheduleColor = utilConst.Const.scheduleDarkColor;
+    await executeStep(this.scheduleTab, 'click', 'Click on Schedule Tab');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementColor(this.scheduleTitle, scheduleColor);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+
+    const customersColor = utilConst.Const.customersColor;
+    await executeStep(this.customersTab, 'click', 'Click on Customers Tab');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementColor(this.customersTitle, customersColor);
+
+    await executeStep(this.chatTab, 'click', 'Click on Chats Tab');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementColor(this.chatTitle, customersColor);
+    if (!this.isMobile) {
+      await executeStep(this.agendasTab, 'click', 'Click on Agendas Tab');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await assertElementColor(this.eventAgendaTitle, customersColor);
+    }
+    await executeStep(this.menuIcon, 'click', 'Click on Menu Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+
+    await verifyBackgroundColor(this.page, this.menuBg, utilConst.Const.menuBgDarkColor);
+    await executeStep(this.menuText, 'click', 'Click on Screen to close Profile menu');
+  }
+
+  async selectLightTheme() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const selectedTheme = await this.selectedTheme.textContent();
+    if (selectedTheme.trim() === 'Dark') {
+      await executeStep(this.themeUpdateBtn, 'click', 'Click on Update button');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+    const selectedDarkTheme = await this.selectedTheme.textContent();
+    const expectedTheme = 'Light';
+    await test.step('Verify selected Theme option is Light', async () => {
+      await assertValueToBe(
+        selectedDarkTheme.trim(),
+        'Assert that selected theme is Light',
+        expectedTheme
+      );
+    });
+    await test.step('Verify that the Page should be displayed in Light Theme', async () => {
+      const isLight = await this.isLightTheme();
+      await assertElementTrue(isLight);
+    });
+  }
+  async updateToLightTheme() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.myProfileTab();
+    await this.selectLightTheme();
+  }
+  async refreshThePage() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+
+    const selectedDarkTheme = await this.selectedTheme.textContent();
+    const expectedTheme = 'Light';
+    await test.step('Assert that the selected theme option is Light after refreshing the page.', async () => {
+      await assertValueToBe(
+        selectedDarkTheme.trim(),
+        'Assert that selected theme is Light',
+        expectedTheme
+      );
+    });
+  }
+  async allElementsInLight() {
+    await executeStep(this.flowsheetIcon, 'click', 'Click on Flowsheet Tab');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const blackColor = utilConst.Const.blackColor;
+    await test.step('Assert that Flowsheet Tab displayed in Light Theme', async () => {
+      await assertElementColor(this.flowsheetTitle, blackColor);
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    });
+    const scheduleColor = utilConst.Const.scheduleColor;
+    await executeStep(this.scheduleTab, 'click', 'Click on Schedule Tab');
+    await test.step('Assert that Schedule Tab displayed in Light Theme', async () => {
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await assertElementColor(this.scheduleTitle, scheduleColor);
+    });
+    await executeStep(this.customersTab, 'click', 'Click on Customers Tab');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await test.step('Assert that Customers Tab displayed in Light Theme', async () => {
+      await assertElementColor(this.customersTitle, blackColor);
+    });
+
+    await executeStep(this.chatTab, 'click', 'Click on Chats Tab');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await test.step('Assert that Chat Tab is displayed in Light Theme', async () => {
+      await assertElementColor(this.chatTitle, blackColor);
+    });
+
+    if (!this.isMobile) {
+      await executeStep(this.agendasTab, 'click', 'Click on Agendas Tab');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+    await executeStep(this.menuIcon, 'click', 'Click on Menu Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await test.step('Verify that Menu is displayed in Light Theme', async () => {
+      await verifyBackgroundColor(this.page, this.menuBg, utilConst.Const.menuBgLightColor);
+    });
+
+    await executeStep(this.menuText, 'click', 'Click on Screen to close Profile menu');
+  }
+  async changeToDefaultLightTheme() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const selectedTheme = await this.selectedTheme.textContent();
+    if (selectedTheme.trim() === 'Dark') {
+      await executeStep(this.themeUpdateBtn, 'click', 'Click on Update button');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+  }
+  async changeToDefaultColor() {
+    await this.myProfileTab();
+    await this.changeToDefaultLightTheme();
   }
 };

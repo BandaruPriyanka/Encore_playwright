@@ -130,4 +130,40 @@ test.describe('Performing actions on Flowsheet', () => {
       await flowsheetPage.verifyingTransfersFunctionality();
     });
   });
+  test('Test_C57102: Verify Flowsheet status after selecting all the equipments', async ({
+    page
+  }) => {
+    await flowsheetPage.navigateToProfileMenu();
+    await test.step('Verify that the "Use Equipment Checklist" is set to ON', async () => {
+      await flowsheetPage.toggleEquipmentChecklistOn();
+      await flowsheetPage.selectFlowsheetCard();
+    });
+    await flowsheetPage.searchFlowsheetCard();
+    await test.step('Verify Flowsheet card is displayed Equipment Tab', async () => {
+      await assertElementVisible(flowsheetPage.equipmentTab);
+    });
+    await test.step('Verify the Current Status is open', async () => {
+      await assertElementVisible(flowsheetPage.redIcon);
+    });
+    await test.step('Verify that the user can select/check Equipment items', async () => {
+      await flowsheetPage.equipmentItemsClickable();
+    });
+    await test.step('Verify all available items are selected, status should be complete automatically', async () => {
+      await assertElementVisible(flowsheetPage.greenIcon);
+    });
+    await page.reload();
+    await page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await test.step('Verify all changes were applied after page reload', async () => {
+      await flowsheetPage.pageReloadChanges();
+    });
+    await test.step('Verify that one of the assets can be deselected, Status should update to Partial', async () => {
+      await flowsheetPage.deSelectAnyEquipmentItem();
+      // await assertElementVisible(flowsheetPage.blueIcon);
+    });
+    await test.step('Verify that deselect the last assets, Status should update to initial open', async () => {
+      await flowsheetPage.deSelectLastEquipmentAsset();
+      await assertElementVisible(flowsheetPage.redIcon);
+      // await assertElementVisible(flowsheetPage.whiteIcon)
+    });
+  });
 });

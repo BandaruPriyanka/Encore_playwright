@@ -117,6 +117,13 @@ function nextDayDate() {
   return nextDayDate;
 }
 
+function getDateBasedOnDays(days) {
+  const today = new Date();
+  today.setDate(today.getDate() + days);
+  const getDate = today.getDate();
+  return getDate;
+}
+
 function validDiscountGenerator() {
   const randomNumber = Math.floor(Math.random() * 25) + 1;
   return randomNumber.toString();
@@ -449,7 +456,7 @@ async function clickRemindMeTomorrowButton(page) {
     await buttonLocator.waitFor({ state: 'visible', timeout: 5000 });
     await buttonLocator.click();
   } catch (error) {
-    console.log("The 'Remind Me Tomorrow' button did not appear.");
+    test.info("The 'Remind Me Tomorrow' button did not appear.");
   }
 }
 
@@ -470,6 +477,7 @@ function extractTime(text) {
   const match = text.match(timeRegex);
   return match ? match[0] : 'Time not found';
 }
+
 function getLastWeekRange() {
   const today = new Date();
   const dayOfWeek = today.getDay();
@@ -477,6 +485,68 @@ function getLastWeekRange() {
   const startDate = addDaysToCurrentDate(lastSundayOffset); // Last week's Sunday
   const endDate = addDaysToCurrentDate(lastSundayOffset + 6); // Last week's Saturday
   return { startDate, endDate };
+}
+async function assertElementTrue(element) {
+  expect(element).toBe(true);
+}
+async function assertElementColor(elementLocator, expectedColor) {
+  const color = await elementLocator.evaluate(el => {
+    return window.getComputedStyle(el).color;
+  });
+  expect(color).toBe(expectedColor);
+}
+async function verifyBackgroundColor(page, locator, expectedColor) {
+  const actualColor = await page.evaluate(selector => {
+    const element = document.querySelector(selector);
+    return window.getComputedStyle(element).backgroundColor;
+  }, locator);
+  expect(actualColor).toBe(expectedColor);
+}
+async function assertElementToBeEnabled(element) {
+  await expect(element).toBeEnabled();
+}
+async function getFlowsheetCard(
+  page,
+  totalCardsLocator,
+  flowsheetCardLocatorFn,
+  jobNumberLocatorFn,
+  defaultJobNumber,
+  excludeText = 'TestAuto'
+) {
+  const totalRoomCount = await page.locator(totalCardsLocator).count();
+
+  for (let i = 1; i <= totalRoomCount; i++) {
+    const flowsheetCardXPath = flowsheetCardLocatorFn(i);
+    const jobNumberXPath = jobNumberLocatorFn(i);
+
+    try {
+      await page.locator(flowsheetCardXPath).waitFor({ state: 'visible', timeout: 12000 });
+    } catch (error) {
+      continue;
+    }
+    const text = await page.locator(flowsheetCardXPath).textContent();
+    if (text.includes(excludeText)) {
+      continue;
+    }
+    const jobNumber = await page.locator(jobNumberXPath).textContent();
+    if (jobNumber && jobNumber.trim() !== '') {
+      return jobNumber;
+    } else {
+      return defaultJobNumber;
+    }
+  }
+  return defaultJobNumber;
+}
+async function assertButtonDisabled(element) {
+  const isButtonDisabled = await element.isDisabled();
+  await expect(isButtonDisabled).toBe(true);
+}
+async function generateInvalidEmail() {
+  const randomString = Math.random().toString(36).substring(2, 15);
+  const invalidDomains = ['example', 'test', 'invalid', 'no-domain', 'wrong-format'];
+  const randomDomain = invalidDomains[Math.floor(Math.random() * invalidDomains.length)];
+
+  return `${randomString}@${randomDomain}`;
 }
 
 function getWeekBeforeLastRange() {
@@ -569,4 +639,11 @@ module.exports = {
   getWeekBeforeLastRange,
   getCurrentMonthRange,
   getPreviousMonthRange
+  assertElementTrue,
+  assertElementColor,
+  verifyBackgroundColor,
+  assertElementToBeEnabled,
+  getFlowsheetCard,
+  assertButtonDisabled,
+  generateInvalidEmail
 };

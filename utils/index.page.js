@@ -6,6 +6,7 @@ import { FlowSheetPage } from '../pageobjects/flowsheet/flowsheet.page';
 import { FlowsheetCardAndTab } from '../pageobjects/flowsheet/flowsheet_card_tab.page';
 import { SchedulePage } from '../pageobjects/schedule/schedule.page';
 import { CustomersPage } from '../pageobjects/customers/customers.page';
+import { DashboardPage } from '../pageobjects/dashboard/dashboard.page';
 import { ChatPage } from '../pageobjects/chats/chats.page';
 import { ProfilePage } from '../pageobjects/myprofile/profile.page';
 import { NotificationPage } from '../pageobjects/myprofile/notification.page';
@@ -27,11 +28,11 @@ export {
   FlowsheetCardAndTab,
   SchedulePage,
   CustomersPage,
+  DashboardPage,
   ChatPage,
   ProfilePage,
   NotificationPage,
   LocationProfile,
-  DashboardPage,
   api_data,
   lighthouse_data,
   navigator_data,

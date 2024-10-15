@@ -6,7 +6,7 @@ const {
   clickRemindMeTomorrowButton
 } = require('../utils/helper');
 
-test.describe('LightHouse Chat Search', () => {
+test.describe('Performing actions on Chat Search', () => {
   let chatpage, flowsheetPage, locationId, locationText;
 
   test.beforeEach(async ({ page }) => {

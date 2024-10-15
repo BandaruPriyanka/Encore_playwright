@@ -25,7 +25,14 @@ const NavigatorConsts = {
   Add_Ons: 'Add Ons',
   Labor: 'Labor',
   tabNames: ['Details', 'Contacts', 'Touchpoints', 'Room List', 'Previous Events'],
-  Languages: ['English', 'Spanish', 'French']
+  Languages: ['English', 'Spanish', 'French'],
+  blackColor: 'rgb(0, 0, 0)',
+  scheduleColor: 'rgb(55, 65, 81)',
+  flowsheetDarkColor: 'rgb(229, 231, 235)',
+  scheduleDarkColor: 'rgb(209, 213, 219)',
+  customersColor: 'rgb(209, 213, 219)',
+  menuBgDarkColor: 'rgb(12, 74, 110)',
+  menuBgLightColor: 'rgb(56, 189, 248)'
 };
 
 exports.Const = NavigatorConsts;

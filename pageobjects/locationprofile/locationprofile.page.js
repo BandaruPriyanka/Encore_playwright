@@ -7,15 +7,18 @@ const {
   assertElementFocused,
   assertValueToBe,
   scrollElement,
-  assertContainsValue,
   assertElementDisabled,
-  assertElementContainsText
+  assertElementContainsText,
+  nextDayDate,
+  getDateBasedOnDays,
+  assertEqualValues,
+  todayDate
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 const { test } = require('@playwright/test');
 const utilConst = require('../../utils/const');
 
-let equipmentCheckListText, flowsheetCardAndTab;
+let equipmentCheckListText, flowsheetCardAndTab, initialDays, valueAfterNotifyUsDays;
 exports.LocationProfile = class LocationProfile {
   constructor(page) {
     this.page = page;
@@ -99,6 +102,33 @@ exports.LocationProfile = class LocationProfile {
     this.deleteIcon = email =>
       this.page.locator(`//div[contains(text(),'${email}')]/../../following-sibling::div/icon`);
     this.confirmationModal = this.page.locator('//app-confirm-dialog');
+    this.notifyUsOfJobChangesDiv = this.isMobile
+      ? this.page.locator("(//div[contains(@class,'e2e_user_profile_job_changes')])[2]")
+      : this.page.locator("(//div[contains(@class,'e2e_user_profile_job_changes')])[1]");
+    this.daysInput = this.isMobile
+      ? this.page.locator("(//input[@formcontrolname='days'])[2]")
+      : this.page.locator("(//input[@formcontrolname='days'])[1]");
+    this.notificationIcon = this.page.locator("//icon[@name='bell_notification_line']");
+    this.backArrowBtnInPage = this.page.locator("//app-flowsheet-detail//icon[@name='arrow_line']");
+    this.notificationMsg = msg =>
+      this.page.locator(`//app-notification[1]//div[contains(text(),'` + msg + `')]`);
+    this.notificationCloseBtn = this.page.locator("//icon[@class='cursor-pointer']");
+    this.moodChangeIcon = this.isMobile
+      ? this.page.locator('(//app-flowsheet-detail//app-mood-icon//icon)[2]')
+      : this.page.locator('(//app-flowsheet-detail//app-mood-icon//icon)[1]');
+    this.moodChangeIconInModal = icon =>
+      this.page.locator(`//app-room-mood-chooser//app-mood-icon//icon[@class='` + icon + `']`);
+    this.commentBoxInput = this.page.locator(
+      "//span[text()='Comment']//following-sibling::textarea"
+    );
+    this.submitButton = this.page.locator("//span[contains(text(),'Submit')]");
+    this.dateElement = date => this.page.locator(`//span[text()='${date}']`);
+    this.nextWeekButton = this.page.locator("//icon[@title='Next week']");
+    this.todayDiv = this.page.locator("//div[normalize-space()='TODAY']");
+    this.notifyUsUpdateButton = this.isMobile
+      ? this.page.locator("(//div[normalize-space()='Update'])[2]")
+      : this.page.locator("(//div[normalize-space()='Update'])[1]");
+    this.notificationClearAll = this.page.locator("//div[normalize-space()='Clear all']");
   }
   getDynamicLocator = (label, index) => {
     return this.page.locator(`(//span[normalize-space()='${label}']//parent::li)[${index}]`);
@@ -263,6 +293,7 @@ exports.LocationProfile = class LocationProfile {
       'click',
       "Click on 'Remove' icon for some previously added Group"
     );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(this.areYouSurePop, 'Confirmation modal should be displayed.');
     await executeStep(this.noButton, 'click', "Select 'No' option within the modal");
     await assertElementVisible(
@@ -327,6 +358,10 @@ exports.LocationProfile = class LocationProfile {
       this.emailRecipientsList,
       'Verify that all added emails can be removed from the list'
     );
+    await assertElementVisible(this.addEmail,"Verify that the 'Footer Field' is visible");
+    await executeStep(this.deleteIcon(indexPage.lighthouse_data.addOnEmail),"click","Delete the email");
+    await executeStep(this.yesButton,"click","Click on yes button");
+    await assertElementNotVisible(this.emailRecipientsList,'Verify that all added emails can be removed from the list');
   }
 
   async assertEmailRecipients() {
@@ -433,5 +468,169 @@ exports.LocationProfile = class LocationProfile {
       this.emailDiv(indexPage.lighthouse_data.addOnEmail),
       "Verify that 'Email' should be removed from the list successfully after reload."
     );
+  }
+  async moodChangeFunctionality(icon, comment) {
+    await executeStep(this.moodChangeIcon, 'click', 'Click on mood change icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.moodChangeIconInModal(icon), 'click', 'Click on icon in modal');
+    await executeStep(this.commentBoxInput, 'fill', 'Enter the comment', [comment]);
+    await executeStep(this.submitButton, 'click', 'Click on submit button');
+    if (this.isMobile) {
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      executeStep(this.backArrowBtnInPage, 'click', 'Click on back button in mobile');
+    }
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await executeStep(this.notificationIcon, 'click', 'Click on notification button');
+  }
+
+  async initialNotifyDays() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(
+      this.notifyUsOfJobChangesDiv,
+      "Verify that the 'Notify us of job changes' is visible"
+    );
+    initialDays = await this.daysInput.inputValue();
+    await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
+    await flowsheetCardAndTab.performSearchFunction(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
+    await this.moodChangeFunctionality(
+      utilConst.Const.yellowIconText,
+      indexPage.lighthouse_data.neutralComment
+    );
+    await assertElementVisible(
+      this.notificationMsg(indexPage.lighthouse_data.neutralComment),
+      'Verify User should get both push & in-app notifications'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.notificationClearAll, 'click', 'Click clear all button');
+    await executeStep(this.notificationCloseBtn, 'click', 'Close notification button');
+  }
+
+  async assertNotifyUsAfterDateChange(icon, comment, days) {
+    await flowsheetCardAndTab.performSearchFunction(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
+    await this.moodChangeFunctionality(icon, comment);
+    if (days == 0 || days == 2) {
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await assertElementNotVisible(
+        this.notificationMsg(comment),
+        'Verify that No push & in-app notifications expected.'
+      );
+    } else {
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await assertElementVisible(
+        this.notificationMsg(comment),
+        'Verify User should get both push & in-app notifications'
+      );
+      await executeStep(this.notificationClearAll, 'click', 'Click clear all button');
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.notificationCloseBtn, 'click', 'Close notification button');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+
+  async notifyUsDateChangeForInitialValue() {
+    if (await this.dateElement(nextDayDate()).isVisible()) {
+      await executeStep(this.dateElement(nextDayDate()), 'click', 'Click on next day');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    } else {
+      await executeStep(this.nextWeekButton, 'click', 'Click on next week button');
+      await executeStep(this.dateElement(nextDayDate()), 'Click', 'Click on next day');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+    await this.assertNotifyUsAfterDateChange(
+      utilConst.Const.yellowIconText,
+      indexPage.lighthouse_data.neutralComment,
+      initialDays
+    );
+  }
+
+  async changeTheDayInNotifyUs() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.clickOnLocationProfile();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.daysInput, 'fill', 'Enter the days for notify us of job changes', ['1']);
+    await executeStep(this.notifyUsUpdateButton, 'click', 'Click on update button');
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    valueAfterNotifyUsDays = await this.daysInput.inputValue();
+    await executeStep(this.flowsheetBtn, 'click', 'Click on flowsheet button');
+    await flowsheetCardAndTab.performSearchFunction(
+      indexPage.navigator_data.second_job_no,
+      indexPage.navigator_data.second_job_no
+    );
+    await this.moodChangeFunctionality(
+      utilConst.Const.redIconText,
+      indexPage.lighthouse_data.angryComment
+    );
+    await assertElementVisible(
+      this.notificationMsg(indexPage.lighthouse_data.angryComment),
+      'Verify User should get both push & in-app notifications'
+    );
+    await executeStep(this.notificationCloseBtn, 'click', 'Close notification button');
+  }
+
+  async assertNotificationForDateChange() {
+    if (await this.dateElement(nextDayDate()).isVisible()) {
+      await executeStep(this.dateElement(nextDayDate()), 'click', 'Click on next day');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    } else {
+      await executeStep(this.nextWeekButton, 'click', 'Click on next week button');
+      await executeStep(this.dateElement(nextDayDate()), 'click', 'Click on next day');
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+    await this.assertNotifyUsAfterDateChange(
+      utilConst.Const.redIconText,
+      indexPage.lighthouse_data.angryComment,
+      valueAfterNotifyUsDays
+    );
+    if (await this.dateElement(getDateBasedOnDays(2)).isVisible()) {
+      await executeStep(
+        this.dateElement(getDateBasedOnDays(2)),
+        'click',
+        'Click on the date which is actual date + 2 days'
+      );
+    } else {
+      await executeStep(this.nextWeekButton, 'click', 'Click on next week button');
+      await executeStep(
+        this.dateElement(getDateBasedOnDays(2)),
+        'click',
+        'Click on the date which is actual date + 2 days'
+      );
+    }
+    await this.assertNotifyUsAfterDateChange(
+      utilConst.Const.redIconText,
+      indexPage.lighthouse_data.angryComment,
+      '2'
+    );
+  }
+
+  async assertNotifyUsValueAfterReload() {
+    await this.clickOnLocationProfile();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const getValue = await this.daysInput.inputValue();
+    await assertEqualValues(
+      getValue,
+      valueAfterNotifyUsDays,
+      "Verify that the selected 'Notify us of job changes' value remains the same after the page reload"
+    );
+  }
+
+  async setNotifyUsValueToInitalValue() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(
+      this.daysInput,
+      'fill',
+      "Enter the initial value for 'Notify Us Of Job Changes'",
+      [initialDays]
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.notifyUsUpdateButton, 'click', 'Click on update button');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 };

@@ -7,7 +7,6 @@ const {
   assertElementNotVisible,
   assertElementContainsText,
   getFormattedTodayDate,
-  getTodayDateAndMonth,
   getPreviousWeekDateAndMonth,
   getNextWeekDateAndMonth,
   assertContainsValue,

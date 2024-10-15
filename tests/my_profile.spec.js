@@ -7,19 +7,10 @@ const {
   assertEqualValues,
   assertElementNotVisible,
   assertElementEnabled,
-  assertElementDisabled,
   assertElementAttributeContains
 } = require('../utils/helper');
 test.describe('Performing actions on My Profile Tab & Notifications Tab', () => {
-  let profilePage,
-    flowsheetPage,
-    notificationPage,
-    locationId,
-    locationText,
-    lastSyncValue,
-    profileModule,
-    preferencesModule,
-    moreOptionsModule;
+  let profilePage, flowsheetPage, notificationPage, locationId, locationText, lastSyncValue;
 
   test.beforeEach(async ({ page }) => {
     profilePage = new indexPage.ProfilePage(page);
@@ -32,11 +23,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await flowsheetPage.changeLocation(locationId, locationText);
-    await profilePage.navigateToProfileMenu();
-    await page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementVisible(profilePage.myProfileBtn, 'Verify My Profile is visible');
-    await profilePage.navigateToMyProfile();
-    await page.waitForTimeout(parseInt(process.env.small_timeout));
+    await profilePage.myProfileTab();
   });
 
   test('Test_C57103 Verify Menu navigation desktop', async ({ isMobile }) => {
@@ -229,5 +216,21 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await profilePage.assertInitialTimeFormatForElements();
     await profilePage.changeDisplayTimeValue();
     await profilePage.assertAfterTimeFormatForElements();
+  });
+  test('Test_C57111 : Verify Theme selection', async ({ page }) => {
+    await profilePage.selectDarkTheme();
+    await test.step('Verify that the all elements are displayed in the Dark Theme', async () => {
+      await profilePage.allPageElements();
+      await test.step('Verify that the Theme option should be changed Successfully (ex-to Light)', async () => {
+        await profilePage.updateToLightTheme();
+      });
+      await test.step('Verify that refreshing the page confirms the Light theme was saved properly', async () => {
+        await profilePage.refreshThePage();
+      });
+      await test.step('Verify that the all elements are displayed in the Light Theme', async () => {
+        await profilePage.allElementsInLight();
+      });
+      await profilePage.changeToDefaultColor();
+    });
   });
 });

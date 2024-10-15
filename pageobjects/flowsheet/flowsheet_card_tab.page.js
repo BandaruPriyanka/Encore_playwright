@@ -263,6 +263,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.confirmModalForNegative = this.page.locator(
       "//div[contains(text(),'While this particular opportunity may not have been a perfect fit')]"
     );
+    this.greenNotificationMsg = this.page.locator(
+      "//span[normalize-space()='Please remain on this page while we are generating a document for you. This usually takes up to a minute.']"
+    );
   }
 
   async searchFunction(searchText) {
@@ -270,7 +273,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   }
 
   async clickOnJob(jobId) {
-    await executeStep(this.jobIdElement(jobId), 'click', 'Click the room div');
+    await executeStep(this.jobIdElement(jobId), 'click', 'Click the customer from list');
   }
 
   async performSearchFunction(searchText, jobId) {
@@ -482,6 +485,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async dateSelectModalCheckingAndAssertRooms() {
     await this.dateSelectModal(true);
+    await assertElementNotVisible(
+      this.greenNotificationMsg,
+      'Verify that NO Green notification message should be displayed'
+    );
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const addOnRequestsCount = await this.addOnRequestsList.count();
     await assertGreaterThan(addOnRequestsCount, 0, 'Verify that there are add-on requests present');
@@ -1122,7 +1129,12 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
     await this.discountChecking(invalidDiscountGenerator(), validDiscountGenerator(), isNecessary);
     await this.dateSelectModal(true);
+    await assertElementVisible(
+      this.greenNotificationMsg,
+      'Verify that Green notification message should be displayed while the document is being generated.'
+    );
     await this.page.waitForTimeout(parseInt(process.env.default_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
   }
 
   async assertDocument(scenario) {
@@ -1208,17 +1220,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await createDataPage.searchWithJobId();
     if (scenario === 'positive') {
       await assertElementVisible(
-        createDataPage.statusOfJobInNavigator(
-          indexPage.lighthouse_data.confirmed,
-          `Verify that the status of the job (${indexPage.lighthouse_data.confirmed}) is visible in Navigator`
-        )
+        createDataPage.statusOfJob(indexPage.lighthouse_data.confirmed),
+        `Verify that the status of the job (${indexPage.lighthouse_data.confirmed}) is visible in Navigator`
       );
     } else {
       await assertElementVisible(
-        createDataPage.statusOfJobInNavigator(
-          indexPage.lighthouse_data.cancel,
-          `Verify that the status of the job (${indexPage.lighthouse_data.cancel}) is visible in Navigator`
-        )
+        createDataPage.statusOfJob(indexPage.lighthouse_data.cancel),
+        `Verify that the status of the job (${indexPage.lighthouse_data.cancel}) is visible in Navigator`
       );
     }
   }
