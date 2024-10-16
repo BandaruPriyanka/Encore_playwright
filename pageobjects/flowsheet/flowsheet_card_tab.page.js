@@ -999,7 +999,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     });
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
     await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
-    await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
+    await newPage.waitForTimeout(parseInt(process.env.small_max_timeout));
     await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });

@@ -330,6 +330,7 @@ exports.LocationProfile = class LocationProfile {
   }
 
   async verifyAddOnsEmailRecipientsElements() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.emailRecipientsIcon, 'click', "Click on 'Email Recipient'");
     await assertElementVisible(this.locationHeader, "Verify that the 'Location header' is visible");
     try {
@@ -341,6 +342,7 @@ exports.LocationProfile = class LocationProfile {
       await executeStep(this.addEmail, 'fill', 'Enter the email', [
         indexPage.lighthouse_data.addOnEmail
       ]);
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await executeStep(this.addBtn, 'click', 'Click on add button');
       await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
       await assertElementVisible(
@@ -348,20 +350,19 @@ exports.LocationProfile = class LocationProfile {
         "Verify that the 'Email recipients list' is visible"
       );
     }
+    await assertElementVisible(this.addEmail,"Verify that the 'Footer Field' is visible");
     await executeStep(
       this.deleteIcon(indexPage.lighthouse_data.addOnEmail),
       'click',
       'Delete the email'
     );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.yesButton, 'click', 'Click on yes button');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementNotVisible(
       this.emailRecipientsList,
       'Verify that all added emails can be removed from the list'
     );
-    await assertElementVisible(this.addEmail,"Verify that the 'Footer Field' is visible");
-    await executeStep(this.deleteIcon(indexPage.lighthouse_data.addOnEmail),"click","Delete the email");
-    await executeStep(this.yesButton,"click","Click on yes button");
-    await assertElementNotVisible(this.emailRecipientsList,'Verify that all added emails can be removed from the list');
   }
 
   async assertEmailRecipients() {

@@ -738,17 +738,17 @@ exports.ProfilePage = class ProfilePage {
       'Verify that the time display element is visible'
     );
     initialTimeValue = await this.timeValueFromProfile.textContent();
-    try {
+    if (initialTimeValue.trim() === indexPage.lighthouse_data['12Hours']) {
       assertEqualValues(
         initialTimeValue.trim(),
         indexPage.lighthouse_data['12Hours'],
-        'Verify that the initial time value matches either the 12-hour or 24-hour format'
+        'Verify that the initial time value matches either the 12-hours or 24-hours format'
       );
-    } catch {
+    }else {
       assertEqualValues(
         initialTimeValue.trim(),
         indexPage.lighthouse_data['24Hours'],
-        'Verify that the initial time value matches either the 12-hour or 24-hour format'
+        'Verify that the initial time value matches either the 12-hours or 24-hours format'
       );
     }
   }
@@ -847,6 +847,23 @@ exports.ProfilePage = class ProfilePage {
   async assertAfterTimeFormatForElements() {
     await this.assertDisplayTimeFormatForElements(afterTimeValue);
   }
+
+  async changeDisplayTimeToInitialTime() {
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    const getTimeValue = await this.timeValueFromProfile.textContent();
+    if (getTimeValue.trim() !== initialTimeValue.trim()) {
+      await executeStep(this.updateBtnForTime, 'click', 'Click on Update link');
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const getTime = await this.timeValueFromProfile.textContent();
+    await assertEqualValues(
+      getTime,
+      initialTimeValue,
+      `Verify that the 'Time Display' option is changed successfully intial value. Expected : ${getTime}  Actual : ${initialTimeValue}`
+    );
+  }
+
   async myProfileTab() {
     await this.navigateToProfileMenu();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));

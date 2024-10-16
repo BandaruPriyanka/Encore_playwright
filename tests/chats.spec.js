@@ -63,7 +63,8 @@ test.describe('Performing actions on Chat Search', () => {
     await chatpage.profileLogout();
     await chatpage.selectUser2();
     await chatpage.selectUser1();
-    await chatpage.imageValidation();
     await clickRemindMeTomorrowButton(chatpage.page);
+    await chatpage.imageValidation();
+
   });
 });
