@@ -305,6 +305,7 @@ exports.LocationProfile = class LocationProfile {
       'click',
       "Again click on 'Remove' icon for some previously added Group"
     );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(this.areYouSurePop, 'Confirmation modal should be displayed.');
     await executeStep(this.yesButton, 'click', "Select 'Yes' option within the modal");
     await assertElementNotVisible(
