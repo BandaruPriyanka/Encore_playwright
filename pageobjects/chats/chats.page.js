@@ -195,7 +195,7 @@ exports.ChatPage = class ChatPage {
     await executeStep(this.groupNameField, 'fill', 'Enter the groupNameField', [demogroup]);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.saveButton, 'click', 'Click on saveButton');
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     const groupName = await this.updatedGroupName.textContent();
     await assertEqualValues(
       groupName,

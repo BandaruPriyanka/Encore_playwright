@@ -684,18 +684,16 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
   async selectFlowsheetCard() {
     let xpathString = await this.getFlowsheetCard();
-    try {
-      if (xpathString) {
-        const xpathLocator = await this.page.locator(xpathString);
-        let nonTestJobNumber = await xpathLocator.textContent();
-        nonTestJobNumber = nonTestJobNumber.replace('#', '').trim();
-
-        indexPage.lighthouse_data.nonTestJobNumber = nonTestJobNumber;
-        await fs.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
-        await xpathLocator.waitFor({ state: 'visible' });
-      }
-    } catch (error) {
-      test.info('No valid Flowsheet cards found to perform actions');
+    try{
+    if (xpathString) {
+      let jobNumber = xpathString.replace('#', '').trim();
+      console.log('job number ::::',jobNumber);
+      indexPage.lighthouse_data.nonTestJobNumber = jobNumber;
+      await fs.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
+    }
+    }
+    catch(error){
+        test.info('No valid flowsheet cards found to perform actions')
     }
   }
   async equipmentItemsClickable() {
