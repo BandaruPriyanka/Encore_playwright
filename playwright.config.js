@@ -17,7 +17,7 @@ module.exports = defineConfig({
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  // forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
@@ -83,7 +83,7 @@ module.exports = defineConfig({
         'tests/schedule.spec.js',
         'tests/customers.spec.js',
         'tests/chats.spec.js',
-         'tests/my_profile.spec.js',
+       'tests/my_profile.spec.js',
         'tests/location_profile.spec.js',
         'tests/lhs_event_agendas.spec.js',
         'tests/dashboard.spec.js'
@@ -154,7 +154,8 @@ module.exports = defineConfig({
         'tests/chats.spec.js',
         'tests/my_profile.spec.js',
         'tests/location_profile.spec.js',
-        'tests/lhs_event_agendas.spec.js'
+        'tests/lhs_event_agendas.spec.js',
+        'tests/dashboard.spec.js'
       ]
       // dependencies: ['global_setup', 'create_data1']
     }

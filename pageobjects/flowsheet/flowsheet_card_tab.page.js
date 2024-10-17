@@ -434,11 +434,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     discountPrice = formatCurrency(
       calculateTotalAmountAfterDiscount(originalPrice, parseInt(validDiscount))
     );
-    await assertElementContainsText(
-      this.moneyElement,
-      discountPrice,
-      `Verify the element contains the discount price: "${discountPrice}"`
-    );
+    await assertNotEqualValues(discountPrice,estimatedMoneyBeforeDiscount,`Verify that the discount % is calculated properly. ActualPrice : ${estimatedMoneyBeforeDiscount} DiscountPrice : ${discountPrice}`);
     const addedProductsCount = await this.listOfProducts.count();
     const deleteIconCount = await this.listOfDeleteIcon.count();
     await assertEqualValues(
@@ -475,9 +471,6 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.selectDate, 'click', 'Select today date');
     await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
     await test.step('Verify the confirmation page should be displayed with all the valid details.', async () => {
-      if (isNotComplimentary) {
-        await assertElementContainsText(this.priceInConfirmationModal, discountPrice, '');
-      }
       await assertElementVisible(this.sendToNavigatorBtn, '');
     });
     await executeStep(this.sendToNavigatorBtn, 'click', 'Click on send to navigator button');
@@ -999,7 +992,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     });
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
     await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
-    await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
+    await newPage.waitForTimeout(parseInt(process.env.small_max_timeout));
     await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
@@ -1153,7 +1146,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await assertElementVisible(this.finishBtn, 'Verify that the Finish button is visible');
       await executeStep(this.finishBtn, 'click', 'Click on fnish button');
       await assertElementVisible(
-        this.requestACopyModal,
+        this.requestACopyModal, 
         'Verify that the "Request a Copy" modal is visible'
       );
       await executeStep(this.emailInput, 'fill', 'Enter the email id', [

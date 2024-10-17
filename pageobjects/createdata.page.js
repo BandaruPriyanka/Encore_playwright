@@ -525,7 +525,6 @@ exports.CreateData = class CreateData {
     }
     await executeStep(this.searchBtn, 'click', 'click on search button');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
-    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     if (!this.clickOnJobId(indexPage.navigator_data.second_job_no).isVisible()) {
       await executeStep(this.searchBtn, 'click', 'click on search button');
       await this.page.waitForTimeout(parseInt(process.env.large_timeout));

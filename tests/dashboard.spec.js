@@ -2,7 +2,7 @@ const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
 const utilConst = require('../utils/const');
 require('dotenv').config();
-test.describe('Dashboard', () => {
+test.describe('Performing actions on Dashboard Page', () => {
   let dashboardPage, flowsheetPage, locationId, locationText;
   test.beforeEach(async ({ page }) => {
     dashboardPage = new indexPage.DashboardPage(page);
@@ -27,3 +27,4 @@ test.describe('Dashboard', () => {
     await dashboardPage.removeWidgets();
   })
 });
+

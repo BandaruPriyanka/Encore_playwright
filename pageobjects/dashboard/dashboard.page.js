@@ -68,6 +68,7 @@ exports.DashboardPage = class DashboardPage {
     await assertElementVisible(this.additionsCaptureSelectBtn, "Verify widget selection modal should be displayed");
     await executeStep(this.additionsCaptureSelectBtn, 'click', "Select 'Additions Captured' widget ");
     await executeStep(this.applyBtn,'click', "click 'Apply' button");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(this.additionsCapturedWidget, "Verify 'Additions Captured' widget should be added to the Dashboard");
     await test.step('Refresh the page', async () => {
         await this.page.reload();
@@ -195,4 +196,4 @@ exports.DashboardPage = class DashboardPage {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await assertElementVisible(this.productInWidget(getText) , "Verify that Item A should be displayed properly for Add on with 1pcs for 1 days and with 25% discount.");
   }
-}
+};

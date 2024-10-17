@@ -158,12 +158,10 @@ test.describe('Performing actions on Flowsheet', () => {
     });
     await test.step('Verify that one of the assets can be deselected, Status should update to Partial', async () => {
       await flowsheetPage.deSelectAnyEquipmentItem();
-      // await assertElementVisible(flowsheetPage.blueIcon);
     });
     await test.step('Verify that deselect the last assets, Status should update to initial open', async () => {
       await flowsheetPage.deSelectLastEquipmentAsset();
       await assertElementVisible(flowsheetPage.redIcon);
-      // await assertElementVisible(flowsheetPage.whiteIcon)
     });
   });
 });

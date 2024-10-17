@@ -216,6 +216,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await profilePage.assertInitialTimeFormatForElements();
     await profilePage.changeDisplayTimeValue();
     await profilePage.assertAfterTimeFormatForElements();
+    await profilePage.changeDisplayTimeToInitialTime();
   });
   test('Test_C57111 : Verify Theme selection', async ({ page }) => {
     await profilePage.selectDarkTheme();
