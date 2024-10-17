@@ -291,6 +291,26 @@ exports.ProfilePage = class ProfilePage {
     this.eventAgendaTitle = this.page.locator('agenda-list>div>div').nth(4);
     this.menuBg = '.dark\\:bg-sky-900';
     this.menuText = this.page.locator("//span[text()='Menu']");
+
+    this.initialFavouriteMenuSlot = this.isMobile
+      ? this.page.locator("//div[text()='Menu Slot 3']//following-sibling::div")
+      : this.page.locator("(//div[contains(@class,'e2e_profile_content_favorite')])[3]"); 
+    this.getValueOfMenuSlot3 = this.isMobile
+      ? this.page.locator("//div[contains(@class,'e2e_user_profile_menu_3_value')]")
+      : this.page.locator("//span[contains(@class,'e2e_user_profile_menu_3_value')]");
+    this.selectMenuSlot5AsFavourite = this.isMobile
+      ? this.page.locator("//div[text()='Menu Slot 5']//following-sibling::div")
+      : this.page.locator("(//div[contains(@class,'e2e_profile_content_favorite')])[5]");
+    this.getValueOfMenuSlot5 = this.isMobile
+      ? this.page.locator("//div[contains(@class,'e2e_user_profile_menu_5_value')]")
+      : this.page.locator("//span[contains(@class,'e2e_user_profile_menu_5_value')]");
+    this.getFlowsheetTextFromPage = this.page.locator(
+      "//div[contains(@class,'e2e_page_header_flowsheets')]/span"
+    );
+    this.getScheduleTextFromPage = this.page.locator(
+      "//div[contains(@class,'e2e_page_header_schedule')]"
+    );
+    this.flowsheetFavouriteIcon=this.page.locator('div.e2e_profile_content_favorite').nth(2);
   }
   async navigateToProfileMenu() {
     await executeStep(this.menuIcon, 'click', 'Click on Profile Menu Icon');
@@ -1033,5 +1053,63 @@ exports.ProfilePage = class ProfilePage {
   async changeToDefaultColor() {
     await this.myProfileTab();
     await this.changeToDefaultLightTheme();
+  }
+  async isHeartIconSelectedByClass() {
+    const iconClass = await this.flowsheetFavouriteIcon.getAttribute('class');
+    const favouriteIconColor=utilConst.Const.favouriteIconColor;
+    return iconClass.includes(favouriteIconColor);
+  }
+  async assertInitialFavouriteMenuSlot() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const getMenuSlotValue = await this.getValueOfMenuSlot3.textContent();
+    const getMenuSlot3Value=getMenuSlotValue.trim();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.goto(process.env.lighthouseUrl);
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    const textFromPage = await this.getFlowsheetTextFromPage.textContent();
+    const slot3TextFromPage=textFromPage.trim();
+    await assertEqualValues(
+      slot3TextFromPage,
+      getMenuSlot3Value,
+      'Verify that the appropriate page is opened based on the Favourite option From Menu Slot 3'
+    );
+  }
+  async changeMenuSlot5ToFavouriteSlot() {
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    await executeStep(
+      this.selectMenuSlot5AsFavourite,
+      'click',
+      'Select the first menu slot as favourite'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const getMenuSlotValue = await this.getValueOfMenuSlot5.textContent();
+    const menuSlotValue= getMenuSlotValue.trim();
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await this.page.goto(process.env.lighthouseUrl);
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    const textFromPage = await this.getScheduleTextFromPage.textContent();
+    const slot5TextFromPage=textFromPage.trim();
+    await assertEqualValues(
+      slot5TextFromPage,
+      menuSlotValue,
+      'Verify that the appropriate page is opened based on the Favourite option From Menu Slot 1'
+    );
+  }
+  async restoreToSelectedMenuSlot() {
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await executeStep(
+      this.initialFavouriteMenuSlot,
+      'click',
+      'Select the third menu slot as favorite'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const isFavouriteIconSelected = await this.isHeartIconSelectedByClass();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await assertElementTrue(isFavouriteIconSelected);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 };
