@@ -9,7 +9,7 @@ const {
   assertElementAttribute
 } = require('../utils/helper');
 require('dotenv').config();
-test.describe.only('Performing actions on Customer Tab', () => {
+test.describe('Performing actions on Customer Tab', () => {
   let customersPage, flowsheetPage, locationId, locationText;
   test.beforeEach(async ({ page }) => {
     customersPage = new indexPage.CustomersPage(page);

@@ -23,10 +23,10 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await flowsheetPage.changeLocation(locationId, locationText);
     await locationProfilePage.clickOnLocationProfile();
   });
-  test.only('Test_C57119 : Verify Location Profile page elements', async () => {
+  test('Test_C57119 : Verify Location Profile page elements', async () => {
     await locationProfilePage.verifyTabs();
   });
-  test.only('Test_C57120 : Verify Use Equipment Checklist functionality', async () => {
+  test('Test_C57120 : Verify Use Equipment Checklist functionality', async () => {
     await locationProfilePage.assertEquipmentCheckList();
     await flowsheetCardAndTab.assertCheckBox();
     await assertElementNotVisible(
@@ -34,7 +34,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
       'Verify that the "Select All checkbox" is not visible'
     );
   });
-  test.skip("Test_C57122: Verify 'Use Docusign' functionality", async ({ page }) => {
+  test("Test_C57122: Verify 'Use Docusign' functionality", async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await flowsheetCardAndTab.createAddOn(
       indexPage.lighthouse_data.turnOn,
@@ -74,7 +74,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await flowsheetCardAndTab.dateSelectModalCheckingAndAssertRooms();
   });
   test.describe('Flowsheets Groups Tab ', () => {
-    test.only("Test_C57126 Check 'Flowsheets Groups' Tab elements", async () => {
+    test("Test_C57126 Check 'Flowsheets Groups' Tab elements", async () => {
       await test.step("Check the 'Flowsheets Groups' page structure", async () => {
         await locationProfilePage.verifyAddOnesEmailRecipients();
       });
@@ -83,22 +83,22 @@ test.describe('Performing actions on Location Profile Tab', () => {
       });
     });
 
-    test.only('Test_C57127: Check Adding Groups functionality', async () => {
+    test('Test_C57127: Check Adding Groups functionality', async () => {
       await locationProfilePage.clickOnFlowsheetGroups();
       await locationProfilePage.addingGroupFunctionality();
     });
 
-    test.only('Test_C57128 : Check Removing Groups functionality', async () => {
+    test('Test_C57128 : Check Removing Groups functionality', async () => {
       await locationProfilePage.clickOnFlowsheetGroups();
       await locationProfilePage.removingGroupFunctionality();
     });
   });
 
-  test.only('Test_C57123 Check "Add Ons Email Recipients" Tab elements', async () => {
+  test('Test_C57123 Check "Add Ons Email Recipients" Tab elements', async () => {
     await locationProfilePage.verifyAddOnsEmailRecipientsElements();
   });
 
-  test.skip('Test_C57124: Verify Adding emails functionality', async ({ page }) => {
+  test('Test_C57124: Verify Adding emails functionality', async ({ page }) => {
     await locationProfilePage.assertEmailRecipients();
     await locationProfilePage.assertEmailInput();
     await flowsheetCardAndTab.createAddOn(
@@ -117,7 +117,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test.skip('Test_C57125 :Verify Removing emails functionality', async ({page}) => {
+  test('Test_C57125 :Verify Removing emails functionality', async ({page}) => {
     await locationProfilePage.assertEmailRecipients();
     await locationProfilePage.deleteEmail();
     await flowsheetCardAndTab.createAddOn(
@@ -136,7 +136,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test.only('Test_C57121 Check "Notify us of job changes" functionality', async () => {
+  test('Test_C57121 Check "Notify us of job changes" functionality', async () => {
     await locationProfilePage.initialNotifyDays();
     await locationProfilePage.notifyUsDateChangeForInitialValue();
     await locationProfilePage.changeTheDayInNotifyUs();

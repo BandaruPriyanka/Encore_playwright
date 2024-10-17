@@ -7,7 +7,7 @@ const {
   todayDate
 } = require('../utils/helper');
 
-test.describe.only('LightHouse Event Agendas', () => {
+test.describe('LightHouse Event Agendas', () => {
   let agendasPage, flowsheetPage, locationId, locationText;
 
   test.beforeEach(async ({ page }) => {
