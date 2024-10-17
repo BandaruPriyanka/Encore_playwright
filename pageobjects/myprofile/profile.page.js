@@ -872,13 +872,11 @@ exports.ProfilePage = class ProfilePage {
     }
     const selectedDarkTheme = await this.selectedTheme.textContent();
     const expectedTheme = 'Dark';
-    await test.step('Verify default selected theme is Dark', async () => {
-      await assertValueToBe(
-        selectedDarkTheme.trim(),
-        'Assert selected theme is Dark',
-        expectedTheme
-      );
-    });
+    await assertValueToBe(
+      selectedDarkTheme.trim(),
+      'Verify default selected theme is Dark',
+      expectedTheme
+    );
     await test.step('Verify that the Page should be displayed in Dark Theme', async () => {
       const isDark = await this.isDarkTheme();
       await assertElementTrue(isDark);
@@ -939,13 +937,11 @@ exports.ProfilePage = class ProfilePage {
     }
     const selectedDarkTheme = await this.selectedTheme.textContent();
     const expectedTheme = 'Light';
-    await test.step('Verify selected Theme option is Light', async () => {
-      await assertValueToBe(
-        selectedDarkTheme.trim(),
-        'Assert that selected theme is Light',
-        expectedTheme
-      );
-    });
+    await assertValueToBe(
+      selectedDarkTheme.trim(),
+      'Verify selected Theme option is Light',
+      expectedTheme
+    );
     await test.step('Verify that the Page should be displayed in Light Theme', async () => {
       const isLight = await this.isLightTheme();
       await assertElementTrue(isLight);

@@ -84,5 +84,10 @@
   "addOnEmailRecipients": "Add Ons Email Recipients",
   "invalidEmail": "testing.gmail.com",
   "nonTestJobNumber": "54787",
-  "grpField":"test"
+  "grpField":"test",
+  "currentWeek" : "Current Week",
+  "lastWeek" : "Last Week",
+  "lastMonth" : "Last Month",
+  "quantity2" : "2",
+  "discountPercentage" : "25"
 }
