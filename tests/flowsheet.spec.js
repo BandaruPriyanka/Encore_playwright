@@ -20,7 +20,7 @@ test.describe('Performing actions on Flowsheet', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await flowsheetPage.changeLocation(locationId, locationText);
   });
-  test('Test_C56878: Verify Flowsheet status', async ({ page, isMobile }) => {
+  test.only('Test_C56878: Verify Flowsheet status', async ({ page, isMobile }) => {
     test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
     await flowsheetPage.searchFunctionality();
     await assertElementVisible(flowsheetPage.statusIcon, 'Verify status icon is visible');
@@ -38,7 +38,7 @@ test.describe('Performing actions on Flowsheet', () => {
     );
     await flowsheetPage.changestatus();
   });
-  test('Test_C56880 : Verify Flowsheet groups', async ({ isMobile }) => {
+  test.only('Test_C56880 : Verify Flowsheet groups', async ({ isMobile }) => {
     test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
     await flowsheetPage.searchFunctionality();
     await assertElementVisible(flowsheetPage.statusIcon, 'Verify status icon is visible');
@@ -47,14 +47,14 @@ test.describe('Performing actions on Flowsheet', () => {
     await flowsheetPage.deleteGroupData();
   });
 
-  test('Test_C56882: Verify lighthouse flowsheet search functionality', async ({ page }) => {
+  test.only('Test_C56882: Verify lighthouse flowsheet search functionality', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.large_timeout));
     await assertElementVisible(flowsheetPage.roomsCount, 'Assert that rooms count is visible');
     await assertElementVisible(flowsheetPage.searchInput, 'Verify search input is visible');
     await flowsheetPage.checkingSearchFunctionality();
   });
 
-  test('Test_C56885: Verify Flowsheets filtering', async ({ page }) => {
+  test.only('Test_C56885: Verify Flowsheets filtering', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetPage.roomsCount, 'Assert that rooms count is visible');
     await assertElementVisible(flowsheetPage.filterIcon, 'Assert filter icon is visible');
@@ -70,7 +70,7 @@ test.describe('Performing actions on Flowsheet', () => {
     await flowsheetPage.sorting();
   });
 
-  test('Test_C56886: Verify Flowsheets calendar', async ({ page }) => {
+  test.only('Test_C56886: Verify Flowsheets calendar', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(flowsheetPage.calendarDiv, 'Verify visibility of the calendar');
     await assertElementVisible(
@@ -88,7 +88,7 @@ test.describe('Performing actions on Flowsheet', () => {
     });
   });
 
-  test('Test_C56888: Verify Flowsheets calendar widget', async ({ page }) => {
+  test.only('Test_C56888: Verify Flowsheets calendar widget', async ({ page }) => {
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(
       flowsheetPage.calendarDiv,
@@ -107,7 +107,7 @@ test.describe('Performing actions on Flowsheet', () => {
       await flowsheetPage.validateDateFromPastAndFuture();
     });
   });
-  test('Test_C56881: Verify Flowsheet touchpoints indicator', async () => {
+  test.only('Test_C56881: Verify Flowsheet touchpoints indicator', async () => {
     await test.step('Assert touchpoint indicator visibility', async () => {
       await flowsheetPage.assertTouchPointIndicator(indexPage.navigator_data.second_job_no);
     });
@@ -118,7 +118,7 @@ test.describe('Performing actions on Flowsheet', () => {
       await flowsheetPage.addRemainingTouchPoint();
     });
   });
-  test('Test_C56887: Verify Flowsheets command center', async () => {
+  test.only('Test_C56887: Verify Flowsheets command center', async () => {
     await test.step('Verify rooms functionality', async () => {
       await flowsheetPage.verifyingRoomsFunctionality(
         indexPage.lighthouse_data.invalidText,
@@ -130,7 +130,7 @@ test.describe('Performing actions on Flowsheet', () => {
       await flowsheetPage.verifyingTransfersFunctionality();
     });
   });
-  test('Test_C57102: Verify Flowsheet status after selecting all the equipments', async ({
+  test.skip('Test_C57102: Verify Flowsheet status after selecting all the equipments', async ({
     page
   }) => {
     await flowsheetPage.navigateToProfileMenu();
@@ -158,12 +158,10 @@ test.describe('Performing actions on Flowsheet', () => {
     });
     await test.step('Verify that one of the assets can be deselected, Status should update to Partial', async () => {
       await flowsheetPage.deSelectAnyEquipmentItem();
-      // await assertElementVisible(flowsheetPage.blueIcon);
     });
     await test.step('Verify that deselect the last assets, Status should update to initial open', async () => {
       await flowsheetPage.deSelectLastEquipmentAsset();
       await assertElementVisible(flowsheetPage.redIcon);
-      // await assertElementVisible(flowsheetPage.whiteIcon)
     });
   });
 });

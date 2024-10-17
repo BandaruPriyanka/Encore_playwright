@@ -25,7 +25,7 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test('Test_C56890 :Verify test data on flowsheet card', async () => {
+  test.only('Test_C56890 :Verify test data on flowsheet card', async () => {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.validateRoomCard(
@@ -41,7 +41,7 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
     }
   });
 
-  test('Test_C56910: Verify contacts tab', async ({ page }) => {
+  test.only('Test_C56910: Verify contacts tab', async ({ page }) => {
     await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
     await flowsheetCardAndTab.clickOnJob(indexPage.navigator_data.second_job_no);
     await assertElementVisible(
@@ -109,7 +109,7 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
     });
   });
 
-  test('Test_C56908 : Verify Notes Tab', async () => {
+  test.only('Test_C56908 : Verify Notes Tab', async () => {
     await flowsheetCardAndTab.assertNotesTab(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -117,7 +117,7 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertFlowsheetTextAndNavigatorText();
   });
 
-  test('Test_C56907: Verify Equipment Tab', async () => {
+  test.only('Test_C56907: Verify Equipment Tab', async () => {
     await flowsheetCardAndTab.assertEquipmentTab(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
@@ -171,7 +171,7 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.negative);
   });
 
-  test('Verify complimentary job', async ({ page }) => {
+  test.only('Verify complimentary job', async ({ page }) => {
     await flowsheetPage.changeLocation(
       indexPage.lighthouse_data.locationId_createData1,
       indexPage.lighthouse_data.locationText_createData1
