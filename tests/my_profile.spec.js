@@ -9,7 +9,7 @@ const {
   assertElementEnabled,
   assertElementAttributeContains
 } = require('../utils/helper');
-test.describe.only('Performing actions on My Profile Tab & Notifications Tab', () => {
+test.describe('Performing actions on My Profile Tab & Notifications Tab', () => {
   let profilePage, flowsheetPage, notificationPage, locationId, locationText, lastSyncValue;
 
   test.beforeEach(async ({ page }) => {

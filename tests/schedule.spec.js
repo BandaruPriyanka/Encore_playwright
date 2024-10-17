@@ -2,7 +2,7 @@ const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
 require('dotenv').config();
 
-test.describe.only('Performing actions on Schedule Tab', () => {
+test.describe('Performing actions on Schedule Tab', () => {
   let schedulePage, flowsheetPage, locationId, locationText;
 
   test.beforeEach(async ({ page }) => {
