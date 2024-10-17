@@ -7,7 +7,7 @@ const {
   todayDate
 } = require('../utils/helper');
 
-test.describe('LightHouse Event Agendas', () => {
+test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
   let agendasPage, flowsheetPage, locationId, locationText;
 
   test.beforeEach(async ({ page }) => {
@@ -28,6 +28,41 @@ test.describe('LightHouse Event Agendas', () => {
   });
   test('Test_C56938	: Verify Event Agendas calendar widget + active checkbox', async ({isMobile}) => {
     test.skip(isMobile, 'Skipping Verify Event Agendas calendar widget + active checkbox');
+    await agendasPage.verifyCalendarWidget();
+    await assertElementVisible(agendasPage.calendarModal, 'Calendar modal should be displayed');
+    const todayDateEle = todayDate();
+    await assertElementAttributeContains(
+      agendasPage.dateCell(todayDateEle),
+      'class',
+      'mbsc-selected',
+      'Verify currently selected dates should be highlighted'
+    );
+    await assertElementVisible(agendasPage.updateBtn, 'Update button should be displayed');
+    await agendasPage.verifyDateSelection();
+    await agendasPage.DateRangeOptions();
+  });
+  
+}),
+
+test.describe('LightHouse Event Agendas - Mfe Event Agendas ', () => {
+  let agendasPage;
+  test.beforeEach(async ({ page }) => {
+    agendasPage = new indexPage.EventAgendas(page);
+    await page.goto(process.env.eventsUrl, {
+      timeout: parseInt(process.env.pageload_timeout)
+    });
+  });
+  test('Test_C56942	: Verify MFE - Event Agendas page elements', async () => {
+    await agendasPage.verifyEventAgendasPage();
+    await assertElementEnabled(agendasPage.editBtn,'Verify User can able to click on "Edit" button');
+    await assertElementEnabled(agendasPage.viewBtn,'Verify User can able to click on "View" button');
+    await agendasPage.clickOnViewBtn();
+    await agendasPage.clickOnEditBtn();
+    await agendasPage.verifyThemeSwitcher();
+    await agendasPage.verifyLangSelection();
+  });
+  test('Test_C57094	: Verify MFE - Event Agendas calendar widget + active checkbox', async ({isMobile}) => {
+    test.skip(isMobile, 'Skipping Verify MFE - Event Agendas calendar widget + active checkbox');
     await agendasPage.verifyCalendarWidget();
     await assertElementVisible(agendasPage.calendarModal, 'Calendar modal should be displayed');
     const todayDateEle = todayDate();
