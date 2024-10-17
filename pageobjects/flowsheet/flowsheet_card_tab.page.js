@@ -379,7 +379,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.searchProductInput, 'fill', 'Enter the individual product', [
       individualProduct
     ]);
-    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await executeStep(
       this.selectFirstProduct,
       'click',
@@ -388,7 +388,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.searchProductInput, 'fill', 'Enter the package product', [
       packageProduct
     ]);
-    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await executeStep(
       this.selectFirstProduct,
       'click',

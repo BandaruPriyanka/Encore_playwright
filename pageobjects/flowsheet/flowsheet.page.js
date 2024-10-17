@@ -522,9 +522,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.page.reload();
     await this.searchFunction(searchText);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the color of the first touch point icon is green', async () => {
-      await checkVisibleElementColors(this.page, this.touchPointItems(1), 'rgb(23, 181, 57)');
-    });
+    await checkVisibleElementColors(this.page, this.touchPointItems(1), 'rgb(23, 181, 57)','Verify the color of the first touch point icon is green');
   }
 
   async addSecondTouchPoint(searchText) {
@@ -539,9 +537,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.page.reload();
     await this.searchFunction(searchText);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the color of the second touch point icon is yellow', async () => {
-      await checkVisibleElementColors(this.page, this.touchPointItems(2), 'rgb(244, 235, 0)');
-    });
+    await checkVisibleElementColors(this.page, this.touchPointItems(2), 'rgb(244, 235, 0)','Verify the color of the second touch point icon is yellow');
   }
 
   async addRemainingTouchPoint() {
@@ -710,16 +706,12 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.backToSearch();
     await this.searchFunction(indexPage.lighthouse_data.nonTestJobNumber);
     await this.clickOnJob(indexPage.lighthouse_data.nonTestJobNumber);
-    await test.step('Assert that first Icon updates to Green color', async () => {
-      await assertElementVisible(this.greenIcon);
-    });
+    await assertElementVisible(this.greenIcon,'Assert that first Icon updates to Green color');
   }
   async deSelectAnyEquipmentItem() {
     await executeStep(this.deSelectEquipmentItem, 'click', 'DeSelect the one Equipment item');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Assert that first Icon updates to Red color', async () => {
-      await assertElementVisible(this.redIcon);
-    });
+    await assertElementVisible(this.redIcon,'Assert that first Icon updates to Red color');
   }
   async deSelectLastEquipmentAsset() {
     const checkboxes = this.allEquipmentCheckboxes;
@@ -731,6 +723,5 @@ exports.FlowSheetPage = class FlowSheetPage {
       });
     }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Assert that Icon');
   }
 };
