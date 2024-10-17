@@ -234,4 +234,10 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
       await profilePage.changeToDefaultColor();
     });
   });
+
+  test("Test_C57114 Verify 'Favourite Slot' selection", async () => {
+    await profilePage.assertInitialFavouriteMenuSlot();
+    await profilePage.changeMenuSlot5ToFavouriteSlot();
+    await profilePage.restoreToSelectedMenuSlot();
+  });
 });

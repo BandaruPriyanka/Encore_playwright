@@ -32,7 +32,8 @@ const NavigatorConsts = {
   scheduleDarkColor: 'rgb(209, 213, 219)',
   customersColor: 'rgb(209, 213, 219)',
   menuBgDarkColor: 'rgb(12, 74, 110)',
-  menuBgLightColor: 'rgb(56, 189, 248)'
+  menuBgLightColor: 'rgb(56, 189, 248)',
+  favouriteIconColor:'text-purple-500',
 };
 
 exports.Const = NavigatorConsts;

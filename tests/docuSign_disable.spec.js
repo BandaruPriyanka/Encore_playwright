@@ -67,7 +67,7 @@ test('Test_C56909 : Verify Logs Tab', async () => {
   );
 });
 
-test.only("Test_C57149 Check 'Additions captured' widget" , async () => {
+test("Test_C57149 Check 'Additions captured' widget" , async () => {
   await dashboardPage.navigateToDashboard();
   await dashboardPage.assertWidget();
   await dashboardPage.assertElementsInWidgets();
