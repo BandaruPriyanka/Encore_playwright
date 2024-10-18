@@ -94,7 +94,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
       await locationProfilePage.removingGroupFunctionality();
     });
 
-    test.only('Test_C57129 Check Expiration Groups functionality - WIP', async () => {
+    test('Test_C57129 Check Expiration Groups functionality - WIP', async () => {
       await locationProfilePage.clickOnFlowsheetGroups();
       const headerText = await locationProfilePage.headerTitle.textContent();
       await assertEqualValues(
