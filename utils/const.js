@@ -33,8 +33,8 @@ const NavigatorConsts = {
   customersColor: 'rgb(209, 213, 219)',
   menuBgDarkColor: 'rgb(12, 74, 110)',
   menuBgLightColor: 'rgb(56, 189, 248)',
-  favouriteIconColor:'text-purple-500',
-  menuSlotsText : ['Logs','Location Profile','Customers']
+  favouriteIconColor: 'text-purple-500',
+  menuSlotsText: ['Logs', 'Location Profile', 'Customers']
 };
 
 exports.Const = NavigatorConsts;

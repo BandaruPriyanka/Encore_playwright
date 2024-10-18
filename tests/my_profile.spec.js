@@ -241,11 +241,11 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
     await profilePage.restoreToSelectedMenuSlot();
   });
 
-  test.only("Test_C57113 Check 'Menu Slots' selection" , async ({ isMobile }) => {
+  test("Test_C57113 Check 'Menu Slots' selection", async ({ isMobile }) => {
     test.skip(!isMobile, 'Skipping Menu Slots on desktop devices');
     await profilePage.storeInitialSlotValues();
     await profilePage.assertIntialMenuSlots();
     await profilePage.updateMenuSlots();
     await profilePage.setMenuSlotValuesToInitialValues();
-  })
+  });
 });

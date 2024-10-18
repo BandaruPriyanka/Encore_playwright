@@ -3,7 +3,7 @@ const indexPage = require('../utils/index.page');
 const { invalidDiscountGenerator, validDiscountGenerator } = require('../utils/helper');
 require('dotenv').config();
 
-let flowsheetCardAndTab, flowsheetPage, locationId, locationText,dashboardPage;
+let flowsheetCardAndTab, flowsheetPage, locationId, locationText, dashboardPage;
 
 test.beforeEach(async ({ page }) => {
   flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(page);
@@ -67,11 +67,11 @@ test('Test_C56909 : Verify Logs Tab', async () => {
   );
 });
 
-test("Test_C57149 Check 'Additions captured' widget" , async () => {
+test("Test_C57149 Check 'Additions captured' widget", async () => {
   await dashboardPage.navigateToDashboard();
   await dashboardPage.assertWidget();
   await dashboardPage.assertElementsInWidgets();
   await dashboardPage.assertAddOnWith1pcsFor1DayWithoutDiscount();
   await dashboardPage.assertAddOnWith2PcsFor2DaysWithoutDiscount();
   await dashboardPage.assertAddonWith1pcsFor1DayWith25PerDiscount();
-})
+});
