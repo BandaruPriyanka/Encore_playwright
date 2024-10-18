@@ -516,7 +516,7 @@ exports.CreateData = class CreateData {
     await executeStep(this.homeIcon, 'click', 'click on home icon');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await executeStep(this.jobSearchSpan, 'click', 'click on job search button');
-    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await executeStep(this.jobNumberSearchInput, 'fill', 'enter the valid job number', [
       indexPage.navigator_data.second_job_no
     ]);
