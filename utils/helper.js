@@ -544,7 +544,7 @@ async function generateInvalidEmail() {
 function getWeekStartDate() {
   const today = new Date();
   const day = today.getDay();
-  const diff = today.getDate() - (day === 0 ? 6 : day - 1); 
+  const diff = today.getDate() - (day === 0 ? 6 : day - 1);
   const monday = new Date(today.setDate(diff));
   const month = (monday.getMonth() + 1).toString();
   const dayOfMonth = monday.getDate().toString();
@@ -554,8 +554,8 @@ function getWeekStartDate() {
 
 function getLastWeekStartDate() {
   const today = new Date();
-  const day = today.getDay(); 
-  const diff = today.getDate() - (day === 0 ? 6 : day - 1) - 7; 
+  const day = today.getDay();
+  const diff = today.getDate() - (day === 0 ? 6 : day - 1) - 7;
   const lastMonday = new Date(today.setDate(diff));
   const month = (lastMonday.getMonth() + 1).toString();
   const dayOfMonth = lastMonday.getDate().toString();
