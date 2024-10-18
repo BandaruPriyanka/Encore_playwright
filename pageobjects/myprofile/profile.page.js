@@ -30,6 +30,7 @@ let initialEquipmentDispalyValue,
   initialTimeValue,
   afterTimeValue;
 
+let intialValueOfSlot1,intialValueOfSlot2,intialValueOfSlot3,intialValueOfSlot4,intialValueOfSlot5
 exports.ProfilePage = class ProfilePage {
   constructor(page) {
     this.page = page;
@@ -311,6 +312,14 @@ exports.ProfilePage = class ProfilePage {
       "//div[contains(@class,'e2e_page_header_schedule')]"
     );
     this.flowsheetFavouriteIcon=this.page.locator('div.e2e_profile_content_favorite').nth(2);
+    this.getMenuSlotText = (slotNumber) => this.page.locator(`//div[contains(@class,'e2e_user_profile_menu_${slotNumber}_value')]`);
+    this.mobileIcons = (index) => this.page.locator(`(//app-mobile-navigation-item)[${index}]`);
+    this.menuTextOnPage = (text) => this.page.locator(`//span[text()='${text}']`);
+    this.scheduleTextDiv = (text) => this.page.locator(`(//div[normalize-space()='${text}'])[1]`);
+    this.addWidgetBtn = this.isMobile?this.page.locator("(//a[normalize-space()='+ Add Widget'])[2]"):this.page.locator("(//a[normalize-space()='+ Add Widget'])[1]");
+    this.menuSlotsUpdateButton = (index) => this.page.locator(`(//div[contains(@class,'e2e_user_profile_menu_${index}_action')])[2]`);
+    this.selectMenuSlots = (value) => this.page.locator(`(//div[normalize-space()='${value}'])[2]`);
+    this.logTextInPage = this.page.locator("(//span[normalize-space()='Logs'])[2]");
   }
   async navigateToProfileMenu() {
     await executeStep(this.menuIcon, 'click', 'Click on Profile Menu Icon');
@@ -1111,5 +1120,76 @@ exports.ProfilePage = class ProfilePage {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await assertElementTrue(isFavouriteIconSelected);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+
+  async storeInitialSlotValues() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialValueOfSlot1 = await this.getMenuSlotText(1).textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialValueOfSlot2 = await this.getMenuSlotText(2).textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialValueOfSlot3 = await this.getMenuSlotText(3).textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialValueOfSlot4 = await this.getMenuSlotText(4).textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialValueOfSlot5 = await this.getMenuSlotText(5).textContent();
+  }
+
+  async assertIntialMenuSlots() {
+    for(let i=1;i<=5;i++) {
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      const slotName = await this.getMenuSlotText(i).textContent();
+      await executeStep(this.mobileIcons(i),"click",`Click on ${i} icon`);
+      await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+      if(slotName.trim() === "Schedule") {
+        await assertElementVisible(this.scheduleTextDiv(slotName.trim()) , `Verify that the '${slotName.trim()}' page is open`);
+        if(await this.dismissBtn.isVisible()) {
+          await executeStep(this.dismissBtn,"click","Click on dismiss button")
+        }
+      }else if(slotName.trim()=== "Dashboard") {
+        await assertElementVisible(this.addWidgetBtn , `Verify that the '${slotName.trim()}' page is open`);
+      } else {
+        await assertElementVisible(this.menuTextOnPage(slotName.trim()) , `Verify that the '${slotName.trim()}' page is open`);
+      }
+      await this.myProfileTab();
+    }
+  }
+
+  async updateMenuSlots() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.menuSlotsUpdateButton(1),"click","Click on first menu slot update button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.selectMenuSlots(utilConst.Const.menuSlotsText[0]),"click","Click on 'LOgs' to select");
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const slotName = await this.getMenuSlotText(1).textContent();
+    await assertEqualValues(slotName.trim(),utilConst.Const.menuSlotsText[0],"Verify Menu slots should be updated successfully.");
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertEqualValues(slotName.trim(),utilConst.Const.menuSlotsText[0],"Verify Menu slots should be updated successfully after reload.");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.mobileIcons(1),"click",`Click on 1 icon`);
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await assertElementVisible(this.logTextInPage,"Verify Logs Page is opened")
+  }
+
+  async setMenuSlotValuesToInitialValues() {
+    await this.myProfileTab();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.menuSlotsUpdateButton(1),"click","Click on first menu slot update button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.selectMenuSlots(utilConst.Const.menuSlotsText[2]),"click","Click on 'Customers' to select");
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    test.step("Restore the initial 'Menu Slot' values" , async () => {
+      const firstSlotName = await this.getMenuSlotText(1).textContent();
+      await assertEqualValues(firstSlotName,intialValueOfSlot1,"Verify the 1st menu slot value is set to initial slot value");
+      const secondSlotName = await this.getMenuSlotText(2).textContent();
+      await assertEqualValues(secondSlotName,intialValueOfSlot2 , "Verify the 2nd menu slot value is set to initial slot value");
+      const thirdSlotName = await this.getMenuSlotText(3).textContent();
+      await assertEqualValues(thirdSlotName,intialValueOfSlot3 , "Verify the 3rd menu slot value is set to initial slot value");
+      const forthSlotName = await this.getMenuSlotText(4).textContent();
+      await assertEqualValues(forthSlotName,intialValueOfSlot4 , "Verify the 4th menu slot value is set to initial slot value");
+      const fifthSlotName = await this.getMenuSlotText(5).textContent();
+      await assertEqualValues(fifthSlotName,intialValueOfSlot5, "Verify the 5th menu slot value is set to initial slot value")
+    })
   }
 };
