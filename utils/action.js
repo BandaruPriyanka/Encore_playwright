@@ -36,6 +36,9 @@ export async function executeStep(element, action, description, data, timeout = 
       case 'hover':
         await element.hover();
         break;
+      case 'enter':
+        await element.press('Enter', options);
+        break;
     }
   });
 }

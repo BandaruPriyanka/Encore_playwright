@@ -50,6 +50,16 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
     await agendasPage.assertPdf();
     await agendasPage.assertPdfAfterChangeSettings();
   })
+  test('Test_C56939 : Verify Event Agendas search + filtering', async () => {
+    await agendasPage.verifySearchWithValidData();
+    await agendasPage.clickOnClose();
+    await agendasPage.verifySearchWithInValidData();
+    await agendasPage.verifyCaseSensitive();
+    await agendasPage.verifyGlCenter();
+    await agendasPage.verifyVenue();
+    await agendasPage.verifyProjectManager();
+    await agendasPage.validateGLCenterProjectFilter();
+  });
 }),
   test.describe('LightHouse Event Agendas - Mfe Event Agendas ', () => {
     let agendasPage;
@@ -59,49 +69,51 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
         timeout: parseInt(process.env.pageload_timeout)
       });
     });
-    test('Test_C56942	: Verify MFE - Event Agendas page elements', async () => {
-      await agendasPage.verifyEventAgendasPage();
-      await assertElementEnabled(
-        agendasPage.editBtn,
-        'Verify User can able to click on "Edit" button'
-      );
-      await assertElementEnabled(
-        agendasPage.viewBtn,
-        'Verify User can able to click on "View" button'
-      );
-      await agendasPage.clickOnViewBtn();
-      await agendasPage.clickOnEditBtn();
-      await agendasPage.verifyThemeSwitcher();
-      await agendasPage.verifyLangSelection();
-    });
-    test('Test_C57094	: Verify MFE - Event Agendas calendar widget + active checkbox', async ({
-      isMobile
-    }) => {
-      test.skip(isMobile, 'Skipping Verify MFE - Event Agendas calendar widget + active checkbox');
-      await agendasPage.verifyCalendarWidget();
-      await assertElementVisible(agendasPage.calendarModal, 'Calendar modal should be displayed');
-      const todayDateEle = todayDate();
-      await assertElementAttributeContains(
-        agendasPage.dateCell(todayDateEle),
-        'class',
-        'mbsc-selected',
-        'Verify currently selected dates should be highlighted'
-      );
-      await assertElementVisible(agendasPage.updateBtn, 'Update button should be displayed');
-      await agendasPage.verifyDateSelection();
-      await agendasPage.DateRangeOptions();
-    });
-    test('Test_C57097 Verify MFE - Event Agendas printing' , async ({ isMobile }) => {
+  test('Test_C56942	: Verify MFE - Event Agendas page elements', async () => {
+    await agendasPage.verifyEventAgendasPage();
+    await assertElementEnabled(agendasPage.editBtn,'Verify User can able to click on "Edit" button');
+    await assertElementEnabled(agendasPage.viewBtn,'Verify User can able to click on "View" button');
+    await agendasPage.clickOnViewBtn();
+    await agendasPage.clickOnEditBtn();
+    await agendasPage.verifyThemeSwitcher();
+    await agendasPage.verifyLangSelection();
+  });
+  test('Test_C57094	: Verify MFE - Event Agendas calendar widget + active checkbox', async ({isMobile}) => {
+    test.skip(isMobile, 'Skipping Verify MFE - Event Agendas calendar widget + active checkbox');
+    await agendasPage.verifyCalendarWidget();
+    await assertElementVisible(agendasPage.calendarModal, 'Calendar modal should be displayed');
+    const todayDateEle = todayDate();
+    await assertElementAttributeContains(
+      agendasPage.dateCell(todayDateEle),
+      'class',
+      'mbsc-selected',
+      'Verify currently selected dates should be highlighted'
+    );
+    await assertElementVisible(agendasPage.updateBtn, 'Update button should be displayed');
+    await agendasPage.verifyDateSelection();
+    await agendasPage.DateRangeOptions();
+  });
+  test('Test_C57095 : Verify MFE - Event Agendas search + filtering', async () => {
+    await agendasPage.verifySearchWithValidData();
+    await agendasPage.clickOnClose();
+    await agendasPage.verifySearchWithInValidData();
+    await agendasPage.verifyCaseSensitive();
+    await agendasPage.verifyGlCenter();
+    await agendasPage.verifyVenue();
+    await agendasPage.verifyProjectManager();
+    await agendasPage.validateGLCenterProjectFilter();
+  });
+  test('Test_C57097 Verify MFE - Event Agendas printing' , async ({ isMobile }) => {
       test.skip(isMobile, 'Skipping Verify MFE - Event Agendas printing');
       await agendasPage.assertPrintIconForBothViews();
       await agendasPage.assertPrintModalAfterLanguageChange();
       await agendasPage.assertPrintIcon();
       await agendasPage.assertPdf();
       await agendasPage.assertPdfAfterChangeSettings();
-    })
-    test.only('Test_C57098 Verify MFE - Create Event Agenda' , async ({ isMobile }) => {
+   });
+   test('Test_C57098 Verify MFE - Create Event Agenda' , async ({ isMobile }) => {
       test.skip(isMobile, 'Skipping Verify MFE - Create Event Agenda');
       await agendasPage.assertEventInformationModal();
       await agendasPage.createNewAgenda(indexPage.lighthouse_data.opportunityNumber);
-    })
-  });
+    });
+});
