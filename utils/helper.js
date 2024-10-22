@@ -348,9 +348,8 @@ async function clickAndWaitForNavigation(page, selector, timeout = 30000) {
   return response;
 }
 
-async function assertCheckboxChecked(page, selector, customText) {
+async function assertCheckboxChecked(element, customText) {
   await test.step(customText, async () => {
-    const element = await page.locator(selector);
     const isChecked = await element.isChecked();
     expect(isChecked).toBe(true);
   });
