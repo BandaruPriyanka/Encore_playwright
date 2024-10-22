@@ -86,5 +86,7 @@
   "daysUptoToday": "4",
   "daysStartingToday": "6",
   "nonTestJobNumber": "54787",
-  "grpField": "test"
+  "grpField": "test",
+  "searchValidData":"Test",
+  "searchInvalidData":"abcd"
 }

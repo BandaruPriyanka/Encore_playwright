@@ -16,9 +16,11 @@ const {
   getWeekBeforeLastRange,
   getCurrentMonthRange,
   getPreviousMonthRange,
-  assertElementNotVisible
+  assertElementNotVisible,
+  assertEqualValues,
+  assertCheckboxChecked
 } = require('../../utils/helper');
-let startDateEle, endDateEle, presentDate, endDate, yesterdayDate, enterDays;
+let startDateEle, endDateEle, presentDate, endDate, yesterdayDate, enterDays,rowCount,lowerCaseRowCount,upperCaseRowCount,glCenterSeachData,i;
 exports.EventAgendas = class EventAgendas {
   constructor(page) {
     this.page = page;
@@ -85,8 +87,13 @@ exports.EventAgendas = class EventAgendas {
     this.dynamicLanguage=lang=>this.page.locator(`//productions-language-selector//div[text()='${lang}']`)
     this.editIcon=this.page.locator("eui-icon[name='line_duotone_essentional_magic_stick_3']").first();
     this.binIcon=this.page.locator("eui-icon[name='line_duotone_essentional_trash_bin_trash']").first();
+    this.closeIcon=this.page.locator("eui-icon[name='line_close']");
+    this.glChechBox=this.page.locator("input.e2e_checkbox + label");
+    this.assertCheckbox=this.page.locator("input.e2e_checkbox");
+    this.glCenterSearchInput=this.page.locator("input[placeholder='Search']");
   }
   async actionsOnEventAgendas() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     if (this.isMobile) {
       await executeStep(this.menuIcon, 'click', 'Click on Agendas tab');
     }
@@ -97,6 +104,7 @@ exports.EventAgendas = class EventAgendas {
       this.eventAgendasPage,
       'Assert Event Agendas page is displayed or not'
     );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async verifyEventAgendasPage() {
     await assertElementEnabled(
@@ -138,7 +146,7 @@ exports.EventAgendas = class EventAgendas {
     await this.verifyFilteredData();
   }
   async verifyFilteredData() {
-    const rowCount = await this.agendaRows.count();
+    rowCount = await this.agendaRows.count();
     for (let i = 0; i < rowCount; i++) {
       const agendaRow = this.agendaRows.nth(i);
       const rowText = await agendaRow.innerText();
@@ -147,6 +155,7 @@ exports.EventAgendas = class EventAgendas {
         `Verify Agenda row ${i + 1} (${rowText}) should be visible`
       );
     }
+    return rowCount;
   }
   async verifyCalendarWidget() {
     await executeStep(this.calendarWidget, 'click', 'Click on Calendar widget');
@@ -482,4 +491,157 @@ exports.EventAgendas = class EventAgendas {
     await assertElementVisible(this.dynamicLanguage(selectedLanguage), 'Verify if the language remains changed after reloading the page');
     await executeStep(this.dynamicLanguage(selectedLanguage), 'click', 'Click on the Language option again to return it to its normal position');
 }
-};
+async verifySearchWithValidData(){
+  await executeStep(this.calendarWidget, 'click', 'Click on Calendar widget');
+  await executeStep(
+    this.thisMonthDateRange,
+    'click',
+    'Click on "Current Month" date range option'
+  );
+  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  await executeStep(this.searchInput,'fill','Enter a valid data to search',[indexPage.lighthouse_data.searchValidData]);
+  await executeStep(this.searchInput,'enter','Press Enter');
+  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  try {
+    await test.step(`Verify that valid search results are returned based on the search data: ${indexPage.lighthouse_data.searchValidData}`, async () => {
+      await this.verifyFilteredData();
+      lowerCaseRowCount = await this.agendaRows.count();
+    });
+} catch {
+    test.info('No agendas are displayed for the specified search data.');
+}
+} 
+async clickOnClose(){
+  await executeStep(this.closeIcon, 'click', 'Click on "x" icon to clean the previous search phrase');
+  await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+  await test.step("Verify Initial search results should be restored", async () => {
+    await this.verifyFilteredData();
+  });
+}
+
+async verifySearchWithInValidData(){
+  await executeStep(this.searchInput,'fill','Enter a Invalid data to search',[indexPage.lighthouse_data.searchInvalidData]);
+  await executeStep(this.searchInput,'enter','Press Enter');
+  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  await test.step(`'No Results found' placeholder should be displayed seraching with: ${indexPage.lighthouse_data.searchInvalidData}`, async () => {
+      await this.verifyFilteredData();
+    });
+}
+async verifyCaseSensitive(){
+  const searchData = indexPage.lighthouse_data.searchValidData.toUpperCase();
+  await executeStep(this.searchInput, 'fill', `Enter ${searchData} in search field `, [searchData]);
+  await executeStep(this.searchInput,'enter','Press Enter');
+  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  try {
+    await test.step(`Verify that valid search results are returned based on the search data with : ${searchData}`, async () => {
+      await this.verifyFilteredData();
+      upperCaseRowCount=await this.agendaRows.count();
+    });
+} catch {
+    test.info('No agendas are displayed for the specified search data');
+}
+await assertEqualValues(lowerCaseRowCount,upperCaseRowCount,`Verify that search results are the same for lowercase and uppercase search data: ${indexPage.lighthouse_data.searchValidData} and ${searchData}`);
+await executeStep(this.closeIcon, 'click', 'Click "x" icon to clean the previous GL Center filter');
+}
+async verifyGlCenter() {
+  await executeStep(this.glCentersDropdown, 'click', 'Click on GL Center Dropdown');
+  const getList = await this.glChechBox.count()
+  await test.step("List of available options should be displayed based on the actual returned Agendas : ", async () => {
+  for (i = 0; i < getList; i++) {
+      const checkbox = this.glChechBox.nth(i); 
+      const checkboxText = await checkbox.textContent();
+      glCenterSeachData=await checkbox.nth(0).textContent();
+      await assertElementVisible(
+        checkbox,
+        `Checkbox ${i + 1} ${checkboxText}"`
+    );
+  }
+});
+await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+await executeStep(this.glCenterSearchInput, 'fill', `Enter ${glCenterSeachData} in search field`, [glCenterSeachData]);
+await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+await assertElementVisible(this.glChechBox,`check whether options : ${glCenterSeachData} should be displayed based on the searched data `);
+
+await test.step("Select one & several (cover both cases) GL Center option & check the results", async () => {
+  await executeStep(this.glCentersDropdown, 'click', 'Click on GL Center Dropdown');
+  const firstCheckbox = this.glChechBox.nth(0);
+  await executeStep(firstCheckbox, 'click', 'Select Checkbox');
+  await assertCheckboxChecked(firstCheckbox, 'Valid results should be displayed based on the selected GL Center filter option');
+  await executeStep(this.closeIcon, 'click', 'Click "x" icon to clean the previous GL Center filter');
+});
+}
+
+async verifyVenue() {
+  await executeStep(this.venuesDropdown, 'click', 'Click on Venue Dropdown');
+  const getList = await this.glChechBox.count();
+  await test.step("List of available options should be displayed based on the actual returned Agendas : ", async () => {
+  for (i = 0; i < getList; i++) {
+      const checkbox = this.glChechBox.nth(i); 
+      const checkboxText = await checkbox.textContent();
+      glCenterSeachData=await checkbox.nth(0).textContent();
+      await assertElementVisible(
+        checkbox,
+        `Checkbox ${i + 1} ${checkboxText}"`
+    );
+  }
+});
+await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+await executeStep(this.glCenterSearchInput, 'fill', `Enter ${glCenterSeachData} in search field`, [glCenterSeachData]);
+await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+await assertElementVisible(this.glChechBox,`check whether options : ${glCenterSeachData} should be displayed based on the searched data `);
+
+await test.step("Select one & several (cover both cases) GL Center option & check the results", async () => {
+  await executeStep(this.venuesDropdown, 'click', 'Click on Venue Dropdown');
+  const firstCheckbox = this.glChechBox.nth(0);
+  await executeStep(firstCheckbox, 'click', 'Select Venue Checkbox');
+  await assertCheckboxChecked(firstCheckbox, 'Valid results should be displayed based on the selected Venue Filter option');
+  await executeStep(this.closeIcon, 'click', 'Click "x" icon to clean the previous Venue filter');
+});
+
+}
+
+async verifyProjectManager() {
+  await executeStep(this.projectManagerDropdown, 'click', 'Click on Projrct Manager Dropdown');
+  const getList = await this.glChechBox.count();
+  await test.step("List of available options should be displayed based on the actual returned Agendas : ", async () => {
+  for (i = 0; i < getList; i++) {
+      const checkbox = this.glChechBox.nth(i); 
+      const checkboxText = await checkbox.textContent();
+      glCenterSeachData=await checkbox.nth(0).textContent();
+      await assertElementVisible(
+        checkbox,
+        `Checkbox ${i + 1} ${checkboxText}"`
+    );
+  }
+});
+await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+await executeStep(this.glCenterSearchInput, 'fill', `Enter ${glCenterSeachData} in search field`, [glCenterSeachData]);
+await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+await assertElementVisible(this.glChechBox,`check whether options : ${glCenterSeachData} should be displayed based on the searched data `);
+
+await test.step("Select one & several (cover both cases) GL Center option & check the results", async () => {
+  await executeStep(this.projectManagerDropdown, 'click', 'Click on Project Manager Dropdown');
+  const firstCheckbox = this.glChechBox.nth(0);
+  await executeStep(firstCheckbox, 'click', 'Select Project Manager Checkbox');
+  await assertCheckboxChecked(firstCheckbox, 'Valid results should be displayed based on the selected Project Manager filter option');
+  await executeStep(this.closeIcon, 'click', 'Click "x" icon to clean the previous Project Manager filter');
+});
+}
+
+async validateGLCenterProjectFilter(){
+  await executeStep(this.glCentersDropdown, 'click', 'Click on GL Center Dropdown');
+  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  const glcenterCheckbox = this.glChechBox.nth(0);
+  const glcenterCheckboxText = await this.glChechBox.nth(0).textContent();
+  await executeStep(glcenterCheckbox, 'click', 'Select GL Center Checkbox');
+  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  await executeStep(this.projectManagerDropdown, 'click', 'Click on Project Manager Dropdown');
+  const projectManagerCheckbox = this.glChechBox.nth(0);
+  const projectManagerCheckboxText = await this.glChechBox.nth(0).textContent();
+  await executeStep(projectManagerCheckbox, 'click', 'Select Project Manager Checkbox');
+  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  await test.step(`Verify that search results are displayed based on the applied filters : "${glcenterCheckboxText}" in "GL Center Checkbox " &  "${projectManagerCheckboxText}" in "Project Manager" `, async () => {
+    await this.verifyFilteredData();
+  });
+}
+}

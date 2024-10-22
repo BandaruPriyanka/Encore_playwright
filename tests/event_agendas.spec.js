@@ -41,7 +41,16 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
     await agendasPage.verifyDateSelection();
     await agendasPage.DateRangeOptions();
   });
-  
+  test('Test_C56939 : Verify Event Agendas search + filtering', async () => {
+    await agendasPage.verifySearchWithValidData();
+    await agendasPage.clickOnClose();
+    await agendasPage.verifySearchWithInValidData();
+    await agendasPage.verifyCaseSensitive();
+    await agendasPage.verifyGlCenter();
+    await agendasPage.verifyVenue();
+    await agendasPage.verifyProjectManager();
+    await agendasPage.validateGLCenterProjectFilter();
+  });
 }),
 
 test.describe('LightHouse Event Agendas - Mfe Event Agendas ', () => {
@@ -76,5 +85,14 @@ test.describe('LightHouse Event Agendas - Mfe Event Agendas ', () => {
     await agendasPage.verifyDateSelection();
     await agendasPage.DateRangeOptions();
   });
-
+  test('Test_C57095 : Verify MFE - Event Agendas search + filtering', async () => {
+    await agendasPage.verifySearchWithValidData();
+    await agendasPage.clickOnClose();
+    await agendasPage.verifySearchWithInValidData();
+    await agendasPage.verifyCaseSensitive();
+    await agendasPage.verifyGlCenter();
+    await agendasPage.verifyVenue();
+    await agendasPage.verifyProjectManager();
+    await agendasPage.validateGLCenterProjectFilter();
+  });
 });
