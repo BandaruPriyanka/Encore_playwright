@@ -2,7 +2,7 @@ const { executeStep } = require('../../utils/action');
 const indexPage = require('../../utils/index.page');
 const utilConst = require('../../utils/const');
 const fs = require('node:fs/promises');
-const { test} = require('@playwright/test');
+const { test } = require('@playwright/test');
 const {
   assertElementVisible,
   assertContainsValue,
@@ -30,6 +30,11 @@ let initialEquipmentDispalyValue,
   initialTimeValue,
   afterTimeValue;
 
+let intialValueOfSlot1,
+  intialValueOfSlot2,
+  intialValueOfSlot3,
+  intialValueOfSlot4,
+  intialValueOfSlot5;
 exports.ProfilePage = class ProfilePage {
   constructor(page) {
     this.page = page;
@@ -291,6 +296,38 @@ exports.ProfilePage = class ProfilePage {
     this.eventAgendaTitle = this.page.locator('agenda-list>div>div').nth(4);
     this.menuBg = '.dark\\:bg-sky-900';
     this.menuText = this.page.locator("//span[text()='Menu']");
+
+    this.initialFavouriteMenuSlot = this.isMobile
+      ? this.page.locator("//div[text()='Menu Slot 3']//following-sibling::div")
+      : this.page.locator("(//div[contains(@class,'e2e_profile_content_favorite')])[3]");
+    this.getValueOfMenuSlot3 = this.isMobile
+      ? this.page.locator("//div[contains(@class,'e2e_user_profile_menu_3_value')]")
+      : this.page.locator("//span[contains(@class,'e2e_user_profile_menu_3_value')]");
+    this.selectMenuSlot5AsFavourite = this.isMobile
+      ? this.page.locator("//div[text()='Menu Slot 5']//following-sibling::div")
+      : this.page.locator("(//div[contains(@class,'e2e_profile_content_favorite')])[5]");
+    this.getValueOfMenuSlot5 = this.isMobile
+      ? this.page.locator("//div[contains(@class,'e2e_user_profile_menu_5_value')]")
+      : this.page.locator("//span[contains(@class,'e2e_user_profile_menu_5_value')]");
+    this.getFlowsheetTextFromPage = this.page.locator(
+      "//div[contains(@class,'e2e_page_header_flowsheets')]/span"
+    );
+    this.getScheduleTextFromPage = this.page.locator(
+      "//div[contains(@class,'e2e_page_header_schedule')]"
+    );
+    this.flowsheetFavouriteIcon = this.page.locator('div.e2e_profile_content_favorite').nth(2);
+    this.getMenuSlotText = slotNumber =>
+      this.page.locator(`//div[contains(@class,'e2e_user_profile_menu_${slotNumber}_value')]`);
+    this.mobileIcons = index => this.page.locator(`(//app-mobile-navigation-item)[${index}]`);
+    this.menuTextOnPage = text => this.page.locator(`//span[text()='${text}']`);
+    this.scheduleTextDiv = text => this.page.locator(`(//div[normalize-space()='${text}'])[1]`);
+    this.addWidgetBtn = this.isMobile
+      ? this.page.locator("(//a[normalize-space()='+ Add Widget'])[2]")
+      : this.page.locator("(//a[normalize-space()='+ Add Widget'])[1]");
+    this.menuSlotsUpdateButton = index =>
+      this.page.locator(`(//div[contains(@class,'e2e_user_profile_menu_${index}_action')])[2]`);
+    this.selectMenuSlots = value => this.page.locator(`(//div[normalize-space()='${value}'])[2]`);
+    this.logTextInPage = this.page.locator("(//span[normalize-space()='Logs'])[2]");
   }
   async navigateToProfileMenu() {
     await executeStep(this.menuIcon, 'click', 'Click on Profile Menu Icon');
@@ -327,11 +364,7 @@ exports.ProfilePage = class ProfilePage {
     indexPage.lighthouse_data.resyncNotificationMessage = message;
     await fs.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
   }
-  async verifyingMenuNavigation(
-    expectedProfileText,
-    expectedLocationText,
-    expectedLogsText
-  ) {
+  async verifyingMenuNavigation(expectedProfileText, expectedLocationText, expectedLogsText) {
     await assertElementVisible(this.menuIcon, 'Verify that Menu Icon is displayed.');
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(this.menuModal, 'Verify that Menu Modal is displayed.');
@@ -744,7 +777,7 @@ exports.ProfilePage = class ProfilePage {
         indexPage.lighthouse_data['12Hours'],
         'Verify that the initial time value matches either the 12-hours or 24-hours format'
       );
-    }else {
+    } else {
       assertEqualValues(
         initialTimeValue.trim(),
         indexPage.lighthouse_data['24Hours'],
@@ -889,13 +922,11 @@ exports.ProfilePage = class ProfilePage {
     }
     const selectedDarkTheme = await this.selectedTheme.textContent();
     const expectedTheme = 'Dark';
-    await test.step('Verify default selected theme is Dark', async () => {
-      await assertValueToBe(
-        selectedDarkTheme.trim(),
-        'Assert selected theme is Dark',
-        expectedTheme
-      );
-    });
+    await assertValueToBe(
+      selectedDarkTheme.trim(),
+      'Verify default selected theme is Dark',
+      expectedTheme
+    );
     await test.step('Verify that the Page should be displayed in Dark Theme', async () => {
       const isDark = await this.isDarkTheme();
       await assertElementTrue(isDark);
@@ -956,13 +987,11 @@ exports.ProfilePage = class ProfilePage {
     }
     const selectedDarkTheme = await this.selectedTheme.textContent();
     const expectedTheme = 'Light';
-    await test.step('Verify selected Theme option is Light', async () => {
-      await assertValueToBe(
-        selectedDarkTheme.trim(),
-        'Assert that selected theme is Light',
-        expectedTheme
-      );
-    });
+    await assertValueToBe(
+      selectedDarkTheme.trim(),
+      'Verify selected Theme option is Light',
+      expectedTheme
+    );
     await test.step('Verify that the Page should be displayed in Light Theme', async () => {
       const isLight = await this.isLightTheme();
       await assertElementTrue(isLight);
@@ -1037,5 +1066,189 @@ exports.ProfilePage = class ProfilePage {
   async changeToDefaultColor() {
     await this.myProfileTab();
     await this.changeToDefaultLightTheme();
+  }
+  async isHeartIconSelectedByClass() {
+    const iconClass = await this.flowsheetFavouriteIcon.getAttribute('class');
+    const favouriteIconColor = utilConst.Const.favouriteIconColor;
+    return iconClass.includes(favouriteIconColor);
+  }
+  async assertInitialFavouriteMenuSlot() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const getMenuSlotValue = await this.getValueOfMenuSlot3.textContent();
+    const getMenuSlot3Value = getMenuSlotValue.trim();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.goto(process.env.lighthouseUrl);
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    const textFromPage = await this.getFlowsheetTextFromPage.textContent();
+    const slot3TextFromPage = textFromPage.trim();
+    await assertEqualValues(
+      slot3TextFromPage,
+      getMenuSlot3Value,
+      'Verify that the appropriate page is opened based on the Favourite option From Menu Slot 3'
+    );
+  }
+  async changeMenuSlot5ToFavouriteSlot() {
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    await executeStep(
+      this.selectMenuSlot5AsFavourite,
+      'click',
+      'Select the first menu slot as favourite'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const getMenuSlotValue = await this.getValueOfMenuSlot5.textContent();
+    const menuSlotValue = getMenuSlotValue.trim();
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await this.page.goto(process.env.lighthouseUrl);
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    const textFromPage = await this.getScheduleTextFromPage.textContent();
+    const slot5TextFromPage = textFromPage.trim();
+    await assertEqualValues(
+      slot5TextFromPage,
+      menuSlotValue,
+      'Verify that the appropriate page is opened based on the Favourite option From Menu Slot 1'
+    );
+  }
+  async restoreToSelectedMenuSlot() {
+    await this.navigateToProfileMenu();
+    await this.navigateToMyProfile();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await executeStep(
+      this.initialFavouriteMenuSlot,
+      'click',
+      'Select the third menu slot as favorite'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const isFavouriteIconSelected = await this.isHeartIconSelectedByClass();
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await assertElementTrue(isFavouriteIconSelected);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+
+  async storeInitialSlotValues() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialValueOfSlot1 = await this.getMenuSlotText(1).textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialValueOfSlot2 = await this.getMenuSlotText(2).textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialValueOfSlot3 = await this.getMenuSlotText(3).textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialValueOfSlot4 = await this.getMenuSlotText(4).textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialValueOfSlot5 = await this.getMenuSlotText(5).textContent();
+  }
+
+  async assertIntialMenuSlots() {
+    await test.step('Menu icons should correlate with selected options', async () => {
+      for (let i = 1; i <= 5; i++) {
+        await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+        const slotName = await this.getMenuSlotText(i).textContent();
+        await executeStep(this.mobileIcons(i), 'click', `Click on ${i} icon`);
+        await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+        if (slotName.trim() === 'Schedule') {
+          await assertElementVisible(
+            this.scheduleTextDiv(slotName.trim()),
+            `Verify that the '${slotName.trim()}' page is open`
+          );
+          if (await this.dismissBtn.isVisible()) {
+            await executeStep(this.dismissBtn, 'click', 'Click on dismiss button');
+          }
+        } else if (slotName.trim() === 'Dashboard') {
+          await assertElementVisible(
+            this.addWidgetBtn,
+            `Verify that the '${slotName.trim()}' page is open`
+          );
+        } else {
+          await assertElementVisible(
+            this.menuTextOnPage(slotName.trim()),
+            `Verify that the '${slotName.trim()}' page is open`
+          );
+        }
+        await this.myProfileTab();
+      }
+    });
+  }
+
+  async updateMenuSlots() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(
+      this.menuSlotsUpdateButton(1),
+      'click',
+      'Click on first menu slot update button'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(
+      this.selectMenuSlots(utilConst.Const.menuSlotsText[0]),
+      'click',
+      "Click on 'Logs' to select"
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const slotName = await this.getMenuSlotText(1).textContent();
+    await assertEqualValues(
+      slotName.trim(),
+      utilConst.Const.menuSlotsText[0],
+      'Verify Menu slots should be updated successfully.'
+    );
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertEqualValues(
+      slotName.trim(),
+      utilConst.Const.menuSlotsText[0],
+      'Verify Menu slots should be updated successfully after reload.'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.mobileIcons(1), 'click', `Click on 1 icon`);
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await assertElementVisible(this.logTextInPage, 'Verify Logs Page is opened');
+  }
+
+  async setMenuSlotValuesToInitialValues() {
+    await this.myProfileTab();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(
+      this.menuSlotsUpdateButton(1),
+      'click',
+      'Click on first menu slot update button'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(
+      this.selectMenuSlots(utilConst.Const.menuSlotsText[2]),
+      'click',
+      "Click on 'Customers' to select"
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    test.step("Restore the initial 'Menu Slot' values", async () => {
+      const firstSlotName = await this.getMenuSlotText(1).textContent();
+      await assertEqualValues(
+        firstSlotName,
+        intialValueOfSlot1,
+        'Verify the 1st menu slot value is set to initial slot value'
+      );
+      const secondSlotName = await this.getMenuSlotText(2).textContent();
+      await assertEqualValues(
+        secondSlotName,
+        intialValueOfSlot2,
+        'Verify the 2nd menu slot value is set to initial slot value'
+      );
+      const thirdSlotName = await this.getMenuSlotText(3).textContent();
+      await assertEqualValues(
+        thirdSlotName,
+        intialValueOfSlot3,
+        'Verify the 3rd menu slot value is set to initial slot value'
+      );
+      const forthSlotName = await this.getMenuSlotText(4).textContent();
+      await assertEqualValues(
+        forthSlotName,
+        intialValueOfSlot4,
+        'Verify the 4th menu slot value is set to initial slot value'
+      );
+      const fifthSlotName = await this.getMenuSlotText(5).textContent();
+      await assertEqualValues(
+        fifthSlotName,
+        intialValueOfSlot5,
+        'Verify the 5th menu slot value is set to initial slot value'
+      );
+    });
   }
 };

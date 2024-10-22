@@ -450,43 +450,78 @@ exports.EventAgendas = class EventAgendas {
     await this.verifyCurrentMonthDateRange();
     await this.verifyPreviousMonthDateRange();
   }
-  async clickOnViewBtn(){
+  async clickOnViewBtn() {
     await executeStep(this.viewBtn, 'click', 'Click on "View" button');
-    if(!this.isMobile){
-    await assertElementNotVisible(this.newAgendaButton,'Verify "New Event Agenda" button should not be displayed in View Mode');
-    await assertElementNotVisible(this.editIcon,'Verify "Edit Icon" should not be displayed in View Mode');
-    await assertElementNotVisible(this.binIcon,'Verify "Bin Icon" should not be displayed in View Mode');
-    }
-    else{
-      test.info('The "New Event Agenda" button, "Edit Icon," and "Bin Icon" are not present in the mobile view.');
+    if (!this.isMobile) {
+      await assertElementNotVisible(
+        this.newAgendaButton,
+        'Verify "New Event Agenda" button should not be displayed in View Mode'
+      );
+      await assertElementNotVisible(
+        this.editIcon,
+        'Verify "Edit Icon" should not be displayed in View Mode'
+      );
+      await assertElementNotVisible(
+        this.binIcon,
+        'Verify "Bin Icon" should not be displayed in View Mode'
+      );
+    } else {
+      test.info(
+        'The "New Event Agenda" button, "Edit Icon," and "Bin Icon" are not present in the mobile view.'
+      );
     }
   }
-  async clickOnEditBtn(){
+  async clickOnEditBtn() {
     await executeStep(this.editBtn, 'click', 'Click on "Edit" button');
-    if(!this.isMobile){
-    await assertElementVisible(this.newAgendaButton,'Verify "New Event Agenda" button should be displayed in Edit Mode');
-    await assertElementVisible(this.editIcon,'Verify "Edit Icon" should be displayed in Edit Mode');
-    await assertElementVisible(this.binIcon,'Verify "Bin Icon" should not displayed in Edit Mode');
-    }
-    else{
-      test.info('The "New Event Agenda" button, "Edit Icon," and "Bin Icon" are not present in the mobile view.');
+    if (!this.isMobile) {
+      await assertElementVisible(
+        this.newAgendaButton,
+        'Verify "New Event Agenda" button should be displayed in Edit Mode'
+      );
+      await assertElementVisible(
+        this.editIcon,
+        'Verify "Edit Icon" should be displayed in Edit Mode'
+      );
+      await assertElementVisible(
+        this.binIcon,
+        'Verify "Bin Icon" should not displayed in Edit Mode'
+      );
+    } else {
+      test.info(
+        'The "New Event Agenda" button, "Edit Icon," and "Bin Icon" are not present in the mobile view.'
+      );
     }
   }
-  async verifyThemeSwitcher(){
+  async verifyThemeSwitcher() {
     await executeStep(this.themeBtn, 'click', 'Click on "Theme" switcher');
-    await assertElementVisible(this.darkTheme,"Verify 'Light' Theme successfully switched to 'Dark' Theme");
+    await assertElementVisible(
+      this.darkTheme,
+      "Verify 'Light' Theme successfully switched to 'Dark' Theme"
+    );
     await test.step('Reload the Page', async () => {
-    await this.page.reload();
+      await this.page.reload();
     });
-    await assertElementAttributeContains(this.darkTheme,'name','bold_weather_sun','Ensure that the dark theme remains unchanged after reloading the page');
-    await executeStep(this.darkTheme, 'click', 'Click on the Theme option again to return it to its normal position');
+    await assertElementAttributeContains(
+      this.darkTheme,
+      'name',
+      'bold_weather_sun',
+      'Ensure that the dark theme remains unchanged after reloading the page'
+    );
+    await executeStep(
+      this.darkTheme,
+      'click',
+      'Click on the Theme option again to return it to its normal position'
+    );
   }
   async verifyLangSelection() {
     await executeStep(this.catalanLanguage, 'click', 'Click on "Catalan" language');
     const selectedLanguage = await this.catalanLanguage.textContent();
-    await assertElementVisible(this.dynamicLanguage(selectedLanguage), 'Verify if the language has changed');
+    await assertElementVisible(
+      this.dynamicLanguage(selectedLanguage),
+      'Verify if the language has changed'
+    );
     await test.step('Reload the page', async () => {
-        await this.page.reload();
+      await this.page.reload();
     });
     await assertElementVisible(this.dynamicLanguage(selectedLanguage), 'Verify if the language remains changed after reloading the page');
     await executeStep(this.dynamicLanguage(selectedLanguage), 'click', 'Click on the Language option again to return it to its normal position');
@@ -645,3 +680,4 @@ async validateGLCenterProjectFilter(){
   });
 }
 }
+

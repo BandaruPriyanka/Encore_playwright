@@ -3,11 +3,12 @@ const indexPage = require('../utils/index.page');
 const { invalidDiscountGenerator, validDiscountGenerator } = require('../utils/helper');
 require('dotenv').config();
 
-let flowsheetCardAndTab, flowsheetPage, locationId, locationText;
+let flowsheetCardAndTab, flowsheetPage, locationId, locationText, dashboardPage;
 
 test.beforeEach(async ({ page }) => {
   flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(page);
   flowsheetPage = new indexPage.FlowSheetPage(page);
+  dashboardPage = new indexPage.DashboardPage(page);
   locationId = indexPage.lighthouse_data.locationId_createData2;
   locationText = indexPage.lighthouse_data.locationText_createData2;
   await page.goto(process.env.lighthouseUrl, {
@@ -64,4 +65,13 @@ test('Test_C56909 : Verify Logs Tab', async () => {
     indexPage.lighthouse_data.invalidQuantity,
     indexPage.lighthouse_data.validQuantity
   );
+});
+
+test("Test_C57149 Check 'Additions captured' widget", async () => {
+  await dashboardPage.navigateToDashboard();
+  await dashboardPage.assertWidget();
+  await dashboardPage.assertElementsInWidgets();
+  await dashboardPage.assertAddOnWith1pcsFor1DayWithoutDiscount();
+  await dashboardPage.assertAddOnWith2PcsFor2DaysWithoutDiscount();
+  await dashboardPage.assertAddonWith1pcsFor1DayWith25PerDiscount();
 });

@@ -129,6 +129,10 @@ exports.LocationProfile = class LocationProfile {
       ? this.page.locator("(//div[normalize-space()='Update'])[2]")
       : this.page.locator("(//div[normalize-space()='Update'])[1]");
     this.notificationClearAll = this.page.locator("//div[normalize-space()='Clear all']");
+    this.groupNameInFlowsheetGroups = name =>
+      this.page.locator(`//div[normalize-space(text())='${name}']`);
+    this.deleteIconForParticularGroup = name =>
+      this.page.locator(`//div[normalize-space(text())='${name}']/../following-sibling::icon`);
   }
   getDynamicLocator = (label, index) => {
     return this.page.locator(`(//span[normalize-space()='${label}']//parent::li)[${index}]`);
@@ -351,7 +355,7 @@ exports.LocationProfile = class LocationProfile {
         "Verify that the 'Email recipients list' is visible"
       );
     }
-    await assertElementVisible(this.addEmail,"Verify that the 'Footer Field' is visible");
+    await assertElementVisible(this.addEmail, "Verify that the 'Footer Field' is visible");
     await executeStep(
       this.deleteIcon(indexPage.lighthouse_data.addOnEmail),
       'click',
@@ -633,6 +637,43 @@ exports.LocationProfile = class LocationProfile {
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.notifyUsUpdateButton, 'click', 'Click on update button');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+
+  async assertAddGroup() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.addGrpField, 'click', "Click on 'Add Group' field");
+    await assertElementFocused(
+      this.addGrpField,
+      'Verify Cursor should be displayed & the field should be highlighted.'
+    );
+    await executeStep(this.addGrpField, 'fill', 'Input some valid Group name', [
+      indexPage.lighthouse_data.group
+    ]);
+    await executeStep(this.expireDaysInputField, 'fill', 'Enter the expiry date as 1', ['1']);
+    await assertElementEnabled(this.createButton, 'Verify that Create button should be enabled.');
+  }
+
+  async assertAddedGroup() {
+    await executeStep(this.createButton, 'click', 'Click on create button');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(
+      this.groupNameInFlowsheetGroups(indexPage.lighthouse_data.group),
+      'Verify Group should be added to the list successfully.'
+    );
+    await this.page.reload();
+    await assertElementVisible(
+      this.groupNameInFlowsheetGroups(indexPage.lighthouse_data.group),
+      'Verify Group should be added to the list successfully after reload.'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(
+      this.deleteIconForParticularGroup(indexPage.lighthouse_data.group),
+      'click',
+      'Click on delete icon'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.yesButton, 'click', 'Click on yes button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 };

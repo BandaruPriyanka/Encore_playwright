@@ -5,7 +5,8 @@ const {
   assertElementVisible,
   assertElementNotVisible,
   invalidDiscountGenerator,
-  validDiscountGenerator
+  validDiscountGenerator,
+  assertEqualValues
 } = require('../utils/helper');
 test.describe('Performing actions on Location Profile Tab', () => {
   let locationProfilePage, flowsheetPage, locationId, locationText, flowsheetCardAndTab;
@@ -92,6 +93,18 @@ test.describe('Performing actions on Location Profile Tab', () => {
       await locationProfilePage.clickOnFlowsheetGroups();
       await locationProfilePage.removingGroupFunctionality();
     });
+
+    test('Test_C57129 Check Expiration Groups functionality - WIP', async () => {
+      await locationProfilePage.clickOnFlowsheetGroups();
+      const headerText = await locationProfilePage.headerTitle.textContent();
+      await assertEqualValues(
+        headerText,
+        indexPage.lighthouse_data.flowsheetGroups,
+        "Verify that the 'Flowsheet Groups' page should be opened"
+      );
+      await locationProfilePage.assertAddGroup();
+      await locationProfilePage.assertAddedGroup();
+    });
   });
 
   test('Test_C57123 Check "Add Ons Email Recipients" Tab elements', async () => {
@@ -117,7 +130,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
-  test('Test_C57125 :Verify Removing emails functionality', async ({page}) => {
+  test('Test_C57125 :Verify Removing emails functionality', async ({ page }) => {
     await locationProfilePage.assertEmailRecipients();
     await locationProfilePage.deleteEmail();
     await flowsheetCardAndTab.createAddOn(

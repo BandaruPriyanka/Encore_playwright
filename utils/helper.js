@@ -540,6 +540,39 @@ async function generateInvalidEmail() {
   return `${randomString}@${randomDomain}`;
 }
 
+function getWeekStartDate() {
+  const today = new Date();
+  const day = today.getDay();
+  const diff = today.getDate() - (day === 0 ? 6 : day - 1);
+  const monday = new Date(today.setDate(diff));
+  const month = (monday.getMonth() + 1).toString();
+  const dayOfMonth = monday.getDate().toString();
+  const year = monday.getFullYear();
+  return `${month}/${dayOfMonth}/${year}`;
+}
+
+function getLastWeekStartDate() {
+  const today = new Date();
+  const day = today.getDay();
+  const diff = today.getDate() - (day === 0 ? 6 : day - 1) - 7;
+  const lastMonday = new Date(today.setDate(diff));
+  const month = (lastMonday.getMonth() + 1).toString();
+  const dayOfMonth = lastMonday.getDate().toString();
+  const year = lastMonday.getFullYear();
+  return `${month}/${dayOfMonth}/${year}`;
+}
+
+function getLastMonthStartDate() {
+  const today = new Date();
+  const year = today.getMonth() === 0 ? today.getFullYear() - 1 : today.getFullYear();
+  const month = today.getMonth() === 0 ? 11 : today.getMonth() - 1;
+  const lastMonthStart = new Date(year, month, 1);
+  const formattedMonth = (lastMonthStart.getMonth() + 1).toString();
+  const dayOfMonth = lastMonthStart.getDate().toString();
+  const formattedYear = lastMonthStart.getFullYear();
+  return `${formattedMonth}/${dayOfMonth}/${formattedYear}`;
+}
+
 function getWeekBeforeLastRange() {
   const today = new Date();
   const dayOfWeek = today.getDay();
@@ -562,6 +595,7 @@ function getPreviousMonthRange() {
   const endDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0)); // Last day of previous month
   return { startDate, endDate };
 }
+
 module.exports = {
   getTodayDate,
   generateRandString,
@@ -636,5 +670,8 @@ module.exports = {
   assertElementToBeEnabled,
   getFlowsheetCard,
   assertButtonDisabled,
-  generateInvalidEmail
+  generateInvalidEmail,
+  getWeekStartDate,
+  getLastWeekStartDate,
+  getLastMonthStartDate
 };

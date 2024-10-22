@@ -37,7 +37,7 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
   });
 
   test('Test_C57109 Verify Menu navigation mobile', async ({ isMobile }) => {
-    test.skip(!isMobile, 'Skipping Flowsheet status on desktop devices');
+    test.skip(!isMobile, 'Skipping Menu navigation on desktop devices');
     await profilePage.verifyingMenuNavigation(
       indexPage.lighthouse_data.expectedProfileText,
       indexPage.lighthouse_data.expectedLocationText,
@@ -233,5 +233,19 @@ test.describe('Performing actions on My Profile Tab & Notifications Tab', () => 
       });
       await profilePage.changeToDefaultColor();
     });
+  });
+
+  test("Test_C57114 Verify 'Favourite Slot' selection", async () => {
+    await profilePage.assertInitialFavouriteMenuSlot();
+    await profilePage.changeMenuSlot5ToFavouriteSlot();
+    await profilePage.restoreToSelectedMenuSlot();
+  });
+
+  test("Test_C57113 Check 'Menu Slots' selection", async ({ isMobile }) => {
+    test.skip(!isMobile, 'Skipping Menu Slots on desktop devices');
+    await profilePage.storeInitialSlotValues();
+    await profilePage.assertIntialMenuSlots();
+    await profilePage.updateMenuSlots();
+    await profilePage.setMenuSlotValuesToInitialValues();
   });
 });

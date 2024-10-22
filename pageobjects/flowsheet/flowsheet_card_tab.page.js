@@ -379,7 +379,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.searchProductInput, 'fill', 'Enter the individual product', [
       individualProduct
     ]);
-    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await executeStep(
       this.selectFirstProduct,
       'click',
@@ -388,7 +388,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.searchProductInput, 'fill', 'Enter the package product', [
       packageProduct
     ]);
-    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await executeStep(
       this.selectFirstProduct,
       'click',
@@ -434,7 +434,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     discountPrice = formatCurrency(
       calculateTotalAmountAfterDiscount(originalPrice, parseInt(validDiscount))
     );
-    await assertNotEqualValues(discountPrice,estimatedMoneyBeforeDiscount,`Verify that the discount % is calculated properly. ActualPrice : ${estimatedMoneyBeforeDiscount} DiscountPrice : ${discountPrice}`);
+    await assertNotEqualValues(
+      discountPrice,
+      estimatedMoneyBeforeDiscount,
+      `Verify that the discount % is calculated properly. ActualPrice : ${estimatedMoneyBeforeDiscount} DiscountPrice : ${discountPrice}`
+    );
     const addedProductsCount = await this.listOfProducts.count();
     const deleteIconCount = await this.listOfDeleteIcon.count();
     await assertEqualValues(
@@ -1146,7 +1150,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await assertElementVisible(this.finishBtn, 'Verify that the Finish button is visible');
       await executeStep(this.finishBtn, 'click', 'Click on fnish button');
       await assertElementVisible(
-        this.requestACopyModal, 
+        this.requestACopyModal,
         'Verify that the "Request a Copy" modal is visible'
       );
       await executeStep(this.emailInput, 'fill', 'Enter the email id', [

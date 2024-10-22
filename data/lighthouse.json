@@ -89,4 +89,11 @@
   "grpField": "test",
   "searchValidData":"Test",
   "searchInvalidData":"abcd"
+  "currentWeek": "Current Week",
+  "lastWeek": "Last Week",
+  "lastMonth": "Last Month",
+  "quantity2": "2",
+  "discountPercentage": "25",
+  "flowsheetGroups": "Flowsheet Groups",
+  "group": "test_groups"
 }

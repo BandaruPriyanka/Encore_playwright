@@ -444,7 +444,9 @@ exports.FlowSheetPage = class FlowSheetPage {
     const isLinkVisible = await this.clickOnLink.isVisible();
     if (isLinkVisible) {
       await executeStep(this.clickOnLink, 'click', 'Click on link', []);
-      await executeStep(this.placeholder, 'fill', 'Fill the data', [indexPage.lighthouse_data.grpField]);
+      await executeStep(this.placeholder, 'fill', 'Fill the data', [
+        indexPage.lighthouse_data.grpField
+      ]);
       await executeStep(this.createButton, 'click', 'Click on create button', []);
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await executeStep(this.flowsheetButton, 'click', 'Click on create button', []);
@@ -471,7 +473,12 @@ exports.FlowSheetPage = class FlowSheetPage {
     await executeStep(this.iconMenu, 'click', 'Click on icon menu', []);
     await executeStep(this.clickOnLocationProfile, 'click', 'Click on groupIcon button', []);
     await executeStep(this.flowsheetGroups, 'click', 'Click on location profile', []);
-    await executeStep(this.binLine(indexPage.lighthouse_data.grpField), 'click', 'Delete the group item', []);
+    await executeStep(
+      this.binLine(indexPage.lighthouse_data.grpField),
+      'click',
+      'Delete the group item',
+      []
+    );
     await executeStep(this.clickOnYes, 'click', 'Select yes to proceed', []);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
@@ -522,9 +529,12 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.page.reload();
     await this.searchFunction(searchText);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the color of the first touch point icon is green', async () => {
-      await checkVisibleElementColors(this.page, this.touchPointItems(1), 'rgb(23, 181, 57)');
-    });
+    await checkVisibleElementColors(
+      this.page,
+      this.touchPointItems(1),
+      'rgb(23, 181, 57)',
+      'Verify the color of the first touch point icon is green'
+    );
   }
 
   async addSecondTouchPoint(searchText) {
@@ -539,9 +549,12 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.page.reload();
     await this.searchFunction(searchText);
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await test.step('Verify the color of the second touch point icon is yellow', async () => {
-      await checkVisibleElementColors(this.page, this.touchPointItems(2), 'rgb(244, 235, 0)');
-    });
+    await checkVisibleElementColors(
+      this.page,
+      this.touchPointItems(2),
+      'rgb(244, 235, 0)',
+      'Verify the color of the second touch point icon is yellow'
+    );
   }
 
   async addRemainingTouchPoint() {
@@ -684,16 +697,15 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
   async selectFlowsheetCard() {
     let xpathString = await this.getFlowsheetCard();
-    try{
-    if (xpathString) {
-      let jobNumber = xpathString.replace('#', '').trim();
-      console.log('job number ::::',jobNumber);
-      indexPage.lighthouse_data.nonTestJobNumber = jobNumber;
-      await fs.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
-    }
-    }
-    catch(error){
-        test.info('No valid flowsheet cards found to perform actions')
+    try {
+      if (xpathString) {
+        let jobNumber = xpathString.replace('#', '').trim();
+        console.log('job number ::::', jobNumber);
+        indexPage.lighthouse_data.nonTestJobNumber = jobNumber;
+        await fs.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
+      }
+    } catch (error) {
+      test.info('No valid flowsheet cards found to perform actions');
     }
   }
   async equipmentItemsClickable() {
@@ -710,16 +722,12 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.backToSearch();
     await this.searchFunction(indexPage.lighthouse_data.nonTestJobNumber);
     await this.clickOnJob(indexPage.lighthouse_data.nonTestJobNumber);
-    await test.step('Assert that first Icon updates to Green color', async () => {
-      await assertElementVisible(this.greenIcon);
-    });
+    await assertElementVisible(this.greenIcon, 'Assert that first Icon updates to Green color');
   }
   async deSelectAnyEquipmentItem() {
     await executeStep(this.deSelectEquipmentItem, 'click', 'DeSelect the one Equipment item');
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    await test.step('Assert that first Icon updates to Red color', async () => {
-      await assertElementVisible(this.redIcon);
-    });
+    await assertElementVisible(this.redIcon, 'Assert that first Icon updates to Red color');
   }
   async deSelectLastEquipmentAsset() {
     const checkboxes = this.allEquipmentCheckboxes;
@@ -731,6 +739,5 @@ exports.FlowSheetPage = class FlowSheetPage {
       });
     }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await test.step('Assert that Icon');
   }
 };
