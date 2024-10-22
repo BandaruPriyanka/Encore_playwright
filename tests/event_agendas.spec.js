@@ -20,6 +20,7 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await flowsheetPage.changeLocation(locationId, locationText);
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
     await agendasPage.actionsOnEventAgendas();
   });
 
@@ -43,6 +44,12 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
     await agendasPage.verifyDateSelection();
     await agendasPage.DateRangeOptions();
   });
+  test('Test_C57151 Verify Event Agendas printing' , async ({ isMobile }) => {
+    test.skip(isMobile, 'Skipping Verify Event Agendas printing');
+    await agendasPage.assertPrintIcon();
+    await agendasPage.assertPdf();
+    await agendasPage.assertPdfAfterChangeSettings();
+  })
 }),
   test.describe('LightHouse Event Agendas - Mfe Event Agendas ', () => {
     let agendasPage;
@@ -84,4 +91,17 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
       await agendasPage.verifyDateSelection();
       await agendasPage.DateRangeOptions();
     });
+    test('Test_C57097 Verify MFE - Event Agendas printing' , async ({ isMobile }) => {
+      test.skip(isMobile, 'Skipping Verify MFE - Event Agendas printing');
+      await agendasPage.assertPrintIconForBothViews();
+      await agendasPage.assertPrintModalAfterLanguageChange();
+      await agendasPage.assertPrintIcon();
+      await agendasPage.assertPdf();
+      await agendasPage.assertPdfAfterChangeSettings();
+    })
+    test.only('Test_C57098 Verify MFE - Create Event Agenda' , async ({ isMobile }) => {
+      test.skip(isMobile, 'Skipping Verify MFE - Create Event Agenda');
+      await agendasPage.assertEventInformationModal();
+      await agendasPage.createNewAgenda(indexPage.lighthouse_data.opportunityNumber);
+    })
   });

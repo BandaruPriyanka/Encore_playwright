@@ -34,7 +34,9 @@ const NavigatorConsts = {
   menuBgDarkColor: 'rgb(12, 74, 110)',
   menuBgLightColor: 'rgb(56, 189, 248)',
   favouriteIconColor: 'text-purple-500',
-  menuSlotsText: ['Logs', 'Location Profile', 'Customers']
+  menuSlotsText: ['Logs', 'Location Profile', 'Customers'],
+  startDate : "Start Date",
+  endDate : "End Date"
 };
 
 exports.Const = NavigatorConsts;

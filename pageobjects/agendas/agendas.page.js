@@ -2,6 +2,10 @@ const { executeStep } = require('../../utils/action');
 require('dotenv').config();
 const { test } = require('@playwright/test');
 const indexPage = require('../../utils/index.page');
+const path = require('path');
+const pdf = require('pdf-parse');
+const fs = require('fs');
+const utilConst = require('../../utils/const');
 const {
   assertElementVisible,
   assertElementEnabled,
@@ -16,7 +20,11 @@ const {
   getWeekBeforeLastRange,
   getCurrentMonthRange,
   getPreviousMonthRange,
-  assertElementNotVisible
+  assertElementNotVisible,
+  assertNotEqualValues,
+  assertElementDisabled,
+  assertElementNotEditable,
+  getFormattedDate
 } = require('../../utils/helper');
 let startDateEle, endDateEle, presentDate, endDate, yesterdayDate, enterDays;
 exports.EventAgendas = class EventAgendas {
@@ -61,7 +69,6 @@ exports.EventAgendas = class EventAgendas {
       const formattedDate = `${dayName}, ${month} ${day}, ${year}`;
       return this.page.locator(`div[aria-label="${formattedDate}"]`);
     };
-
     this.startDate = this.page.locator('mbsc-button div.mbsc-range-control-value').first();
     this.endDate = this.page.locator('mbsc-button div.mbsc-range-control-value').last();
     this.updateBtn = this.page.locator('button.e2e_date_range_update_button');
@@ -90,6 +97,27 @@ exports.EventAgendas = class EventAgendas {
     this.binIcon = this.page
       .locator("eui-icon[name='line_duotone_essentional_trash_bin_trash']")
       .first();
+    this.printModal =(text) => this.page.locator(`div:has-text('${text}')`).first();
+    this.crossIcon = this.page.locator("eui-icon.e2e_line_close");
+    this.printButton = this.page.locator("button.e2e_yes_button");
+    this.printConfirmationNotification = this.page.locator("div.toast-message");
+    this.sortOrderSelect = this.page.locator("eui-multi-select.e2e_print_sort_order");
+    this.roomNameAscendingLabel = this.page.locator("label:has-text('Room Name Ascending')");
+    this.showEquipmentNoInput = this.page.locator("input.e2e_show_equipment_no");
+    this.showSessionNoInput = this.page.locator("input.e2e_show_sessions_no");
+    this.eventNameDiv = this.page.locator("div.e2e_event_name_tooltip > span:nth-of-type(1)").first();
+    this.venueDiv = this.page.locator("div.e2e_venue_tooltip > span:nth-of-type(1)").first();
+    this.eventInformationModal = this.page.locator("div.e2e_slide_over_body");
+    this.cancelButtonInModal = this.page.locator("button.e2e_event_cancel_button");
+    this.opportunityNumberInput = this.page.locator("input[placeholder='Enter Opportunity Number']");
+    this.eventNameInput = this.page.locator("input[placeholder='Enter Event Name']");
+    this.projectManagerInput = this.page.locator("eui-icon.e2e_arrow_down");
+    this.selectCheckBox = (projectManagerName) => this.page.locator(`label:has-text('${projectManagerName}')`);
+    this.saveButtonInModal = this.page.locator("button.e2e_save_event_button");
+    this.dateWarningIcon = this.page.locator("eui-icon.e2e_start_date_line_warning_icon");
+    this.dateWarningMsg = this.page.locator("div:has-text('Start Date must be today or later.')").first();
+    this.dynamicInput = (inputName) => this.page.locator(`div:has-text('${inputName}') > form:nth-of-type(1) > input.e2e_box_input`);
+    this.newAgendaPage = this.page.locator("mbsc-eventcalendar#mbsc-calendar");
   }
   async actionsOnEventAgendas() {
     if (this.isMobile) {
@@ -529,4 +557,114 @@ exports.EventAgendas = class EventAgendas {
       'Click on the Language option again to return it to its normal position'
     );
   }
+
+  async assertPrintIconForBothViews() {
+    await assertElementVisible(this.printerIcon,"Verify  that the printing icon is displayed for Edit Mode");
+    await executeStep(this.viewBtn,"click","Click on View Mode");
+    await assertElementVisible(this.printerIcon,"Verify  that the printing icon is displayed for View Mode");
+    await executeStep(this.editBtn,"click","Click on Edit Mode");
+  }
+
+  async assertPrintModalAfterLanguageChange() {
+    await executeStep(this.dynamicLanguage(indexPage.lighthouse_data.CA),"click","Select CA as location");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.printerIcon,"click","Click on Print icon");
+    await assertElementVisible(this.printModal(indexPage.lighthouse_data.PrintEvent_CA),"Verify that the modal is localized properly for CA location");
+    await executeStep(this.crossIcon,"click","Click on cross icon");
+    await executeStep(this.dynamicLanguage(indexPage.lighthouse_data.MX),"click","Select MX as location");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.printerIcon,"click","Click on Print icon");
+    await assertElementVisible(this.printModal(indexPage.lighthouse_data.PrintEvent_MX),"Verify that the modal is localized properly for MX location");
+    await executeStep(this.crossIcon,"click","Click on cross icon");
+    await executeStep(this.dynamicLanguage(indexPage.lighthouse_data.US),"click","Select US as location");
+  }
+
+  async assertPrintIcon() {
+    await assertElementVisible(this.printerIcon,"Verify  that the printing icon is displayed");
+    await executeStep(this.printerIcon,"click","Click on print icon");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.printModal(indexPage.lighthouse_data.PrintEvent_US),"Verify that Printing modal should be displayed.");
+    await executeStep(this.crossIcon,"click","Click on cross icon");
+    await assertElementNotVisible(this.printModal(indexPage.lighthouse_data.PrintEvent_US),"Verify that Cross icon works properly");
+  }
+
+  async assertPdf() {
+    await executeStep(this.printerIcon,"click","Click on print icon");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.printModal(indexPage.lighthouse_data.PrintEvent_US),"Verify that Printing modal should be displayed.");
+    await executeStep(this.printButton,"click","Click on print button");
+    await assertElementVisible(this.printConfirmationNotification,"Verify notification message should be displayed while the document is being generated.")
+    const [download] = await Promise.all([
+      await this.page.waitForEvent('download'),
+    ]);
+    const downloadPath = path.join('downloads',download.suggestedFilename());
+    await download.saveAs(downloadPath);
+    const pdfBuffer = fs.readFileSync(downloadPath);
+    const pdfData = await pdf(pdfBuffer);
+    const eventName = await this.eventNameDiv.textContent();
+    const venueName = await this.venueDiv.textContent();
+    await assertContainsValue(pdfData.text,eventName,`Verify that the pdf contains Event name: ${eventName}`);
+    await assertContainsValue(pdfData.text,venueName,`Verify that the pdf contains GL Center name: ${venueName}`);
+  }
+
+  async assertPdfAfterChangeSettings() {
+    await executeStep(this.printerIcon,"click","Click on print icon");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.printModal(indexPage.lighthouse_data.PrintEvent_US),"Verify that Printing modal should be displayed.");
+    await executeStep(this.sortOrderSelect,"click","Click on sort order");
+    await executeStep(this.roomNameAscendingLabel,"click","Select Rooom name ascending label");
+    await executeStep(this.showEquipmentNoInput,"click","Select No option");
+    await executeStep(this.printButton,"click","Click on print button");
+    await assertElementVisible(this.printConfirmationNotification,"Verify notification message should be displayed while the document is being generated.")
+    const [download] = await Promise.all([
+      await this.page.waitForEvent('download'),
+    ]);
+    const downloadPath = path.join('downloads',download.suggestedFilename());
+    await download.saveAs(downloadPath);
+  }
+
+  async assertEventInformationModal() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.newAgendaButton,"click","Click on New Agenda button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.eventInformationModal,"Verify that Event Information modal should be displayed");
+    await executeStep(this.cancelButtonInModal,"click","Click on cancel button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementNotVisible(this.eventInformationModal,"Verify that Cancel button is working properly.");
+  }
+
+  async createNewAgenda(opportunityNumber) {
+    await executeStep(this.newAgendaButton,"click","Click on new agenda button");
+    await executeStep(this.opportunityNumberInput,"fill","Enter the valid Opportunity number",[opportunityNumber]);
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));  
+    const eventName = await this.eventNameInput.textContent();
+    await assertNotEqualValues(eventName,null,"Verify that the next fields should be pre-populated");
+    await this.dateWarningIcon.hover();
+    await assertElementVisible(this.dateWarningMsg,"Verify that Start Date is today or later is displayed");
+    await assertElementDisabled(this.saveButtonInModal,"Verify that Save button should be disabled until all required fields are filled properly");
+    await executeStep(this.projectManagerInput,"click","Click the product manager input");
+    await executeStep(this.selectCheckBox(indexPage.lighthouse_data.productManagerName),"click",`Select the '${indexPage.lighthouse_data.productManagerName}' checkbox`)
+    await assertElementNotEditable(this.dynamicInput(utilConst.Const.GLCenter),"Verify that GL Center input is not editable");
+    await assertElementNotEditable(this.dynamicInput(utilConst.Const.Venue),"Verfiy that Venue input is not editable");
+    await this.dateSelectInModal();
+    await executeStep(this.saveButtonInModal,"click","Click on save button");
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await assertElementVisible(this.newAgendaPage,"Verify that New Event agenda should be created & page details should be displayed.")
+  }
+
+  async dateSelectInModal() {
+    const boxForStartDate = await this.dynamicInput(utilConst.Const.startDate).boundingBox();
+    await this.dynamicInput(utilConst.Const.startDate).click({
+      position : { x: boxForStartDate.width - 2, y: boxForStartDate.height / 2 }
+    });
+    await executeStep(this.dynamicInput(utilConst.Const.startDate),"fill","Enter the start date",[getFormattedDate(0)]);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout)); 
+    const boxEndDate = await this.dynamicInput(utilConst.Const.endDate).boundingBox();
+    await this.dynamicInput(utilConst.Const.endDate).click({
+      position : { x: boxEndDate.width - 2, y: boxEndDate.height / 2 }
+    });
+    await executeStep(this.dynamicInput(utilConst.Const.endDate),"fill","Enter the start date",[getFormattedDate(2)]);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout)); 
+  }
+
 };
