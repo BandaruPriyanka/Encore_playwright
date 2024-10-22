@@ -371,6 +371,7 @@ exports.LocationProfile = class LocationProfile {
   }
 
   async assertEmailRecipients() {
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.emailRecipientsIcon, 'click', "Click on 'Email Recipient'");
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementContainsText(

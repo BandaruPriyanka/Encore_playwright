@@ -98,7 +98,7 @@ exports.CreateData = class CreateData {
       page.locator(
         `//label[text()='${attributeValue}']/../following-sibling::div/descendant::button[@role='combobox']`
       );
-    this.selectEndUserAccount = enduserText => page.locator(`//span[text()='${enduserText}']`);
+    this.selectEndUserAccount = enduserText => page.locator(`(//span[text()='${enduserText}'])[1]`);
     this.eventLearning = page.locator("//li[@title='Event Learning']");
     this.eventDescription = page.locator("//textarea[@aria-label='Event Description']");
     this.eventObjective = page.locator("//textarea[@aria-label='Event Objective']");
@@ -134,6 +134,7 @@ exports.CreateData = class CreateData {
     );
     this.continueBtn = this.page.locator("//button[normalize-space()='Continue']");
     // this.crossBtn = this.page.locator("//span[text()='×']");
+    this.reloadErrorMsg = this.page.locator("//div[contains(text(),'ERROR Acquiring Opportunity Information: [object Object]')]");
   }
 
   async clickOnCompass() {

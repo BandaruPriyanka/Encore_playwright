@@ -596,6 +596,25 @@ function getPreviousMonthRange() {
   return { startDate, endDate };
 }
 
+async function assertElementNotEditable(element, customText) {
+  await test.step(customText, async () => {
+    const isEditable = await element.isEditable();
+    expect(isEditable).toBe(false);
+  });
+}
+
+function getFormattedDate(daysToAdd = 0) {
+  const today = new Date();
+  today.setDate(today.getDate() + daysToAdd);
+
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1; // Months are zero-indexed, so add 1
+  const day = today.getDate();
+
+  return `${year}-${month}-${day}`;
+}
+
+
 module.exports = {
   getTodayDate,
   generateRandString,
@@ -673,5 +692,7 @@ module.exports = {
   generateInvalidEmail,
   getWeekStartDate,
   getLastWeekStartDate,
-  getLastMonthStartDate
+  getLastMonthStartDate,
+  assertElementNotEditable,
+  getFormattedDate
 };

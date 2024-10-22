@@ -88,12 +88,20 @@
   "nonTestJobNumber": "54787",
   "grpField": "test",
   "searchValidData":"Test",
-  "searchInvalidData":"abcd"
+  "searchInvalidData":"abcd",
   "currentWeek": "Current Week",
   "lastWeek": "Last Week",
   "lastMonth": "Last Month",
   "quantity2": "2",
   "discountPercentage": "25",
   "flowsheetGroups": "Flowsheet Groups",
-  "group": "test_groups"
+  "group": "test_groups",
+ "PrintEvent_US" : "Print Event",
+  "PrintEvent_MX" : "Evento de impresión",
+  "PrintEvent_CA" : "Événement d’impression",
+  "CA" : " CA ",
+  "MX" : " MX ",
+  "US" : " US ",
+  "opportunityNumber" : "OP14229288",
+  "productManagerName" : "Aaron Lee"
 }
