@@ -94,7 +94,6 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
       await agendasPage.verifyDateSelection();
       await agendasPage.DateRangeOptions();
     });
-  });
   test('Test_C56942	: Verify MFE - Event Agendas page elements', async () => {
     await agendasPage.verifyEventAgendasPage();
     await assertElementEnabled(agendasPage.editBtn,'Verify User can able to click on "Edit" button');
