@@ -1,6 +1,5 @@
 const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
-const utilConst = require('../utils/const');
 require('dotenv').config();
 test.describe('Performing actions on Dashboard Page', () => {
   let dashboardPage, flowsheetPage, locationId, locationText;

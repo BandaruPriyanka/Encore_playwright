@@ -5,7 +5,6 @@ const data = require('../data/apidata.json');
 const indexPage = require('./index.page');
 let isValid;
 const { expect, test } = require('@playwright/test');
-const { allure } = require('allure-playwright');
 
 function getTodayDate() {
   const date = new Date();
@@ -54,7 +53,7 @@ function endDate() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const endDateObj = new Date(today);
-  endDateObj.setDate(today.getDate() + 8); // Add 8 days
+  endDateObj.setDate(today.getDate() + 8); 
   const endYear = endDateObj.getFullYear();
   const endMonth = (endDateObj.getMonth() + 1).toString().padStart(2, '0');
   const endDay = endDateObj.getDate().toString().padStart(2, '0');
@@ -74,14 +73,14 @@ function todayDateFullFormate() {
 function getFormattedTodayDate() {
   const today = new Date();
   const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
-  const formattedDate = today.toLocaleDateString('en-US', options).replace(',', ''); // Remove comma between day and year
+  const formattedDate = today.toLocaleDateString('en-US', options).replace(',', ''); 
   return formattedDate;
 }
 function nextWeekDate() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const nextWeekDayObj = new Date(today);
-  nextWeekDayObj.setDate(today.getDate() + 7); // Add 7 days
+  nextWeekDayObj.setDate(today.getDate() + 7); 
   const nextWeekDay = nextWeekDayObj.getDate().toString();
   return nextWeekDay;
 }
@@ -90,7 +89,7 @@ function previousWeekDate() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const previousWeekDateObj = new Date(today);
-  previousWeekDateObj.setDate(today.getDate() - 7); // subtract 7 days
+  previousWeekDateObj.setDate(today.getDate() - 7); 
   const previousWeekDay = previousWeekDateObj.getDate().toString();
   return previousWeekDay;
 }
@@ -473,8 +472,8 @@ function getLastWeekRange() {
   const today = new Date();
   const dayOfWeek = today.getDay();
   const lastSundayOffset = dayOfWeek === 0 ? -7 : -(dayOfWeek + 0);
-  const startDate = addDaysToCurrentDate(lastSundayOffset); // Last week's Sunday
-  const endDate = addDaysToCurrentDate(lastSundayOffset + 6); // Last week's Saturday
+  const startDate = addDaysToCurrentDate(lastSundayOffset); 
+  const endDate = addDaysToCurrentDate(lastSundayOffset + 6); 
   return { startDate, endDate };
 }
 async function assertElementTrue(element) {
@@ -584,15 +583,15 @@ function getWeekBeforeLastRange() {
 
 function getCurrentMonthRange() {
   const today = new Date();
-  const startDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1)); // First day of the month
-  const endDate = formatDate(new Date(today.getFullYear(), today.getMonth() + 1, 0)); // Last day of the month
+  const startDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1)); 
+  const endDate = formatDate(new Date(today.getFullYear(), today.getMonth() + 1, 0)); 
   return { startDate, endDate };
 }
 
 function getPreviousMonthRange() {
   const today = new Date();
-  const startDate = formatDate(new Date(today.getFullYear(), today.getMonth() - 1, 1)); // First day of previous month
-  const endDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0)); // Last day of previous month
+  const startDate = formatDate(new Date(today.getFullYear(), today.getMonth() - 1, 1)); 
+  const endDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0)); 
   return { startDate, endDate };
 }
 
@@ -632,7 +631,7 @@ async function assertElementsSortedIncreasing(eventNumbers, customText) {
       throw new Error('eventNumbers must be a non-empty array');
     }
 
-    const trimmedNumbers = eventNumbers.map(number => number.replace(/^\D+/g, '').trim()); // Remove non-digit characters
+    const trimmedNumbers = eventNumbers.map(number => number.replace(/^\D+/g, '').trim()); 
     const sortedNumbers = [...trimmedNumbers].sort((a, b) => parseInt(a) - parseInt(b));
 
     expect(trimmedNumbers).toEqual(sortedNumbers);
@@ -644,8 +643,8 @@ async function assertElementsSortedDecreasing(eventNumbers, customText) {
       throw new Error('eventNumbers must be a non-empty array');
     }
 
-    const trimmedNumbers = eventNumbers.map(number => number.replace(/^\D+/g, '').trim()); // Remove non-digit characters
-    const sortedNumbers = [...trimmedNumbers].sort((a, b) => parseInt(b) - parseInt(a)); // Sort in decreasing order
+    const trimmedNumbers = eventNumbers.map(number => number.replace(/^\D+/g, '').trim()); 
+    const sortedNumbers = [...trimmedNumbers].sort((a, b) => parseInt(b) - parseInt(a)); 
 
     expect(trimmedNumbers).toEqual(sortedNumbers);
   });
@@ -663,12 +662,11 @@ function getFormattedDate(daysToAdd = 0) {
   today.setDate(today.getDate() + daysToAdd);
 
   const year = today.getFullYear();
-  const month = today.getMonth() + 1; // Months are zero-indexed, so add 1
+  const month = today.getMonth() + 1; 
   const day = today.getDate();
 
   return `${year}-${month}-${day}`;
 }
-
 
 
 module.exports = {

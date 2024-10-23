@@ -700,7 +700,6 @@ exports.FlowSheetPage = class FlowSheetPage {
     try {
       if (xpathString) {
         let jobNumber = xpathString.replace('#', '').trim();
-        console.log('job number ::::', jobNumber);
         indexPage.lighthouse_data.nonTestJobNumber = jobNumber;
         await fs.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
       }
