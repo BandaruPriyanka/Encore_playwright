@@ -139,18 +139,12 @@ test.describe('Performing actions on Flowsheet', () => {
       await flowsheetPage.selectFlowsheetCard();
     });
     await flowsheetPage.searchFlowsheetCard();
-    await test.step('Verify Flowsheet card is displayed Equipment Tab', async () => {
-      await assertElementVisible(flowsheetPage.equipmentTab);
-    });
-    await test.step('Verify the Current Status is open', async () => {
-      await assertElementVisible(flowsheetPage.redIcon);
-    });
+    await assertElementVisible(flowsheetPage.equipmentTab,'Verify Flowsheet card is displayed Equipment Tab');
+    await assertElementVisible(flowsheetPage.redIcon,'Verify the Current Status is open');
     await test.step('Verify that the user can select/check Equipment items', async () => {
       await flowsheetPage.equipmentItemsClickable();
     });
-    await test.step('Verify all available items are selected, status should be complete automatically', async () => {
-      await assertElementVisible(flowsheetPage.greenIcon);
-    });
+    await assertElementVisible(flowsheetPage.greenIcon,'Verify all available items are selected, status should be complete automatically');
     await page.reload();
     await page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await test.step('Verify all changes were applied after page reload', async () => {
@@ -161,7 +155,7 @@ test.describe('Performing actions on Flowsheet', () => {
     });
     await test.step('Verify that deselect the last assets, Status should update to initial open', async () => {
       await flowsheetPage.deSelectLastEquipmentAsset();
-      await assertElementVisible(flowsheetPage.redIcon);
+      await assertElementVisible(flowsheetPage.redIcon,'Verify that red icon is visible');
     });
   });
 });

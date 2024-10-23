@@ -596,6 +596,61 @@ function getPreviousMonthRange() {
   return { startDate, endDate };
 }
 
+async function assertElementsSortedZtoA(eventNames, customText) {
+  await test.step(customText, async () => {
+    if (!Array.isArray(eventNames) || eventNames.length === 0) {
+      throw new Error('eventNames must be a non-empty array');
+    }
+    const trimmedNames = eventNames.map(name => name.replace(/^\d+-/, '').trim());
+    const sortedNames = [...trimmedNames].sort((a, b) => b.localeCompare(a));
+
+    expect(trimmedNames).toEqual(sortedNames);
+  });
+}
+
+async function assertElementsSortedAtoZ(eventNames, customText) {
+  await test.step(customText, async () => {
+    if (!Array.isArray(eventNames) || eventNames.length === 0) {
+      throw new Error('eventNames must be a non-empty array');
+    }
+    const trimmedNames = eventNames.map(name => name.replace(/^\d+-/, '').trim());
+    const sortedNames = [...trimmedNames].sort((a, b) => a.localeCompare(b));
+
+    expect(trimmedNames).toEqual(sortedNames);
+  });
+}
+
+async function getTextFromElements(selector) {
+  const textArray = await selector.evaluateAll(elements => {
+    return elements.map(element => element.textContent.trim());
+  });
+  return textArray;
+}
+async function assertElementsSortedIncreasing(eventNumbers, customText) {
+  await test.step(customText, async () => {
+    if (!Array.isArray(eventNumbers) || eventNumbers.length === 0) {
+      throw new Error('eventNumbers must be a non-empty array');
+    }
+
+    const trimmedNumbers = eventNumbers.map(number => number.replace(/^\D+/g, '').trim()); // Remove non-digit characters
+    const sortedNumbers = [...trimmedNumbers].sort((a, b) => parseInt(a) - parseInt(b));
+
+    expect(trimmedNumbers).toEqual(sortedNumbers);
+  });
+}
+async function assertElementsSortedDecreasing(eventNumbers, customText) {
+  await test.step(customText, async () => {
+    if (!Array.isArray(eventNumbers) || eventNumbers.length === 0) {
+      throw new Error('eventNumbers must be a non-empty array');
+    }
+
+    const trimmedNumbers = eventNumbers.map(number => number.replace(/^\D+/g, '').trim()); // Remove non-digit characters
+    const sortedNumbers = [...trimmedNumbers].sort((a, b) => parseInt(b) - parseInt(a)); // Sort in decreasing order
+
+    expect(trimmedNumbers).toEqual(sortedNumbers);
+  });
+}
+
 async function assertElementNotEditable(element, customText) {
   await test.step(customText, async () => {
     const isEditable = await element.isEditable();
@@ -613,6 +668,7 @@ function getFormattedDate(daysToAdd = 0) {
 
   return `${year}-${month}-${day}`;
 }
+
 
 
 module.exports = {
@@ -693,6 +749,12 @@ module.exports = {
   getWeekStartDate,
   getLastWeekStartDate,
   getLastMonthStartDate,
+  assertElementsSortedAtoZ,
+  assertElementsSortedZtoA,
+  getTextFromElements,
+  assertElementsSortedIncreasing,
+  assertElementsSortedDecreasing,
   assertElementNotEditable,
   getFormattedDate
+
 };
