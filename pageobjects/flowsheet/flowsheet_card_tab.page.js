@@ -474,9 +474,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
     await executeStep(this.selectDate, 'click', 'Select today date');
     await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
-    await test.step('Verify the confirmation page should be displayed with all the valid details.', async () => {
-      await assertElementVisible(this.sendToNavigatorBtn, '');
-    });
+    await assertElementVisible(this.sendToNavigatorBtn, 'Verify the confirmation page should be displayed with all the valid details.');
     await executeStep(this.sendToNavigatorBtn, 'click', 'Click on send to navigator button');
   }
 

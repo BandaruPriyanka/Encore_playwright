@@ -76,37 +76,33 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
-    await test.step('Check if the first touch point item has the expected color of green', async () => {
-      await checkVisibleElementColors(
-        page,
-        flowsheetCardAndTab.touchPointItems(1),
-        'rgb(23, 181, 57)'
-      );
-    });
+    await checkVisibleElementColors(
+      page,
+      flowsheetCardAndTab.touchPointItems(1),
+      'rgb(23, 181, 57)',
+      'Check if the first touch point item has the expected color of green'
+    );
     await flowsheetCardAndTab.assertSecondItemInTouchPoint();
-    await test.step('Verify the color of the second touch point item is yellow', async () => {
-      await checkVisibleElementColors(
-        page,
-        flowsheetCardAndTab.touchPointItems(2),
-        'rgb(244, 235, 0)'
-      );
-    });
+    await checkVisibleElementColors(
+      page,
+      flowsheetCardAndTab.touchPointItems(2),
+      'rgb(244, 235, 0)',
+      'Verify the color of the second touch point item is yellow'
+    );
     await flowsheetCardAndTab.assertRemainingItemsInTouchPoint();
     await flowsheetCardAndTab.assertCustomerUrl();
-    await test.step('Verify the color of the first touch point icon is green', async () => {
-      await checkVisibleElementColors(
-        page,
-        flowsheetCardAndTab.firstTouchPointIcon,
-        'rgb(23, 181, 57)'
-      );
-    });
-    await test.step('Verify the color of the second touch point icon is yellow', async () => {
-      await checkVisibleElementColors(
-        page,
-        flowsheetCardAndTab.secondTouchPointIcon,
-        'rgb(244, 235, 0)'
-      );
-    });
+    await checkVisibleElementColors(
+      page,
+      flowsheetCardAndTab.firstTouchPointIcon,
+      'rgb(23, 181, 57)',
+      'Verify the color of the first touch point icon is green'
+    );
+    await checkVisibleElementColors(
+      page,
+      flowsheetCardAndTab.secondTouchPointIcon,
+      'rgb(244, 235, 0)',
+      'Verify the color of the second touch point icon is yellow'
+    );
   });
 
   test('Test_C56908 : Verify Notes Tab', async () => {
