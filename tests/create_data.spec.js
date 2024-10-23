@@ -37,10 +37,16 @@ test.describe('Opportunity and Order Creation', () => {
       await page.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
         timeout: parseInt(process.env.pageload_timeout)
       });
+      if(await createdata.reloadErrorMsg.isVisible()) {
+        await page.reload();
+      }
     } else {
       await page.goto(indexPage.navigator_data.navigatorUrl_createdata2, {
         timeout: parseInt(process.env.pageload_timeout)
       });
+      if(await createdata.reloadErrorMsg.isVisible()) {
+        await page.reload();
+      }
     }
     await navigatorLoginPage.login_navigator(atob(process.env.email), atob(process.env.password));
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
@@ -48,10 +54,16 @@ test.describe('Opportunity and Order Creation', () => {
       await page.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
         timeout: parseInt(process.env.pageload_timeout)
       });
+      if(await createdata.reloadErrorMsg.isVisible()) {
+        await page.reload();
+      }
     } else {
       await page.goto(indexPage.navigator_data.navigatorUrl_createdata2, {
         timeout: parseInt(process.env.pageload_timeout)
       });
+      if(await createdata.reloadErrorMsg.isVisible()) {
+        await page.reload();
+      }
     }
     await createdata.createOrder();
     await page.waitForTimeout(parseInt(process.env.small_max_timeout));

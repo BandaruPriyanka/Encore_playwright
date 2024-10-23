@@ -989,16 +989,22 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     const countOfEquipmentsInLightHouse = await this.listOfEquipments.count();
     const isLabourDisplayed = await this.labourEquipment.isVisible();
     const newPage = await this.page.context().newPage();
+    const createDataPage = new indexPage.CreateData(newPage);
     await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
+    if(await createDataPage.reloadErrorMsg.isVisible()) {
+      await newPage.reload();
+    }
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
     await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
     await newPage.waitForTimeout(parseInt(process.env.small_max_timeout));
     await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
-    const createDataPage = new indexPage.CreateData(newPage);
+    if(await createDataPage.reloadErrorMsg.isVisible()) {
+      await newPage.reload();
+    }
     await createDataPage.getCountOfEquipments();
     let countOfEquipmentsInNavigator;
     if (isLabourDisplayed) {
@@ -1202,16 +1208,22 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertStatusOfNavigatorJob(scenario) {
     const newPage = await this.page.context().newPage();
+    const createDataPage = new indexPage.CreateData(newPage);
     await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
+    if(await createDataPage.reloadErrorMsg.isVisible()) {
+      await newPage.reload();
+    }
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
     await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
     await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
     await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
-    const createDataPage = new indexPage.CreateData(newPage);
+    if(await createDataPage.reloadErrorMsg.isVisible()) {
+      await newPage.reload();
+    }
     await createDataPage.searchWithJobId();
     if (scenario === 'positive') {
       await assertElementVisible(
