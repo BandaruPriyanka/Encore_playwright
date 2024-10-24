@@ -27,12 +27,31 @@ const {
   getFormattedDate,
   assertEqualValues,
   assertCheckboxChecked,
+  assertElementsSortedZtoA,
+  assertElementsSortedAtoZ,
+  getTextFromElements,
+  assertElementsSortedIncreasing,
+  assertElementsSortedDecreasing,
   scrollElement,
   generateRandString,
   formatDateForEvent
 } = require('../../utils/helper');
-let startDateEle, endDateEle, presentDate, endDate, yesterdayDate, enterDays,rowCount,
-lowerCaseRowCount,upperCaseRowCount,glCenterSeachData,i,eventStatus,intialAllCancelEvents;
+let startDateEle,
+  endDateEle,
+  presentDate,
+  endDate,
+  yesterdayDate,
+  enterDays,
+  rowCount,
+  lowerCaseRowCount,
+  upperCaseRowCount,
+  glCenterSeachData,
+  i,
+  eventNamesText,
+  glCenterNamesText,
+  venueNamesText,
+  eventStatus,
+  intialAllCancelEvents;
 exports.EventAgendas = class EventAgendas {
   constructor(page) {
     this.page = page;
@@ -89,20 +108,50 @@ exports.EventAgendas = class EventAgendas {
     this.lastMonthDateRange = this.page.locator('div.e2e_date_range_last_week').last();
     this.daysUptoToday = this.page.locator('input.e2e_date_range_days_up_to_today');
     this.daysStartingToday = this.page.locator('input.e2e_date_range_days_up_to_today');
-    this.editBtn=this.page.locator("//a[normalize-space()='Edit Mode']");
-    this.viewBtn=this.page.locator("//a[normalize-space()='View Mode']");
-    this.newAgendaButton=this.page.locator("button.e2e_new_event_agenda_button");
-    this.themeBtn=this.page.locator("//eui-icon[@name='bold_weather_moon']");
-    this.darkTheme=this.page.locator("eui-icon[name='bold_weather_sun']");
-    this.catalanLanguage=this.page.locator("(//productions-language-selector//div)[3]");
-    this.dynamicLanguage=lang=>this.page.locator(`//productions-language-selector//div[text()='${lang}']`)
-    this.editIcon=this.page.locator("eui-icon[name='line_duotone_essentional_magic_stick_3']").first();
-    this.binIcon=this.page.locator("eui-icon[name='line_duotone_essentional_trash_bin_trash']").first();
-    this.closeIcon=this.page.locator("eui-icon[name='line_close']");
-    this.glChechBox=this.page.locator("input.e2e_checkbox + label");
-    this.assertCheckbox=this.page.locator("input.e2e_checkbox");
-    this.glCenterSearchInput=this.page.locator("input[placeholder='Search']");
-     this.printModal =(text) => this.page.locator(`div:has-text('${text}')`).first();
+    this.editBtn = this.page.locator("//a[normalize-space()='Edit Mode']");
+    this.viewBtn = this.page.locator("//a[normalize-space()='View Mode']");
+    this.newAgendaButton = this.page.locator('button.e2e_new_event_agenda_button');
+    this.themeBtn = this.page.locator("//eui-icon[@name='bold_weather_moon']");
+    this.darkTheme = this.page.locator("eui-icon[name='bold_weather_sun']");
+    this.catalanLanguage = this.page.locator('(//productions-language-selector//div)[3]');
+    this.dynamicLanguage = lang =>
+      this.page.locator(`//productions-language-selector//div[text()='${lang}']`);
+    this.editIcon = this.page
+      .locator("eui-icon[name='line_duotone_essentional_magic_stick_3']")
+      .first();
+    this.binIcon = this.page
+      .locator("eui-icon[name='line_duotone_essentional_trash_bin_trash']")
+      .first();
+    this.closeIcon = this.page.locator("eui-icon[name='line_close']");
+    this.glChechBox = this.page.locator('input.e2e_checkbox + label');
+    this.assertCheckbox = this.page.locator('input.e2e_checkbox');
+    this.glCenterSearchInput = this.page.locator("input[placeholder='Search']");
+    this.eventSortIcon = this.page.locator('eui-sort-icon.e2e_event_sort_icon');
+    this.eventSortIconDirection = this.page
+      .locator('eui-sort-icon.e2e_event_sort_icon>eui-icon>svg>path')
+      .last();
+    this.glCenterSortDirectiion = this.page
+      .locator('eui-sort-icon.e2e_gl_center_sort_icon>eui-icon>svg>path')
+      .last();
+    this.venueSortDirection = this.page
+      .locator('eui-sort-icon.e2e_venue_sort_icon>eui-icon>svg>path')
+      .last();
+    this.projectSortDirectiion = this.page
+      .locator('eui-sort-icon.e2e_gl_project_manager_sort_icon>eui-icon>svg>path')
+      .last();
+    this.eventDatesDirectiion = this.page
+      .locator('eui-sort-icon.e2e_event_dates_sort_icon>eui-icon>svg>path')
+      .last();
+    this.eventNames = this.page.locator('div.e2e_event_name_tooltip>span');
+    this.glCenterNames = this.page.locator('div.e2e_gl_center_tooltip>span');
+    this.venueNames = this.page.locator('div.e2e_venue_tooltip>span');
+    this.projectMangerNames = this.page.locator('div.cursor-pointer > span').first();
+    this.eventDatesNames = this.page.locator('div.cursor-pointer > span').last();
+    this.glCenterSort = this.page.locator("span:has-text('GL Center')").first();
+    this.venueSort = this.page.locator("span:has-text('Venue')").first();
+    this.projectManagerSort = this.page.locator("span:has-text('Project Manager')").first();
+    this.eventDatesSort = this.page.locator("span:has-text('Event Dates')").first();
+    this.printModal =(text) => this.page.locator(`div:has-text('${text}')`).first();
     this.crossIcon = this.page.locator("eui-icon.e2e_line_close");
     this.printButton = this.page.locator("button.e2e_yes_button");
     this.printConfirmationNotification = this.page.locator("div.toast-message");
@@ -574,146 +623,365 @@ exports.EventAgendas = class EventAgendas {
     await test.step('Reload the page', async () => {
       await this.page.reload();
     });
-    await assertElementVisible(this.dynamicLanguage(selectedLanguage), 'Verify if the language remains changed after reloading the page');
-    await executeStep(this.dynamicLanguage(selectedLanguage), 'click', 'Click on the Language option again to return it to its normal position');
-}
-async verifySearchWithValidData(){
-  await executeStep(this.calendarWidget, 'click', 'Click on Calendar widget');
-  await executeStep(
-    this.thisMonthDateRange,
-    'click',
-    'Click on "Current Month" date range option'
-  );
-  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-  await executeStep(this.searchInput,'fill','Enter a valid data to search',[indexPage.lighthouse_data.searchValidData]);
-  await executeStep(this.searchInput,'enter','Press Enter');
-  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-  try {
-    await test.step(`Verify that valid search results are returned based on the search data: ${indexPage.lighthouse_data.searchValidData}`, async () => {
-      await this.verifyFilteredData();
-      lowerCaseRowCount = await this.agendaRows.count();
-    });
-} catch {
-    test.info('No agendas are displayed for the specified search data.');
-}
-} 
-async clickOnClose(){
-  await executeStep(this.closeIcon, 'click', 'Click on "x" icon to clean the previous search phrase');
-  await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-  await test.step("Verify Initial search results should be restored", async () => {
-    await this.verifyFilteredData();
-  });
-}
-
-async verifySearchWithInValidData(){
-  await executeStep(this.searchInput,'fill','Enter a Invalid data to search',[indexPage.lighthouse_data.searchInvalidData]);
-  await executeStep(this.searchInput,'enter','Press Enter');
-  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-  await test.step(`'No Results found' placeholder should be displayed seraching with: ${indexPage.lighthouse_data.searchInvalidData}`, async () => {
-      await this.verifyFilteredData();
-    });
-}
-async verifyCaseSensitive(){
-  const searchData = indexPage.lighthouse_data.searchValidData.toUpperCase();
-  await executeStep(this.searchInput, 'fill', `Enter ${searchData} in search field `, [searchData]);
-  await executeStep(this.searchInput,'enter','Press Enter');
-  await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-  try {
-    await test.step(`Verify that valid search results are returned based on the search data with : ${searchData}`, async () => {
-      await this.verifyFilteredData();
-      upperCaseRowCount=await this.agendaRows.count();
-    });
-} catch {
-    test.info('No agendas are displayed for the specified search data');
-}
-await assertEqualValues(lowerCaseRowCount,upperCaseRowCount,`Verify that search results are the same for lowercase and uppercase search data: ${indexPage.lighthouse_data.searchValidData} and ${searchData}`);
-await executeStep(this.closeIcon, 'click', 'Click "x" icon to clean the previous GL Center filter');
-}
-async verifyGlCenter() {
-  await executeStep(this.glCentersDropdown, 'click', 'Click on GL Center Dropdown');
-  const getList = await this.glChechBox.count()
-  await test.step("List of available options should be displayed based on the actual returned Agendas : ", async () => {
-  for (i = 0; i < getList; i++) {
-      const checkbox = this.glChechBox.nth(i); 
-      const checkboxText = await checkbox.textContent();
-      glCenterSeachData=await checkbox.nth(0).textContent();
-      await assertElementVisible(
-        checkbox,
-        `Checkbox ${i + 1} ${checkboxText}"`
+    await assertElementVisible(
+      this.dynamicLanguage(selectedLanguage),
+      'Verify if the language remains changed after reloading the page'
+    );
+    await executeStep(
+      this.dynamicLanguage(selectedLanguage),
+      'click',
+      'Click on the Language option again to return it to its normal position'
     );
   }
-});
-await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-await executeStep(this.glCenterSearchInput, 'fill', `Enter ${glCenterSeachData} in search field`, [glCenterSeachData]);
-await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-await assertElementVisible(this.glChechBox,`check whether options : ${glCenterSeachData} should be displayed based on the searched data `);
+  async verifySearchWithValidData() {
+    await executeStep(this.calendarWidget, 'click', 'Click on Calendar widget');
+    await executeStep(
+      this.thisMonthDateRange,
+      'click',
+      'Click on "Current Month" date range option'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.searchInput, 'fill', 'Enter a valid data to search', [
+      indexPage.lighthouse_data.searchValidData
+    ]);
+    await executeStep(this.searchInput, 'enter', 'Press Enter');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    try {
+      await test.step(`Verify that valid search results are returned based on the search data: ${indexPage.lighthouse_data.searchValidData}`, async () => {
+        await this.verifyFilteredData();
+        lowerCaseRowCount = await this.agendaRows.count();
+      });
+    } catch {
+      test.info('No agendas are displayed for the specified search data.');
+    }
+  }
+  async clickOnClose() {
+    await executeStep(
+      this.closeIcon,
+      'click',
+      'Click on "x" icon to clean the previous search phrase'
+    );
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await test.step('Verify Initial search results should be restored', async () => {
+      await this.verifyFilteredData();
+    });
+  }
 
-await test.step("Select one & several (cover both cases) GL Center option & check the results", async () => {
-  await executeStep(this.glCentersDropdown, 'click', 'Click on GL Center Dropdown');
-  const firstCheckbox = this.glChechBox.nth(0);
-  await executeStep(firstCheckbox, 'click', 'Select Checkbox');
-  await assertCheckboxChecked(firstCheckbox, 'Valid results should be displayed based on the selected GL Center filter option');
-  await executeStep(this.closeIcon, 'click', 'Click "x" icon to clean the previous GL Center filter');
-});
-}
-
-async verifyVenue() {
-  await executeStep(this.venuesDropdown, 'click', 'Click on Venue Dropdown');
-  const getList = await this.glChechBox.count();
-  await test.step("List of available options should be displayed based on the actual returned Agendas : ", async () => {
-  for (i = 0; i < getList; i++) {
-      const checkbox = this.glChechBox.nth(i); 
-      const checkboxText = await checkbox.textContent();
-      glCenterSeachData=await checkbox.nth(0).textContent();
-      await assertElementVisible(
-        checkbox,
-        `Checkbox ${i + 1} ${checkboxText}"`
+  async verifySearchWithInValidData() {
+    await executeStep(this.searchInput, 'fill', 'Enter a Invalid data to search', [
+      indexPage.lighthouse_data.searchInvalidData
+    ]);
+    await executeStep(this.searchInput, 'enter', 'Press Enter');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await test.step(`'No Results found' placeholder should be displayed seraching with: ${indexPage.lighthouse_data.searchInvalidData}`, async () => {
+      await this.verifyFilteredData();
+    });
+  }
+  async verifyCaseSensitive() {
+    const searchData = indexPage.lighthouse_data.searchValidData.toUpperCase();
+    await executeStep(this.searchInput, 'fill', `Enter ${searchData} in search field `, [
+      searchData
+    ]);
+    await executeStep(this.searchInput, 'enter', 'Press Enter');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    try {
+      await test.step(`Verify that valid search results are returned based on the search data with : ${searchData}`, async () => {
+        await this.verifyFilteredData();
+        upperCaseRowCount = await this.agendaRows.count();
+      });
+    } catch {
+      test.info('No agendas are displayed for the specified search data');
+    }
+    await assertEqualValues(
+      lowerCaseRowCount,
+      upperCaseRowCount,
+      `Verify that search results are the same for lowercase and uppercase search data: ${indexPage.lighthouse_data.searchValidData} and ${searchData}`
+    );
+    await executeStep(
+      this.closeIcon,
+      'click',
+      'Click "x" icon to clean the previous GL Center filter'
     );
   }
-});
-await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-await executeStep(this.glCenterSearchInput, 'fill', `Enter ${glCenterSeachData} in search field`, [glCenterSeachData]);
-await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-await assertElementVisible(this.glChechBox,`check whether options : ${glCenterSeachData} should be displayed based on the searched data `);
+  async verifyGlCenter() {
+    await executeStep(this.glCentersDropdown, 'click', 'Click on GL Center Dropdown');
+    const getList = await this.glChechBox.count();
+    await test.step('List of available options should be displayed based on the actual returned Agendas : ', async () => {
+      for (i = 0; i < getList; i++) {
+        const checkbox = this.glChechBox.nth(i);
+        const checkboxText = await checkbox.textContent();
+        glCenterSeachData = await checkbox.nth(0).textContent();
+        await assertElementVisible(checkbox, `Checkbox ${i + 1} ${checkboxText}"`);
+      }
+    });
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(
+      this.glCenterSearchInput,
+      'fill',
+      `Enter ${glCenterSeachData} in search field`,
+      [glCenterSeachData]
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(
+      this.glChechBox,
+      `check whether options : ${glCenterSeachData} should be displayed based on the searched data `
+    );
 
-await test.step("Select one & several (cover both cases) GL Center option & check the results", async () => {
-  await executeStep(this.venuesDropdown, 'click', 'Click on Venue Dropdown');
-  const firstCheckbox = this.glChechBox.nth(0);
-  await executeStep(firstCheckbox, 'click', 'Select Venue Checkbox');
-  await assertCheckboxChecked(firstCheckbox, 'Valid results should be displayed based on the selected Venue Filter option');
-  await executeStep(this.closeIcon, 'click', 'Click "x" icon to clean the previous Venue filter');
-});
+    await test.step('Select one & several (cover both cases) GL Center option & check the results', async () => {
+      await executeStep(this.glCentersDropdown, 'click', 'Click on GL Center Dropdown');
+      const firstCheckbox = this.glChechBox.nth(0);
+      await executeStep(firstCheckbox, 'click', 'Select Checkbox');
+      await assertCheckboxChecked(
+        firstCheckbox,
+        'Valid results should be displayed based on the selected GL Center filter option'
+      );
+      await executeStep(
+        this.closeIcon,
+        'click',
+        'Click "x" icon to clean the previous GL Center filter'
+      );
+    });
+  }
 
-}
+  async verifyVenue() {
+    await executeStep(this.venuesDropdown, 'click', 'Click on Venue Dropdown');
+    const getList = await this.glChechBox.count();
+    await test.step('List of available options should be displayed based on the actual returned Agendas : ', async () => {
+      for (i = 0; i < getList; i++) {
+        const checkbox = this.glChechBox.nth(i);
+        const checkboxText = await checkbox.textContent();
+        glCenterSeachData = await checkbox.nth(0).textContent();
+        await assertElementVisible(checkbox, `Checkbox ${i + 1} ${checkboxText}"`);
+      }
+    });
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(
+      this.glCenterSearchInput,
+      'fill',
+      `Enter ${glCenterSeachData} in search field`,
+      [glCenterSeachData]
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(
+      this.glChechBox,
+      `check whether options : ${glCenterSeachData} should be displayed based on the searched data `
+    );
 
-async verifyProjectManager() {
-  await executeStep(this.projectManagerDropdown, 'click', 'Click on Projrct Manager Dropdown');
-  const getList = await this.glChechBox.count();
-  await test.step("List of available options should be displayed based on the actual returned Agendas : ", async () => {
-  for (i = 0; i < getList; i++) {
-      const checkbox = this.glChechBox.nth(i); 
-      const checkboxText = await checkbox.textContent();
-      glCenterSeachData=await checkbox.nth(0).textContent();
-      await assertElementVisible(
-        checkbox,
-        `Checkbox ${i + 1} ${checkboxText}"`
+    await test.step('Select one & several (cover both cases) GL Center option & check the results', async () => {
+      await executeStep(this.venuesDropdown, 'click', 'Click on Venue Dropdown');
+      const firstCheckbox = this.glChechBox.nth(0);
+      await executeStep(firstCheckbox, 'click', 'Select Venue Checkbox');
+      await assertCheckboxChecked(
+        firstCheckbox,
+        'Valid results should be displayed based on the selected Venue Filter option'
+      );
+      await executeStep(
+        this.closeIcon,
+        'click',
+        'Click "x" icon to clean the previous Venue filter'
+      );
+    });
+  }
+
+  async verifyProjectManager() {
+    await executeStep(this.projectManagerDropdown, 'click', 'Click on Projrct Manager Dropdown');
+    const getList = await this.glChechBox.count();
+    await test.step('List of available options should be displayed based on the actual returned Agendas : ', async () => {
+      for (i = 0; i < getList; i++) {
+        const checkbox = this.glChechBox.nth(i);
+        const checkboxText = await checkbox.textContent();
+        glCenterSeachData = await checkbox.nth(0).textContent();
+        await assertElementVisible(checkbox, `Checkbox ${i + 1} ${checkboxText}"`);
+      }
+    });
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(
+      this.glCenterSearchInput,
+      'fill',
+      `Enter ${glCenterSeachData} in search field`,
+      [glCenterSeachData]
+    );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(
+      this.glChechBox,
+      `check whether options : ${glCenterSeachData} should be displayed based on the searched data `
+    );
+
+    await test.step('Select one & several (cover both cases) GL Center option & check the results', async () => {
+      await executeStep(this.projectManagerDropdown, 'click', 'Click on Project Manager Dropdown');
+      const firstCheckbox = this.glChechBox.nth(0);
+      await executeStep(firstCheckbox, 'click', 'Select Project Manager Checkbox');
+      await assertCheckboxChecked(
+        firstCheckbox,
+        'Valid results should be displayed based on the selected Project Manager filter option'
+      );
+      await executeStep(
+        this.closeIcon,
+        'click',
+        'Click "x" icon to clean the previous Project Manager filter'
+      );
+    });
+  }
+
+  async validateGLCenterProjectFilter() {
+    await executeStep(this.glCentersDropdown, 'click', 'Click on GL Center Dropdown');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const glcenterCheckbox = this.glChechBox.nth(0);
+    const glcenterCheckboxText = await this.glChechBox.nth(0).textContent();
+    await executeStep(glcenterCheckbox, 'click', 'Select GL Center Checkbox');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.projectManagerDropdown, 'click', 'Click on Project Manager Dropdown');
+    const projectManagerCheckbox = this.glChechBox.nth(0);
+    const projectManagerCheckboxText = await this.glChechBox.nth(0).textContent();
+    await executeStep(projectManagerCheckbox, 'click', 'Select Project Manager Checkbox');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await test.step(`Verify that search results are displayed based on the applied filters : "${glcenterCheckboxText}" in "GL Center Checkbox " &  "${projectManagerCheckboxText}" in "Project Manager" `, async () => {
+      await this.verifyFilteredData();
+    });
+  }
+
+  async verifyEventNamesSorting() {
+    await assertElementAttributeContains(
+      this.eventSortIconDirection,
+      'd',
+      'M17 4v16l3-4',
+      'Verify arrow should be highlighted, indicating that it is set to ascending sort'
+    );
+    eventNamesText = await getTextFromElements(this.eventNames);
+    await assertElementsSortedAtoZ(
+      eventNamesText,
+      'Records should be sorted from A to Z by Event name'
+    );
+    await executeStep(this.eventSortIcon, 'click', 'Click on Event Names Sort Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementAttributeContains(
+      this.eventSortIconDirection,
+      'd',
+      'M17 20V4l3 4',
+      'Verify arrow should be highlighted, indicating that it is set to descending sort'
+    );
+    eventNamesText = await getTextFromElements(this.eventNames);
+    await assertElementsSortedZtoA(
+      eventNamesText,
+      'Records should be sorted from Z to A by Event name'
     );
   }
-});
-await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-await executeStep(this.glCenterSearchInput, 'fill', `Enter ${glCenterSeachData} in search field`, [glCenterSeachData]);
-await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-await assertElementVisible(this.glChechBox,`check whether options : ${glCenterSeachData} should be displayed based on the searched data `);
 
-await test.step("Select one & several (cover both cases) GL Center option & check the results", async () => {
-  await executeStep(this.projectManagerDropdown, 'click', 'Click on Project Manager Dropdown');
-  const firstCheckbox = this.glChechBox.nth(0);
-  await executeStep(firstCheckbox, 'click', 'Select Project Manager Checkbox');
-  await assertCheckboxChecked(firstCheckbox, 'Valid results should be displayed based on the selected Project Manager filter option');
-  await executeStep(this.closeIcon, 'click', 'Click "x" icon to clean the previous Project Manager filter');
-});
-}
+  async verifyGLCenterSorting() {
+    await executeStep(this.glCenterSort, 'click', 'Click on GL Center Sort Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementAttributeContains(
+      this.glCenterSortDirectiion,
+      'd',
+      'M17 4v16l3-4',
+      'Verify arrow should be highlighted, indicating that it is set to ascending sort'
+    );
+    glCenterNamesText = await getTextFromElements(this.glCenterNames);
+    await assertElementsSortedAtoZ(
+      glCenterNamesText,
+      'Records should be sorted from Z to A by GL Center'
+    );
+    await executeStep(this.glCenterSort, 'click', 'Click on GL Center Sort Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementAttributeContains(
+      this.glCenterSortDirectiion,
+      'd',
+      'M17 20V4l3 4',
+      'Verify arrow should be highlighted, indicating that it is set to ascending sort'
+    );
+    glCenterNamesText = await getTextFromElements(this.glCenterNames);
+    await assertElementsSortedZtoA(
+      glCenterNamesText,
+      'Records should be sorted from A to Z by GL Center'
+    );
+  }
 
+  async verifyVenueSorting() {
+    await executeStep(this.venueSort, 'click', 'Click on Venue Sort Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementAttributeContains(
+      this.venueSortDirection,
+      'd',
+      'M17 4v16l3-4',
+      'Verify arrow should be highlighted, indicating that it is set to ascending sort'
+    );
+    venueNamesText = await getTextFromElements(this.venueNames);
+    await assertElementsSortedAtoZ(
+      venueNamesText,
+      'Records should be sorted from Z to A by GL Center'
+    );
+    await executeStep(this.venueSort, 'click', 'Click on Venue Sort Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementAttributeContains(
+      this.venueSortDirection,
+      'd',
+      'M17 20V4l3 4',
+      'Verify arrow should be highlighted, indicating that it is set to ascending sort'
+    );
+    venueNamesText = await getTextFromElements(this.venueNames);
+    await assertElementsSortedZtoA(
+      venueNamesText,
+      'Records should be sorted from A to Z by GL Center'
+    );
+  }
+  async verifyProjectMangerSorting() {
+    await executeStep(this.projectManagerSort, 'click', 'Click on Project Manager Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementAttributeContains(
+      this.projectSortDirectiion,
+      'd',
+      'M17 4v16l3-4',
+      'Verify arrow should be highlighted, indicating that it is set to ascending sort'
+    );
+    venueNamesText = await getTextFromElements(this.projectMangerNames);
+    await assertElementsSortedAtoZ(
+      venueNamesText,
+      'Records should be sorted from Z to A by GL Center'
+    );
+    await executeStep(this.projectManagerSort, 'click', 'Click on Project Manager Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementAttributeContains(
+      this.projectSortDirectiion,
+      'd',
+      'M17 20V4l3 4',
+      'Verify arrow should be highlighted, indicating that it is set to ascending sort'
+    );
+    venueNamesText = await getTextFromElements(this.projectMangerNames);
+    await assertElementsSortedZtoA(
+      venueNamesText,
+      'Records should be sorted from A to Z by GL Center'
+    );
+  }
+
+ async verifyEventDatesSorting() {
+    await executeStep(this.eventDatesSort, 'click', 'Click on Event Dates Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementAttributeContains(
+      this.eventDatesDirectiion,
+      'd',
+      'M17 4v16l3-4',
+      'Verify arrow should be highlighted, indicating that it is set to ascending sort'
+    );
+    venueNamesText = await getTextFromElements(this.eventDatesNames);
+    await assertElementsSortedIncreasing(
+      venueNamesText,
+      'Records should be sorted from Z to A by GL Center'
+    );
+    await executeStep(this.eventDatesSort, 'click', 'Click on Event Dates Icon');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementAttributeContains(
+      this.eventDatesDirectiion,
+      'd',
+      'M17 20V4l3 4',
+      'Verify arrow should be highlighted, indicating that it is set to ascending sort'
+    );
+    venueNamesText = await getTextFromElements(this.venueNames);
+    await assertElementsSortedDecreasing(
+      venueNamesText,
+      'Records should be sorted from A to Z by GL Center'
+    );
+  }
+  
 async validateGLCenterProjectFilter(){
   await executeStep(this.glCentersDropdown, 'click', 'Click on GL Center Dropdown');
   await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -1013,4 +1281,3 @@ async assertPrintIconForBothViews() {
     await assertEqualValues(rowsCountForActive,rowsCountAfterActiveEvent,"Verify that Previously Cancelled event should be displayed as Active after reload.");
   }
 };
-

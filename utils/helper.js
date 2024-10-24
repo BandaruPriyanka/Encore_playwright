@@ -5,7 +5,6 @@ const data = require('../data/apidata.json');
 const indexPage = require('./index.page');
 let isValid;
 const { expect, test } = require('@playwright/test');
-const { allure } = require('allure-playwright');
 
 function getTodayDate() {
   const date = new Date();
@@ -54,7 +53,7 @@ function endDate() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const endDateObj = new Date(today);
-  endDateObj.setDate(today.getDate() + 8); // Add 8 days
+  endDateObj.setDate(today.getDate() + 8); 
   const endYear = endDateObj.getFullYear();
   const endMonth = (endDateObj.getMonth() + 1).toString().padStart(2, '0');
   const endDay = endDateObj.getDate().toString().padStart(2, '0');
@@ -74,14 +73,14 @@ function todayDateFullFormate() {
 function getFormattedTodayDate() {
   const today = new Date();
   const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
-  const formattedDate = today.toLocaleDateString('en-US', options).replace(',', ''); // Remove comma between day and year
+  const formattedDate = today.toLocaleDateString('en-US', options).replace(',', ''); 
   return formattedDate;
 }
 function nextWeekDate() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const nextWeekDayObj = new Date(today);
-  nextWeekDayObj.setDate(today.getDate() + 7); // Add 7 days
+  nextWeekDayObj.setDate(today.getDate() + 7); 
   const nextWeekDay = nextWeekDayObj.getDate().toString();
   return nextWeekDay;
 }
@@ -90,7 +89,7 @@ function previousWeekDate() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const previousWeekDateObj = new Date(today);
-  previousWeekDateObj.setDate(today.getDate() - 7); // subtract 7 days
+  previousWeekDateObj.setDate(today.getDate() - 7); 
   const previousWeekDay = previousWeekDateObj.getDate().toString();
   return previousWeekDay;
 }
@@ -473,8 +472,8 @@ function getLastWeekRange() {
   const today = new Date();
   const dayOfWeek = today.getDay();
   const lastSundayOffset = dayOfWeek === 0 ? -7 : -(dayOfWeek + 0);
-  const startDate = addDaysToCurrentDate(lastSundayOffset); // Last week's Sunday
-  const endDate = addDaysToCurrentDate(lastSundayOffset + 6); // Last week's Saturday
+  const startDate = addDaysToCurrentDate(lastSundayOffset); 
+  const endDate = addDaysToCurrentDate(lastSundayOffset + 6); 
   return { startDate, endDate };
 }
 async function assertElementTrue(element) {
@@ -584,16 +583,71 @@ function getWeekBeforeLastRange() {
 
 function getCurrentMonthRange() {
   const today = new Date();
-  const startDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1)); // First day of the month
-  const endDate = formatDate(new Date(today.getFullYear(), today.getMonth() + 1, 0)); // Last day of the month
+  const startDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1)); 
+  const endDate = formatDate(new Date(today.getFullYear(), today.getMonth() + 1, 0)); 
   return { startDate, endDate };
 }
 
 function getPreviousMonthRange() {
   const today = new Date();
-  const startDate = formatDate(new Date(today.getFullYear(), today.getMonth() - 1, 1)); // First day of previous month
-  const endDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0)); // Last day of previous month
+  const startDate = formatDate(new Date(today.getFullYear(), today.getMonth() - 1, 1)); 
+  const endDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0)); 
   return { startDate, endDate };
+}
+
+async function assertElementsSortedZtoA(eventNames, customText) {
+  await test.step(customText, async () => {
+    if (!Array.isArray(eventNames) || eventNames.length === 0) {
+      throw new Error('eventNames must be a non-empty array');
+    }
+    const trimmedNames = eventNames.map(name => name.replace(/^\d+-/, '').trim());
+    const sortedNames = [...trimmedNames].sort((a, b) => b.localeCompare(a));
+
+    expect(trimmedNames).toEqual(sortedNames);
+  });
+}
+
+async function assertElementsSortedAtoZ(eventNames, customText) {
+  await test.step(customText, async () => {
+    if (!Array.isArray(eventNames) || eventNames.length === 0) {
+      throw new Error('eventNames must be a non-empty array');
+    }
+    const trimmedNames = eventNames.map(name => name.replace(/^\d+-/, '').trim());
+    const sortedNames = [...trimmedNames].sort((a, b) => a.localeCompare(b));
+
+    expect(trimmedNames).toEqual(sortedNames);
+  });
+}
+
+async function getTextFromElements(selector) {
+  const textArray = await selector.evaluateAll(elements => {
+    return elements.map(element => element.textContent.trim());
+  });
+  return textArray;
+}
+async function assertElementsSortedIncreasing(eventNumbers, customText) {
+  await test.step(customText, async () => {
+    if (!Array.isArray(eventNumbers) || eventNumbers.length === 0) {
+      throw new Error('eventNumbers must be a non-empty array');
+    }
+
+    const trimmedNumbers = eventNumbers.map(number => number.replace(/^\D+/g, '').trim()); 
+    const sortedNumbers = [...trimmedNumbers].sort((a, b) => parseInt(a) - parseInt(b));
+
+    expect(trimmedNumbers).toEqual(sortedNumbers);
+  });
+}
+async function assertElementsSortedDecreasing(eventNumbers, customText) {
+  await test.step(customText, async () => {
+    if (!Array.isArray(eventNumbers) || eventNumbers.length === 0) {
+      throw new Error('eventNumbers must be a non-empty array');
+    }
+
+    const trimmedNumbers = eventNumbers.map(number => number.replace(/^\D+/g, '').trim()); 
+    const sortedNumbers = [...trimmedNumbers].sort((a, b) => parseInt(b) - parseInt(a)); 
+
+    expect(trimmedNumbers).toEqual(sortedNumbers);
+  });
 }
 
 async function assertElementNotEditable(element, customText) {
@@ -608,7 +662,7 @@ function getFormattedDate(daysToAdd = 0) {
   today.setDate(today.getDate() + daysToAdd);
 
   const year = today.getFullYear();
-  const month = today.getMonth() + 1; // Months are zero-indexed, so add 1
+  const month = today.getMonth() + 1; 
   const day = today.getDate();
 
   return `${year}-${month}-${day}`;
@@ -701,6 +755,11 @@ module.exports = {
   getWeekStartDate,
   getLastWeekStartDate,
   getLastMonthStartDate,
+  assertElementsSortedAtoZ,
+  assertElementsSortedZtoA,
+  getTextFromElements,
+  assertElementsSortedIncreasing,
+  assertElementsSortedDecreasing,
   assertElementNotEditable,
   getFormattedDate,
   formatDateForEvent

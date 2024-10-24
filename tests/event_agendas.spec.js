@@ -60,6 +60,24 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
     await agendasPage.verifyProjectManager();
     await agendasPage.validateGLCenterProjectFilter();
   });
+
+  test('Test_C56940 : Verify	Event Agendas sorting', async () => {
+    await test.step('Verify Event Name Sorting', async () => {
+      await agendasPage.verifyEventNamesSorting();
+    });
+    await test.step('Verify GL Center Sorting', async () => {
+      await agendasPage.verifyGLCenterSorting();
+    });
+    await test.step('Verify Venue Sorting', async () => {
+      await agendasPage.verifyVenueSorting();
+    });
+    await test.step('Verify Project Manager Sorting', async () => {
+      await agendasPage.verifyProjectMangerSorting();
+    });
+    await test.step('Verify Event Dates Sorting', async () => {
+      await agendasPage.verifyEventDatesSorting();
+    });
+  });
 }),
   test.describe('LightHouse Event Agendas - Mfe Event Agendas ', () => {
     let agendasPage;
@@ -69,40 +87,68 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
         timeout: parseInt(process.env.pageload_timeout)
       });
     });
-  test('Test_C56942	: Verify MFE - Event Agendas page elements', async () => {
-    await agendasPage.verifyEventAgendasPage();
-    await assertElementEnabled(agendasPage.editBtn,'Verify User can able to click on "Edit" button');
-    await assertElementEnabled(agendasPage.viewBtn,'Verify User can able to click on "View" button');
-    await agendasPage.clickOnViewBtn();
-    await agendasPage.clickOnEditBtn();
-    await agendasPage.verifyThemeSwitcher();
-    await agendasPage.verifyLangSelection();
-  });
-  test('Test_C57094	: Verify MFE - Event Agendas calendar widget + active checkbox', async ({isMobile}) => {
-    test.skip(isMobile, 'Skipping Verify MFE - Event Agendas calendar widget + active checkbox');
-    await agendasPage.verifyCalendarWidget();
-    await assertElementVisible(agendasPage.calendarModal, 'Calendar modal should be displayed');
-    const todayDateEle = todayDate();
-    await assertElementAttributeContains(
-      agendasPage.dateCell(todayDateEle),
-      'class',
-      'mbsc-selected',
-      'Verify currently selected dates should be highlighted'
-    );
-    await assertElementVisible(agendasPage.updateBtn, 'Update button should be displayed');
-    await agendasPage.verifyDateSelection();
-    await agendasPage.DateRangeOptions();
-  });
-  test('Test_C57095 : Verify MFE - Event Agendas search + filtering', async () => {
-    await agendasPage.verifySearchWithValidData();
-    await agendasPage.clickOnClose();
-    await agendasPage.verifySearchWithInValidData();
-    await agendasPage.verifyCaseSensitive();
-    await agendasPage.verifyGlCenter();
-    await agendasPage.verifyVenue();
-    await agendasPage.verifyProjectManager();
-    await agendasPage.validateGLCenterProjectFilter();
-  });
+
+    test('Test_C56942	: Verify MFE - Event Agendas page elements', async () => {
+      await agendasPage.verifyEventAgendasPage();
+      await assertElementEnabled(
+        agendasPage.editBtn,
+        'Verify User can able to click on "Edit" button'
+      );
+      await assertElementEnabled(
+        agendasPage.viewBtn,
+        'Verify User can able to click on "View" button'
+      );
+      await agendasPage.clickOnViewBtn();
+      await agendasPage.clickOnEditBtn();
+      await agendasPage.verifyThemeSwitcher();
+      await agendasPage.verifyLangSelection();
+    });
+    test('Test_C57094	: Verify MFE - Event Agendas calendar widget + active checkbox', async ({
+      isMobile
+    }) => {
+      test.skip(isMobile, 'Skipping Verify MFE - Event Agendas calendar widget + active checkbox');
+      await agendasPage.verifyCalendarWidget();
+      await assertElementVisible(agendasPage.calendarModal, 'Calendar modal should be displayed');
+      const todayDateEle = todayDate();
+      await assertElementAttributeContains(
+        agendasPage.dateCell(todayDateEle),
+        'class',
+        'mbsc-selected',
+        'Verify currently selected dates should be highlighted'
+      );
+      await assertElementVisible(agendasPage.updateBtn, 'Update button should be displayed');
+      await agendasPage.verifyDateSelection();
+      await agendasPage.DateRangeOptions();
+    });
+    test('Test_C57095 : Verify MFE - Event Agendas search + filtering', async () => {
+      await agendasPage.verifySearchWithValidData();
+      await agendasPage.clickOnClose();
+      await agendasPage.verifySearchWithInValidData();
+      await agendasPage.verifyCaseSensitive();
+      await agendasPage.verifyGlCenter();
+      await agendasPage.verifyVenue();
+      await agendasPage.verifyProjectManager();
+      await agendasPage.validateGLCenterProjectFilter();
+    });
+    test('Test_C57096 : Verify MFE - Event Agendas sorting', async ({ page }) => {
+      await page.waitForTimeout(parseInt(process.env.small_timeout));
+      await test.step('Verify Event Name Sorting', async () => {
+        await agendasPage.verifyEventNamesSorting();
+      });
+      await test.step('Verify GL Center Sorting', async () => {
+        await agendasPage.verifyGLCenterSorting();
+      });
+      await test.step('Verify Venue Sorting', async () => {
+        await agendasPage.verifyVenueSorting();
+      });
+      await test.step('Verify Project Manager Sorting', async () => {
+        await agendasPage.verifyProjectMangerSorting();
+      });
+      await test.step('Verify Event Dates Sorting', async () => {
+        await agendasPage.verifyEventDatesSorting();
+      });
+    });
+  
   test('Test_C57097 Verify MFE - Event Agendas printing' , async ({ isMobile }) => {
       test.skip(isMobile, 'Skipping Verify MFE - Event Agendas printing');
       await agendasPage.assertPrintIconForBothViews();
@@ -134,3 +180,4 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
     await agendasPage.cancelEventAgenda();
    })
 });
+

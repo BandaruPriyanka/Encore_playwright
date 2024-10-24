@@ -3,10 +3,8 @@ const indexPage = require('../utils/index.page');
 const utilConst = require('../utils/const');
 const {
   assertElementVisible,
-  assertIsNumber,
   assertElementEnabled,
   assertElementAttributeContains,
-  assertElementAttribute
 } = require('../utils/helper');
 require('dotenv').config();
 test.describe('Performing actions on Customer Tab', () => {

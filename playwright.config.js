@@ -88,7 +88,7 @@ module.exports = defineConfig({
         'tests/event_agendas.spec.js',
         'tests/dashboard.spec.js'
       ]
-      // dependencies: ['global_setup']
+      // dependencies: ['global_setup','create_data1']
     },
     {
       name: 'docusign_disabled_all_Desktop_Chrome',
