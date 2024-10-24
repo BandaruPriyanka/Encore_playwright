@@ -116,4 +116,21 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
       await agendasPage.assertEventInformationModal();
       await agendasPage.createNewAgenda(indexPage.lighthouse_data.opportunityNumber);
     });
+   test('Test_C57155 : Verify MFE - Create Agenda Rooms' , async ({ isMobile }) => {
+    test.skip(isMobile , 'Skipping Verify MFE - Create Agenda Rooms');
+    await agendasPage.assertAgendaPage();
+    await agendasPage.assertAddNewRoomModal();
+    await agendasPage.addnewRoomFunctionality();
+    await agendasPage.addNewRoomWithCustomName();
+   })
+   test('Test_C57152 : Verify MFE - Edit Event Agenda' , async ({ isMobile }) => {
+    test.skip(isMobile , 'Skipping Verify MFE - Edit Event Agenda');
+    await agendasPage.editEventNameInAgenda(indexPage.lighthouse_data.eventName);
+    await agendasPage.editProjectManagerInAgenda(indexPage.lighthouse_data.updatedProjectManagerName);
+    await agendasPage.editDateInAgenda();
+   })
+   test('Test_C57153 : Verify MFE - Cancel Event Agenda' , async ({ isMobile }) => {
+    test.skip(isMobile , 'Skipping Verify MFE - Cancel Event Agenda');
+    await agendasPage.cancelEventAgenda();
+   })
 });

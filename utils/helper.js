@@ -614,6 +614,14 @@ function getFormattedDate(daysToAdd = 0) {
   return `${year}-${month}-${day}`;
 }
 
+function formatDateForEvent(dateString) {
+  const date = new Date(dateString);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and add leading zero if needed
+  const day = date.getDate().toString().padStart(2, '0'); // Get day and add leading zero if needed
+  const year = date.getFullYear();
+
+  return `${month}/${day}/${year}`;
+}
 
 module.exports = {
   getTodayDate,
@@ -694,5 +702,6 @@ module.exports = {
   getLastWeekStartDate,
   getLastMonthStartDate,
   assertElementNotEditable,
-  getFormattedDate
+  getFormattedDate,
+  formatDateForEvent
 };
