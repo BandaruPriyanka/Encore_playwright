@@ -38,7 +38,7 @@ exports.CreateData = class CreateData {
     this.createOrderBtn = page.locator("//button[contains(text(), 'Create Order')]");
     this.clickOnjobsBtn = page.locator("//a[normalize-space()='Jobs']");
     this.selectRoomType = page.locator(
-      "(//div[@id='slickGridContainer-oeJobGrid']//div[@class='ui-widget-content slick-row even']/div)[14]"
+      "(//div[@id='slickGridContainer-oeJobGrid']//div[@class='ui-widget-content slick-row even']/div)[15]"
     );
     this.clickOnRoomDropDown = page.locator('select.editor-combobox');
     this.selectFirstRoom = page.locator("(//div[@class='slick-cell l7 r7 true'])[1]");

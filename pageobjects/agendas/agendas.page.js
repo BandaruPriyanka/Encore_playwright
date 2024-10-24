@@ -31,7 +31,10 @@ const {
   assertElementsSortedAtoZ,
   getTextFromElements,
   assertElementsSortedIncreasing,
-  assertElementsSortedDecreasing
+  assertElementsSortedDecreasing,
+  scrollElement,
+  generateRandString,
+  formatDateForEvent
 } = require('../../utils/helper');
 let startDateEle,
   endDateEle,
@@ -46,7 +49,9 @@ let startDateEle,
   i,
   eventNamesText,
   glCenterNamesText,
-  venueNamesText;
+  venueNamesText,
+  eventStatus,
+  intialAllCancelEvents;
 exports.EventAgendas = class EventAgendas {
   constructor(page) {
     this.page = page;
@@ -167,6 +172,25 @@ exports.EventAgendas = class EventAgendas {
     this.dateWarningMsg = this.page.locator("div:has-text('Start Date must be today or later.')").first();
     this.dynamicInput = (inputName) => this.page.locator(`div:has-text('${inputName}') > form:nth-of-type(1) > input.e2e_box_input`);
     this.newAgendaPage = this.page.locator("mbsc-eventcalendar#mbsc-calendar");
+    this.eventRow = this.page.locator("div.e2e_event_row").first();
+    this.addNewRoomDiv = this.page.locator("span:has-text('+ Add a New Room')");
+    this.roomSelectModal = this.page.locator("eui-multi-select[formcontrolname='roomId']");
+    this.cancelButtonInRoomSelectModal = this.page.locator("button:has-text('Cancel')");
+    this.roomSelectDropdown =  this.page.locator("eui-icon.e2e_arrow_down_icon");
+    this.roomsList = this.page.locator("cdk-virtual-scroll-viewport.cdk-virtual-scroll-viewport");
+    this.searchInput = this.page.locator("input[placeholder='Search']");
+    this.roomNameLabel = this.page.locator("label[for='chk_2']");
+    this.selectedRoom = this.page.locator("span.e2e_selected_icon");
+    this.saveButtonInRoomSelectModal = this.page.locator("button:has-text('Save')");
+    this.roomNameInPage = (name) => this.page.locator(`span:has-text('${name}')`).first();
+    this.roomNameInput =  this.page.locator("input[formcontrolname='roomName']");
+    this.roomTakenMsg = this.page.locator("span:has-text('This name is already taken')");
+    this.deleteEventModal = this.page.locator("div:has-text('Delete Event')").first();
+    this.cancelAndGoBackButton = this.page.locator("button:has-text('Cancel and Go Back')");
+    this.canceledEventRows = this.page.locator("div.e2e_event_row.text-red-500");
+    this.toggleText = this.page.locator("span.e2e_toggle");
+    this.selectCancelEvent = this.page.locator("div.e2e_event_row.text-red-500").first();
+    this.binIconForCancelEvent = this.page.locator("div.e2e_event_row.text-red-500  > div:nth-of-type(6) > div > eui-icon[name='line_duotone_essentional_trash_bin_trash']").first();
   }
   async actionsOnEventAgendas() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -1059,7 +1083,7 @@ async assertPrintIconForBothViews() {
     await assertElementVisible(this.dateWarningMsg,"Verify that Start Date is today or later is displayed");
     await assertElementDisabled(this.saveButtonInModal,"Verify that Save button should be disabled until all required fields are filled properly");
     await executeStep(this.projectManagerInput,"click","Click the product manager input");
-    await executeStep(this.selectCheckBox(indexPage.lighthouse_data.productManagerName),"click",`Select the '${indexPage.lighthouse_data.productManagerName}' checkbox`)
+    await executeStep(this.selectCheckBox(indexPage.lighthouse_data.projectManagerName),"click",`Select the '${indexPage.lighthouse_data.projectManagerName}' checkbox`)
     await assertElementNotEditable(this.dynamicInput(utilConst.Const.GLCenter),"Verify that GL Center input is not editable");
     await assertElementNotEditable(this.dynamicInput(utilConst.Const.Venue),"Verfiy that Venue input is not editable");
     await this.dateSelectInModal();
@@ -1083,4 +1107,177 @@ async assertPrintIconForBothViews() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout)); 
   }
 
+  async assertAgendaPage() {
+    await executeStep(this.eventRow,"click","Click any event");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.newAgendaPage,"Verify that Agenda page is open")
+  }
+  async assertAddNewRoomModal() {
+    await this.page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });    
+    await executeStep(this.addNewRoomDiv,"click","Click on Add New Room");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomSelectModal,"Verify that Room selection modal should be displayed.");
+    await executeStep(this.cancelButtonInRoomSelectModal,"click","Click on cancel button");
+    await assertElementNotVisible(this.roomSelectModal,"Verify that Room selection modal should be closed");
+    await executeStep(this.addNewRoomDiv,"click","Click on Add New Room");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomSelectModal,"Verify that Room selection modal should be displayed.");
+  }
+  async addnewRoomFunctionality() {
+    await executeStep(this.roomSelectModal,"click","Click on dropdown");
+    await assertElementVisible(this.roomsList,"Verify that the available rooms list should be displayed.");
+    await test.step('Make sure that list is scrollable' , async () => {
+      await this.scrollAction(await this.roomsList);
+    });
+    const roomName = await this.roomNameLabel.textContent();
+    await executeStep(this.searchInput,"fill","Enter the room name",[roomName]);
+    await assertElementVisible(this.selectCheckBox(roomName),"Verify that Search should work properly & be case insensitive.");
+    await executeStep(this.selectCheckBox(roomName),"click","Click on the room name");
+    const selectedRoomName = await this.selectedRoom.textContent();
+    await assertEqualValues(selectedRoomName,roomName,"Verify that Room should be selected properly.");
+    await executeStep(this.saveButtonInRoomSelectModal,"click","Click on save button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomNameInPage(roomName),"Verify that Room should be added properly.");
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomNameInPage(roomName),"Verify that Room should be added properly after reload.");
+  }
+  async scrollAction(element) {
+    const div = await element;
+    await scrollElement(div, 'bottom');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await scrollElement(div, 'top');
+  }
+  async addNewRoomWithCustomName() {
+    await executeStep(this.addNewRoomDiv,"click","Click on Add New Room");
+    await executeStep(this.roomSelectModal,"click","Click on dropdown");
+    await executeStep(this.selectCheckBox(indexPage.lighthouse_data.custom),"click","Click on the room name");
+    const randomName = await generateRandString(3);
+    await executeStep(this.roomNameInput,"fill","Enter the custom room name" , [randomName]);
+    await executeStep(this.saveButtonInRoomSelectModal,"click","Click on save button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomNameInPage(randomName),"Verify that Room should be added properly.");
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomNameInPage(randomName),"Verify that Room should be added properly after reload.");
+    await executeStep(this.addNewRoomDiv,"click","Click on Add New Room");
+    await executeStep(this.roomSelectModal,"click","Click on dropdown");
+    await executeStep(this.selectCheckBox(indexPage.lighthouse_data.custom),"click","Click on the room name");
+    await executeStep(this.roomNameInput,"fill","Enter the custom room name" , [randomName]);
+    await executeStep(this.newAgendaPage,"click","Click on the page");
+    await this.roomNameInput.hover();
+    await assertElementVisible(this.roomTakenMsg,"Verify that the error msg is displayed");
+    await test.step('Verify that scrolling is working properly' , async () => {
+      await this.scrollAction(await this.newAgendaPage);
+    })
+  }
+  async editEventNameInAgenda(eventName) {
+    await executeStep(this.editIcon,"click","Click on Edit Icon");
+    await assertElementVisible(this.eventInformationModal,"Verify that the event information model should be displayed with all valid information.");
+    await executeStep(this.cancelButtonInModal,"click","Click on Cancel button");
+    await assertElementNotVisible(this.eventInformationModal,"Verify that the Close button works properly");
+    await executeStep(this.editIcon,"click","Click on Edit Icon");
+    await assertElementNotEditable(this.opportunityNumberInput,"Verify that Opportunity Number input is not editable");
+    await assertElementNotEditable(this.dynamicInput(utilConst.Const.GLCenter),"Verify that GL Center input is not editable");
+    await assertElementNotEditable(this.dynamicInput(utilConst.Const.Venue),"Verfiy that Venue input is not editable");
+    await assertElementNotEditable(this.dynamicInput(utilConst.Const.endDate),"Verfiy that End Date input is not editable");
+    await executeStep(this.dynamicInput(utilConst.Const.eventName),"fill","Clear the value in event name",[""]);
+    await executeStep(this.dynamicInput(utilConst.Const.eventName),"fill","Enter the event name",[eventName]);
+    await executeStep(this.saveButtonInModal,"click","Click on Save button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomNameInPage(eventName),"Verify that the event name should be updated properly.");
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomNameInPage(eventName),"Verify that the event name should be updated properly after reload.");
+  }
+  async editProjectManagerInAgenda(projectManagerName) {
+    await executeStep(this.editIcon,"click","Click on Edit Icon");
+    await executeStep(this.projectManagerInput,"click","Click on project manager input");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    if(! await this.selectCheckBox(projectManagerName).isChecked()) {
+      await executeStep(this.selectCheckBox(projectManagerName),"click",`Select the '${projectManagerName}' checkbox`);
+    }
+    await executeStep(this.saveButtonInModal,"click","Click on save button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomNameInPage(projectManagerName),"Verify that the Project manager should be updated properly.");
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomNameInPage(projectManagerName),"Verify that the Project manager should be updated properly after reload.");
+  }
+  async editDateInAgenda() {
+    await executeStep(this.editIcon,"click","Click on Edit Icon");
+    const startDate = getFormattedDate(0);
+    const endDate = await this.dynamicInput(utilConst.Const.endDate).inputValue();
+    const formatedStartDate = formatDateForEvent(startDate);
+    const formatedEndDate = formatDateForEvent(endDate);
+    await executeStep(this.dynamicInput(utilConst.Const.startDate),"fill","Enter the start date",[startDate]);
+    await executeStep(this.saveButtonInModal,"click","Click on save button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomNameInPage(formatedStartDate+" - "+formatedEndDate),"Verify that both Start & End dates should be updated accordingly.");
+    await this.page.reload();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.roomNameInPage(formatedStartDate+" - "+formatedEndDate),"Verify that both Start & End dates should be updated accordingly after reload.");
+    await executeStep(this.editIcon,"click","Click on Edit Icon");
+    await executeStep(this.dynamicInput(utilConst.Const.startDate),"fill","Enter the date from past",[getFormattedDate(-1)]);
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.dateWarningIcon.hover();
+    await assertElementVisible(this.dateWarningMsg,"Verify that Start Date is today or later is displayed");
+  }
+
+  async cancelEventAgenda() {
+    eventStatus = await this.toggleText.textContent();
+    if(eventStatus == indexPage.lighthouse_data.activeOnly) {
+      await executeStep(this.toggleButton,"click","Click the toggle button for turn off");
+      eventStatus = await this.toggleText.textContent();
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    intialAllCancelEvents = await this.canceledEventRows.count();
+    if(eventStatus == indexPage.lighthouse_data.allEvents) {
+      await executeStep(this.toggleButton,"click","Click the toggle button for turn on");
+      eventStatus = await this.toggleText.textContent();
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const rowsCountForActive = await this.agendaRows.count();
+    await executeStep(this.binIcon,"click","Click on Bin icon");
+    await assertElementVisible(this.deleteEventModal,"Verify that the event delete confirmation modal should be displayed.");
+    await executeStep(this.cancelAndGoBackButton,"click","Click on Cancel and Go Back button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const rowsCountAfterCancelAndGoBack = await this.agendaRows.count();
+    await assertEqualValues(rowsCountForActive,rowsCountAfterCancelAndGoBack,"Verify that Cancel and Go Back button is working properly.");
+    await executeStep(this.binIcon,"click","Click on Bin icon");
+    await executeStep(this.printButton,"click","Click on cancel button");
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const rowsCountAfterCancel = await this.agendaRows.count();
+    await assertNotEqualValues(rowsCountAfterCancel,rowsCountForActive,"Verify that the event should be cancelled successfully and NOT displayed with 'Active Only' checkbox selected");
+    await this.page.reload();
+    await assertNotEqualValues(rowsCountAfterCancel,rowsCountForActive,"Verify that the event should be cancelled successfully and NOT displayed with 'Active Only' checkbox selected");
+    if(eventStatus == indexPage.lighthouse_data.activeOnly) {
+      await executeStep(this.toggleButton,"click","Click the toggle button for turn off");
+      eventStatus = await this.toggleText.textContent();
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+    const cancelEvents = await this.canceledEventRows.count();
+    await assertNotEqualValues(cancelEvents,intialAllCancelEvents,"Verify that Previously Canceled event should be displayed.");
+    await executeStep(this.selectCancelEvent,"click","Click on cancel event");
+    await assertElementNotVisible(this.newAgendaPage,"Verify that that user isn't able to open Event details for the Cancelled event on click");
+    await executeStep(this.binIconForCancelEvent,"click","Click on bin icon for cancel event");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.deleteEventModal,"Verify that the event delete confirmation modal should be displayed.");
+    await executeStep(this.printButton,"click","Click on  Yes, continue button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    if(eventStatus == indexPage.lighthouse_data.allEvents) {
+      await executeStep(this.toggleButton,"click","Click the toggle button for turn on");
+      eventStatus = await this.toggleText.textContent();
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+    const rowsCountAfterActiveEvent = await this.agendaRows.count();
+    await assertEqualValues(rowsCountForActive,rowsCountAfterActiveEvent,"Verify that Previously Cancelled event should be displayed as Active.");
+    await this.page.reload();
+    await assertEqualValues(rowsCountForActive,rowsCountAfterActiveEvent,"Verify that Previously Cancelled event should be displayed as Active after reload.");
+  }
 };

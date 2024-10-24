@@ -36,7 +36,8 @@ const NavigatorConsts = {
   favouriteIconColor: 'text-purple-500',
   menuSlotsText: ['Logs', 'Location Profile', 'Customers'],
   startDate : "Start Date",
-  endDate : "End Date"
+  endDate : "End Date",
+  eventName : "Event Name"
 };
 
 exports.Const = NavigatorConsts;
