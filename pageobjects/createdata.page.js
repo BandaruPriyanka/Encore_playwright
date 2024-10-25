@@ -133,7 +133,6 @@ exports.CreateData = class CreateData {
       "//textarea[@name='OrderDiscountApprovalRequesterComments']"
     );
     this.continueBtn = this.page.locator("//button[normalize-space()='Continue']");
-    // this.crossBtn = this.page.locator("//span[text()='×']");
     this.reloadErrorMsg = this.page.locator("//div[contains(text(),'ERROR Acquiring Opportunity Information: [object Object]')]");
   }
 
@@ -487,19 +486,16 @@ exports.CreateData = class CreateData {
       await executeStep(this.complimentaryExcludingLabourSelect, 'click', 'click on select');
       await this.complimentaryExcludingLabourSelect.selectOption({ label: 'Competitor Match' });
       await executeStep(this.saveBtn, 'click', 'click on save button');
-      await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-      await executeStep(this.conformationTextArea, 'fill', 'enter the text for conformation', [
-        indexPage.lighthouse_data.confirmed
-      ]);
-      await executeStep(this.continueBtn, 'click', 'click on continue button');
-      // await executeStep(this.crossBtn,"click","click on cross button");
+      // await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+      // await executeStep(this.conformationTextArea, 'fill', 'enter the text for conformation', [
+      //   indexPage.lighthouse_data.confirmed
+      // ]);
+      // await executeStep(this.continueBtn, 'click', 'click on continue button');
     }
     if (!this.isComplimentary) {
       await executeStep(this.saveBtn, 'click', 'click on save button');
     }
-    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
-    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.element_locator_timeout));
     await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
   }
 

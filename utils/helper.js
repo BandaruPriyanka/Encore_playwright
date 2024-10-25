@@ -670,12 +670,16 @@ function getFormattedDate(daysToAdd = 0) {
 
 function formatDateForEvent(dateString) {
   const date = new Date(dateString);
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and add leading zero if needed
-  const day = date.getDate().toString().padStart(2, '0'); // Get day and add leading zero if needed
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
   const year = date.getFullYear();
-
   return `${month}/${day}/${year}`;
 }
+
+const generateRandomNote = async () => {
+  const randomNumber = Math.floor(Math.random() * 900000) + 100000;
+  return `test_note_${randomNumber}`;
+};
 
 module.exports = {
   getTodayDate,
@@ -762,5 +766,6 @@ module.exports = {
   assertElementsSortedDecreasing,
   assertElementNotEditable,
   getFormattedDate,
-  formatDateForEvent
+  formatDateForEvent,
+  generateRandomNote
 };

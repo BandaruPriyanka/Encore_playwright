@@ -3,12 +3,13 @@ const indexPage = require('../utils/index.page');
 const { invalidDiscountGenerator, validDiscountGenerator } = require('../utils/helper');
 require('dotenv').config();
 
-let flowsheetCardAndTab, flowsheetPage, locationId, locationText, dashboardPage;
+let flowsheetCardAndTab, flowsheetPage, locationId, locationText, dashboardPage,logsPage;
 
 test.beforeEach(async ({ page }) => {
   flowsheetCardAndTab = new indexPage.FlowsheetCardAndTab(page);
   flowsheetPage = new indexPage.FlowSheetPage(page);
   dashboardPage = new indexPage.DashboardPage(page);
+  logsPage= new indexPage.LogsPage(page);
   locationId = indexPage.lighthouse_data.locationId_createData2;
   locationText = indexPage.lighthouse_data.locationText_createData2;
   await page.goto(process.env.lighthouseUrl, {
@@ -67,7 +68,7 @@ test('Test_C56909 : Verify Logs Tab', async () => {
   );
 });
 
-test("Test_C57149 Check 'Additions captured' widget", async () => {
+test("Test_C57149 : Check 'Additions captured' widget", async () => {
   await dashboardPage.navigateToDashboard();
   await dashboardPage.assertWidget();
   await dashboardPage.assertElementsInWidgets();
@@ -75,3 +76,11 @@ test("Test_C57149 Check 'Additions captured' widget", async () => {
   await dashboardPage.assertAddOnWith2PcsFor2DaysWithoutDiscount();
   await dashboardPage.assertAddonWith1pcsFor1DayWith25PerDiscount();
 });
+
+test('Test_57147 : Verify Logs Functionality', async({page})=>{
+  await logsPage.navigateToLogs();
+  await logsPage.checkLogDefaultState();
+  await logsPage.flowsheetALogsState();
+  await logsPage.flowsheeetBSetStatus();
+  await logsPage.addTestNoteOnLogs();
+})

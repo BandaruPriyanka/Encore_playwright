@@ -37,7 +37,9 @@ const NavigatorConsts = {
   menuSlotsText: ['Logs', 'Location Profile', 'Customers'],
   startDate : "Start Date",
   endDate : "End Date",
-  eventName : "Event Name"
+  eventName : "Event Name",
+  moodChangeMessage:"Happy Room Mood",
+  statusRefreshCompleteMsg:"Set - Refresh Complete Status Change"
 };
 
 exports.Const = NavigatorConsts;
