@@ -1153,7 +1153,7 @@ async assertPrintIconForBothViews() {
   async addNewRoomWithCustomName() {
     await executeStep(this.addNewRoomDiv,"click","Click on Add New Room");
     await executeStep(this.roomSelectModal,"click","Click on dropdown");
-    await executeStep(this.selectCheckBox(indexPage.lighthouse_data.custom),"click","Click on the room name");
+    await executeStep(this.selectCheckBox(indexPage.lighthouse_data.custom),"click","Click on the Custom option in dropdown");
     const randomName = await generateRandString(3);
     await executeStep(this.roomNameInput,"fill","Enter the custom room name" , [randomName]);
     await executeStep(this.saveButtonInRoomSelectModal,"click","Click on save button");
