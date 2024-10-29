@@ -219,7 +219,7 @@ exports.SchedulePage = class SchedulePage {
         'Verifying location details'
       );
     } catch (error) {
-      console.error('Error:', error);
+      test.info('Error:', error);
     } finally {
       await executeStep(this.crossButton, 'click', 'Click on cross button to close modal');
     }

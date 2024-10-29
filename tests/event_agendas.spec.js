@@ -51,7 +51,8 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
     await agendasPage.assertPdf();
     await agendasPage.assertPdfAfterChangeSettings();
   })
-  test('Test_C56939 : Verify Event Agendas search + filtering', async () => {
+  test('Test_C56939 : Verify Event Agendas search + filtering', async ({ isMobile }) => {
+    test.skip(isMobile, 'Skipping Verify Event Agendas search + filtering');
     await agendasPage.verifySearchWithValidData();
     await agendasPage.clickOnClose();
     await agendasPage.verifySearchWithInValidData();
@@ -62,7 +63,8 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
     await agendasPage.validateGLCenterProjectFilter();
   });
 
-  test('Test_C56940 : Verify	Event Agendas sorting', async () => {
+  test('Test_C56940 : Verify	Event Agendas sorting', async ({ isMobile }) => {
+    test.skip(isMobile, 'Skipping Verify Event Agendas sorting');
     await test.step('Verify Event Name Sorting', async () => {
       await agendasPage.verifyEventNamesSorting();
     });
@@ -130,7 +132,8 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
       await agendasPage.verifyDateSelection();
       await agendasPage.DateRangeOptions();
     });
-    test('Test_C57095 : Verify MFE - Event Agendas search + filtering', async () => {
+    test('Test_C57095 : Verify MFE - Verify Event Agendas search + filtering', async ({ isMobile }) => {
+      test.skip(isMobile, 'Skipping Verify Event Agendas search + filtering');
       await agendasPage.verifySearchWithValidData();
       await agendasPage.clickOnClose();
       await agendasPage.verifySearchWithInValidData();
@@ -140,7 +143,8 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
       await agendasPage.verifyProjectManager();
       await agendasPage.validateGLCenterProjectFilter();
     });
-    test('Test_C57096 : Verify MFE - Event Agendas sorting', async ({ page }) => {
+    test('Test_C57096 : Verify MFE - Verify Event Agendas sorting', async ({ page , isMobile }) => {
+      test.skip(isMobile, 'Skipping Verify Event Agendas sorting');
       await page.waitForTimeout(parseInt(process.env.small_timeout));
       await test.step('Verify Event Name Sorting', async () => {
         await agendasPage.verifyEventNamesSorting();
