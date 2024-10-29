@@ -6,6 +6,7 @@ const {
   assertElementEnabled,
   todayDate
 } = require('../utils/helper');
+const { executeStep } = require('../utils/action');
 
 test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
   let agendasPage, flowsheetPage, locationId, locationText;
@@ -78,6 +79,15 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
       await agendasPage.verifyEventDatesSorting();
     });
   });
+  test('Test_C56941 : Verify Event Agenda page/details', async({page , isMobile})=>{
+    test.skip(isMobile, 'Skipping Verify Event Agenda page/details');
+    await agendasPage.selectSeachedEvent();
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
+    await agendasPage.scrollThePage();
+    await agendasPage.changeTheDate();
+    await agendasPage.backArrow();
+    await agendasPage.applyFilter();
+  })
 }),
   test.describe('LightHouse Event Agendas - Mfe Event Agendas ', () => {
     let agendasPage;
@@ -149,35 +159,43 @@ test.describe('LightHouse Event Agendas - LHS Event Agendas', () => {
       });
     });
   
-  test('Test_C57097 Verify MFE - Event Agendas printing' , async ({ isMobile }) => {
+    test('Test_C57097 Verify MFE - Event Agendas printing' , async ({ isMobile }) => {
       test.skip(isMobile, 'Skipping Verify MFE - Event Agendas printing');
       await agendasPage.assertPrintIconForBothViews();
       await agendasPage.assertPrintModalAfterLanguageChange();
       await agendasPage.assertPrintIcon();
       await agendasPage.assertPdf();
       await agendasPage.assertPdfAfterChangeSettings();
-   });
-   test('Test_C57098 Verify MFE - Create Event Agenda' , async ({ isMobile }) => {
+    });
+    test('Test_C57098 Verify MFE - Create Event Agenda' , async ({ isMobile }) => {
       test.skip(isMobile, 'Skipping Verify MFE - Create Event Agenda');
       await agendasPage.assertEventInformationModal();
       await agendasPage.createNewAgenda(indexPage.lighthouse_data.opportunityNumber);
     });
-   test('Test_C57155 : Verify MFE - Create Agenda Rooms' , async ({ isMobile }) => {
-    test.skip(isMobile , 'Skipping Verify MFE - Create Agenda Rooms');
-    await agendasPage.assertAgendaPage();
-    await agendasPage.assertAddNewRoomModal();
-    await agendasPage.addnewRoomFunctionality();
-    await agendasPage.addNewRoomWithCustomName();
-   })
-   test('Test_C57152 : Verify MFE - Edit Event Agenda' , async ({ isMobile }) => {
-    test.skip(isMobile , 'Skipping Verify MFE - Edit Event Agenda');
-    await agendasPage.editEventNameInAgenda(indexPage.lighthouse_data.eventName);
-    await agendasPage.editProjectManagerInAgenda(indexPage.lighthouse_data.updatedProjectManagerName);
-    await agendasPage.editDateInAgenda();
-   })
-   test('Test_C57153 : Verify MFE - Cancel Event Agenda' , async ({ isMobile }) => {
-    test.skip(isMobile , 'Skipping Verify MFE - Cancel Event Agenda');
-    await agendasPage.cancelEventAgenda();
-   })
+    test('Test_C57155 : Verify MFE - Create Agenda Rooms' , async ({ isMobile }) => {
+      test.skip(isMobile , 'Skipping Verify MFE - Create Agenda Rooms');
+      await agendasPage.assertAgendaPage();
+      await agendasPage.assertAddNewRoomModal();
+      await agendasPage.addnewRoomFunctionality();
+      await agendasPage.addNewRoomWithCustomName(true);
+    })
+    test('Test_C57152 : Verify MFE - Edit Event Agenda' , async ({ isMobile }) => {
+      test.skip(isMobile , 'Skipping Verify MFE - Edit Event Agenda');
+      await agendasPage.editEventNameInAgenda(indexPage.lighthouse_data.eventName);
+      await agendasPage.editProjectManagerInAgenda(indexPage.lighthouse_data.updatedProjectManagerName);
+      await agendasPage.editDateInAgenda();
+    })
+    test('Test_C57153 : Verify MFE - Cancel Event Agenda' , async ({ isMobile }) => {
+      test.skip(isMobile , 'Skipping Verify MFE - Cancel Event Agenda');
+      await agendasPage.cancelEventAgenda();
+    })
+    test('Test_C57156 : Verify MFE - Create Agenda Sections', async ({ isMobile }) => {
+      test.skip(isMobile , 'Skipping Verify MFE - Create Agenda Sections');
+      await agendasPage.assertAgendaPage();
+      await agendasPage.assertAddNewRoomModal();
+      await executeStep(agendasPage.cancelButtonInRoomSelectModal,"click","Click on cancel button");
+      await agendasPage.addNewRoomWithCustomName(false);
+      await agendasPage.createAgendaSection();
+    })
 });
 

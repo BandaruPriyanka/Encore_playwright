@@ -118,5 +118,13 @@
   "opportunityNumber": "OP14229288",
   "productManagerName": "Aaron Lee",
   "select_group": "Section / Group",
-  "flowsheetBRoomName": "Airport Terminal"
+  "flowsheetBRoomName": "Airport Terminal",
+  "custom": "Custom",
+  "projectManagerName" : "Aaron Lee",
+  "eventName" : "Test Event Agenda",
+  "updatedProjectManagerName" : "Aaron Montañez",
+  "activeOnly" : "Active Only",
+  "allEvents" : "All events",
+  "dragAndDropHereText": "Drop here and assign to group",
+  "searchListDates": "11/01/2024 - 11/22/2024"
 }

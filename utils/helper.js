@@ -681,6 +681,24 @@ const generateRandomNote = async () => {
   return `test_note_${randomNumber}`;
 };
 
+async function assertElementsToBe(element1, element2,customText) {
+  await test.step(customText, async()=>{
+    expect(element1).toBe(element2);
+  })
+}
+async function getRandomDateFromRange(dateRange) {
+  const [startDateStr, endDateStr] = dateRange.split(' - ');
+  const startDate = new Date(startDateStr);
+  const endDate = new Date(endDateStr);
+  const diffInDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+  const randomDays = Math.floor(Math.random() * diffInDays);
+  const randomDate = new Date(startDate);
+  randomDate.setDate(randomDate.getDate() + randomDays);
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const formattedDate = randomDate.toLocaleDateString('en-US', options);
+  return formattedDate.trim();
+}
+
 module.exports = {
   getTodayDate,
   generateRandString,
@@ -767,5 +785,7 @@ module.exports = {
   assertElementNotEditable,
   getFormattedDate,
   formatDateForEvent,
-  generateRandomNote
+  generateRandomNote,
+  assertElementsToBe,
+  getRandomDateFromRange
 };
