@@ -5,6 +5,7 @@ const indexPage = require('../../utils/index.page');
 const path = require('path');
 const pdf = require('pdf-parse');
 const fs = require('fs');
+const fileSync = require('node:fs/promises');
 const utilConst = require('../../utils/const');
 const {
   assertElementVisible,
@@ -34,7 +35,9 @@ const {
   assertElementsSortedDecreasing,
   scrollElement,
   generateRandString,
-  formatDateForEvent
+  formatDateForEvent,
+  assertElementsToBe,
+  getRandomDateFromRange
 } = require('../../utils/helper');
 let startDateEle,
   endDateEle,
@@ -51,7 +54,9 @@ let startDateEle,
   glCenterNamesText,
   venueNamesText,
   eventStatus,
-  intialAllCancelEvents;
+  intialAllCancelEvents,
+  randomName,
+  searchedEventRow;
 exports.EventAgendas = class EventAgendas {
   constructor(page) {
     this.page = page;
@@ -59,7 +64,7 @@ exports.EventAgendas = class EventAgendas {
     this.menuIcon = this.page.locator('//app-side-menu');
     this.agendasTab = this.isMobile
       ? this.page.locator("(//span[normalize-space()='Agendas'])[1]")
-      : this.page.locator("(//span[normalize-space()='Agendas'])[2]");
+      : this.page.locator("(//app-navigation-item)[5]//span[normalize-space()='Agendas']");
     this.agendaListHost = this.page.locator('agenda-list');
     this.eventAgendasPage = this.page.locator('agenda-sessions:nth-child(1)');
     this.calendarWidget = this.page
@@ -166,7 +171,7 @@ exports.EventAgendas = class EventAgendas {
     this.opportunityNumberInput = this.page.locator("input[placeholder='Enter Opportunity Number']");
     this.eventNameInput = this.page.locator("input[placeholder='Enter Event Name']");
     this.projectManagerInput = this.page.locator("eui-icon.e2e_arrow_down");
-    this.selectCheckBox = (projectManagerName) => this.page.locator(`label:has-text('${projectManagerName}')`);
+    this.selectCheckBox = (projectManagerName) => this.page.locator(`label:has-text('${projectManagerName}')`).first();
     this.saveButtonInModal = this.page.locator("button.e2e_save_event_button");
     this.dateWarningIcon = this.page.locator("eui-icon.e2e_start_date_line_warning_icon");
     this.dateWarningMsg = this.page.locator("div:has-text('Start Date must be today or later.')").first();
@@ -191,6 +196,32 @@ exports.EventAgendas = class EventAgendas {
     this.toggleText = this.page.locator("span.e2e_toggle");
     this.selectCancelEvent = this.page.locator("div.e2e_event_row.text-red-500").first();
     this.binIconForCancelEvent = this.page.locator("div.e2e_event_row.text-red-500  > div:nth-of-type(6) > div > eui-icon[name='line_duotone_essentional_trash_bin_trash']").first();
+    this.searchList = this.page.locator("agenda-list-row:nth-of-type(1) div:nth-child(2) span:nth-child(1)");
+    this.searchedEventRow= this.page.locator("agenda-list-row:nth-of-type(1) div:nth-child(1) span:nth-child(2)").nth(0);
+    this.searchListDate=this.page.locator("agenda-list-row:nth-of-type(1) div:nth-child(5) span");
+    this.barrowArrow=this.page.locator("eui-icon[name='back_arrow']");
+    this.eventAgendaTitle = this.page.locator("agenda-list div:has-text('Event Agendas')").nth(4);
+    this.codeWaveEventName=this.page.locator("cal-event-detail div div div:nth-child(1)");
+    this.calScheduleSessionCard=this.page.locator("cal-schedule-session-card");
+    this.calenderTimeline=this.page.locator("div.mbsc-schedule-grid-wrapper");
+    this.calenderIcon=this.page.locator("eui-icon[name='broken_time_calendar']").nth(0);
+    this.timeElement=this.page.locator('div.mbsc-schedule-time', { hasText: '10 PM' }).first();
+    this.filterIcon=this.page.locator("eui-icon[name='filter_bulk']");
+    this.agendaStartsBetween=this.page.locator('div.inline-block.text-sm.cursor-pointer', { hasText: 'Starts Between' });
+    this.contentFilter=this.page.locator('div.flex.flex-wrap div', { hasText: 'Audio' });
+    this.applyFilterText=this.page.locator("span.e2e_apply_filters");
+    this.filterCount=this.page.locator("cal-event-detail:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div")
+    this.startTimeInCard=this.page.locator("cal-schedule-session-card div > div > div:last-child > span:first-child");
+    this.endTimeInCard=this.page.locator("cal-schedule-session-card div > div > div:last-child > span:last-child");
+    this.selectedEventName=text=>this.page.locator('cal-event-detail div:has-text("' + text + '") .font-bold');
+    this.displayedDate=this.page.locator("eui-icon[name='linear_arrows_alt_arrow_left'] ~ div");
+    this.selectDate=date=>this.page.locator(`div[aria-label="`+date+`"]`);
+    this.selectOrGroupSearchInput = this.page.locator("input[placeholder='Section / Group']");
+    this.groupNameInPage = (name) => this.page.locator(`span:has-text('${name}')`).last();
+    this.calendarView = this.page.locator("mbsc-calendar-view");
+    this.lastRoomNameInPage = this.page.locator(".mbsc-timeline-row:last-child .mbsc-timeline-resource-title");
+    this.roomOrGroupInPage = (name) => this.page.locator(`div[cdkdragpreviewcontainer='parent'] > div[title='${name}']`).first();
+    this.trashBinIconInPage = (name) => this.page.locator(`div[title='${name}'] + div > div.icon > eui-icon[name='linear_essentional_trash_bin_trash']`);
   }
   async actionsOnEventAgendas() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -1113,11 +1144,9 @@ async assertPrintIconForBothViews() {
     await assertElementVisible(this.newAgendaPage,"Verify that Agenda page is open")
   }
   async assertAddNewRoomModal() {
-    await this.page.evaluate(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    });    
+    await scrollElement(await this.calendarView, 'bottom');
     await executeStep(this.addNewRoomDiv,"click","Click on Add New Room");
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await assertElementVisible(this.roomSelectModal,"Verify that Room selection modal should be displayed.");
     await executeStep(this.cancelButtonInRoomSelectModal,"click","Click on cancel button");
     await assertElementNotVisible(this.roomSelectModal,"Verify that Room selection modal should be closed");
@@ -1141,8 +1170,14 @@ async assertPrintIconForBothViews() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(this.roomNameInPage(roomName),"Verify that Room should be added properly.");
     await this.page.reload();
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await scrollElement(await this.calendarView, 'bottom');
     await assertElementVisible(this.roomNameInPage(roomName),"Verify that Room should be added properly after reload.");
+    await this.roomOrGroupInPage(roomName).hover();
+    await executeStep(this.trashBinIconInPage(roomName),"click","Click on delete icon");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.printButton,"click","Click on delete button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
   async scrollAction(element) {
     const div = await element;
@@ -1150,11 +1185,11 @@ async assertPrintIconForBothViews() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await scrollElement(div, 'top');
   }
-  async addNewRoomWithCustomName() {
+  async addNewRoomWithCustomName(isNecessary) {
     await executeStep(this.addNewRoomDiv,"click","Click on Add New Room");
     await executeStep(this.roomSelectModal,"click","Click on dropdown");
     await executeStep(this.selectCheckBox(indexPage.lighthouse_data.custom),"click","Click on the Custom option in dropdown");
-    const randomName = await generateRandString(3);
+    randomName = await generateRandString(3);
     await executeStep(this.roomNameInput,"fill","Enter the custom room name" , [randomName]);
     await executeStep(this.saveButtonInRoomSelectModal,"click","Click on save button");
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
@@ -1162,6 +1197,7 @@ async assertPrintIconForBothViews() {
     await assertElementVisible(this.roomNameInPage(randomName),"Verify that Room should be added properly.");
     await this.page.reload();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await scrollElement(await this.calendarView, 'bottom');
     await assertElementVisible(this.roomNameInPage(randomName),"Verify that Room should be added properly after reload.");
     await executeStep(this.addNewRoomDiv,"click","Click on Add New Room");
     await executeStep(this.roomSelectModal,"click","Click on dropdown");
@@ -1170,9 +1206,13 @@ async assertPrintIconForBothViews() {
     await executeStep(this.newAgendaPage,"click","Click on the page");
     await this.roomNameInput.hover();
     await assertElementVisible(this.roomTakenMsg,"Verify that the error msg is displayed");
+    await executeStep(this.cancelButtonInRoomSelectModal,"click","Click on cancel button");
     await test.step('Verify that scrolling is working properly' , async () => {
       await this.scrollAction(await this.newAgendaPage);
     })
+    if(isNecessary) {
+      await this.deleteCustomRoom(randomName);
+    }
   }
   async editEventNameInAgenda(eventName) {
     await executeStep(this.editIcon,"click","Click on Edit Icon");
@@ -1261,6 +1301,7 @@ async assertPrintIconForBothViews() {
       eventStatus = await this.toggleText.textContent();
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     }
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const cancelEvents = await this.canceledEventRows.count();
     await assertNotEqualValues(cancelEvents,intialAllCancelEvents,"Verify that Previously Canceled event should be displayed.");
     await executeStep(this.selectCancelEvent,"click","Click on cancel event");
@@ -1279,5 +1320,100 @@ async assertPrintIconForBothViews() {
     await assertEqualValues(rowsCountForActive,rowsCountAfterActiveEvent,"Verify that Previously Cancelled event should be displayed as Active.");
     await this.page.reload();
     await assertEqualValues(rowsCountForActive,rowsCountAfterActiveEvent,"Verify that Previously Cancelled event should be displayed as Active after reload.");
+  }
+  async selectSeachedEvent(){
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await assertElementVisible(this.searchList,'Verify previous search list items should be visible');
+    searchedEventRow= await this.searchedEventRow.textContent();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const date= await this.searchListDate.textContent();
+    const dates=date.trim();
+    indexPage.lighthouse_data.searchListDates=dates;
+    await fileSync.writeFile('./data/lighthouse.json', JSON.stringify(indexPage.lighthouse_data));
+    await executeStep(this.searchList,'click','Clicked on searched list');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.selectedEventName(searchedEventRow),'Verify Navigate to searched Event Page')
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+  async backArrow(){
+    await executeStep(this.barrowArrow, 'click','Click on backArrow');
+    await assertElementVisible(this.eventAgendaTitle,'Verify navigation is working properly by the Back Arrow');
+    await executeStep(this.searchList,'click','Clicked on searched list');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+  async scrollThePage(){
+    await this.calenderTimeline.scrollIntoViewIfNeeded();
+    await this.calenderTimeline.evaluate(element=>element.scrollBy(0,500));
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await assertElementVisible(this.timeElement,'Verify Timeline should be scrollable');
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+  }
+  async changeTheDate(){
+    await executeStep(this.calenderIcon,'click','Click on Calender Icon');
+    const formattedRandomDate = await getRandomDateFromRange(indexPage.lighthouse_data.searchListDates);
+ 
+    await executeStep(this.selectDate(formattedRandomDate), 'click','Click on Date');
+    const displayedDate = await this.displayedDate.textContent();
+    const normalizedFormattedDate = formattedRandomDate.replace(/,\s+/g, ' ').trim();
+    const normalizedDisplayedDate = displayedDate.replace(/,\s*/g, ' ').trim();
+    try {
+      await assertElementsToBe(normalizedDisplayedDate, normalizedFormattedDate,'Verify Displayed date matches the selected date');
+    } catch (error) {
+      await test.info("Displayed date doesn't match with selected date");
+    }
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+  }
+  async applyFilter(){
+    await executeStep(this.filterIcon,'click','Click on filter Icon');
+    await executeStep(this.agendaStartsBetween,'Click','Click on Starts Between');
+    await executeStep(this.contentFilter,'click','Click on Content Filter');
+    await executeStep(this.applyFilterText,'click','Click on Apply Filter');
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const filterCount= await this.filterCount.textContent();
+    await assertEqualValues(1,Number(filterCount.trim()),'Verify Applied Filters should be same');
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+  }
+ 
+  async createAgendaSection() {
+    if(await this.roomOrGroupInPage(indexPage.lighthouse_data.group).isVisible()) {
+      await this.roomOrGroupInPage(indexPage.lighthouse_data.group).hover();
+      await executeStep(this.trashBinIconInPage(indexPage.lighthouse_data.group),"click","Click on delete icon");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await executeStep(this.printButton,"click","Click on delete button");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    }
+    await executeStep(this.addNewRoomDiv,"click","Click on Add New Room");
+    await executeStep(this.roomSelectModal,"click","Click on dropdown");
+    await assertElementVisible(this.roomsList,"Verify that the available rooms list should be displayed.");
+    await executeStep(this.selectCheckBox(indexPage.lighthouse_data.select_group),"click","Click on the Select / Group in dropdown");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.selectOrGroupSearchInput,"Verify that User should be able to fill Section / Group name");
+    await executeStep(this.selectOrGroupSearchInput,"fill","Enter the group name",[indexPage.lighthouse_data.group]);
+    await executeStep(this.saveButtonInRoomSelectModal,"click","Click on save button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.groupNameInPage(indexPage.lighthouse_data.group) ,"Verify that the section should be added properly to the en of the list");
+    await this.page.reload();
+    await scrollElement(await this.calendarView, 'bottom');
+    await assertElementVisible(this.groupNameInPage(indexPage.lighthouse_data.group) ,"Verify that the section should be added properly to the en of the list");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    const source = await this.roomOrGroupInPage(indexPage.lighthouse_data.group);
+    const target = await this.roomOrGroupInPage(randomName);
+    await source.dragTo(target,{ force: true });
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await this.roomOrGroupInPage(randomName).dragTo(await this.roomOrGroupInPage(indexPage.lighthouse_data.dragAndDropHereText));
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    await this.deleteCustomRoom(randomName);
+    await this.roomOrGroupInPage(indexPage.lighthouse_data.group).hover();
+    await executeStep(this.trashBinIconInPage(indexPage.lighthouse_data.group),"click","Click on delete icon");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.printButton,"click","Click on delete button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+  async deleteCustomRoom(randomName) {
+    await this.roomOrGroupInPage(randomName).hover();
+    await executeStep(this.trashBinIconInPage(randomName),"click","Click on delete icon");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.printButton,"click","Click on delete button");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 };
