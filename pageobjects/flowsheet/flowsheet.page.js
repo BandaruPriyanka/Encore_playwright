@@ -559,6 +559,7 @@ exports.FlowSheetPage = class FlowSheetPage {
 
   async addRemainingTouchPoint() {
     let isItem = true;
+    await executeStep(this.touchPointIndicator, 'click', 'Click on touch point indicator');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     while (isItem) {
       try {
@@ -568,6 +569,7 @@ exports.FlowSheetPage = class FlowSheetPage {
           indexPage.lighthouse_data.angryComment
         ]);
         await executeStep(this.saveButton, 'click', 'Click on save button');
+        await executeStep(this.touchPointIndicator, 'click', 'Click on touch point indicator');
       } catch (error) {
         await assertElementVisible(
           this.touchPointLimitMsg,
