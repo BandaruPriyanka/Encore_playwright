@@ -21,8 +21,8 @@ test.describe('LightHouse Operations', () => {
     });
     await page.waitForTimeout(parseInt(process.env.small_timeout));
     await lighthouseLogin.login(
-      atob(process.env.email),
-      atob(process.env.password)
+      atob(process.env.lighthouseEmail),
+      atob(process.env.lighthousePassword)
     );
     const currentUrl = await page.url();
     if (currentUrl.includes(process.env.lighthouseUrl)) {
