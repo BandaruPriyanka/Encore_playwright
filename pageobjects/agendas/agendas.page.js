@@ -215,7 +215,7 @@ exports.EventAgendas = class EventAgendas {
     this.endTimeInCard=this.page.locator("cal-schedule-session-card div > div > div:last-child > span:last-child");
     this.selectedEventName=text=>this.page.locator('cal-event-detail div:has-text("' + text + '") .font-bold');
     this.displayedDate=this.page.locator("eui-icon[name='linear_arrows_alt_arrow_left'] ~ div");
-    this.selectDate=date=>this.page.locator(`div[aria-label="`+date+`"]`);
+    this.selectDate=date=>this.page.locator(`div[aria-label="`+date+`"]`).first();
     this.selectOrGroupSearchInput = this.page.locator("input[placeholder='Section / Group']");
     this.groupNameInPage = (name) => this.page.locator(`span:has-text('${name}')`).last();
     this.calendarView = this.page.locator("mbsc-calendar-view");
@@ -1134,7 +1134,7 @@ async assertPrintIconForBothViews() {
     await this.dynamicInput(utilConst.Const.endDate).click({
       position : { x: boxEndDate.width - 2, y: boxEndDate.height / 2 }
     });
-    await executeStep(this.dynamicInput(utilConst.Const.endDate),"fill","Enter the start date",[getFormattedDate(2)]);
+    await executeStep(this.dynamicInput(utilConst.Const.endDate),"fill","Enter the start date",[getFormattedDate(8)]);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout)); 
   }
 
