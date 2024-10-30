@@ -79,14 +79,14 @@ module.exports = defineConfig({
       use: { ...devices['Desktop Chrome'], storageState: './data/storageState.json' },
       testMatch: [
         'tests/flowsheet.spec.js',
-        // 'tests/flowsheet_card_tab.spec.js',
-        // 'tests/schedule.spec.js',
-        // 'tests/customers.spec.js',
-        // 'tests/chats.spec.js',
-        // 'tests/my_profile.spec.js',
-        // 'tests/location_profile.spec.js',
-        // 'tests/event_agendas.spec.js',
-        // 'tests/dashboard.spec.js'
+        'tests/flowsheet_card_tab.spec.js',
+        'tests/schedule.spec.js',
+        'tests/customers.spec.js',
+        'tests/chats.spec.js',
+        'tests/my_profile.spec.js',
+        'tests/location_profile.spec.js',
+        'tests/event_agendas.spec.js',
+        'tests/dashboard.spec.js'
       ]
       // dependencies: ['global_setup','create_data1']
     },
