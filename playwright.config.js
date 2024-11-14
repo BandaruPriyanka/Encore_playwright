@@ -18,7 +18,7 @@ module.exports = defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   // forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 3 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? undefined : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -45,7 +45,7 @@ module.exports = defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     actionTimeout: 120000,
-    headless: false,
+    headless: true,
     video: 'on',
     logLevel: 'error',
     screenshot: 'only-on-failure'
@@ -75,10 +75,11 @@ module.exports = defineConfig({
     },
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], storageState: './data/storageState.json' },
+      use: { ...devices['Desktop Chrome'],
+      storageState: './data/storageState.json' },
     },
     {
-      name: 'docusign_disabled_all_Desktop_Chrome',
+      name: 'docusign_disabled_all_ui',
       testMatch: ['tests/docuSign_disable.spec.js'],
       use: {
         ...devices['Desktop Chrome'],
@@ -86,7 +87,7 @@ module.exports = defineConfig({
       }
     },
     {
-      name: 'docusign_disabled_all_Pixel_7',
+      name: 'docusign_disabled_all_mobile',
       testMatch: ['tests/docuSign_disable.spec.js'],
       use: {
         ...devices['Pixel 7'],
@@ -95,7 +96,7 @@ module.exports = defineConfig({
       }
     },
     {
-      name: 'docusign_disabled_all_iPhone_12',
+      name: 'docusign_disabled_all_iOS',
       testMatch: ['tests/docuSign_disable.spec.js'],
       use: {
         ...devices['iPhone 12'],
