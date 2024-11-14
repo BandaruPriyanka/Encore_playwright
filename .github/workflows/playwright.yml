@@ -22,18 +22,18 @@ jobs:
         run: npm install
       - name: Install Playwright
         run: npx playwright install
-      # - name: Run Playwright tests - createdata1
-      #   run: npm run createdata1 
+      - name: Run Playwright tests - createdata1
+        run: npm run createdata1 
       # - name: Run Playwright tests - createdata2
       #   run: npm run createdata2 
-      # - name: Run Playwright tests - complimentary
-      #   run: npm run complimentary
+      - name: Run Playwright tests - complimentary
+        run: npm run complimentary
       - name: Run Playwright tests - global_setup
         run: npm run global_setup
       # - name: Run Playwright tests - ui
       #   run: npm run ui
-      # - name: Run Playwright tests - mobile_chrome
-      #   run: npm run mobile_chrome
+      - name: Run Playwright tests - mobile_chrome
+        run: npm run mobile_chrome
       # - name: Run Playwright tests - ios
       #   run: npm run ios
       # - name: Run Playwright tests - docusign_disable_ui
@@ -63,24 +63,24 @@ jobs:
         with:
             name: github-pages
             path: report
-  deploy_report:
-    if: always()
-    # Add a dependency to the build job
-    needs: [UI]
+  # deploy_report:
+  #   if: always()
+  #   # Add a dependency to the build job
+  #   needs: [UI]
 
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+  #   # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+  #   permissions:
+  #     pages: write      # to deploy to Pages
+  #     id-token: write   # to verify the deployment originates from an appropriate source
  
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  #   # Deploy to the github-pages environment
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
  
-    # Specify runner + deployment step
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  #   # Specify runner + deployment step
+  #   runs-on: ubuntu-latest
+    # steps:
+    #   - name: Deploy to GitHub Pages
+    #     id: deployment
+    #     uses: actions/deploy-pages@v4
