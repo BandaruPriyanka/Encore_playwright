@@ -18,12 +18,11 @@ module.exports = defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   // forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 3 : 0,
+  retries: process.env.CI ? 3 : 1,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? undefined : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    // ['html'],
     [
       'allure-playwright',
       {
@@ -77,6 +76,17 @@ module.exports = defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'],
       storageState: './data/storageState.json' },
+      testMatch: [
+        'tests/flowsheet.spec.js',
+        'tests/flowsheet_card_tab.spec.js',
+        'tests/schedule.spec.js',
+        'tests/customers.spec.js',
+        'tests/chats.spec.js',
+        'tests/event_agendas.spec.js',
+        'tests/my_profile.spec.js',
+        'tests/location_profile.spec.js',
+        'tests/dashboard.spec.js',
+      ]
     },
     {
       name: 'docusign_disabled_all_ui',
@@ -111,6 +121,17 @@ module.exports = defineConfig({
         isMobile: true,
         storageState: './data/storageState.json'
       },
+      testMatch: [
+        'tests/flowsheet.spec.js',
+        'tests/flowsheet_card_tab.spec.js',
+        'tests/schedule.spec.js',
+        'tests/customers.spec.js',
+        'tests/chats.spec.js',
+        'tests/event_agendas.spec.js',
+        'tests/my_profile.spec.js',
+        'tests/location_profile.spec.js',
+        'tests/dashboard.spec.js',
+      ]
     },
     {
       name: 'Mobile_Safari',
@@ -118,7 +139,18 @@ module.exports = defineConfig({
         ...devices['iPhone 12'],
         isMobile: true,
         storageState: './data/storageState.json'
-      }
+      },
+      testMatch: [
+        'tests/flowsheet.spec.js',
+        'tests/flowsheet_card_tab.spec.js',
+        'tests/schedule.spec.js',
+        'tests/customers.spec.js',
+        'tests/chats.spec.js',
+        'tests/event_agendas.spec.js',
+        'tests/my_profile.spec.js',
+        'tests/location_profile.spec.js',
+        'tests/dashboard.spec.js',
+      ]
     }
   ]
 });
