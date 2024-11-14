@@ -1,6 +1,5 @@
 // @ts-check
 const { defineConfig, devices } = require('@playwright/test');
-const { on } = require('events');
 
 /**
  * Read environment variables from file.
@@ -77,18 +76,6 @@ module.exports = defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'], storageState: './data/storageState.json' },
-      testMatch: [
-        'tests/flowsheet.spec.js',
-        'tests/flowsheet_card_tab.spec.js',
-        'tests/schedule.spec.js',
-        'tests/customers.spec.js',
-        'tests/chats.spec.js',
-        'tests/my_profile.spec.js',
-        'tests/location_profile.spec.js',
-        'tests/event_agendas.spec.js',
-        'tests/dashboard.spec.js'
-      ]
-      // dependencies: ['global_setup','create_data1']
     },
     {
       name: 'docusign_disabled_all_Desktop_Chrome',
@@ -97,7 +84,6 @@ module.exports = defineConfig({
         ...devices['Desktop Chrome'],
         storageState: './data/storageState.json'
       }
-      //dependencies: ['global_setup', 'create_data2']
     },
     {
       name: 'docusign_disabled_all_Pixel_7',
@@ -107,7 +93,6 @@ module.exports = defineConfig({
         isMobile: true,
         storageState: './data/storageState.json'
       }
-      //dependencies: ['global_setup', 'create_data2']
     },
     {
       name: 'docusign_disabled_all_iPhone_12',
@@ -117,7 +102,6 @@ module.exports = defineConfig({
         isMobile: true,
         storageState: './data/storageState.json'
       }
-      // dependencies: ['global_setup', 'create_data2']
     },
     {
       name: 'Mobile_Chrome',
@@ -126,18 +110,6 @@ module.exports = defineConfig({
         isMobile: true,
         storageState: './data/storageState.json'
       },
-      testMatch: [
-        'tests/flowsheet.spec.js',
-        'tests/flowsheet_card_tab.spec.js',
-        'tests/schedule.spec.js',
-        'tests/customers.spec.js',
-        'tests/chats.spec.js',
-        'tests/my_profile.spec.js',
-        'tests/location_profile.spec.js',
-        'tests/event_agendas.spec.js',
-        'tests/dashboard.spec.js'
-      ]
-      // dependencies: ['global_setup', 'create_data1']
     },
     {
       name: 'Mobile_Safari',
@@ -145,19 +117,7 @@ module.exports = defineConfig({
         ...devices['iPhone 12'],
         isMobile: true,
         storageState: './data/storageState.json'
-      },
-      testMatch: [
-        'tests/flowsheet.spec.js',
-        'tests/flowsheet_card_tab.spec.js',
-        'tests/schedule.spec.js',
-        'tests/customers.spec.js',
-        'tests/chats.spec.js',
-        'tests/my_profile.spec.js',
-        'tests/location_profile.spec.js',
-        'tests/event_agendas.spec.js',
-        'tests/dashboard.spec.js'
-      ]
-      // dependencies: ['global_setup', 'create_data1']
+      }
     }
   ]
 });
