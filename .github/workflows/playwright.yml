@@ -47,10 +47,19 @@ jobs:
       - name: Install allure-single-html-file-js
         run: npm install allure-single-html-file-js
       - name: Generate Complete HTML file
-        run: node ./node_modules/allure-single-html-file-js/combine.js ./allure-report
+        run: |
+          node ./node_modules/allure-single-html-file-js/combine.js ./allure-report
+          mkdir report/
+          mv -v allure-report/complete.html ./report/index.html 
       - name: Upload Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Allure-report
-          path: allure-report/
+          path: report/
+      - name: Final Report
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+            name: github-pages
+            path: report
