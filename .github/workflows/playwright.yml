@@ -22,14 +22,14 @@ jobs:
         run: npm install
       - name: Install Playwright
         run: npx playwright install
-      - name: Run Playwright tests - createdata1
-        run: npm run createdata1 
+      # - name: Run Playwright tests - createdata1
+      #   run: npm run createdata1 
       # - name: Run Playwright tests - createdata2
       #   run: npm run createdata2 
       # - name: Run Playwright tests - complimentary
       #   run: npm run complimentary
-      # - name: Run Playwright tests - global_setup
-      #   run: npm run global_setup
+      - name: Run Playwright tests - global_setup
+        run: npm run global_setup
       # - name: Run Playwright tests - ui
       #   run: npm run ui
       # - name: Run Playwright tests - mobile_chrome
@@ -44,9 +44,13 @@ jobs:
       #   run: npm run docusign_disable_ios
       - name: Run Allure report
         run: npm run allure:generate
+      - name: Install allure-single-html-file-js
+        run: npm install allure-single-html-file-js
+      - name: Generate Complete HTML file
+        run: node ./node_modules/allure-single-html-file-js/combine.js ./allure-report
       - name: Upload Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: json
+          name: Allure-report
           path: allure-report/
