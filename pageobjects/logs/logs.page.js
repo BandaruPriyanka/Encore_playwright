@@ -181,7 +181,7 @@ exports.LogsPage= class LogsPage{
         await this.setStatus();
     }
     async setStatus() {
-        await executeStep(this.timeLine, 'click', 'Click the status button', []);
+        await executeStep(this.timeLine, 'click', 'Click the status button');
         const statusOption = await this.statusSetRefreshComplete.isVisible()|await this.statusSetComplete.isVisible()
         if (statusOption) {
           if(await this.statusSetRefreshComplete.isVisible()){
@@ -200,7 +200,7 @@ exports.LogsPage= class LogsPage{
             await assertElementVisible(this.greenIcon,'Verify that the Set Status should be changed');
           })
         } else {
-          await executeStep(this.cancelButton, 'click', 'Click on cancel button', []);
+          await executeStep(this.cancelButton, 'click', 'Click on cancel button');
         }
         await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     }

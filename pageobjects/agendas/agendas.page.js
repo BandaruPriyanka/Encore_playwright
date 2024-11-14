@@ -39,6 +39,7 @@ const {
   assertElementsToBe,
   getRandomDateFromRange
 } = require('../../utils/helper');
+const { log } = require('console');
 let startDateEle,
   endDateEle,
   presentDate,
@@ -70,7 +71,7 @@ exports.EventAgendas = class EventAgendas {
     this.calendarWidget = this.page
       .locator("eui-mbsc-date-time-range[formcontrolname='dateFilter']")
       .first();
-    this.searchInput = this.page.locator("input[placeholder='Search by Event Name...']");
+    this.eventNameSearchInput = this.page.locator("input[placeholder='Search by Event Name...']");
     this.filterIcon = this.page.locator("eui-icon[name='filter_bulk']");
     this.glCentersDropdown = this.page.locator('button.e2e_gl_center_multi_select');
     this.venuesDropdown = this.page.locator('button.e2e_venues_center_multi_select');
@@ -92,7 +93,7 @@ exports.EventAgendas = class EventAgendas {
       .locator("eui-mbsc-date-time-range[formcontrolname='dateFilter']>div>div")
       .first();
     this.dateCell = date =>
-      this.page.locator(`mbsc-calendar-day.mbsc-selected:has-text("${date}")`);
+      this.page.locator(`mbsc-calendar-day.mbsc-selected:has-text("${date}")`).first();
     this.getMonth = this.page.locator('span.mbsc-calendar-month');
     this.getYear = this.page.locator('span.mbsc-calendar-title.mbsc-calendar-year');
     this.endDateCell = (dayName, day, month, year) => {
@@ -243,7 +244,7 @@ exports.EventAgendas = class EventAgendas {
       'Verify Calendar Widget should be clickable and working properly'
     );
     await assertElementEnabled(
-      this.searchInput,
+      this.eventNameSearchInput,
       'Verify Search field should be clickable and working properly'
     );
 
@@ -336,6 +337,8 @@ exports.EventAgendas = class EventAgendas {
     );
     await executeStep(this.calendarWidget, 'click', 'Click on Calendar widget');
     await executeStep(this.dateCell(todayDate()), 'click', 'Select one date in start date');
+    console.log("todayDate",await this.dateCell(todayDate()));
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const getDays = getDateBasedOnDays(5);
     const getDayName = getDayNameBasedOnDays(5);
     const getMonthName = await this.getMonth.innerText();
@@ -345,6 +348,8 @@ exports.EventAgendas = class EventAgendas {
       'click',
       'Select one date in start date'
     );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    console.log("endDate",await this.endDateCell(getDayName, getDays, getMonthName, getPresentYear));
     startDateEle = await this.startDate.innerText();
     endDateEle = await this.endDate.innerText();
     await executeStep(this.updateBtn, 'click', 'Click on Update button ');
@@ -672,10 +677,10 @@ exports.EventAgendas = class EventAgendas {
       'Click on "Current Month" date range option'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.searchInput, 'fill', 'Enter a valid data to search', [
+    await executeStep(this.eventNameSearchInput, 'fill', 'Enter a valid data to search', [
       indexPage.lighthouse_data.searchValidData
     ]);
-    await executeStep(this.searchInput, 'enter', 'Press Enter');
+    await executeStep(this.eventNameSearchInput, 'enter', 'Press Enter');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     try {
       await test.step(`Verify that valid search results are returned based on the search data: ${indexPage.lighthouse_data.searchValidData}`, async () => {
@@ -699,10 +704,10 @@ exports.EventAgendas = class EventAgendas {
   }
 
   async verifySearchWithInValidData() {
-    await executeStep(this.searchInput, 'fill', 'Enter a Invalid data to search', [
+    await executeStep(this.eventNameSearchInput, 'fill', 'Enter a Invalid data to search', [
       indexPage.lighthouse_data.searchInvalidData
     ]);
-    await executeStep(this.searchInput, 'enter', 'Press Enter');
+    await executeStep(this.eventNameSearchInput, 'enter', 'Press Enter');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await test.step(`'No Results found' placeholder should be displayed seraching with: ${indexPage.lighthouse_data.searchInvalidData}`, async () => {
       await this.verifyFilteredData();
@@ -710,10 +715,10 @@ exports.EventAgendas = class EventAgendas {
   }
   async verifyCaseSensitive() {
     const searchData = indexPage.lighthouse_data.searchValidData.toUpperCase();
-    await executeStep(this.searchInput, 'fill', `Enter ${searchData} in search field `, [
+    await executeStep(this.eventNameSearchInput, 'fill', `Enter ${searchData} in search field `, [
       searchData
     ]);
-    await executeStep(this.searchInput, 'enter', 'Press Enter');
+    await executeStep(this.eventNameSearchInput, 'enter', 'Press Enter');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     try {
       await test.step(`Verify that valid search results are returned based on the search data with : ${searchData}`, async () => {

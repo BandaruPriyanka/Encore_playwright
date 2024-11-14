@@ -205,9 +205,9 @@ exports.FlowSheetPage = class FlowSheetPage {
 
   async changeLocation(locationId, locationName) {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.locationDiv, 'click', 'Click the location div', []);
+    await executeStep(this.locationDiv, 'click', 'Click the location div');
     await executeStep(this.searchLocation, 'fill', 'Fill the search location field', [locationId]);
-    await executeStep(this.selectLocation(locationName), 'click', 'Select the location', []);
+    await executeStep(this.selectLocation(locationName), 'click', 'Select the location');
   }
 
   async searchFunction(searchText) {
@@ -218,8 +218,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     await executeStep(
       this.dateElement(nextDayDate()),
       'click',
-      'Click on the next day date element',
-      []
+      'Click on the next day date element'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
@@ -228,13 +227,12 @@ exports.FlowSheetPage = class FlowSheetPage {
     await executeStep(
       this.dateElement(todayDate()),
       'click',
-      'Click on the today date element',
-      []
+      'Click on the today date element'
     );
   }
 
   async clickOnCrossButton() {
-    await executeStep(this.crossButton, 'click', 'Click on cross button', []);
+    await executeStep(this.crossButton, 'click', 'Click on cross button');
   }
 
   async scrollAction() {
@@ -302,12 +300,12 @@ exports.FlowSheetPage = class FlowSheetPage {
 
   async flowsheetFilter() {
     roomsreturned = await this.roomsCount.textContent();
-    await executeStep(this.filterIcon, 'click', 'Click on filter button', []);
-    await executeStep(this.sortTab, 'click', 'Click on sort button', []);
-    await executeStep(this.customerName, 'click', 'Click on customer name button', []);
-    await executeStep(this.actionTab, 'click', 'Click on action tab', []);
-    await executeStep(this.strikeReset, 'click', 'Click on strike reset button', []);
-    await executeStep(this.applyFilter, 'click', 'Click on apply filter button', []);
+    await executeStep(this.filterIcon, 'click', 'Click on filter button');
+    await executeStep(this.sortTab, 'click', 'Click on sort button');
+    await executeStep(this.customerName, 'click', 'Click on customer name button');
+    await executeStep(this.actionTab, 'click', 'Click on action tab');
+    await executeStep(this.strikeReset, 'click', 'Click on strike reset button');
+    await executeStep(this.applyFilter, 'click', 'Click on apply filter button');
     await assertElementVisible(
       this.noResultsPlaceholder,
       'Assert that no results placeholder is visible'
@@ -319,25 +317,25 @@ exports.FlowSheetPage = class FlowSheetPage {
     );
   }
   async sorting() {
-    await executeStep(this.filterIcon, 'click', 'Click on filter button', []);
-    await executeStep(this.clearFilter, 'click', 'Click on clear filter button', []);
+    await executeStep(this.filterIcon, 'click', 'Click on filter button');
+    await executeStep(this.clearFilter, 'click', 'Click on clear filter button');
     await assertIsNumber(
       roomsreturned,
       `Assert that the rooms returned is a valid number: ${roomsreturned}`
     );
-    await executeStep(this.filterIcon, 'click', 'Click on filter button', []);
-    await executeStep(this.sortTab, 'click', 'Click on sort button', []);
-    await executeStep(this.customerName, 'click', 'Click on customer name button', []);
-    await executeStep(this.applyFilter, 'click', 'Click on apply filter button', []);
+    await executeStep(this.filterIcon, 'click', 'Click on filter button');
+    await executeStep(this.sortTab, 'click', 'Click on sort button');
+    await executeStep(this.customerName, 'click', 'Click on customer name button');
+    await executeStep(this.applyFilter, 'click', 'Click on apply filter button');
   }
   async clickonPreviousWeek() {
-    await executeStep(this.previousweekIcon, 'click', 'Click on previous week icon', []);
+    await executeStep(this.previousweekIcon, 'click', 'Click on previous week icon');
   }
   async assertCalendarHasDates() {
-    await executeStep(this.previousweekIcon, 'click', 'Click on previous icon', []);
-    await executeStep(this.todayButton, 'click', 'click on today button', []);
+    await executeStep(this.previousweekIcon, 'click', 'Click on previous icon');
+    await executeStep(this.todayButton, 'click', 'click on today button');
     const dateLocator = await this.dateElement(todayDate()).textContent();
-    const getTodayDate = await todayDate();
+    const getTodayDate = todayDate();
     await assertEqualValues(
       dateLocator,
       getTodayDate,
@@ -435,7 +433,7 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
 
   async verifyGroup() {
-    await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
+    await executeStep(this.groupIcon, 'click', 'Click on groupIcon button');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(
       this.noConfiguredModal,
@@ -443,26 +441,26 @@ exports.FlowSheetPage = class FlowSheetPage {
     );
     const isLinkVisible = await this.clickOnLink.isVisible();
     if (isLinkVisible) {
-      await executeStep(this.clickOnLink, 'click', 'Click on link', []);
+      await executeStep(this.clickOnLink, 'click', 'Click on link');
       await executeStep(this.placeholder, 'fill', 'Fill the data', [
         indexPage.lighthouse_data.grpField
       ]);
-      await executeStep(this.createButton, 'click', 'Click on create button', []);
+      await executeStep(this.createButton, 'click', 'Click on create button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await executeStep(this.flowsheetButton, 'click', 'Click on create button', []);
+      await executeStep(this.flowsheetButton, 'click', 'Click on create button');
       await this.flowsheetCard.hover();
-      await executeStep(this.groupIcon, 'click', 'Click on groupIcon button', []);
+      await executeStep(this.groupIcon, 'click', 'Click on groupIcon button');
     }
-    await executeStep(this.selectGroup, 'click', 'Select group', []);
-    await executeStep(this.applyButton, 'click', 'Click on apply button', []);
+    await executeStep(this.selectGroup, 'click', 'Select group');
+    await executeStep(this.applyButton, 'click', 'Click on apply button');
     await assertElementVisible(
       this.ungroup,
       'Assert icon has changed to ungroup icon and is displayed'
     );
-    await executeStep(this.filterIcon, 'click', 'Click on filter icon', []);
-    await executeStep(this.selectGroupFilter, 'Click', 'select group filter', []);
-    await executeStep(this.selectCreatedGroup, 'Click', 'select created group', []);
-    await executeStep(this.applyFilter, 'click', 'Click on apply filter button', []);
+    await executeStep(this.filterIcon, 'click', 'Click on filter icon');
+    await executeStep(this.selectGroupFilter, 'Click', 'select group filter');
+    await executeStep(this.selectCreatedGroup, 'Click', 'select created group');
+    await executeStep(this.applyFilter, 'click', 'Click on apply filter button');
     await assertElementVisible(
       this.roomsCount,
       'Assert rooms count is visible after applying filtering options'
@@ -470,21 +468,21 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
 
   async deleteGroupData() {
-    await executeStep(this.iconMenu, 'click', 'Click on icon menu', []);
-    await executeStep(this.clickOnLocationProfile, 'click', 'Click on groupIcon button', []);
-    await executeStep(this.flowsheetGroups, 'click', 'Click on location profile', []);
+    await executeStep(this.iconMenu, 'click', 'Click on icon menu');
+    await executeStep(this.clickOnLocationProfile, 'click', 'Click on groupIcon button');
+    await executeStep(this.flowsheetGroups, 'click', 'Click on location profile');
     await executeStep(
       this.binLine(indexPage.lighthouse_data.grpField),
       'click',
       'Delete the group item',
       []
     );
-    await executeStep(this.clickOnYes, 'click', 'Select yes to proceed', []);
+    await executeStep(this.clickOnYes, 'click', 'Select yes to proceed');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 
   async setStatus() {
-    await executeStep(this.timeLine, 'click', 'Click the status button', []);
+    await executeStep(this.timeLine, 'click', 'Click the status button');
     const statusOption = await this.statusSetRefreshComplete.isVisible();
     if (statusOption) {
       await executeStep(
@@ -494,15 +492,15 @@ exports.FlowSheetPage = class FlowSheetPage {
         []
       );
     } else {
-      await executeStep(this.cancelButton, 'click', 'Click on cancel button', []);
+      await executeStep(this.cancelButton, 'click', 'Click on cancel button');
     }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await this.flowsheetCard.hover();
   }
 
   async changestatus() {
-    await executeStep(this.timeLine, 'click', 'Click on status button', []);
-    await executeStep(this.statusSetRefresh, 'click', 'Click on status set referesh button', []);
+    await executeStep(this.timeLine, 'click', 'Click on status button');
+    await executeStep(this.statusSetRefresh, 'click', 'Click on status set referesh button');
   }
   async assertTouchPointIndicator(searchText) {
     await this.searchFunction(searchText);

@@ -13,11 +13,11 @@ exports.LoginPage = class LoginPage {
 
   async login(email, password) {
     await executeStep(this.inputEmail, 'fill', 'Fill in the email field', [email]);
-    await executeStep(this.submitButton, 'click', 'Click the submit button for email', []);
+    await executeStep(this.submitButton, 'click', 'Click the submit button for emai');
     await executeStep(this.inputPassword, 'fill', 'Fill in the password field', [password]);
-    await executeStep(this.submitButton, 'click', 'Click the submit button for password', []);
+    await executeStep(this.submitButton, 'click', 'Click the submit button for password');
     if (!this.isMobile) {
-      await executeStep(this.noButton, 'click', 'Click the no button', []);
+      await executeStep(this.noButton, 'click', 'Click the no button');
     }
   }
 };

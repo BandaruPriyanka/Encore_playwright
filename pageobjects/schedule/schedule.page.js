@@ -116,12 +116,12 @@ exports.SchedulePage = class SchedulePage {
       state: 'visible',
       timeout: parseInt(process.env.large_timeout)
     });
-    await executeStep(this.scheduleTab, 'click', 'Click on schedule tab', []);
+    await executeStep(this.scheduleTab, 'click', 'Click on schedule tab');
     await this.myScheduleTab.waitFor({
       state: 'visible',
       timeout: parseInt(process.env.medium_timeout)
     });
-    await executeStep(this.myScheduleTab, 'click', 'Click on my schedule button', []);
+    await executeStep(this.myScheduleTab, 'click', 'Click on my schedule button');
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     const actualMsg = indexPage.lighthouse_data.scheduleErrorMsg;
     const errorMessageText = await this.errorMessage.textContent();

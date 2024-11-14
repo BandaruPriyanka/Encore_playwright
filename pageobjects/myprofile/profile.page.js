@@ -18,8 +18,6 @@ const {
   verifyBackgroundColor,
   assertValueToBe
 } = require('../../utils/helper');
-const { after } = require('node:test');
-const { addAbortListener } = require('node:events');
 let initialEquipmentDispalyValue,
   getequipmentTextByIntialDisplayValue,
   getequipmentTextByChangedDisplayValue,

@@ -486,11 +486,6 @@ exports.CreateData = class CreateData {
       await executeStep(this.complimentaryExcludingLabourSelect, 'click', 'click on select');
       await this.complimentaryExcludingLabourSelect.selectOption({ label: 'Competitor Match' });
       await executeStep(this.saveBtn, 'click', 'click on save button');
-      // await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
-      // await executeStep(this.conformationTextArea, 'fill', 'enter the text for conformation', [
-      //   indexPage.lighthouse_data.confirmed
-      // ]);
-      // await executeStep(this.continueBtn, 'click', 'click on continue button');
     }
     if (!this.isComplimentary) {
       await executeStep(this.saveBtn, 'click', 'click on save button');
