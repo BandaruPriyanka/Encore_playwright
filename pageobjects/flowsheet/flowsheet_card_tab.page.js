@@ -228,13 +228,14 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.continueBtnInModal = this.page.locator(
       "//div[@class='MOB_InPersonButtons']/button[text()='Continue']"
     );
-    this.acceptCheckBox = this.page.locator("//label[@for='disclosureAccepted']");
-    this.continueBtnInPage = this.page.locator("//button[@id='action-bar-btn-continue']");
+    this.acceptCheckBox = this.page.locator("//span[contains(text(),'I agree to use electronic records and signatures')]/parent::span/../parent::label");
+    this.continueBtnInPage = this.page.locator("//span[text()='Continue']/..");
     this.startBtn = this.isMobile
       ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
       : this.page.locator("//button[@id='navigate-btn']");
     this.signBtn = this.page.locator("//div[text()='Sign']/parent::div");
     this.adoptAndSignBtn = this.page.locator("//button[text()='Adopt and Sign']");
+    this.acceptAllCookiesBtn=this.page.locator("//button[contains(text(),'Accept All Cookies')]")
     this.styleSelectInMobile = this.page.locator("//button[text()='Select Style']");
     this.finishBtn = this.isMobile
       ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
@@ -1148,6 +1149,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       if (this.isMobile) {
         executeStep(this.styleSelectInMobile, 'click', 'Click style select');
         await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      }
+      if(await this.acceptAllCookiesBtn.isVisible()){
+        await executeStep(this.acceptAllCookiesBtn, 'click', 'Click on Accept Cookies');
       }
       await executeStep(this.adoptAndSignBtn, 'click', 'Click on adopt and sign button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));

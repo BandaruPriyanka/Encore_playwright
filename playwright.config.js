@@ -44,10 +44,12 @@ module.exports = defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     actionTimeout: 120000,
-    headless: true,
+    headless: false,
     video: 'on',
     logLevel: 'error',
-    screenshot: 'only-on-failure'
+    screenshot: 'only-on-failure',
+    permissions: ['geolocation'],
+    denyPermissions: true, 
   },
 
   /* Configure projects for major browsers */
@@ -80,7 +82,7 @@ module.exports = defineConfig({
         'tests/flowsheet.spec.js',
         'tests/flowsheet_card_tab.spec.js',
         'tests/schedule.spec.js',
-        'tests/customers.spec.js',
+       'tests/customers.spec.js',
         'tests/chats.spec.js',
         'tests/event_agendas.spec.js',
         'tests/my_profile.spec.js',
