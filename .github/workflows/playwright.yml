@@ -24,24 +24,24 @@ jobs:
         run: npx playwright install
       - name: Run Playwright tests - createdata1
         run: npm run createdata1 
-      # - name: Run Playwright tests - createdata2
-      #   run: npm run createdata2 
+      - name: Run Playwright tests - createdata2
+        run: npm run createdata2 
       - name: Run Playwright tests - complimentary
         run: npm run complimentary
       - name: Run Playwright tests - global_setup
         run: npm run global_setup
       - name: Run Playwright tests - ui
         run: npm run ui
-      # - name: Run Playwright tests - mobile_chrome
-      #   run: npm run mobile_chrome
-      # - name: Run Playwright tests - ios
-      #   run: npm run ios
-      # - name: Run Playwright tests - docusign_disable_ui
-      #   run: npm run docusign_disable_ui
-      # - name: Run Playwright tests - docusign_disable_android
-      #   run: npm run docusign_disable_android
-      # - name: Run Playwright tests - docusign_disable_ios
-      #   run: npm run docusign_disable_ios
+      - name: Run Playwright tests - mobile_chrome
+        run: npm run mobile_chrome
+      - name: Run Playwright tests - ios
+        run: npm run ios
+      - name: Run Playwright tests - docusign_disable_ui
+        run: npm run docusign_disable_ui
+      - name: Run Playwright tests - docusign_disable_android
+        run: npm run docusign_disable_android
+      - name: Run Playwright tests - docusign_disable_ios
+        run: npm run docusign_disable_ios
       - name: Run Allure report
         run: npm run allure:generate
       - name: Install allure-single-html-file-js

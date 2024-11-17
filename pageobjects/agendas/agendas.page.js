@@ -39,7 +39,6 @@ const {
   assertElementsToBe,
   getRandomDateFromRange
 } = require('../../utils/helper');
-const { log } = require('console');
 let startDateEle,
   endDateEle,
   presentDate,
@@ -337,7 +336,6 @@ exports.EventAgendas = class EventAgendas {
     );
     await executeStep(this.calendarWidget, 'click', 'Click on Calendar widget');
     await executeStep(this.dateCell(todayDate()), 'click', 'Select one date in start date');
-    console.log("todayDate",await this.dateCell(todayDate()));
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     const getDays = getDateBasedOnDays(5);
     const getDayName = getDayNameBasedOnDays(5);

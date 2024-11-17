@@ -11,16 +11,16 @@ const { defineConfig, devices } = require('@playwright/test');
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
-  timeout: 8 * 60 * 1000,
+  timeout: 7 * 60 * 1000,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   // forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 3 : 0,
+  retries: process.env.CI ? 1 : 1,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? undefined : undefined,
+  workers: process.env.CI ? 4 : 4,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     [
@@ -30,7 +30,7 @@ module.exports = defineConfig({
         outputFolder: 'allure-results',
         suiteTitle: false,
         environmentInfo: {
-          framework: 'playwright'
+          framework: 'Lighthouse'
         }
       }
     ]
@@ -82,7 +82,7 @@ module.exports = defineConfig({
         'tests/flowsheet.spec.js',
         'tests/flowsheet_card_tab.spec.js',
         'tests/schedule.spec.js',
-       'tests/customers.spec.js',
+        'tests/customers.spec.js',
         'tests/chats.spec.js',
         'tests/event_agendas.spec.js',
         'tests/my_profile.spec.js',
