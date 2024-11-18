@@ -20,7 +20,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     await page.goto(process.env.lighthouseUrl, {
       timeout: parseInt(process.env.pageload_timeout)
     });
-    await page.waitForTimeout(parseInt(process.env.small_timeout));
+    await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await flowsheetPage.changeLocation(locationId, locationText);
     await locationProfilePage.clickOnLocationProfile();
   });
@@ -122,7 +122,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     );
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await assertElementVisible(
-      flowsheetCardAndTab.textInModalForDocument,
+      flowsheetCardAndTab.textInModalForDocument, 
       'Verify that the "pass control" modal is visible'
     );
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.positive);

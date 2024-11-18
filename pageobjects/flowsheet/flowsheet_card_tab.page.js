@@ -234,7 +234,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
       : this.page.locator("//button[@id='navigate-btn']");
     this.signBtn = this.page.locator("//div[text()='Sign']/parent::div");
-    this.adoptAndSignBtn = this.page.locator("//button[text()='Adopt and Sign']");
+    this.adoptAndSignBtn = this.page.locator("//span[text()='Adopt and Sign']");
     this.acceptAllCookiesBtn=this.page.locator("//button[contains(text(),'Accept All Cookies')]")
     this.styleSelectInMobile = this.page.locator("//button[text()='Select Style']");
     this.finishBtn = this.isMobile
@@ -1141,6 +1141,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertDocument(scenario) {
     await executeStep(this.continueBtnInModal, 'click', 'Click on comtinue button');
+    if(await this.acceptAllCookiesBtn.isVisible()){
+      await executeStep(this.acceptAllCookiesBtn, 'click', 'Click on Accept Cookies');
+    }
     await executeStep(this.acceptCheckBox, 'click', 'Click on checkbox');
     await executeStep(this.continueBtnInPage, 'click', 'Click on continue button in document');
     if (scenario === 'positive') {
@@ -1153,6 +1156,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       if(await this.acceptAllCookiesBtn.isVisible()){
         await executeStep(this.acceptAllCookiesBtn, 'click', 'Click on Accept Cookies');
       }
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await executeStep(this.adoptAndSignBtn, 'click', 'Click on adopt and sign button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await assertElementVisible(this.finishBtn, 'Verify that the Finish button is visible');

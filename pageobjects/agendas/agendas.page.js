@@ -347,7 +347,6 @@ exports.EventAgendas = class EventAgendas {
       'Select one date in start date'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    console.log("endDate",await this.endDateCell(getDayName, getDays, getMonthName, getPresentYear));
     startDateEle = await this.startDate.innerText();
     endDateEle = await this.endDate.innerText();
     await executeStep(this.updateBtn, 'click', 'Click on Update button ');
