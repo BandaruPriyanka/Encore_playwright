@@ -10,7 +10,7 @@ on:
 jobs:
   UI:
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,24 +34,24 @@ jobs:
       - name: Run Playwright tests - global_setup
         run: npm run global_setup
         continue-on-error: true
-      - name: Run Playwright tests - ui
-        run: npm run ui
-        continue-on-error: true
-      - name: Run Playwright tests - mobile_chrome
-        run: npm run mobile_chrome
-        continue-on-error: true
-      # - name: Run Playwright tests - ios
-      #   run: npm run ios
+      # - name: Run Playwright tests - ui
+      #   run: npm run ui
       #   continue-on-error: true
-      - name: Run Playwright tests - docusign_disable_ui
-        run: npm run docusign_disable_ui
-        continue-on-error: true
-      - name: Run Playwright tests - docusign_disable_android
-        run: npm run docusign_disable_android
-        continue-on-error: true
-      # - name: Run Playwright tests - docusign_disable_ios
-      #   run: npm run docusign_disable_ios
+      # - name: Run Playwright tests - mobile_chrome
+      #   run: npm run mobile_chrome
       #   continue-on-error: true
+      - name: Run Playwright tests - ios
+        run: npm run ios
+        continue-on-error: true
+      # - name: Run Playwright tests - docusign_disable_ui
+      #   run: npm run docusign_disable_ui
+      #   continue-on-error: true
+      # - name: Run Playwright tests - docusign_disable_android
+      #   run: npm run docusign_disable_android
+      #   continue-on-error: true
+      - name: Run Playwright tests - docusign_disable_ios
+        run: npm run docusign_disable_ios
+        continue-on-error: true
       - name: Run Allure report
         run: npm run allure:generate
         continue-on-error: true
@@ -60,8 +60,9 @@ jobs:
       - name: Generate Complete HTML file
         run: |
           node ./node_modules/allure-single-html-file-js/combine.js ./allure-report
-          mkdir report/
-          mv -v allure-report/complete.html ./report/index.html 
+          mkdir -p report/
+          mv -v allure-report/complete.html ./report/index.html
+        shell: bash
       - name: Upload Artifacts
         if: always()
         uses: actions/upload-artifact@v4
