@@ -39,7 +39,7 @@ jobs:
       #   continue-on-error: true
       # - name: Run Playwright tests - mobile_chrome
       #   run: npm run mobile_chrome
-        continue-on-error: true
+        # continue-on-error: true
       # - name: Run Playwright tests - ios
       #   run: npm run ios
       #   continue-on-error: true
