@@ -34,21 +34,21 @@ jobs:
       - name: Run Playwright tests - global_setup
         run: npm run global_setup
         continue-on-error: true
-      # - name: Run Playwright tests - ui
-      #   run: npm run ui
-      #   continue-on-error: true
-      # - name: Run Playwright tests - mobile_chrome
-      #   run: npm run mobile_chrome
-        # continue-on-error: true
+      - name: Run Playwright tests - ui
+        run: npm run ui
+        continue-on-error: true
+      - name: Run Playwright tests - mobile_chrome
+        run: npm run mobile_chrome
+        continue-on-error: true
       # - name: Run Playwright tests - ios
       #   run: npm run ios
       #   continue-on-error: true
-      # - name: Run Playwright tests - docusign_disable_ui
-      #   run: npm run docusign_disable_ui
-      #   continue-on-error: true
-      # - name: Run Playwright tests - docusign_disable_android
-      #   run: npm run docusign_disable_android
-      #   continue-on-error: true
+      - name: Run Playwright tests - docusign_disable_ui
+        run: npm run docusign_disable_ui
+        continue-on-error: true
+      - name: Run Playwright tests - docusign_disable_android
+        run: npm run docusign_disable_android
+        continue-on-error: true
       # - name: Run Playwright tests - docusign_disable_ios
       #   run: npm run docusign_disable_ios
       #   continue-on-error: true
