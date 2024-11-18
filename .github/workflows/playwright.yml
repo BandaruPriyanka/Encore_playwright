@@ -22,12 +22,12 @@ jobs:
         run: npm install
       - name: Install Playwright
         run: npx playwright install
-      # - name: Run Playwright tests - createdata1
-      #   run: npm run createdata1 
-      # - name: Run Playwright tests - createdata2
-      #   run: npm run createdata2 
-      # - name: Run Playwright tests - complimentary
-      #   run: npm run complimentary
+      - name: Run Playwright tests - createdata1
+        run: npm run createdata1 
+      - name: Run Playwright tests - createdata2
+        run: npm run createdata2 
+      - name: Run Playwright tests - complimentary
+        run: npm run complimentary
       - name: Run Playwright tests - global_setup
         run: npm run global_setup
       - name: Run Playwright tests - ui
