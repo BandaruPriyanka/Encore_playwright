@@ -10,7 +10,7 @@ on:
 jobs:
   UI:
     if: always()
-    runs-on: macos-latest
+    runs-on: ubantu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
