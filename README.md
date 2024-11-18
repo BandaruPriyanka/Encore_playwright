@@ -61,6 +61,10 @@ Encore
 │ │ └── chat.page.js
 │ └── event
 │ └── event.page.js
+| └── profile
+│ └── profile.page.js
+| └── event
+│ └── event.page.js
 ├── tests
 │ ├── flowsheet.spec.js
 │ ├── schedule.spec.js
@@ -85,12 +89,20 @@ Encore
 - Before running any test case run this to clean allure results : `npm run clean:allure-results`
 
 - Before running lighthouse testcases run the below commands for creating the data:
-  `npm run createdata1` and `npm run createdata2`
+  `npm run createdata1` ,`npm run createdata2` and `npm run complimentary`
+
+- For session storage need to run that file : `npm run global_setup `
 
 - To run **UI** tests follow this command : `npm run ui`
 
 - To run **Mobile** tests follow this command : `npm run mobile_chrome`
 
 - To run **iOS** tests follow this command : `npm run ios`
+
+- To run **Docusign_UI** tests follow this command : `npm run docusign_disable_ui`
+
+- To run **Docusign_Mobile** tests follow this command : `npm run docusign_disable_android`
+
+- To run **Docusign_iOS** tests follow this command : `npm run docusign_disable_ios`
 
 - To generate allure report : `npm run allure-report`

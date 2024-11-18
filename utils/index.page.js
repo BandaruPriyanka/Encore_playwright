@@ -33,10 +33,10 @@ export {
   ProfilePage,
   NotificationPage,
   LocationProfile,
+  EventAgendas,
+  LogsPage,
   api_data,
   lighthouse_data,
   navigator_data,
   opportunity_data,
-  EventAgendas,
-  LogsPage
 };

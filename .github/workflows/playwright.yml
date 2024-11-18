@@ -10,7 +10,7 @@ on:
 jobs:
   UI:
     if: always()
-    runs-on: ubantu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,21 +34,21 @@ jobs:
       - name: Run Playwright tests - global_setup
         run: npm run global_setup
         continue-on-error: true
-      # - name: Run Playwright tests - ui
-      #   run: npm run ui
-      #   continue-on-error: true
-      # - name: Run Playwright tests - mobile_chrome
-      #   run: npm run mobile_chrome
-      #   continue-on-error: true
+      - name: Run Playwright tests - ui
+        run: npm run ui
+        continue-on-error: true
+      - name: Run Playwright tests - mobile_chrome
+        run: npm run mobile_chrome
+        continue-on-error: true
       - name: Run Playwright tests - ios
         run: npm run ios
         continue-on-error: true
-      # - name: Run Playwright tests - docusign_disable_ui
-      #   run: npm run docusign_disable_ui
-      #   continue-on-error: true
-      # - name: Run Playwright tests - docusign_disable_android
-      #   run: npm run docusign_disable_android
-      #   continue-on-error: true
+      - name: Run Playwright tests - docusign_disable_ui
+        run: npm run docusign_disable_ui
+        continue-on-error: true
+      - name: Run Playwright tests - docusign_disable_android
+        run: npm run docusign_disable_android
+        continue-on-error: true
       - name: Run Playwright tests - docusign_disable_ios
         run: npm run docusign_disable_ios
         continue-on-error: true
@@ -65,34 +65,22 @@ jobs:
         shell: bash
       - name: Upload Artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: Allure-report
-          path: report/
-      # - name: Final Report
-      #   if: always()
-      #   uses: actions/upload-pages-artifact@v3
-      #   with:
-      #       name: github-pages
-      #       path: report
-  # deploy_report:
-  #   if: always()
-  #   # Add a dependency to the build job
-  #   needs: [UI]
+            name: github-pages
+            path: report/
+  deploy_report:
+    if: always()
+    needs: [UI]
+    permissions:
+      pages: write 
+      id-token: write  
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-  #   # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-  #   permissions:
-  #     pages: write      # to deploy to Pages
-  #     id-token: write   # to verify the deployment originates from an appropriate source
- 
-  #   # Deploy to the github-pages environment
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deployment.outputs.page_url }}
- 
-  #   # Specify runner + deployment step
-  #   runs-on: ubuntu-latest
-    # steps:
-    #   - name: Deploy to GitHub Pages
-    #     id: deployment
-    #     uses: actions/deploy-pages@v4
+    runs-on: macos-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

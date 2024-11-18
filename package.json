@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "clean:allure-results": "rimraf allure-results",
     "createdata1": "npx playwright test --project=create_data1",
     "createdata2": "npx playwright test --project=create_data2",
     "complimentary": "npx playwright test --project=complimentary_job",
     "global_setup": "npx playwright test --project=global_setup",
-    "clean:allure-results": "rimraf allure-results",
     "ui": "npx playwright test --project=chromium",
     "mobile_chrome": "npx playwright test --project=Mobile_Chrome",
     "ios": "npx playwright test --project=Mobile_Safari",
@@ -17,8 +17,7 @@
     "clean-results": "npm run clean:allure-results",
     "allure:generate": "allure generate allure-results --clean",
     "allure:open": "allure open",
-    "allure-report": "npm run allure:generate && npm run allure:open",
-    "all": "npm run clean:allure-results & npm run ui & npm run mobile_chrome & npm run ios & docusign_disable_ui & docusign_disable_android & docusign_disable_ios"
+    "allure-report": "npm run allure:generate && npm run allure:open"
   },
   "keywords": [],
   "author": "",
