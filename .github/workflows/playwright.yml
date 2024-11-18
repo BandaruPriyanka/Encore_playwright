@@ -30,8 +30,8 @@ jobs:
       #   run: npm run complimentary
       - name: Run Playwright tests - global_setup
         run: npm run global_setup
-      # - name: Run Playwright tests - ui
-      #   run: npm run ui
+      - name: Run Playwright tests - ui
+        run: npx playwright test ./tests/chats.spec.js
       # - name: Run Playwright tests - mobile_chrome
       #   run: npm run mobile_chrome
       # - name: Run Playwright tests - ios
