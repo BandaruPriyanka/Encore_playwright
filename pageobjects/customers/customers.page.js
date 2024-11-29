@@ -130,6 +130,7 @@ exports.CustomersPage = class CustomersPage {
     this.touchpointPieIcon = ordername =>
       this.page.locator(`(//span[text()='${ordername}'])[2]/../../app-mood-pia-chart`);
       this.previousEventList = this.page.locator("//app-previous-events//ul[@role='list']");
+    this.customerList=this.page.locator(".e2e_customers_list_results");
   }
 
   async search(searchText) {
