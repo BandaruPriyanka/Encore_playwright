@@ -8,12 +8,14 @@ const {
 } = require('../utils/helper');
 require('dotenv').config();
 test.describe('Performing actions on Customer Tab', () => {
-  let customersPage, flowsheetPage, locationId, locationText;
+  let customersPage, flowsheetPage, locationId, locationText,second_locationId,second_locationText;
   test.beforeEach(async ({ page }) => {
     customersPage = new indexPage.CustomersPage(page);
     flowsheetPage = new indexPage.FlowSheetPage(page);
     locationId = indexPage.lighthouse_data.locationId_createData1;
     locationText = indexPage.lighthouse_data.locationText_createData1;
+    second_locationId=indexPage.lighthouse_data.locationId_createData2
+    second_locationText=indexPage.lighthouse_data.locationText_createData2
     await page.goto(process.env.lighthouseUrl, {
       timeout: parseInt(process.env.pageload_timeout)
     });
@@ -49,6 +51,17 @@ test.describe('Performing actions on Customer Tab', () => {
       'Assert previous week icon is enabled'
     );
     await customersPage.assertCalendarHasDates();
+  });
+  test('Test_C57158 : Verify change location', async () => {
+    await flowsheetPage.changeLocation(second_locationId, second_locationText);
+    try{
+      await assertElementVisible(customersPage.customerList,'Verify list of customers for the selected location');
+    }
+    catch{
+      test.info('No customers were available for that location and date')
+    }
+    await flowsheetPage.changeLocation(locationId, locationText);
+    await assertElementVisible(customersPage.customerList,'Verify original list of customers should appear');
   });
   test('Test_C56924 : Verify test data on customer card', async () => {
     await customersPage.verifyCustomerCardContent();
