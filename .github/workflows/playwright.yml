@@ -63,12 +63,12 @@ jobs:
           mkdir -p report/
           mv -v allure-report/complete.html ./report/index.html
         shell: bash
-      # - name: Upload Artifacts
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: github-pages
-      #     path: report/
+      - name: Upload Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: report/
       - name: Final Report
         if: always()
         uses: actions/upload-pages-artifact@v3
