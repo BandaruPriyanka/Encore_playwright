@@ -1,86 +1,98 @@
-# name: Playwright Tests
-# on:
-#   push:
-#     branches:
-#       - main  
-#   pull_request:
-#     branches:
-#       - main  
-#   workflow_dispatch:
-# jobs:
-#   UI:
-#     if: always()
-#     runs-on: macos-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-#       - name: Setup Node.js 
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: 21.4.0
-#       - name: Install dependencies
-#         run: npm install
-#       - name: Install Playwright
-#         run: npx playwright install
-#       - name: Run Playwright tests - createdata1
-#         run: npm run createdata1 
-#         continue-on-error: true
-#       - name: Run Playwright tests - createdata2
-#         run: npm run createdata2 
-#         continue-on-error: true
-#       - name: Run Playwright tests - complimentary
-#         run: npm run complimentary
-#         continue-on-error: true
-#       - name: Run Playwright tests - global_setup
-#         run: npm run global_setup
-#         continue-on-error: true
-#       - name: Run Playwright tests - ui
-#         run: npm run ui
-#         continue-on-error: true
-#       - name: Run Playwright tests - mobile_chrome
-#         run: npm run mobile_chrome
-#         continue-on-error: true
-#       - name: Run Playwright tests - ios
-#         run: npm run ios
-#         continue-on-error: true
-#       - name: Run Playwright tests - docusign_disable_ui
-#         run: npm run docusign_disable_ui
-#         continue-on-error: true
-#       - name: Run Playwright tests - docusign_disable_android
-#         run: npm run docusign_disable_android
-#         continue-on-error: true
-#       - name: Run Playwright tests - docusign_disable_ios
-#         run: npm run docusign_disable_ios
-#         continue-on-error: true
-#       - name: Run Allure report
-#         run: npm run allure:generate
-#         continue-on-error: true
-#       - name: Install allure-single-html-file-js
-#         run: npm install allure-single-html-file-js
-#       - name: Generate Complete HTML file
-#         run: |
-#           node ./node_modules/allure-single-html-file-js/combine.js ./allure-report
-#           mkdir -p report/
-#           mv -v allure-report/complete.html ./report/index.html
-#         shell: bash
-#       - name: Upload Artifacts
-#         if: always()
-#         uses: actions/upload-pages-artifact@v3
-#         with:
-#             name: github-pages
-#             path: report/
-#   deploy_report:
-#     if: always()
-#     needs: [UI]
-#     permissions:
-#       pages: write 
-#       id-token: write  
-#     environment:
-#       name: github-pages
-#       url: ${{ steps.deployment.outputs.page_url }}
+name: Playwright Tests
+on:
+  push:
+    branches:
+      - main  
+  pull_request:
+    branches:
+      - main  
+  workflow_dispatch:
+jobs:
+  UI:
+    if: always()
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21.4.0
+      - name: Install dependencies
+        run: npm install
+      - name: Install Playwright
+        run: npx playwright install
+      - name: Run Playwright tests - createdata1
+        run: npm run createdata1 
+        continue-on-error: true
+      - name: Run Playwright tests - createdata2
+        run: npm run createdata2 
+        continue-on-error: true
+      - name: Run Playwright tests - complimentary
+        run: npm run complimentary
+        continue-on-error: true
+      - name: Run Playwright tests - global_setup
+        run: npm run global_setup
+        continue-on-error: true
+      - name: Run Playwright tests - ui
+        run: npm run ui
+        continue-on-error: true
+      - name: Run Playwright tests - mobile_chrome
+        run: npm run mobile_chrome
+        continue-on-error: true
+      - name: Run Playwright tests - ios
+        run: npm run ios
+        continue-on-error: true
+      - name: Run Playwright tests - docusign_disable_ui
+        run: npm run docusign_disable_ui
+        continue-on-error: true
+      - name: Run Playwright tests - docusign_disable_android
+        run: npm run docusign_disable_android
+        continue-on-error: true
+      - name: Run Playwright tests - docusign_disable_ios
+        run: npm run docusign_disable_ios
+        continue-on-error: true
+      - name: Run Allure report
+        run: npm run allure:generate
+        continue-on-error: true
+      - name: Install allure-single-html-file-js
+        run: npm install allure-single-html-file-js
+      - name: Generate Complete HTML file
+        run: |
+          node ./node_modules/allure-single-html-file-js/combine.js ./allure-report
+          mkdir -p report/
+          mv -v allure-report/complete.html ./report/index.html
+        shell: bash
+      # - name: Upload Artifacts
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: github-pages
+      #     path: report/
+      - name: Final Report
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+            name: github-pages
+            path: report/
+  deploy_report:
+    if: always()
+    # Add a dependency to the build job
+    needs: [UI]
 
-#     runs-on: macos-latest
-#     steps:
-#       - name: Deploy to GitHub Pages
-#         id: deployment
-#         uses: actions/deploy-pages@v4
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+ 
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+ 
+    # Specify runner + deployment step
+    runs-on: macos-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
