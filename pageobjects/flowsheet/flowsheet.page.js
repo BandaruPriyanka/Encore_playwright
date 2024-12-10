@@ -31,7 +31,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.noResultsPlaceholder = this.page.locator(
       "//span[text()=' No results match your filter settings ']"
     );
-    this.locationDiv = this.page.locator('//app-header//app-notifications/../div');
+    this.locationDiv = this.page.locator("//div[contains(@class,'e2e_header_location')]");
     this.searchLocation = this.page.locator("//input[@placeholder='Search location']");
     this.selectLocation = locationName =>
       this.page.locator(`//span[contains(text(),'` + locationName + `')]`);

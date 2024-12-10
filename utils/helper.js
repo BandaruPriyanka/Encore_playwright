@@ -5,6 +5,10 @@ const data = require('../data/apidata.json');
 const indexPage = require('./index.page');
 let isValid;
 const { expect, test } = require('@playwright/test');
+const https = require('https');
+const agent = new https.Agent({
+  rejectUnauthorized: false,
+});
 
 function getTodayDate() {
   const date = new Date();
@@ -36,7 +40,7 @@ async function lighthouseApi(isCreateData1) {
     asOf: data.asOf,
     apiKey: data.apiKey
   };
-  const response = await axios.get(url, { params });
+  const response = await axios.get(url, { params ,httpsAgent: agent,});
 }
 
 function startDate() {

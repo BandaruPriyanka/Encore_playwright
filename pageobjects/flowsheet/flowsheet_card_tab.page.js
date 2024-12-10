@@ -228,14 +228,17 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.continueBtnInModal = this.page.locator(
       "//div[@class='MOB_InPersonButtons']/button[text()='Continue']"
     );
-    this.acceptCheckBox = this.page.locator("//span[contains(text(),'I agree to use electronic records and signatures')]/parent::span/../parent::label");
+    this.acceptCheckBox = this.page.locator(
+      "//span[contains(text(),'I agree to use electronic records and signatures')]/parent::span/../parent::label"
+    );
     this.continueBtnInPage = this.page.locator("//span[text()='Continue']/..");
     this.startBtn = this.isMobile
       ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
       : this.page.locator("//button[@id='navigate-btn']");
     this.signBtn = this.page.locator("//div[text()='Sign']/parent::div");
+    this.selectSignStyle = this.page.locator("//span[text()='Select Style']");
     this.adoptAndSignBtn = this.page.locator("//span[text()='Adopt and Sign']");
-    this.acceptAllCookiesBtn=this.page.locator("//button[contains(text(),'Accept All Cookies')]")
+    this.acceptAllCookiesBtn = this.page.locator("//button[contains(text(),'Accept All Cookies')]");
     this.styleSelectInMobile = this.page.locator("//button[text()='Select Style']");
     this.finishBtn = this.isMobile
       ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
@@ -475,7 +478,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
     await executeStep(this.selectDate, 'click', 'Select today date');
     await executeStep(this.reviewOrderBtn, 'click', 'Click on review order button');
-    await assertElementVisible(this.sendToNavigatorBtn, 'Verify the confirmation page should be displayed with all the valid details.');
+    await assertElementVisible(
+      this.sendToNavigatorBtn,
+      'Verify the confirmation page should be displayed with all the valid details.'
+    );
     await executeStep(this.sendToNavigatorBtn, 'click', 'Click on send to navigator button');
   }
 
@@ -994,7 +1000,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
-    if(await createDataPage.reloadErrorMsg.isVisible()) {
+    if (await createDataPage.reloadErrorMsg.isVisible()) {
       await newPage.reload();
     }
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
@@ -1003,7 +1009,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
-    if(await createDataPage.reloadErrorMsg.isVisible()) {
+    if (await createDataPage.reloadErrorMsg.isVisible()) {
       await newPage.reload();
     }
     await createDataPage.getCountOfEquipments();
@@ -1141,7 +1147,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
 
   async assertDocument(scenario) {
     await executeStep(this.continueBtnInModal, 'click', 'Click on comtinue button');
-    if(await this.acceptAllCookiesBtn.isVisible()){
+    if (await this.acceptAllCookiesBtn.isVisible()) {
       await executeStep(this.acceptAllCookiesBtn, 'click', 'Click on Accept Cookies');
     }
     await executeStep(this.acceptCheckBox, 'click', 'Click on checkbox');
@@ -1153,10 +1159,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
         executeStep(this.styleSelectInMobile, 'click', 'Click style select');
         await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       }
-      if(await this.acceptAllCookiesBtn.isVisible()){
+      if (await this.acceptAllCookiesBtn.isVisible()) {
         await executeStep(this.acceptAllCookiesBtn, 'click', 'Click on Accept Cookies');
       }
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      if (this.isMobile) {
+        await executeStep(this.selectSignStyle, 'click', 'Click on Select Style button');
+      }
       await executeStep(this.adoptAndSignBtn, 'click', 'Click on adopt and sign button');
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
       await assertElementVisible(this.finishBtn, 'Verify that the Finish button is visible');
@@ -1220,7 +1229,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
-    if(await createDataPage.reloadErrorMsg.isVisible()) {
+    if (await createDataPage.reloadErrorMsg.isVisible()) {
       await newPage.reload();
     }
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
@@ -1229,7 +1238,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
       timeout: parseInt(process.env.pageload_timeout)
     });
-    if(await createDataPage.reloadErrorMsg.isVisible()) {
+    if (await createDataPage.reloadErrorMsg.isVisible()) {
       await newPage.reload();
     }
     await createDataPage.searchWithJobId();
