@@ -103,7 +103,7 @@ exports.CreateData = class CreateData {
     this.eventDescription = page.locator("//textarea[@aria-label='Event Description']");
     this.eventObjective = page.locator("//textarea[@aria-label='Event Objective']");
     this.historicalLesson = page.locator("//textarea[contains(@aria-label,'Historical Lessons')]");
-    this.notesTab = page.locator("(//a[contains(text(),'Notes')])[2] ");
+    this.notesTab = page.locator("(//a[contains(text(),'Dates')]/../following-sibling::li)[1]");
     this.coverSheetTextArea = page.locator(
       "//p[contains(text(),'Cover Sheet Notes')]/following-sibling::textarea[1]"
     );
