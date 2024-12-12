@@ -768,7 +768,12 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   async assertCommentSectionInLog(searchText, jobId) {
     await this.performSearchFunction(searchText, jobId);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    const countOfLogBeforeComment = await this.logMsgCount.textContent();
+    let countOfLogBeforeComment
+    if(await this.logMsgCount.isVisible()) {
+      countOfLogBeforeComment = await this.logMsgCount.textContent();
+    } else {
+      countOfLogBeforeComment = "0"
+    }
     await executeStep(
       this.flowsheetTabElement(utilConst.Const.Log),
       'click',
