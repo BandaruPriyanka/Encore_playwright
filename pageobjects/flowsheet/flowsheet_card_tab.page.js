@@ -256,11 +256,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       "//div[contains(text(),'Your job Add-On is now on its way to being processed')]"
     );
     this.otherActionsBtn = this.isMobile
-      ? this.page.locator("//span[@class='icon-menu']//parent::button")
-      : this.page.locator("//button[@id='otherActionsButton']");
+      ? this.page.locator("//button[@aria-label='More Options']")
+      : this.page.locator("//button[@aria-label='Other Actions']");
     this.finishLaterBtn = this.isMobile
-      ? this.page.locator("//div[@id='otherActionsMenuMobile']//button[text()='Finish Later']")
-      : this.page.locator("//div[@id='otherActionsMenu']//button[text()='Finish Later']");
+      ? this.page.locator("//button[@id='finishLater']")
+      : this.page.locator("//button[@id='finishLater']");
     this.continueBtnForFinishLater = this.page.locator(
       "//button[@data-action='finishLaterInPersonSigning']"
     );
@@ -1151,7 +1151,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
   }
 
   async assertDocument(scenario) {
-    await executeStep(this.continueBtnInModal, 'click', 'Click on comtinue button');
+    await executeStep(this.continueBtnInModal, 'click', 'Click on continue button');
     if (await this.acceptAllCookiesBtn.isVisible()) {
       await executeStep(this.acceptAllCookiesBtn, 'click', 'Click on Accept Cookies');
     }

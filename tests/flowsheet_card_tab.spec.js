@@ -167,7 +167,7 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertStatusOfNavigatorJob(indexPage.lighthouse_data.negative);
   });
 
-  test('Verify complimentary job', async ({ page }) => {
+  test.only('Verify complimentary job', async ({ page }) => {
     await flowsheetPage.changeLocation(
       indexPage.lighthouse_data.locationId_createData1,
       indexPage.lighthouse_data.locationText_createData1
