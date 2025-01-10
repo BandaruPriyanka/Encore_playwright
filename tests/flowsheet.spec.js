@@ -1,6 +1,6 @@
 const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
-const { assertElementVisible, assertEqualValues } = require('../utils/helper');
+const { assertElementVisible, assertEqualValues, assertNotEqualValues } = require('../utils/helper');
 require('dotenv').config();
 
 test.describe('Performing actions on Flowsheet', () => {
@@ -158,4 +158,24 @@ test.describe('Performing actions on Flowsheet', () => {
       await assertElementVisible(flowsheetPage.redIcon,'Verify that red icon is visible');
     });
   });
+
+  test('Test_C57169 Verify that flowsheet disappears when completed' , async ({ page }) => {
+    const intialFlowSheetCardsCount = await flowsheetPage.roomsCount.textContent();
+    await flowsheetPage.setAndStrikeComplete();
+    const countAfterCompleteSetAndStrike = await await flowsheetPage.roomsCount.textContent();
+    await assertNotEqualValues(intialFlowSheetCardsCount,countAfterCompleteSetAndStrike,"Verify that the completed flowsheet will disappear.");
+    await flowsheetPage.filterForStatus();
+    const countOfCardaAfterFilter = await flowsheetPage.roomsCount.textContent();
+    await assertEqualValues(intialFlowSheetCardsCount,countOfCardaAfterFilter,"Verify that completed flowsheet is visible after filter");
+    await flowsheetPage.removeFilter();
+    await page.waitForTimeout(parseInt(process.env.small_timeout))
+  });
+
+  test('Test_C57167 Verify that navigator data on Flowsheet Card' , async({ page }) => {
+    await flowsheetPage.searchFunctionality();
+    await page.waitForTimeout(parseInt(process.env.small_timeout))
+    await flowsheetPage.assertFlowsheetCard();
+    await flowsheetPage.assertStatusOfNavigatorJob();
+  }) 
+
 });

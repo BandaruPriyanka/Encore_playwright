@@ -702,6 +702,37 @@ async function getRandomDateFromRange(dateRange) {
   return formattedDate.trim();
 }
 
+function formatTimeTo12Hour(time) {
+  // Check if the input already contains AM or PM
+  let isPM = false;
+  if (time.includes('PM')) {
+      isPM = true;
+      time = time.replace('PM', '').trim();
+  } else if (time.includes('AM')) {
+      time = time.replace('AM', '').trim();
+  }
+
+  // Split the time into hours and minutes
+  let [hours, minutes] = time.split(':').map(Number);
+  
+  // Adjust hours for PM times (except for 12 PM)
+  if (isPM && hours !== 12) {
+      hours += 12;
+  }
+  
+  // Convert to 12-hour format and set AM/PM
+  const period = hours >= 12 ? 'PM' : 'AM';
+  
+  // Convert hours to 12-hour format
+  hours = hours % 12 || 12;
+
+  // Pad hours and minutes to always show 2 digits
+  hours = String(hours).padStart(2, '0');
+  minutes = String(minutes).padStart(2, '0');
+
+  return `${hours}:${minutes} ${period}`;
+}
+
 module.exports = {
   getTodayDate,
   generateRandString,
@@ -790,5 +821,6 @@ module.exports = {
   formatDateForEvent,
   generateRandomNote,
   assertElementsToBe,
-  getRandomDateFromRange
+  getRandomDateFromRange,
+  formatTimeTo12Hour
 };
