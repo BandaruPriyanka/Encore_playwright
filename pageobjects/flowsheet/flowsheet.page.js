@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { executeStep } = require('../../utils/action');
 const { test } = require('@playwright/test');
+const utilConst = require('../../utils/const');
 const {
   todayDate,
   todayDateWithLeadingZero,
@@ -18,11 +19,13 @@ const {
   getCurrentMonth,
   assertElementNotVisible,
   assertContainsValue,
-  getFlowsheetCard
+  getFlowsheetCard,
+  formatTimeTo12Hour
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 
-let beforeRoomCount, afterRoomCount, roomsreturned;
+let beforeRoomCount, afterRoomCount, roomsreturned,cardStatus,setStatusValue,strikeStatus,
+    setTime,strikeTime,clientStartTime,clientEndTime,roomNameValue,orderNameValue,postAsValue;
 exports.FlowSheetPage = class FlowSheetPage {
   constructor(page) {
     this.page = page;
@@ -198,9 +201,22 @@ exports.FlowSheetPage = class FlowSheetPage {
 
     this.jobIdElement = jobId => this.page.locator(`//span[text()=' #` + jobId + ` ']`);
     this.changeToGreen = index =>
-      this.page.locator(
-        `//app-flowsheet-action-card[${index}]//app-flowsheet-action-timeline//div[contains(@class, 'flowsheet-action-timeline')]//div[contains(@class, 'e2e_flowsheet_action_timeline_event')][1]//icon[contains(@class, 'text-green-500')]`
-      );
+    this.page.locator(
+      `//app-flowsheet-action-card[${index}]//app-flowsheet-action-timeline//div[contains(@class, 'flowsheet-action-timeline')]//div[contains(@class, 'e2e_flowsheet_action_timeline_event')][1]//icon[contains(@class, 'text-green-500')]`
+    );
+    this.flowsheetTimeLine = this.page.locator("//app-flowsheet-action-timeline").first();
+    this.selectStatusButton = (selectText) => this.page.locator(`//span[text()='${selectText}']/following-sibling::span`);
+    this.statusFilter = this.page.locator("//div[contains(text(),'Status')]//following-sibling::icon");
+    // this.selectAllInStatus = this.page.locator("//div[@title='All']");
+    this.selectAllInStatus = this.page.locator("//div[normalize-space()='Status']/following-sibling::div/div[normalize-space()='All']");
+    //C57167
+    this.jobStatus = this.page.locator("//span[contains(@class,'e2e_flowsheet_action_job_status')]");
+    this.jobNumber = this.page.locator("//span[contains(@class,'e2e_flowsheet_action_job_number')]");
+    this.flowsheetEventTime = (index) => this.page.locator(`(//app-flowsheet-action-card//span[contains(@class,'e2e_flowsheet_action_timeline_event_time')])[${index}]`)
+    this.flowsheetStatusText = (index) => this.page.locator(`(//app-flowsheet-action-timeline//span[contains(@class,'e2e_flowsheet_action_timeline_event_label')])[${index}]`)
+    this.roomNameDiv = this.page.locator("//div[contains(@class,'e2e_flowsheet_action_room_name')]");
+    this.orderNameDiv = this.page.locator("//div[contains(@class,'e2e_flowsheet_action_room_name')]/../following-sibling::div[1]/div/div");
+    this.postAsDiv = this.page.locator("//div[contains(@class,'e2e_flowsheet_action_room_name')]/../following-sibling::div[2]");
   }
 
   async changeLocation(locationId, locationName) {
@@ -739,4 +755,98 @@ exports.FlowSheetPage = class FlowSheetPage {
     }
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
+
+  async setAndStrikeComplete() {
+    const setText = await this.flowsheetStatusText(1).textContent();
+    const strikeText = await this.flowsheetStatusText(4).textContent();
+    await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.selectStatusButton(`${setText.trim()} - Complete`),"click","Click on select for set complete");
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
+    await executeStep(this.selectStatusButton(`${strikeText.trim()} - Complete`),"click","Click on select for complete carry over");
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+  }
+
+  async filterForStatus() {
+    await executeStep(this.filterIcon,"click","Click on filter icon");
+    if(! await this.selectAllInStatus.isVisible()) {
+      await executeStep(this.statusFilter,"click","Click on status in filter");
+    }
+    await executeStep(this.selectAllInStatus,"click","Click on all in status options");
+    await executeStep(this.applyFilter,"click","Click on apply filter");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+  }
+
+  async removeFilter() {
+    const setText = await this.flowsheetStatusText(1).textContent();
+    const strikeText = await this.flowsheetStatusText(4).textContent();
+    await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
+    await executeStep(this.selectStatusButton(strikeText.trim()),"click","Click on select for set refresh");
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
+    await executeStep(this.selectStatusButton(setText.trim()),"click","Click on select for carry over");
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await executeStep(this.filterIcon,"click","Click on filter icon");
+    await executeStep(this.clearFilter,"click","Click on clear filter");
+  }
+
+  async assertFlowsheetCard() {
+    const JobNumberFromCard = await this.jobNumber.textContent();
+    const getJobNumber = await JobNumberFromCard.replace("#","");
+    await assertElementVisible(this.jobNumber,"Verify that job number is visible or not");
+    if(await this.jobStatus.isVisible()) {
+      cardStatus = await this.jobStatus.textContent();
+    } else {
+      cardStatus = "Confirmed"
+    }
+    if(await this.jobStatus.isVisible()) {
+      await assertElementVisible(this.jobStatus,"Verify that job status is visible");
+    }
+    setStatusValue = await this.flowsheetStatusText(1).textContent();
+    await assertElementVisible(this.flowsheetStatusText(1),"Verify that set status is visible");
+    strikeStatus = await this.flowsheetStatusText(4).textContent();
+    await assertElementVisible(this.flowsheetStatusText(4),"Verify that strike status is visible");
+    setTime = await this.flowsheetEventTime(1).textContent();
+    await assertElementVisible(this.flowsheetEventTime(1),"Verify that set time is visible");
+    strikeTime = await this.flowsheetEventTime(4).textContent();
+    await assertElementVisible(this.flowsheetEventTime(4),"Verify that strike time is visible");
+    clientStartTime = await this.flowsheetEventTime(2).textContent();
+    await assertElementVisible(this.flowsheetEventTime(2),"Verify that client start time is visible");
+    clientEndTime = await this.flowsheetEventTime(3).textContent();
+    await assertElementVisible(this.flowsheetEventTime(3),"Verify that client end time is visible");
+    roomNameValue = await this.roomNameDiv.textContent();
+    await assertElementVisible(this.roomNameDiv,"Verify that room name is visible");
+    orderNameValue = await this.orderNameDiv.textContent();
+    await assertElementVisible(this.orderNameDiv,"Verify that order name is visible");
+    postAsValue = await this.postAsDiv.textContent();
+    await assertElementVisible(this.postAsDiv,"Verify that post as value is visible");
+  }
+
+  async assertStatusOfNavigatorJob() {
+      const newPage = await this.page.context().newPage();
+      const createDataPage = new indexPage.CreateData(newPage);
+      await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
+        timeout: parseInt(process.env.pageload_timeout)
+      });
+      if (await createDataPage.reloadErrorMsg.isVisible()) {
+        await newPage.reload();
+      }
+      const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
+      await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
+      await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
+      await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
+        timeout: parseInt(process.env.pageload_timeout)
+      });
+      if (await createDataPage.reloadErrorMsg.isVisible()) {
+        await newPage.reload();
+      }
+      await createDataPage.searchWithJobId();
+      await assertElementVisible(
+        createDataPage.statusOfJob(cardStatus),
+          `Verify that the status of the job (${cardStatus}) is visible in Navigator`
+      );
+      await createDataPage.assertStatusOfJob(indexPage.navigator_data.second_job_no,clientStartTime.trim(),clientEndTime.trim(),setStatusValue.trim(),strikeStatus.trim(),setTime.trim(),strikeTime.trim());
+      await createDataPage.assertOrderRoomPostValues(orderNameValue.trim(),roomNameValue.trim(),postAsValue.trim())
+    }
 };

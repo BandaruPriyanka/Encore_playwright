@@ -39,7 +39,12 @@ const NavigatorConsts = {
   endDate : "End Date",
   eventName : "Event Name",
   moodChangeMessage:"Happy Room Mood",
-  statusRefreshCompleteMsg:"Set - Refresh Complete Status Change"
+  statusRefreshCompleteMsg:"Set - Refresh Complete Status Change",
+  setComplete : "Set Refresh - Complete",
+  carryOverComplete : "Carry Over - Complete",
+  carryOver : "Carry Over",
+  setRefresh : "Set Refresh"
+
 };
 
 exports.Const = NavigatorConsts;
