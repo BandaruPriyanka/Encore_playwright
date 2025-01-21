@@ -178,4 +178,20 @@ test.describe('Performing actions on Flowsheet', () => {
     await flowsheetPage.assertStatusOfNavigatorJob();
   }) 
 
+  test('Test_C57174 Verify change location in flowsheet' , async ({ page }) => {
+    const initialFlowsheetCardsCountFor1137 = await flowsheetPage.roomsCount.textContent();
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData2, indexPage.lighthouse_data.locationText_createData2);
+    let flowsheetCardsCountFor9023;
+    if(await flowsheetPage.roomsCount.isVisible()) {
+      flowsheetCardsCountFor9023 =  await flowsheetPage.roomsCount.textContent();
+    }else {
+      flowsheetCardsCountFor9023 = 0;
+    }
+    await assertNotEqualValues(initialFlowsheetCardsCountFor1137,flowsheetCardsCountFor9023,"Verify that different flowsheets displayed for different locations");
+    await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1, indexPage.lighthouse_data.locationText_createData1);
+    const afterFlowsheetCountFor1137 = await flowsheetPage.roomsCount.textContent();
+    await assertEqualValues(initialFlowsheetCardsCountFor1137,afterFlowsheetCountFor1137,"Verify that location is set to intial location")
+  })
+
 });

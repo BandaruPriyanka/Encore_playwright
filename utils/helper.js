@@ -706,23 +706,26 @@ function formatTimeTo12Hour(time) {
   // Check if the input already contains AM or PM
   let isPM = false;
   if (time.includes('PM')) {
-      isPM = true;
-      time = time.replace('PM', '').trim();
+    isPM = true;
+    time = time.replace('PM', '').trim();
   } else if (time.includes('AM')) {
-      time = time.replace('AM', '').trim();
+    time = time.replace('AM', '').trim();
   }
 
   // Split the time into hours and minutes
   let [hours, minutes] = time.split(':').map(Number);
-  
+
   // Adjust hours for PM times (except for 12 PM)
   if (isPM && hours !== 12) {
-      hours += 12;
+    hours += 12;
+  } else if (!isPM && hours === 12) {
+    // Handle 12 AM (midnight) case
+    hours = 0;
   }
-  
+
   // Convert to 12-hour format and set AM/PM
   const period = hours >= 12 ? 'PM' : 'AM';
-  
+
   // Convert hours to 12-hour format
   hours = hours % 12 || 12;
 
@@ -732,6 +735,7 @@ function formatTimeTo12Hour(time) {
 
   return `${hours}:${minutes} ${period}`;
 }
+
 
 module.exports = {
   getTodayDate,
