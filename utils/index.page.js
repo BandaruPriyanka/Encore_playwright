@@ -13,6 +13,7 @@ import { NotificationPage } from '../pageobjects/myprofile/notification.page';
 import { LocationProfile } from '../pageobjects/locationprofile/locationprofile.page';
 import { EventAgendas } from '../pageobjects/agendas/agendas.page';
 import { LogsPage } from '../pageobjects/logs/logs.page';
+import { InAppNotificationPage } from '../pageobjects/inappnotifications/inappnotifications.page';
 
 //datafile
 import api_data from '../data/apidata.json';
@@ -35,6 +36,7 @@ export {
   LocationProfile,
   EventAgendas,
   LogsPage,
+  InAppNotificationPage,
   api_data,
   lighthouse_data,
   navigator_data,

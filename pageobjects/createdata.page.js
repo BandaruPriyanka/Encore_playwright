@@ -27,7 +27,8 @@ exports.CreateData = class CreateData {
     this.selectNewOption = page.locator("//div[text()='New']");
     this.selectAtendees = page.locator("//div[text()='101-250']");
     this.selectCategory = page.locator("//div[text()='Main Show']");
-    this.selectEndUserContact = page.locator("//span[text()='Angelina Wood']");
+    // this.selectEndUserContact = page.locator("//span[text()='Angelina Wood']");
+    this.selectEndUserContact = page.locator("//ul[@aria-label='Lookup results']/li[1]");
     this.deleteVenue = page.locator(
       "//div[text()='PSAV Corporate Headquarters']/../following-sibling::button"
     );
@@ -100,7 +101,8 @@ exports.CreateData = class CreateData {
       page.locator(
         `//label[text()='${attributeValue}']/../following-sibling::div/descendant::button[@role='combobox']`
       );
-    this.selectEndUserAccount = enduserText => page.locator(`(//span[text()='${enduserText}'])[1]`);
+    // this.selectEndUserAccount = enduserText => page.locator(`(//span[text()='${enduserText}'])[1]`);
+    this.selectEndUserAccount =  page.locator("//ul[@aria-label='Lookup results']/li[1]");
     this.eventLearning = page.locator("//li[@title='Event Learning']");
     this.eventDescription = page.locator("//textarea[@aria-label='Event Description']");
     this.eventObjective = page.locator("//textarea[@aria-label='Event Objective']");
@@ -123,7 +125,7 @@ exports.CreateData = class CreateData {
     this.equipmentRowsCount = this.page.locator(
       "//div[@id='oeOrderLinesGrid']/div[4]//div[contains(@class,'grid-canvas-top')]/div"
     );
-    this.statusOfJob = status => this.page.locator(`//div[text()='` + status + `']`);
+    this.statusOfJob = status => this.page.locator(`//div[normalize-space()='`+status+`']`);
     this.optionsBtn = this.page.locator("//a[contains(text(),'Options')]");
     this.complimentaryExcludingLabourInput = this.page.locator(
       "//input[@id='CompNoLaborWithSysAmts']"
@@ -257,7 +259,7 @@ exports.CreateData = class CreateData {
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(
-      this.selectEndUserAccount(enduserText),
+      this.selectEndUserAccount,
       'click',
       'select end user from dropdown'
     );
@@ -360,6 +362,7 @@ exports.CreateData = class CreateData {
       }
       await executeStep(this.saveButton, 'click', 'click on save button');
       await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+      await executeStep(this.ordersButton, 'click', 'click the order button');
     }
   }
 
@@ -536,17 +539,17 @@ exports.CreateData = class CreateData {
     await executeStep(this.dateLink,"click","Click on date link");
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const cStartTime = await this.timeOfJob(4).textContent();
-    await assertEqualValues(formatTimeTo12Hour(cStartTime),clientStartTime,"Verify that client start time from navigator and lighthouse are equal");
+    await assertEqualValues(formatTimeTo12Hour(cStartTime),formatTimeTo12Hour(clientStartTime),"Verify that client start time from navigator and lighthouse are equal");
     const cEndTime = await this.timeOfJob(5).textContent();
-    await assertEqualValues(formatTimeTo12Hour(cEndTime),clientEndTime,"Verify that client end time from navigator and lighthouse are equal");
+    await assertEqualValues(formatTimeTo12Hour(cEndTime),formatTimeTo12Hour(clientEndTime),"Verify that client end time from navigator and lighthouse are equal");
     const stAction = await this.timeOfJob(11).textContent();
     await assertEqualValues(stAction,setAction,"Verify that  set action from navigator and lighthouse are equal");
     const strAction = await this.timeOfJob(7).textContent();
     await assertEqualValues(strAction,strikeAction,"Verify that strike action from navigator and lighthouse are equal");
     const sTime = await this.timeOfJob(12).textContent();
-    await assertEqualValues(formatTimeTo12Hour(sTime),setTime,"Verify that set time from navigator and lighthouse are equal");
+    await assertEqualValues(formatTimeTo12Hour(sTime),formatTimeTo12Hour(setTime),"Verify that set time from navigator and lighthouse are equal");
     const eTime = await this.timeOfJob(8).textContent();
-    await assertEqualValues(formatTimeTo12Hour(eTime),strikeTime,"Verify that strike time from navigator and lighthouse are equal");
+    await assertEqualValues(formatTimeTo12Hour(eTime),formatTimeTo12Hour(strikeTime),"Verify that strike time from navigator and lighthouse are equal");
   }
 
   async assertOrderRoomPostValues(orderNameValue,roomNameValue,postAsValue) {
