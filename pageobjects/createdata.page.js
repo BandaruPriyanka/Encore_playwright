@@ -140,7 +140,8 @@ exports.CreateData = class CreateData {
     this.reloadErrorMsg = this.page.locator("//div[contains(text(),'ERROR Acquiring Opportunity Information: [object Object]')]");
     this.jobNumText = jobNumber => this.page.locator(`//a[text()='${jobNumber}']`);
     this.dateLink = this.page.locator("//a[normalize-space()='Dates']");
-    this.timeOfJob =(index) => this.page.locator(`(//div[@id='jobDateContainer']//div[contains(@class,'slick-pane-top slick-pane-left')]//div[contains(@class,'slick-viewport-left')]//div)[${index}]`);
+    // this.timeOfJob =(index) => this.page.locator(`(//div[@id='jobDateContainer']//div[contains(@class,'slick-pane-top slick-pane-left')]//div[contains(@class,'slick-viewport-left')]//div)[${index}]`);
+    this.timeOfJob = (index) => this.page.locator(`//div[@id='jobDateContainer']//div[contains(@class,'slick-pane-top slick-pane-left')]//div[contains(@class,'slick-viewport-left')]/child::div/div[2]/div[${index}]`)
     this.orderNameLabel = this.page.locator("//label[normalize-space()='Order Name']/../following-sibling::div/label");
     this.postAsAndRoomDiv = (jobNumber,index) => this.page.locator(`(//span[text()='${jobNumber}']/../../div)[${index}]`);
     this.eventTypeDropdown = this.page.locator("//button[@aria-label='Event Type']");
@@ -542,17 +543,17 @@ exports.CreateData = class CreateData {
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await executeStep(this.dateLink,"click","Click on date link");
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    const cStartTime = await this.timeOfJob(4).textContent();
+    const cStartTime = await this.timeOfJob(2).textContent();
     await assertEqualValues(formatTimeTo12Hour(cStartTime),formatTimeTo12Hour(clientStartTime),"Verify that client start time from navigator and lighthouse are equal");
-    const cEndTime = await this.timeOfJob(5).textContent();
+    const cEndTime = await this.timeOfJob(3).textContent();
     await assertEqualValues(formatTimeTo12Hour(cEndTime),formatTimeTo12Hour(clientEndTime),"Verify that client end time from navigator and lighthouse are equal");
-    const stAction = await this.timeOfJob(11).textContent();
-    await assertEqualValues(stAction,setAction,"Verify that  set action from navigator and lighthouse are equal");
-    const strAction = await this.timeOfJob(7).textContent();
-    await assertEqualValues(strAction,strikeAction,"Verify that strike action from navigator and lighthouse are equal");
-    const sTime = await this.timeOfJob(12).textContent();
+    const stAction = await this.timeOfJob(9).textContent();
+    await assertEqualValues(stAction.replace(/[-\s]/g, ''),setAction,"Verify that  set action from navigator and lighthouse are equal");
+    const strAction = await this.timeOfJob(5).textContent();
+    await assertEqualValues(strAction,strikeAction.replace(/(?<!^)(?=[A-Z])/g, ' '),"Verify that strike action from navigator and lighthouse are equal");
+    const sTime = await this.timeOfJob(10).textContent();
     await assertEqualValues(formatTimeTo12Hour(sTime),formatTimeTo12Hour(setTime),"Verify that set time from navigator and lighthouse are equal");
-    const eTime = await this.timeOfJob(8).textContent();
+    const eTime = await this.timeOfJob(6).textContent();
     await assertEqualValues(formatTimeTo12Hour(eTime),formatTimeTo12Hour(strikeTime),"Verify that strike time from navigator and lighthouse are equal");
   }
 

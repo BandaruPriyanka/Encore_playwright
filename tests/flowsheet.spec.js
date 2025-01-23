@@ -37,6 +37,7 @@ test.describe('Performing actions on Flowsheet', () => {
       'Check if carryOver is visible after page reload'
     );
     await flowsheetPage.changestatus();
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
   test('Test_C56880 : Verify Flowsheet groups', async ({ isMobile }) => {
     test.skip(isMobile, 'Skipping Flowsheet status on mobile devices');
@@ -162,13 +163,15 @@ test.describe('Performing actions on Flowsheet', () => {
   test('Test_C57169 Verify that flowsheet disappears when completed' , async ({ page }) => {
     const intialFlowSheetCardsCount = await flowsheetPage.roomsCount.textContent();
     await flowsheetPage.setAndStrikeComplete();
+    await page.waitForTimeout(parseInt(process.env.small_max_timeout));
     const countAfterCompleteSetAndStrike = await await flowsheetPage.roomsCount.textContent();
     await assertNotEqualValues(intialFlowSheetCardsCount,countAfterCompleteSetAndStrike,"Verify that the completed flowsheet will disappear.");
     await flowsheetPage.filterForStatus();
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
     const countOfCardaAfterFilter = await flowsheetPage.roomsCount.textContent();
     await assertEqualValues(intialFlowSheetCardsCount,countOfCardaAfterFilter,"Verify that completed flowsheet is visible after filter");
     await flowsheetPage.removeFilter();
-    await page.waitForTimeout(parseInt(process.env.small_timeout))
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
   test('Test_C57167 Verify that navigator data on Flowsheet Card' , async({ page }) => {
