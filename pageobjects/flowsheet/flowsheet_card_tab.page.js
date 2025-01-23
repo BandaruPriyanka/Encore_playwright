@@ -223,7 +223,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       "(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]"
     );
     this.textInModalForDocument = this.page.locator(
-      "//span[text()='Encore Sales, pass control of the session to Tommy Hilfiger.']"
+      "//span[contains(text(),'Encore Sales, pass control of the session to')]"
     );
     this.continueBtnInModal = this.page.locator(
       "//div[@class='MOB_InPersonButtons']/button[text()='Continue']"
