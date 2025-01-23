@@ -143,6 +143,8 @@ exports.CreateData = class CreateData {
     this.timeOfJob =(index) => this.page.locator(`(//div[@id='jobDateContainer']//div[contains(@class,'slick-pane-top slick-pane-left')]//div[contains(@class,'slick-viewport-left')]//div)[${index}]`);
     this.orderNameLabel = this.page.locator("//label[normalize-space()='Order Name']/../following-sibling::div/label");
     this.postAsAndRoomDiv = (jobNumber,index) => this.page.locator(`(//span[text()='${jobNumber}']/../../div)[${index}]`);
+    this.eventTypeDropdown = this.page.locator("//button[@aria-label='Event Type']");
+    this.selectEventType = this.page.locator("//div[text()='General Session']");
 
   }
   async clickOnCompass() {
@@ -216,6 +218,8 @@ exports.CreateData = class CreateData {
     );
     await executeStep(this.buttonAttribute(utilConst.Const.NewOrExisting), 'click', 'click on new');
     await executeStep(this.selectNewOption, 'click', 'click new from the dropdown');
+    await executeStep(this.eventTypeDropdown,"click","Click on event type dropdown");
+    await executeStep(this.selectEventType,"click","Select General session from dropdown");
     await executeStep(
       this.inputAttribute(utilConst.Const.EstRevenue),
       'click',
