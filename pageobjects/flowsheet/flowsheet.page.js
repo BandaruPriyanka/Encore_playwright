@@ -79,7 +79,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.clickOnLocationProfile = this.page.locator("//span[text()='Location Profile']");
     this.flowsheetGroups = this.page.locator("(//span[text()='Flowsheet Groups'])[2]");
     this.binLine = name =>
-      this.page.locator(`//div[normalize-space()='` + name + `']//icon[@name='trah_bin_line']`);
+      this.page.locator(`//div[contains(text(),${name})]//icon[@name='trah_bin_line']`);
     this.clickOnYes = this.page.locator("//span[text()='Yes']");
     this.statusSetRefreshComplete = this.page.locator(
       "//app-select-status-sheet//li[.//span[text()='Set Refresh - Complete']]"
@@ -761,10 +761,10 @@ exports.FlowSheetPage = class FlowSheetPage {
     const strikeText = await this.flowsheetStatusText(4).textContent();
     await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.selectStatusButton(`${setText.trim()} - Complete`),"click","Click on select for set complete");
+    await executeStep(this.selectStatusButton(`${setText.trim().replace(/(?<!^)(?=[A-Z])/g, ' ')} - Complete`),"click","Click on select for set complete");
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
-    await executeStep(this.selectStatusButton(`${strikeText.trim()} - Complete`),"click","Click on select for complete carry over");
+    await executeStep(this.selectStatusButton(`${strikeText.trim().replace(/(?<!^)(?=[A-Z])/g, ' ')} - Complete`),"click","Click on select for complete carry over");
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
   }
 
@@ -780,10 +780,10 @@ exports.FlowSheetPage = class FlowSheetPage {
     const setText = await this.flowsheetStatusText(1).textContent();
     const strikeText = await this.flowsheetStatusText(4).textContent();
     await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
-    await executeStep(this.selectStatusButton(strikeText.trim()),"click","Click on select for set refresh");
+    await executeStep(this.selectStatusButton(strikeText.trim().replace(/(?<!^)(?=[A-Z])/g, ' ')),"click","Click on select for set refresh");
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
-    await executeStep(this.selectStatusButton(setText.trim()),"click","Click on select for carry over");
+    await executeStep(this.selectStatusButton(setText.trim().replace(/(?<!^)(?=[A-Z])/g, ' ')),"click","Click on select for carry over");
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     await executeStep(this.filterIcon,"click","Click on filter icon");
     await executeStep(this.clearFilter,"click","Click on clear filter");

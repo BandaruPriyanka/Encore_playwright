@@ -429,7 +429,7 @@ exports.LocationProfile = class LocationProfile {
         indexPage.lighthouse_data.addOnEmail
       ]);
       await executeStep(this.addBtn, 'click', "Click on 'Add Button'");
-      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
       await assertElementVisible(
         this.emailDiv(indexPage.lighthouse_data.addOnEmail),
         "Verify that 'Email' should be added to the list successfully."

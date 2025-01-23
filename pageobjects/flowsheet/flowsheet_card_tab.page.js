@@ -239,7 +239,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.selectSignStyle = this.page.locator("//span[text()='Select Style']");
     this.adoptAndSignBtn = this.page.locator("//span[text()='Adopt and Sign']");
     this.acceptAllCookiesBtn = this.page.locator("//button[contains(text(),'Accept All Cookies')]");
-    this.styleSelectInMobile = this.page.locator("//button[text()='Select Style']");
+    this.styleSelectInMobile = this.page.locator("//span[text()='Select Style']");
     this.finishBtn = this.isMobile
       ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
       : this.page.locator("//button[@id='action-bar-btn-finish']");
