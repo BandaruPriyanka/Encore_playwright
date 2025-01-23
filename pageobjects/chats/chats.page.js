@@ -285,6 +285,7 @@ exports.ChatPage = class ChatPage {
   }
   async selectUser2() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.reload();
     await executeStep(this.selectLogOutMail, 'click', 'Select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.email, process.env.password);
@@ -310,6 +311,7 @@ exports.ChatPage = class ChatPage {
   }
   async selectUser1() {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.reload();
     await executeStep(this.selectLogOutMail, 'click', 'Select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.lighthouseEmail, process.env.lighthousePassword);
@@ -346,6 +348,7 @@ exports.ChatPage = class ChatPage {
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.lighthouseEmail, process.env.lighthousePassword);
     await this.selectRecentChat();
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await assertElementVisible(
       this.user2TimeStamp,
       'Verify that the message is received by User 1 successfully with all valid information. The image should be displayed properly'
