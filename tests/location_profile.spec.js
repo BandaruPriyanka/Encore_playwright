@@ -22,6 +22,7 @@ test.describe('Performing actions on Location Profile Tab', () => {
     });
     await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await flowsheetPage.changeLocation(locationId, locationText);
+    await page.waitForTimeout(parseInt(process.env.medium_timeout));
     await locationProfilePage.clickOnLocationProfile();
   });
   test('Test_C57119 : Verify Location Profile page elements', async () => {

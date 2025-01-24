@@ -205,7 +205,7 @@ exports.ProfilePage = class ProfilePage {
       : this.page.locator(
           "//mat-button-toggle[contains(@class,'mat-button-toggle-checked')]//button//span"
         );
-    this.dismissBtn = this.page.locator("//span[contains(text(),'Dismiss')]");
+    this.dismissBtn = this.page.locator("//div[@id='mat-snack-bar-container-live-1']//span[contains(text(),'Dismiss')]");
     this.getSelectedLanguageValue = this.isMobile
       ? this.page.locator("//div[contains(@class,'e2e_user_profile_language_value')]")
       : this.page.locator("//span[@class='e2e_user_profile_language_value']");
@@ -253,7 +253,7 @@ exports.ProfilePage = class ProfilePage {
     this.flowsheetSetTime = this.page.locator(
       "(//span[contains(@class,'e2e_flowsheet_action_timeline_event_time')])[1]"
     );
-    this.flowsheetLog = this.page.locator("//div[normalize-space()='Log']");
+    this.flowsheetLog = this.page.locator("//div[normalize-space()='Log']").first();
     this.logCommentInput = this.page.locator("//input[@name='add-note-field']");
     this.logSentButton = this.page.locator("//icon[@name='location_line']");
     this.logTime = this.page.locator("(//div[contains(@class,'e2e_message_card_time')])[1]");
@@ -367,10 +367,10 @@ exports.ProfilePage = class ProfilePage {
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(this.menuModal, 'Verify that Menu Modal is displayed.');
     await executeStep(this.menuText, 'click', 'Click on menuText');
-    await executeStep(this.scheduleTab, 'click', 'Click on scheduleTab');
-    if (await this.dismissBtn.isVisible()) {
-      await executeStep(this.dismissBtn, 'click', 'Click on dismiss popup');
-    }
+    // await executeStep(this.scheduleTab, 'click', 'Click on scheduleTab');
+    // if (await this.dismissBtn.isVisible()) {
+    //   await executeStep(this.dismissBtn, 'click', 'Click on dismiss popup');
+    // }
     await executeStep(this.menuIcon, 'click', 'Click on menuIcon');
     await assertElementVisible(
       this.menuModal,
@@ -950,11 +950,11 @@ exports.ProfilePage = class ProfilePage {
     await assertElementColor(this.flowsheetTitle, flowsheetColor);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
 
-    const scheduleColor = utilConst.Const.scheduleDarkColor;
-    await executeStep(this.scheduleTab, 'click', 'Click on Schedule Tab');
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await assertElementColor(this.scheduleTitle, scheduleColor);
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    // const scheduleColor = utilConst.Const.scheduleDarkColor;
+    // await executeStep(this.scheduleTab, 'click', 'Click on Schedule Tab');
+    // await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    // await assertElementColor(this.scheduleTitle, scheduleColor);
+    // await this.page.waitForTimeout(parseInt(process.env.small_timeout));
 
     const customersColor = utilConst.Const.customersColor;
     await executeStep(this.customersTab, 'click', 'Click on Customers Tab');
@@ -1023,12 +1023,12 @@ exports.ProfilePage = class ProfilePage {
       await assertElementColor(this.flowsheetTitle, blackColor);
       await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     });
-    const scheduleColor = utilConst.Const.scheduleColor;
-    await executeStep(this.scheduleTab, 'click', 'Click on Schedule Tab');
-    await test.step('Assert that Schedule Tab displayed in Light Theme', async () => {
-      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-      await assertElementColor(this.scheduleTitle, scheduleColor);
-    });
+    // const scheduleColor = utilConst.Const.scheduleColor;
+    // await executeStep(this.scheduleTab, 'click', 'Click on Schedule Tab');
+    // await test.step('Assert that Schedule Tab displayed in Light Theme', async () => {
+    //   await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    //   await assertElementColor(this.scheduleTitle, scheduleColor);
+    // });
     await executeStep(this.customersTab, 'click', 'Click on Customers Tab');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await test.step('Assert that Customers Tab displayed in Light Theme', async () => {

@@ -223,7 +223,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       "(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]"
     );
     this.textInModalForDocument = this.page.locator(
-      "//span[text()='Encore Sales, pass control of the session to Tommy Hilfiger.']"
+      "//span[contains(text(),'Encore Sales, pass control of the session to')]"
     );
     this.continueBtnInModal = this.page.locator(
       "//div[@class='MOB_InPersonButtons']/button[text()='Continue']"
@@ -239,7 +239,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.selectSignStyle = this.page.locator("//span[text()='Select Style']");
     this.adoptAndSignBtn = this.page.locator("//span[text()='Adopt and Sign']");
     this.acceptAllCookiesBtn = this.page.locator("//button[contains(text(),'Accept All Cookies')]");
-    this.styleSelectInMobile = this.page.locator("//button[text()='Select Style']");
+    this.styleSelectInMobile = this.page.locator("//span[text()='Select Style']");
     this.finishBtn = this.isMobile
       ? this.page.locator("//button[@id='action-bar-btn-finish-mobile']")
       : this.page.locator("//button[@id='action-bar-btn-finish']");

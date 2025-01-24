@@ -7,7 +7,8 @@ const {
   startDate,
   endDate,
   assertElementVisible,
-  assertEqualValues
+  assertEqualValues,
+  formatTimeTo12Hour
 } = require('../utils/helper');
 const utilConst = require('../utils/const');
 require('dotenv').config();
@@ -17,6 +18,7 @@ exports.CreateData = class CreateData {
     this.page = page;
     this.isCreateData1 = isCreateData1;
     this.isComplimentary = isComplimentary;
+    this.isMobile = this.page.context()._options.isMobile;
     this.copilotButton = page.locator(
       "//div[@id='Microsoft.Copilot.Pane']/parent::div/div[2]//button"
     );
@@ -25,7 +27,8 @@ exports.CreateData = class CreateData {
     this.selectNewOption = page.locator("//div[text()='New']");
     this.selectAtendees = page.locator("//div[text()='101-250']");
     this.selectCategory = page.locator("//div[text()='Main Show']");
-    this.selectEndUserContact = page.locator("//span[text()='Angelina Wood']");
+    // this.selectEndUserContact = page.locator("//span[text()='Angelina Wood']");
+    this.selectEndUserContact = page.locator("//ul[@aria-label='Lookup results']/li[1]");
     this.deleteVenue = page.locator(
       "//div[text()='PSAV Corporate Headquarters']/../following-sibling::button"
     );
@@ -98,7 +101,8 @@ exports.CreateData = class CreateData {
       page.locator(
         `//label[text()='${attributeValue}']/../following-sibling::div/descendant::button[@role='combobox']`
       );
-    this.selectEndUserAccount = enduserText => page.locator(`(//span[text()='${enduserText}'])[1]`);
+    // this.selectEndUserAccount = enduserText => page.locator(`(//span[text()='${enduserText}'])[1]`);
+    this.selectEndUserAccount =  page.locator("//ul[@aria-label='Lookup results']/li[1]");
     this.eventLearning = page.locator("//li[@title='Event Learning']");
     this.eventDescription = page.locator("//textarea[@aria-label='Event Description']");
     this.eventObjective = page.locator("//textarea[@aria-label='Event Objective']");
@@ -121,7 +125,7 @@ exports.CreateData = class CreateData {
     this.equipmentRowsCount = this.page.locator(
       "//div[@id='oeOrderLinesGrid']/div[4]//div[contains(@class,'grid-canvas-top')]/div"
     );
-    this.statusOfJob = status => this.page.locator(`//div[text()='` + status + `']`);
+    this.statusOfJob = status => this.page.locator(`//div[normalize-space()='`+status+`']`);
     this.optionsBtn = this.page.locator("//a[contains(text(),'Options')]");
     this.complimentaryExcludingLabourInput = this.page.locator(
       "//input[@id='CompNoLaborWithSysAmts']"
@@ -134,8 +138,16 @@ exports.CreateData = class CreateData {
     );
     this.continueBtn = this.page.locator("//button[normalize-space()='Continue']");
     this.reloadErrorMsg = this.page.locator("//div[contains(text(),'ERROR Acquiring Opportunity Information: [object Object]')]");
-  }
+    this.jobNumText = jobNumber => this.page.locator(`//a[text()='${jobNumber}']`);
+    this.dateLink = this.page.locator("//a[normalize-space()='Dates']");
+    // this.timeOfJob =(index) => this.page.locator(`(//div[@id='jobDateContainer']//div[contains(@class,'slick-pane-top slick-pane-left')]//div[contains(@class,'slick-viewport-left')]//div)[${index}]`);
+    this.timeOfJob = (index) => this.page.locator(`//div[@id='jobDateContainer']//div[contains(@class,'slick-pane-top slick-pane-left')]//div[contains(@class,'slick-viewport-left')]/child::div/div[2]/div[${index}]`)
+    this.orderNameLabel = this.page.locator("//label[normalize-space()='Order Name']/../following-sibling::div/label");
+    this.postAsAndRoomDiv = (jobNumber,index) => this.page.locator(`(//span[text()='${jobNumber}']/../../div)[${index}]`);
+    this.eventTypeDropdown = this.page.locator("//button[@aria-label='Event Type']");
+    this.selectEventType = this.page.locator("//div[text()='General Session']");
 
+  }
   async clickOnCompass() {
     await this.page
       .frameLocator('iframe#AppLandingPage')
@@ -207,6 +219,8 @@ exports.CreateData = class CreateData {
     );
     await executeStep(this.buttonAttribute(utilConst.Const.NewOrExisting), 'click', 'click on new');
     await executeStep(this.selectNewOption, 'click', 'click new from the dropdown');
+    await executeStep(this.eventTypeDropdown,"click","Click on event type dropdown");
+    await executeStep(this.selectEventType,"click","Select General session from dropdown");
     await executeStep(
       this.inputAttribute(utilConst.Const.EstRevenue),
       'click',
@@ -250,7 +264,7 @@ exports.CreateData = class CreateData {
     );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(
-      this.selectEndUserAccount(enduserText),
+      this.selectEndUserAccount,
       'click',
       'select end user from dropdown'
     );
@@ -353,6 +367,7 @@ exports.CreateData = class CreateData {
       }
       await executeStep(this.saveButton, 'click', 'click on save button');
       await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+      await executeStep(this.ordersButton, 'click', 'click the order button');
     }
   }
 
@@ -521,5 +536,33 @@ exports.CreateData = class CreateData {
       await executeStep(this.searchBtn, 'click', 'click on search button');
       await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     }
+  }
+
+  async assertStatusOfJob(jobNumber,clientStartTime,clientEndTime,setAction,strikeAction,setTime,strikeTime) {
+    await executeStep(this.jobNumText(jobNumber),"click","Click on the job number");
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await executeStep(this.dateLink,"click","Click on date link");
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+    const cStartTime = await this.timeOfJob(2).textContent();
+    await assertEqualValues(formatTimeTo12Hour(cStartTime),formatTimeTo12Hour(clientStartTime),"Verify that client start time from navigator and lighthouse are equal");
+    const cEndTime = await this.timeOfJob(3).textContent();
+    await assertEqualValues(formatTimeTo12Hour(cEndTime),formatTimeTo12Hour(clientEndTime),"Verify that client end time from navigator and lighthouse are equal");
+    const stAction = await this.timeOfJob(9).textContent();
+    await assertEqualValues(stAction.replace(/[-\s]/g, ''),setAction,"Verify that  set action from navigator and lighthouse are equal");
+    const strAction = await this.timeOfJob(5).textContent();
+    await assertEqualValues(strAction,strikeAction.replace(/(?<!^)(?=[A-Z])/g, ' '),"Verify that strike action from navigator and lighthouse are equal");
+    const sTime = await this.timeOfJob(10).textContent();
+    await assertEqualValues(formatTimeTo12Hour(sTime),formatTimeTo12Hour(setTime),"Verify that set time from navigator and lighthouse are equal");
+    const eTime = await this.timeOfJob(6).textContent();
+    await assertEqualValues(formatTimeTo12Hour(eTime),formatTimeTo12Hour(strikeTime),"Verify that strike time from navigator and lighthouse are equal");
+  }
+
+  async assertOrderRoomPostValues(orderNameValue,roomNameValue,postAsValue) {
+    const orderName = await this.orderNameLabel.textContent();
+    await assertEqualValues(orderName.trim(),orderNameValue,"Verify that the order name fromm navigator and lighthouse are equal");
+    let roomName = await this.postAsAndRoomDiv(indexPage.navigator_data.second_job_no,8).textContent();
+    await assertEqualValues(roomName.trim(),roomNameValue,"Verify that the room name from navigator and lighthouse are equal")
+    let postAs = await this.postAsAndRoomDiv(indexPage.navigator_data.second_job_no,13).textContent();
+    await assertEqualValues(postAs.trim(),postAsValue,"Verify that the post as value from navigator and lighthouse are equal")
   }
 };
