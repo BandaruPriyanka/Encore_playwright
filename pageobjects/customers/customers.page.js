@@ -30,7 +30,7 @@ exports.CustomersPage = class CustomersPage {
     this.customerSearchInput = this.page.locator("//input[@placeholder='Search Customers']");
     this.noDataPlaceholder = this.page.locator("//span[contains(text(),'No data found')]");
     this.customerDiv = this.page.locator("//div[@class='flex']/child::div[1]");
-    this.customerList = this.page.locator("//div[text()='Angelina Wood']");
+    this.customerList = this.page.locator("//div[text()='Sydney Trapp']");
     this.dateSpan = date => this.page.locator(`//span[text()='` + date + `']`);
     this.crossIcon = this.page.locator("//icon[@name='cross_line']");
     this.calendarDiv = this.page.locator('app-date-selector');
@@ -39,9 +39,9 @@ exports.CustomersPage = class CustomersPage {
     this.nextweekIcon = this.page.locator("//icon[@title='Next week']");
     this.previousweekIcon = this.page.locator("//icon[@title='Previous week']");
     this.todayButton = this.page.locator("//div[contains(text(),'TODAY')]");
-    this.customerCard = this.page.locator("//div[text()='Angelina Wood']");
+    this.customerCard = this.page.locator("//div[text()='Sydney Trapp']");
     this.opportunityList = this.page.locator(
-      "//div[text()='Angelina Wood']//ancestor::mat-expansion-panel-header/following::div[contains(@class,'e2e_customer_card_opportunity')][1]"
+      "//div[text()='Sydney Trapp']//ancestor::mat-expansion-panel-header/following::div[contains(@class,'e2e_customer_card_opportunity')][1]"
     );
     this.getRoomName = this.page.locator("((//div[@role='region']/div/div/div)[1]/div/span)[1]");
     this.orderName = this.page.locator("//span[contains(@class,'e2e_opportunity_order_name')]");
@@ -70,7 +70,7 @@ exports.CustomersPage = class CustomersPage {
     this.flowsheetTab = this.page.locator(
       "(//span[contains(normalize-space(),'Flowsheet')])[2]/parent::div"
     );
-    this.contactNameDiv = this.page.locator("//div[text()='Angelina Wood']");
+    this.contactNameDiv = this.page.locator("//div[text()='Sydney Trapp']");
     this.orderNameDiv = order_name =>
       this.page.locator(`//span[contains(text(),'` + order_name + `')]`);
     this.touchPointSpan = this.page.locator("//span[text()='TouchPoint']");
@@ -113,7 +113,7 @@ exports.CustomersPage = class CustomersPage {
     );
     this.dateElement = date => this.page.locator(`//span[text()='` + date + `']`);
     this.firstOrderDiv = this.page.locator(
-      "//div[text()='Angelina Wood']//ancestor::mat-expansion-panel-header/following::div[contains(@class,'e2e_customer_card_opportunity')][1]"
+      "//div[text()='Sydney Trapp']//ancestor::mat-expansion-panel-header/following::div[contains(@class,'e2e_customer_card_opportunity')][1]"
     );
     this.cardsDiv = this.page.locator("//div[@role='region']/div");
     this.dynamicOpportunity = orderName =>
