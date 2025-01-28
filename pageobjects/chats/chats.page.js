@@ -373,4 +373,11 @@ exports.ChatPage = class ChatPage {
     );
     await executeStep(this.clickOnImg, 'click', 'Click on image to check');
   }
+  async selectUserToLogOut(){
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.reload();
+    await executeStep(this.selectLogOutMail, 'click', 'Clicking on the Logout icon will log one user out of Lighthouse');
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await this.loginUser(process.env.email, process.env.password);
+  }
 };
