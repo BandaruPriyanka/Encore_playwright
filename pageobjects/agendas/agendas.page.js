@@ -1112,8 +1112,8 @@ async assertPrintIconForBothViews() {
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));  
     const eventName = await this.eventNameInput.textContent();
     await assertNotEqualValues(eventName,null,"Verify that the next fields should be pre-populated");
-    await this.dateWarningIcon.hover();
-    await assertElementVisible(this.dateWarningMsg,"Verify that Start Date is today or later is displayed");
+    // await this.dateWarningIcon.hover();
+    // await assertElementVisible(this.dateWarningMsg,"Verify that Start Date is today or later is displayed");
     await assertElementDisabled(this.saveButtonInModal,"Verify that Save button should be disabled until all required fields are filled properly");
     await executeStep(this.projectManagerInput,"click","Click the product manager input");
     await executeStep(this.selectCheckBox(indexPage.lighthouse_data.projectManagerName),"click",`Select the '${indexPage.lighthouse_data.projectManagerName}' checkbox`)

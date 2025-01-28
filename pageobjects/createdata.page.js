@@ -146,7 +146,18 @@ exports.CreateData = class CreateData {
     this.postAsAndRoomDiv = (jobNumber,index) => this.page.locator(`(//span[text()='${jobNumber}']/../../div)[${index}]`);
     this.eventTypeDropdown = this.page.locator("//button[@aria-label='Event Type']");
     this.selectEventType = this.page.locator("//div[text()='General Session']");
-
+    this.opprtunityNumberDiv = this.page.locator("//div[text()='Opportunity Number']/preceding-sibling::div/div");
+    this.newInternalOrderBtn = this.page.locator("//button[normalize-space()='New Internal Order']");
+    this.orderNameInput = this.page.locator("//input[@name='OrderName']");
+    this.cultureOrLangauageDropdown = this.page.locator("//select[@name='Culture']");
+    this.locationInput = this.page.locator("//input[@id='locationLink']");
+    this.locationSearchInput = this.page.locator("//input[@id='txtLocationSearch']")
+    this.selectLocation = this.page.locator("//div[text()='Hyatt Regency Orlando Airport']");
+    this.selectButton = this.page.locator("//button[@id='btnLocationModalSelect']");
+    this.cancelBtn = this.page.locator("//button[normalize-space()='Cancel']");
+    this.dateInput = (value) => this.page.locator(`//input[@name='${value}']`);
+    this.timeInput = (value) => this.page.locator(`//app-time-dropdown-picker[@name='${value}']`);
+    this.selectTime = this.page.locator("//div[@id='timepicker0']");
   }
   async clickOnCompass() {
     await this.page
@@ -367,6 +378,10 @@ exports.CreateData = class CreateData {
       }
       await executeStep(this.saveButton, 'click', 'click on save button');
       await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+      const oppNum =  await this.opprtunityNumberDiv.textContent();
+      if (this.isCreateData1 && !this.isComplimentary) {
+        indexPage.navigator_data.opportunityNumber = oppNum;
+      }
       await executeStep(this.ordersButton, 'click', 'click the order button');
     }
   }
@@ -564,5 +579,42 @@ exports.CreateData = class CreateData {
     await assertEqualValues(roomName.trim(),roomNameValue,"Verify that the room name from navigator and lighthouse are equal")
     let postAs = await this.postAsAndRoomDiv(indexPage.navigator_data.second_job_no,13).textContent();
     await assertEqualValues(postAs.trim(),postAsValue,"Verify that the post as value from navigator and lighthouse are equal")
+  }
+
+  async createInternalOrder(orderName,locationCode) {
+    await executeStep(this.homeIcon,"click","Click on home icon");
+    await executeStep(this.newInternalOrderBtn,"click","Click on new internal order button");
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await executeStep(this.orderNameInput,"fill","Enter the order name",[orderName]);
+    await executeStep(this.cultureOrLangauageDropdown,"click","Click on dropdown")
+    await this.cultureOrLangauageDropdown.selectOption({ label : "en-US"});
+    await executeStep(this.locationInput,"click","click on select location");
+    await this.locationSearchInput.click();
+    await this.locationSearchInput.type(locationCode, { delay: 100 });
+    await executeStep(this.selectLocation,"click","Click on location");
+    await executeStep(this.selectButton,"click","Click on select button");
+    await executeStep(this.saveBtn,"click","Click on save button");
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+  }
+
+  async createJobForInternalOrder(prepDate,deliveryDate,pickupDate,returnDate) {
+    await executeStep(this.clickOnjobsBtn,"click","Click on jobs");
+    await executeStep(this.dateInput(utilConst.Const.prepDate),"fill","Enter the prepDate",[prepDate]);
+    await executeStep(this.timeInput(utilConst.Const.prepTime),"click","Click on Prep Time Input");
+    await executeStep(this.selectTime,"click","Select the prep time");
+    await executeStep(this.dateInput(utilConst.Const.deliveryDate),"fill","Enter the prepDate",[deliveryDate]);
+    await executeStep(this.timeInput(utilConst.Const.deliveryTime),"click","Click on Prep Time Input");
+    await executeStep(this.selectTime,"click","Select the prep time");
+    await executeStep(this.dateInput(utilConst.Const.pickupDate),"fill","Enter the prepDate",[pickupDate]);
+    await executeStep(this.timeInput(utilConst.Const.pickupTime),"click","Click on Prep Time Input");
+    await executeStep(this.selectTime,"click","Select the prep time");
+    await executeStep(this.dateInput(utilConst.Const.returnDate),"fill","Enter the prepDate",[returnDate]);
+    await executeStep(this.timeInput(utilConst.Const.returnTime),"click","Click on Prep Time Input");
+    await executeStep(this.selectTime,"click","Select the prep time");
+    await executeStep(this.itemsBtn,"click","Click on items");
+    await executeStep(this.clickPackageIcon, 'click', 'click on package icon');
+    await executeStep(this.selectPackageName, 'doubleclick', 'double click the select package');
+    await executeStep(this.saveBtn,"click","Click on save button");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout)); 
   }
 };

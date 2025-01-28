@@ -43,8 +43,16 @@ const NavigatorConsts = {
   setComplete : "Set Refresh - Complete",
   carryOverComplete : "Carry Over - Complete",
   carryOver : "Carry Over",
-  setRefresh : "Set Refresh"
-
+  setRefresh : "Set Refresh",
+  prepDate : "PrepDate",
+  prepTime : "PrepTime",
+  deliveryDate : "DeliveryDate",
+  deliveryTime : "DeliveryTime",
+  pickupDate : "PickupDate",
+  pickupTime : "PickupTime",
+  returnDate : "ReturnDate",
+  returnTime : "ReturnTime"
+  
 };
 
 exports.Const = NavigatorConsts;

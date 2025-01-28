@@ -20,12 +20,16 @@ const {
   assertElementNotVisible,
   assertContainsValue,
   getFlowsheetCard,
-  formatTimeTo12Hour
+  formatTimeTo12Hour,
+  generateRandString,
+  getPreviousDateFromToday,
+  getFutureDateFromToday
 } = require('../../utils/helper');
 const indexPage = require('../../utils/index.page');
 
 let beforeRoomCount, afterRoomCount, roomsreturned,cardStatus,setStatusValue,strikeStatus,
-    setTime,strikeTime,clientStartTime,clientEndTime,roomNameValue,orderNameValue,postAsValue;
+    setTime,strikeTime,clientStartTime,clientEndTime,roomNameValue,orderNameValue,postAsValue,
+    initialCountOfTransferTab,finalCountOfTransferTab,transferOrderName;
 exports.FlowSheetPage = class FlowSheetPage {
   constructor(page) {
     this.page = page;
@@ -217,6 +221,14 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.roomNameDiv = this.page.locator("//div[contains(@class,'e2e_flowsheet_action_room_name')]");
     this.orderNameDiv = this.page.locator("//div[contains(@class,'e2e_flowsheet_action_room_name')]/../following-sibling::div[1]/div/div");
     this.postAsDiv = this.page.locator("//div[contains(@class,'e2e_flowsheet_action_room_name')]/../following-sibling::div[2]");
+    //C57171
+    //this.transistionTab
+    this.countOfTransferTab = this.page.locator("//div[normalize-space()='Transfers']//following-sibling::div");
+    this.orderNameElement = (orderName) => this.page.locator(`//div[text() = ' (${orderName}) ']`);
+    this.locationElement = (locationCode) => this.isMobile ? this.page.locator(`(//span[contains(text(),'${locationCode}')])[2]`)
+                              : this.page.locator(`(//span[contains(text(),'${locationCode}')])[1]`); 
+    this.orderNameInCard = (orderName) => this.isMobile ? this.page.locator(`(//span[text()='${orderName}'])[2]`)
+                              : this.page.locator(`(//span[text()='${orderName}'])[1]`)
   }
 
   async changeLocation(locationId, locationName) {
@@ -851,6 +863,57 @@ exports.FlowSheetPage = class FlowSheetPage {
       );
       await createDataPage.assertStatusOfJob(indexPage.navigator_data.second_job_no,clientStartTime.trim(),clientEndTime.trim(),setStatusValue.trim(),strikeStatus.trim(),setTime.trim(),strikeTime.trim());
       await createDataPage.assertOrderRoomPostValues(orderNameValue.trim(),roomNameValue.trim(),postAsValue.trim())
+    }
+
+    async transferTabBeforeCreateOrder() {
+      await executeStep(this.transfersTab,"click","Click on transfer tab");
+      if(await this.transfersCount.isVisible()) {
+        initialCountOfTransferTab = await this.transfersCount.textContent();
+      }else {
+        initialCountOfTransferTab = 0
+      }
+    }
+
+    async createInternalOrder() {
+      const newPage = await this.page.context().newPage();
+      const createDataPage = new indexPage.CreateData(newPage);
+      await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
+        timeout: parseInt(process.env.pageload_timeout)
+      });
+      if (await createDataPage.reloadErrorMsg.isVisible()) {
+        await newPage.reload();
+      }
+      const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
+      await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
+      await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
+      await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
+        timeout: parseInt(process.env.pageload_timeout)
+      });
+      if (await createDataPage.reloadErrorMsg.isVisible()) {
+        await newPage.reload();
+      }
+      transferOrderName = generateRandString(3);
+      await createDataPage.createInternalOrder(transferOrderName,indexPage.lighthouse_data.locationId_createData2);
+      await createDataPage.createJobForInternalOrder(getPreviousDateFromToday(2),getPreviousDateFromToday(2),getFutureDateFromToday(2),getFutureDateFromToday(2));
+      await newPage.close();
+    }
+
+    async transferTabAfterCreateOrder() {
+      finalCountOfTransferTab = await this.transfersCount.textContent();
+      await assertNotEqualValues(initialCountOfTransferTab,finalCountOfTransferTab,"Verify that tarnsfer card is added");
+    }
+
+    async assertTransferCard() {
+      await executeStep(this.orderNameElement(transferOrderName),"click","Click on transfer card");
+      await assertElementVisible(this.orderNameInCard(transferOrderName),"Verify that order name is visible");
+      await assertElementVisible(this.locationElement(indexPage.lighthouse_data.locationId_createData2),"Verify that location is visible");
+    }
+
+    async assertTransferTabAtAnotherLocation() {
+      await this.changeLocation(indexPage.lighthouse_data.locationId_createData2,indexPage.lighthouse_data.locationText_createData2);
+      await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
+      await executeStep(this.transfersTab,"Click on transfer tab");
+      await assertElementVisible(this.orderNameElement(transferOrderName),"Verify that transfer card is visbile in destination location");
     }
 
 };

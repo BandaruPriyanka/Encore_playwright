@@ -703,7 +703,6 @@ async function getRandomDateFromRange(dateRange) {
 }
 
 function formatTimeTo12Hour(time) {
-  // Check if the input already contains AM or PM
   let isPM = false;
   if (time.includes('PM')) {
     isPM = true;
@@ -711,29 +710,38 @@ function formatTimeTo12Hour(time) {
   } else if (time.includes('AM')) {
     time = time.replace('AM', '').trim();
   }
-
-  // Split the time into hours and minutes
   let [hours, minutes] = time.split(':').map(Number);
-
-  // Adjust hours for PM times (except for 12 PM)
   if (isPM && hours !== 12) {
     hours += 12;
   } else if (!isPM && hours === 12) {
-    // Handle 12 AM (midnight) case
     hours = 0;
   }
-
-  // Convert to 12-hour format and set AM/PM
   const period = hours >= 12 ? 'PM' : 'AM';
-
-  // Convert hours to 12-hour format
   hours = hours % 12 || 12;
-
-  // Pad hours and minutes to always show 2 digits
   hours = String(hours).padStart(2, '0');
   minutes = String(minutes).padStart(2, '0');
-
   return `${hours}:${minutes} ${period}`;
+}
+
+function getPreviousDateFromToday(days) {
+  const today = new Date();
+  const previousDate = new Date(today.getTime() - days * 24 * 60 * 60 * 1000);
+  const formattedDate = 
+      String(previousDate.getMonth() + 1).padStart(2, '0') + '/' +
+      String(previousDate.getDate()).padStart(2, '0') + '/' +
+      previousDate.getFullYear();
+
+  return formattedDate;
+}
+
+function getFutureDateFromToday(days) {
+  const today = new Date();
+  const futureDate = new Date(today.getTime() + days * 24 * 60 * 60 * 1000);
+  const formattedDate = 
+      String(futureDate.getMonth() + 1).padStart(2, '0') + '/' +
+      String(futureDate.getDate()).padStart(2, '0') + '/' +
+      futureDate.getFullYear();
+  return formattedDate;
 }
 
 
@@ -826,5 +834,7 @@ module.exports = {
   generateRandomNote,
   assertElementsToBe,
   getRandomDateFromRange,
-  formatTimeTo12Hour
+  formatTimeTo12Hour,
+  getPreviousDateFromToday,
+  getFutureDateFromToday
 };
