@@ -18,7 +18,7 @@ test.describe('LightHouse Event Agendas - Mfe Event Agendas ', () => {
   test('Test_C57098 Verify MFE - Create Event Agenda' , async ({ isMobile }) => {
     test.skip(isMobile, 'Skipping Verify MFE - Create Event Agenda');
     await agendasPage.assertEventInformationModal();
-    await agendasPage.createNewAgenda(indexPage.lighthouse_data.opportunityNumber);
+    await agendasPage.createNewAgenda(indexPage.navigator_data.opportunityNumber);
   });
   test('Test_C56942	: Verify MFE - Event Agendas page elements', async () => {
     await agendasPage.verifyEventAgendasPage();

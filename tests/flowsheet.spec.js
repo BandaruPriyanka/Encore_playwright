@@ -1,6 +1,6 @@
 const { test } = require('@playwright/test');
 const indexPage = require('../utils/index.page');
-const { assertElementVisible, assertEqualValues, assertNotEqualValues } = require('../utils/helper');
+const { assertElementVisible, assertEqualValues, assertNotEqualValues,lighthouseApi } = require('../utils/helper');
 require('dotenv').config();
 
 test.describe('Performing actions on Flowsheet', () => {
@@ -8,9 +8,11 @@ test.describe('Performing actions on Flowsheet', () => {
     filtercount_before_pagereload,
     filtercount_after_pagereload,
     locationId,
-    locationText;
+    locationText,
+    isCreateData1;
 
   test.beforeEach(async ({ page }) => {
+    isCreateData1 = test.info().project.use.isCreateData1;
     flowsheetPage = new indexPage.FlowSheetPage(page);
     locationId = indexPage.lighthouse_data.locationId_createData1;
     locationText = indexPage.lighthouse_data.locationText_createData1;
@@ -195,6 +197,18 @@ test.describe('Performing actions on Flowsheet', () => {
     await flowsheetPage.changeLocation(indexPage.lighthouse_data.locationId_createData1, indexPage.lighthouse_data.locationText_createData1);
     const afterFlowsheetCountFor1137 = await flowsheetPage.roomsCount.textContent();
     await assertEqualValues(initialFlowsheetCardsCountFor1137,afterFlowsheetCountFor1137,"Verify that location is set to intial location")
+  })
+
+  test("Test_C57171 Verify Transfers Tab" , async ({ page }) => {
+    await flowsheetPage.transferTabBeforeCreateOrder();
+    await page.waitForTimeout(parseInt(process.env.small_timeout))
+    await flowsheetPage.createInternalOrder();
+    await lighthouseApi(isCreateData1)
+    await page.waitForTimeout(parseInt(process.env.small_max_timeout))
+    await flowsheetPage.transferTabAfterCreateOrder();
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
+    await flowsheetPage.assertTransferCard();
+    await flowsheetPage.assertTransferTabAtAnotherLocation();
   })
 
 });
