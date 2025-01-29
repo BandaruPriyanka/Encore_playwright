@@ -185,4 +185,10 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
     await flowsheetCardAndTab.assertDocument(indexPage.lighthouse_data.negative);
     await flowsheetCardAndTab.assertRoomCountAfterAddOn();
   });
+
+  test('Test_C57170 :Verify Diagram Tab', async () => {
+    await flowsheetCardAndTab.searchFunction(indexPage.navigator_data.second_job_no);
+    await flowsheetCardAndTab.attachDiagramInNavigator();
+    await flowsheetCardAndTab.verifyDiagramInLighthouse();
+  });
 });

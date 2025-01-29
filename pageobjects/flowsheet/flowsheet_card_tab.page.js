@@ -45,11 +45,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.iconInPage = iconText =>
       this.isMobile
         ? this.page.locator(
-            `//app-flowsheet-detail/div[1]/div[2]//app-mood-icon/icon[@class='` + iconText + `']`
-          )
+          `//app-flowsheet-detail/div[1]/div[2]//app-mood-icon/icon[@class='` + iconText + `']`
+        )
         : this.page.locator(
-            `//app-flowsheet-detail/div[1]/div[1]//app-mood-icon/icon[@class='` + iconText + `']`
-          );
+          `//app-flowsheet-detail/div[1]/div[1]//app-mood-icon/icon[@class='` + iconText + `']`
+        );
     this.moodIconInPage = this.isMobile
       ? this.page.locator(`//app-flowsheet-detail/div[1]/div[2]//app-mood-icon/icon`)
       : this.page.locator(`//app-flowsheet-detail/div[1]/div[1]//app-mood-icon/icon`);
@@ -74,8 +74,8 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.flowsheetBtn = this.isMobile
       ? this.page.locator('//app-mobile-navigation//div[3]/app-mobile-navigation-item//icon')
       : this.page.locator(
-          '//app-desktop-navigation//app-navigation-item[1]//span[contains(text(),Flowsheet)]'
-        );
+        '//app-desktop-navigation//app-navigation-item[1]//span[contains(text(),Flowsheet)]'
+      );
     this.newAddOnRequestBtn = this.page.locator("//button[contains(text(),'New Add On Request')]");
     this.roomsCount = this.page.locator("//div[text()=' Rooms ']/following-sibling::div");
     this.addOnModalText = this.page.locator("//strong[contains(text(),'Add On Request')]");
@@ -164,8 +164,8 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.touchPointAfterClickingCustomer = customerName =>
       this.page.locator(
         `//span[contains(text(),'` +
-          customerName +
-          `')]/parent::div/preceding-sibling::app-mood-pia-chart`
+        customerName +
+        `')]/parent::div/preceding-sibling::app-mood-pia-chart`
       );
     this.firstTouchPointIcon =
       "//span[contains(text(),'First Touchpoint')]/ancestor::div/preceding-sibling::app-mood-icon/icon";
@@ -192,11 +192,11 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.labourEquipment = this.page.locator("//span[contains(text(),'Labor')]");
     this.equipmentCheckListTurnOnAndOffBtn = this.isMobile
       ? this.page.locator(
-          "(//div[contains(@class,'e2e_user_profile_equipment_checklist_action')])[2]"
-        )
+        "(//div[contains(@class,'e2e_user_profile_equipment_checklist_action')])[2]"
+      )
       : this.page.locator(
-          "(//div[contains(@class,'e2e_user_profile_equipment_checklist_action')])[1]"
-        );
+        "(//div[contains(@class,'e2e_user_profile_equipment_checklist_action')])[1]"
+      );
     this.selectAllCheckBox = this.page.locator(
       "//span[text()='Select All']//following-sibling::input[@type='checkbox']"
     );
@@ -207,18 +207,18 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.myProfile = this.page.locator("//span[text()='My Profile']");
     this.equipmentDisplayChioceValue = this.isMobile
       ? this.page.locator(
-          "(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_value')]"
-        )
+        "(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_value')]"
+      )
       : this.page.locator(
-          "//div[contains(text(),'Equipment Display Choice')]/following-sibling::div/span"
-        );
+        "//div[contains(text(),'Equipment Display Choice')]/following-sibling::div/span"
+      );
     this.equipmentValueChangeButton = this.isMobile
       ? this.page.locator(
-          "(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_action')]"
-        )
+        "(//div[contains(text(),'Equipment Display Choice')])[2]/../following-sibling::div/div[contains(@class,'e2e_user_profile_equipment_action')]"
+      )
       : this.page.locator(
-          "//div[contains(text(),'Equipment Display Choice')]/following-sibling::div[contains(text(),'Update')]"
-        );
+        "//div[contains(text(),'Equipment Display Choice')]/following-sibling::div[contains(text(),'Update')]"
+      );
     this.equipmentText = this.page.locator(
       "(//span[@class='e2e_flowsheet_equipment_package font-semibold'])[1]/following::span[@class='e2e_flowsheet_equipment_package'][1]"
     );
@@ -270,6 +270,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.greenNotificationMsg = this.page.locator(
       "//span[normalize-space()='Please remain on this page while we are generating a document for you. This usually takes up to a minute.']"
     );
+    this.jobLink = (page,jobId) => page.locator(`//a[normalize-space()='` + jobId + `']/parent::div`);
+    this.uploadDiagram = (page,jobId) => page.locator(`//span[normalize-space()='` + jobId + `']/parent::div/following-sibling::div/child::span[@title='Add a Room Diagram']`);
+    this.chooseFile = (page) =>page.locator("//input[@type='file']");
+    this.attachBtn = (page) =>page.locator("//button[normalize-space()='Attach']");
+    this.viewDiagram = (page,jobId) => page.locator(`//span[text()='` + jobId + `']/parent::div/following-sibling::div/child::span[@title='View Room Diagram']`);
+    this.diagramTab = this.page.locator("(//div[normalize-space()='Diagram'])[1]");
+    this.diagramImg = this.page.locator("//img[contains(@src,'png')]");
   }
 
   async searchFunction(searchText) {
@@ -1276,5 +1283,47 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await executeStep(this.nextButton, 'click', 'Click on next button');
     await this.dateSelectModal(false);
     await this.page.waitForTimeout(parseInt(process.env.default_timeout));
+  }
+
+  async attachDiagramInNavigator() {
+    const newPage = await this.page.context().newPage();
+    const createDataPage = new indexPage.CreateData(newPage);
+    await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
+      timeout: parseInt(process.env.pageload_timeout)
+    });
+    if (await createDataPage.reloadErrorMsg.isVisible()) {
+      await newPage.reload();
+    }
+    const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
+    await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
+    await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
+    await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
+      timeout: parseInt(process.env.pageload_timeout)
+    });
+    if (await createDataPage.reloadErrorMsg.isVisible()) {
+      await newPage.reload();
+    }
+    await createDataPage.searchWithJobId();
+    await executeStep(this.jobLink(newPage,indexPage.navigator_data.second_job_no), 'click', 'Click on the job Link');
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    if (! await this.viewDiagram(newPage,indexPage.navigator_data.second_job_no).isVisible()) {
+      await executeStep(this.uploadDiagram(newPage,indexPage.navigator_data.second_job_no), 'click', 'Click on Upload Diagram icon');
+      const user1Image = process.cwd() + '//images//lighthouse.png';
+      await this.chooseFile(newPage).setInputFiles(user1Image);
+      await executeStep(this.attachBtn(newPage), 'click', 'Click on the Attach Button');
+    }
+    await assertElementVisible(this.viewDiagram(newPage,indexPage.navigator_data.second_job_no), 'Verify the Diagram is attached');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await newPage.close();
+  }
+
+  async verifyDiagramInLighthouse(){
+    await this.page.reload();
+    await this.searchFunction(indexPage.navigator_data.second_job_no);
+    await this.clickOnJob(indexPage.navigator_data.second_job_no);
+    await assertElementVisible(this.diagramTab, 'Verify the Diagram Tab is Displayed');
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.diagramTab, 'click', 'Click on the Diagram Tab');
+    await assertElementVisible(this.diagramImg, 'Verify the Diagram Image is Displayed');
   }
 };
