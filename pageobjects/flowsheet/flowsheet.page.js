@@ -182,7 +182,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.confirmYes = this.page.locator("//app-confirm-dialog//span[text()='Yes']");
     this.greenIcon = this.isMobile
       ? this.page.locator(
-          "//app-flowsheet-detail//app-flowsheet-action-timeline//div//div[contains(@class, 'e2e_flowsheet_action_timeline_event')][1]//following-sibling::icon[contains(@class, 'text-green-500')]"
+          "//app-flowsheet-action-timeline//div//div[contains(@class, 'e2e_flowsheet_action_timeline_event')][1]//following-sibling::icon[contains(@class, 'text-green-500')]"
         )
       : this.page.locator(
           "(//app-flowsheet-action-timeline//div[contains(@class, 'flowsheet-action-timeline')]//div[contains(@class, 'e2e_flowsheet_action_timeline_event')][1]//icon[contains(@class, 'text-green-500')])[1]"
@@ -209,11 +209,12 @@ exports.FlowSheetPage = class FlowSheetPage {
       `//app-flowsheet-action-card[${index}]//app-flowsheet-action-timeline//div[contains(@class, 'flowsheet-action-timeline')]//div[contains(@class, 'e2e_flowsheet_action_timeline_event')][1]//icon[contains(@class, 'text-green-500')]`
     );
     this.flowsheetTimeLine = this.page.locator("//app-flowsheet-action-timeline").first();
+    this.flowsheetActionTimeLine = (index) => this.page.locator(`(//app-flowsheet-action-timeline)[${index}]`)
+    this.flowsheetSetText = (textIndex) => this.page.locator(`((//app-flowsheet-action-timeline)[2]//span)[${textIndex}]`)
     this.selectStatusButton = (selectText) => this.page.locator(`//span[text()='${selectText}']/following-sibling::span`);
     this.statusFilter = this.page.locator("//div[contains(text(),'Status')]//following-sibling::icon");
     // this.selectAllInStatus = this.page.locator("//div[@title='All']");
     this.selectAllInStatus = this.page.locator("//div[normalize-space()='Status']/following-sibling::div/div[normalize-space()='All']");
-    //C57167
     this.jobStatus = this.page.locator("//span[contains(@class,'e2e_flowsheet_action_job_status')]");
     this.jobNumber = this.page.locator("//span[contains(@class,'e2e_flowsheet_action_job_number')]");
     this.flowsheetEventTime = (index) => this.page.locator(`(//app-flowsheet-action-card//span[contains(@class,'e2e_flowsheet_action_timeline_event_time')])[${index}]`)
@@ -221,8 +222,6 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.roomNameDiv = this.page.locator("//div[contains(@class,'e2e_flowsheet_action_room_name')]");
     this.orderNameDiv = this.page.locator("//div[contains(@class,'e2e_flowsheet_action_room_name')]/../following-sibling::div[1]/div/div");
     this.postAsDiv = this.page.locator("//div[contains(@class,'e2e_flowsheet_action_room_name')]/../following-sibling::div[2]");
-    //C57171
-    //this.transistionTab
     this.countOfTransferTab = this.page.locator("//div[normalize-space()='Transfers']//following-sibling::div");
     this.orderNameElement = (orderName) => this.page.locator(`//div[text() = ' (${orderName}) ']`);
     this.locationElement = (locationCode) => this.isMobile ? this.page.locator(`(//span[contains(text(),'${locationCode}')])[2]`)
@@ -777,6 +776,18 @@ exports.FlowSheetPage = class FlowSheetPage {
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
     await executeStep(this.selectStatusButton(`${strikeText.trim().replace(/(?<!^)(?=[A-Z])/g, ' ')} - Complete`),"click","Click on select for complete carry over");
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+  }
+
+  async markLateFlowsheetAsCompleted(){
+    const setText = await this.flowsheetSetText(1).textContent();
+    await executeStep(this.flowsheetActionTimeLine(2),"click","Click Flowsheet Time line to set Status");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.selectStatusButton(`${setText.trim()} - Complete`),"click","Click on select for set complete");
+    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await assertElementVisible(this.greenIcon, 'Assert that first Icon updates to green color')
+    await executeStep(this.flowsheetActionTimeLine(2),"click","Click Flowsheet Time line to set Status");
+    await executeStep(this.selectStatusButton(`${setText.trim()}`),"click","Click on select to set it back to previous state");
     await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
   }
 
