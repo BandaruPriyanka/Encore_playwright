@@ -176,6 +176,10 @@ test.describe('Performing actions on Flowsheet', () => {
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });
 
+  test('Test_C57168 Verify the late status and mark as green', async()=>{
+    await flowsheetPage.markLateFlowsheetAsCompleted();
+  })
+
   test('Test_C57167 Verify that navigator data on Flowsheet Card' , async({ page }) => {
     await flowsheetPage.searchFunctionality();
     await page.waitForTimeout(parseInt(process.env.small_timeout))
