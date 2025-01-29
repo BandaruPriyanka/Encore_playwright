@@ -184,16 +184,18 @@ function addDaysToCurrentDate(days) {
   return formatDate(today);
 }
 function getDateBasedOnDays(days) {
-  const today = new Date();
+  const today = new Date(2025, 0, 1); 
   today.setDate(today.getDate() + days);
   const getDate = today.getDate();
   return getDate;
 }
+
 function getDayNameBasedOnDays(days) {
-  const today = new Date();
+  const today = new Date(2025, 0, 1); 
   today.setDate(today.getDate() + days);
   const options = { weekday: 'long' };
-  return today.toLocaleDateString('default', options);
+  const dayName = today.toLocaleDateString('en-US', options);
+  return dayName;
 }
 function getPreviousWeekDateAndMonth() {
   const today = new Date();
