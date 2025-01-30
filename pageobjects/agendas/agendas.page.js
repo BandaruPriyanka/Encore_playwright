@@ -15,8 +15,6 @@ const {
   assertContainsValue,
   assertElementAttributeContains,
   todayDate,
-  getDateBasedOnDays,
-  getDayNameBasedOnDays,
   getLastWeekRange,
   getWeekBeforeLastRange,
   getCurrentMonthRange,
@@ -37,7 +35,8 @@ const {
   generateRandString,
   formatDateForEvent,
   assertElementsToBe,
-  getRandomDateFromRange
+  getRandomDateFromRange,
+  formatFutureDate
 } = require('../../utils/helper');
 let startDateEle,
   endDateEle,
@@ -95,15 +94,13 @@ exports.EventAgendas = class EventAgendas {
       this.page.locator(`mbsc-calendar-day.mbsc-selected:has-text("${date}")`).first();
     this.getMonth = this.page.locator('span.mbsc-calendar-month');
     this.getYear = this.page.locator('span.mbsc-calendar-title.mbsc-calendar-year');
-    this.endDateCell = (dayName, day, month, year) => {
-      const formattedDate = `${dayName}, ${month} ${day}, ${year}`;
-      return this.page.locator(`div[aria-label="${formattedDate}"]`);
-    };
+    this.endDateCell = (daysToAdd) => 
+      this.page.getByRole('button', { name: formatFutureDate(daysToAdd) }).first();
     this.startDate = this.page.locator('mbsc-button div.mbsc-range-control-value').first();
     this.endDate = this.page.locator('mbsc-button div.mbsc-range-control-value').last();
     this.updateBtn = this.page.locator('button.e2e_date_range_update_button');
     this.previousPage = this.page.locator("[aria-label='Previous page']");
-    this.previousDate = this.page.locator("mbsc-calendar-day.mbsc-selected:has-text('1')");
+    this.previousDate = this.page.getByText('1').nth(1);
     this.cancelButton = this.page.locator('button.e2e_date_range_cancel_button');
     this.todayDateRange = this.page.locator('div.e2e_date_range_today');
     this.yesterdayDateRange = this.page.locator('div.e2e_date_range_yesterday');
@@ -315,14 +312,14 @@ exports.EventAgendas = class EventAgendas {
     await executeStep(
       this.previousPage,
       'click',
-      'Click on Next page to select earlier Date than the Start date'
+      'Click on Previous page to Select date'
     );
     await executeStep(
       this.previousPage,
       'click',
-      'Click on Next page to select earlier Date than the Start date'
+      'Click on Previous page to Select date'
     );
-    await executeStep(this.previousDate, 'click', 'Click on earlier than the Start date');
+    await executeStep(this.previousDate, 'click', 'Select Previous Date', { force: true });
     await assertElementAttributeContains(
       this.updateBtn,
       'class',
@@ -335,17 +332,14 @@ exports.EventAgendas = class EventAgendas {
       'Verify "Cancel" button should revert all previous changes & restore last confirmed dates selection'
     );
     await executeStep(this.calendarWidget, 'click', 'Click on Calendar widget');
-    await executeStep(this.dateCell(todayDate()), 'click', 'Select one date in start date');
+    await executeStep(this.dateCell(todayDate()), 'click', 'Select one date in Start date');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    const getDays = getDateBasedOnDays(5);
-    const getDayName = getDayNameBasedOnDays(5);
-    const getMonthName = await this.getMonth.innerText();
-    const getPresentYear = await this.getYear.innerText();
     await executeStep(
-      this.endDateCell(getDayName, getDays, getMonthName, getPresentYear),
-      'click',
-      'Select one date in start date'
-    );
+       this.endDateCell(5),
+       'click',
+       'Select one date in End date',
+        { force: true }
+      );
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     startDateEle = await this.startDate.innerText();
     endDateEle = await this.endDate.innerText();
