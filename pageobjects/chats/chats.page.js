@@ -73,7 +73,7 @@ exports.ChatPage = class ChatPage {
     this.enterPwd = this.page.locator("//input[@name='passwd']");
     this.submitBtn = this.page.locator("//input[@type='submit']");
     this.chatGrp = this.page.locator(
-      "(//div[contains(text(),'Navi CRMautomaiton, Rob Griffith')])[1]"
+      "(//div[contains(text(),'Navi CRMautomaiton')])[1]"
     );
     this.user2TimeStamp = this.page.locator("(//div[contains(@class,'e2e_message_card_time')])[2]");
     this.alertImportant = this.page.locator("//icon[@name='alert_important_undraw']");
