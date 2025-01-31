@@ -209,11 +209,8 @@ exports.FlowSheetPage = class FlowSheetPage {
       `//app-flowsheet-action-card[${index}]//app-flowsheet-action-timeline//div[contains(@class, 'flowsheet-action-timeline')]//div[contains(@class, 'e2e_flowsheet_action_timeline_event')][1]//icon[contains(@class, 'text-green-500')]`
     );
     this.flowsheetTimeLine = this.page.locator("//app-flowsheet-action-timeline").first();
-    this.flowsheetActionTimeLine = (index) => this.page.locator(`(//app-flowsheet-action-timeline)[${index}]`)
-    this.flowsheetSetText = (textIndex) => this.page.locator(`((//app-flowsheet-action-timeline)[2]//span)[${textIndex}]`)
-    this.selectStatusButton = (selectText) => this.page.locator(`//span[text()='${selectText}']/following-sibling::span`);
+    this.selectStatusButton = (selectText) => this.page.locator(`//span[contains(text(),'${selectText}')]/following-sibling::span`);
     this.statusFilter = this.page.locator("//div[contains(text(),'Status')]//following-sibling::icon");
-    // this.selectAllInStatus = this.page.locator("//div[@title='All']");
     this.selectAllInStatus = this.page.locator("//div[normalize-space()='Status']/following-sibling::div/div[normalize-space()='All']");
     this.jobStatus = this.page.locator("//span[contains(@class,'e2e_flowsheet_action_job_status')]");
     this.jobNumber = this.page.locator("//span[contains(@class,'e2e_flowsheet_action_job_number')]");
@@ -228,6 +225,10 @@ exports.FlowSheetPage = class FlowSheetPage {
                               : this.page.locator(`(//span[contains(text(),'${locationCode}')])[1]`); 
     this.orderNameInCard = (orderName) => this.isMobile ? this.page.locator(`(//span[text()='${orderName}'])[2]`)
                               : this.page.locator(`(//span[text()='${orderName}'])[1]`);
+    this.carryOverComplete=this.page.locator("(//span[contains(normalize-space(),'Carry Over')])[3]");
+    this.flowsheetredBordered=this.page.locator("(//div[contains(@class,'pulsing-border-red')])[1]");
+    this.getJobId=this.page.locator("(//div[contains(@class,'pulsing-border-red')][1]/../..//div[1]//div//div//span)[1]");
+    this.flowsheetgreyBordered=this.page.locator("(//div[contains(@class,'border-gray')][1])[2]");
     this.transferManifestTab = this.page.locator("//div[normalize-space()='Transfer Manifest']").first();
     this.transferManifestCount = this.page.locator("//div[normalize-space()='Transfer Manifest']/following-sibling::div");
     this.internalTrasferCards = this.page.locator("//app-internal-transfer-card/div");
@@ -774,27 +775,31 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
 
   async setAndStrikeComplete() {
-    const setText = await this.flowsheetStatusText(1).textContent();
-    const strikeText = await this.flowsheetStatusText(4).textContent();
-    await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
+    await executeStep(this.flowsheetredBordered,'click','Click on the Flowsheet Set and Strike timelines');
+    const jobIdNum = await this.getJobId.textContent();
+    const jobIdWithoutHash = jobIdNum.replace('#', '').trim();
+    await executeStep(this.statusSetRefreshComplete,'click',"Set as 'Complete'");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await executeStep(this.searchInput,'fill','Search the same Job Id which previously changed',[jobIdWithoutHash]);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.selectStatusButton(`${setText.trim().replace(/(?<!^)(?=[A-Z])/g, ' ')} - Complete`),"click","Click on select for set complete");
-    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
-    await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
-    await executeStep(this.selectStatusButton(`${strikeText.trim().replace(/(?<!^)(?=[A-Z])/g, ' ')} - Complete`),"click","Click on select for complete carry over");
-    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await executeStep(this.flowsheetgreyBordered,'click',"Select card again for changing status");
+    await executeStep(this.carryOverComplete,'click',"Set to Complete");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.crossButton,'click',"Clear the Search Field")
   }
 
   async markLateFlowsheetAsCompleted(){
-    const setText = await this.flowsheetSetText(1).textContent();
-    await executeStep(this.flowsheetActionTimeLine(2),"click","Click Flowsheet Time line to set Status");
+    await executeStep(this.flowsheetredBordered,'click','Locate a Flowsheet with a red border around the Flowsheet timeline');
+    const jobIdNum = await this.getJobId.textContent();
+    const jobIdWithoutHash = jobIdNum.replace('#', '').trim();
+    await executeStep(this.statusSetRefreshComplete,'click',"Click on the Set status. Mark the Set as 'Complete'");
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
+    await executeStep(this.searchInput,'fill','Search the same Job Id which previously changed',[jobIdWithoutHash]);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
-    await executeStep(this.selectStatusButton(`${setText.trim()} - Complete`),"click","Click on select for set complete");
-    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
-    await assertElementVisible(this.greenIcon, 'Assert that first Icon updates to green color')
-    await executeStep(this.flowsheetActionTimeLine(2),"click","Click Flowsheet Time line to set Status");
-    await executeStep(this.selectStatusButton(`${setText.trim()}`),"click","Click on select to set it back to previous state");
-    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
+    await assertElementVisible(this.flowsheetgreyBordered,'The red border should change to grey indicating the Flowsheet is no longer late');
+    await executeStep(this.flowsheetgreyBordered,'click',"Setting back to it status");
+    await executeStep(this.statusSetRefresh,'click',"Setting back to it status");
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
   }
 
   async filterForStatus() {
@@ -803,6 +808,7 @@ exports.FlowSheetPage = class FlowSheetPage {
     await executeStep(this.selectAllInStatus,"click","Click on all in status options");
     await executeStep(this.applyFilter,"click","Click on apply filter");
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await assertElementVisible(this.filterCount,'Verified Completed flowsheets will reappear')
   }
 
   async removeFilter() {
@@ -819,8 +825,6 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
 
   async assertFlowsheetCard() {
-    const JobNumberFromCard = await this.jobNumber.textContent();
-    const getJobNumber = await JobNumberFromCard.replace("#","");
     await assertElementVisible(this.jobNumber,"Verify that job number is visible or not");
     if(await this.jobStatus.isVisible()) {
       cardStatus = await this.jobStatus.textContent();

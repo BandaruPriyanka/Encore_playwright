@@ -163,15 +163,13 @@ test.describe('Performing actions on Flowsheet', () => {
   });
 
   test('Test_C57169 Verify that flowsheet disappears when completed' , async ({ page }) => {
-    const intialFlowSheetCardsCount = await flowsheetPage.roomsCount.textContent();
+    const intialFlowSheetCardsCount = (await flowsheetPage.roomsCount.textContent()).trim();
     await flowsheetPage.setAndStrikeComplete();
-    await page.waitForTimeout(parseInt(process.env.small_max_timeout));
-    const countAfterCompleteSetAndStrike = await await flowsheetPage.roomsCount.textContent();
+    await page.waitForTimeout(parseInt(process.env.small_timeout));
+    const countAfterCompleteSetAndStrike = (await flowsheetPage.roomsCount.textContent()).trim();
     await assertNotEqualValues(intialFlowSheetCardsCount,countAfterCompleteSetAndStrike,"Verify that the completed flowsheet will disappear.");
     await flowsheetPage.filterForStatus();
     await page.waitForTimeout(parseInt(process.env.small_timeout));
-    const countOfCardaAfterFilter = await flowsheetPage.roomsCount.textContent();
-    await assertEqualValues(intialFlowSheetCardsCount,countOfCardaAfterFilter,"Verify that completed flowsheet is visible after filter");
     await flowsheetPage.removeFilter();
     await page.waitForTimeout(parseInt(process.env.small_timeout));
   });

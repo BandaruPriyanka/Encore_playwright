@@ -1173,7 +1173,8 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     if (await this.acceptAllCookiesBtn.isVisible()) {
       await executeStep(this.acceptAllCookiesBtn, 'click', 'Click on Accept Cookies');
     }
-    await executeStep(this.acceptCheckBox, 'click', 'Click on checkbox');
+    await this.page.waitForTimeout(parseInt(process.env.large_timeout));
+    await executeStep(this.acceptCheckBox, 'click', 'Click on checkbox',{ force: true });
     await executeStep(this.continueBtnInPage, 'click', 'Click on continue button in document');
     if (scenario === 'positive') {
       await executeStep(this.startBtn, 'click', 'Click on start button');
