@@ -48,7 +48,7 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
     actionTimeout: 120000,
     headless: true,
-    video: 'on',
+    video: 'off',
     logLevel: 'error',
     screenshot: 'only-on-failure',
     permissions: ['geolocation'],

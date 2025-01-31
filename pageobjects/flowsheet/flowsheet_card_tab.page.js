@@ -270,13 +270,23 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.greenNotificationMsg = this.page.locator(
       "//span[normalize-space()='Please remain on this page while we are generating a document for you. This usually takes up to a minute.']"
     );
-    this.jobLink = (page,jobId) => page.locator(`//a[normalize-space()='` + jobId + `']/parent::div`);
-    this.uploadDiagram = (page,jobId) => page.locator(`//span[normalize-space()='` + jobId + `']/parent::div/following-sibling::div/child::span[@title='Add a Room Diagram']`);
-    this.chooseFile = (page) =>page.locator("//input[@type='file']");
-    this.attachBtn = (page) =>page.locator("//button[normalize-space()='Attach']");
-    this.viewDiagram = (page,jobId) => page.locator(`//span[text()='` + jobId + `']/parent::div/following-sibling::div/child::span[@title='View Room Diagram']`);
+    this.jobLink = (page, jobId) => page.locator(`//a[normalize-space()='` + jobId + `']/parent::div`);
+    this.uploadDiagram = (page, jobId) => page.locator(`//span[normalize-space()='` + jobId + `']/parent::div/following-sibling::div/child::span[@title='Add a Room Diagram']`);
+    this.chooseFile = (page) => page.locator("//input[@type='file']");
+    this.attachBtn = (page) => page.locator("//button[normalize-space()='Attach']");
+    this.viewDiagram = (page, jobId) => page.locator(`//span[text()='` + jobId + `']/parent::div/following-sibling::div/child::span[@title='View Room Diagram']`);
     this.diagramTab = this.page.locator("(//div[normalize-space()='Diagram'])[1]");
     this.diagramImg = this.page.locator("//img[contains(@src,'png')]");
+    this.locationLink = (page) => page.locator("//input[@id='locationLink']");
+    this.locationSearchFiled = (page) => page.locator('//input[@id="txtLocationSearch"]');
+    this.selectLocation = (page, locationNum) => page.locator(`//div[text()='` + locationNum + `']`);
+    this.locationSelectBtn = (page) => page.locator("//button[@id='btnLocationModalSelect']");
+    this.jobSearchSpan = (page) => page.locator("//span[text()='Job Search']");
+    this.jobNumberSearchInput = (page) =>page.locator(
+      "//span[contains(text(),'Job Number')]/following-sibling::input"
+    );
+    this.searchBtn = (page) => page.locator("(//input[@title='Search'])[2]");
+    this.userDateRangeCheckBox = (page) => page.locator("//input[@id='job-search_ApplyDates']");
   }
 
   async searchFunction(searchText) {
@@ -776,7 +786,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await this.performSearchFunction(searchText, jobId);
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     let countOfLogBeforeComment
-    if(await this.logMsgCount.isVisible()) {
+    if (await this.logMsgCount.isVisible()) {
       countOfLogBeforeComment = await this.logMsgCount.textContent();
     } else {
       countOfLogBeforeComment = "0"
@@ -1285,39 +1295,47 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     await this.page.waitForTimeout(parseInt(process.env.default_timeout));
   }
 
+  async updateNavigatorLocation(page) {
+    await executeStep(this.locationLink(page), 'click', 'Click on Navigator location link');
+    await executeStep(this.locationSearchFiled(page), 'fill', 'Enter the location name', ['1137']);
+    await executeStep(this.selectLocation(page, "1137"), 'click', 'Click on the location');
+    await executeStep(this.locationSelectBtn(page), 'click', 'Click on Select button');
+  }
+
   async attachDiagramInNavigator() {
     const newPage = await this.page.context().newPage();
     const createDataPage = new indexPage.CreateData(newPage);
-    await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
-      timeout: parseInt(process.env.pageload_timeout)
-    });
-    if (await createDataPage.reloadErrorMsg.isVisible()) {
-      await newPage.reload();
-    }
+    await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, { timeout: parseInt(process.env.pageload_timeout) });
     const navigatorLogin = new indexPage.NavigatorLoginPage(newPage);
     await navigatorLogin.login_navigator(atob(process.env.email), atob(process.env.password));
-    await newPage.waitForTimeout(parseInt(process.env.medium_timeout));
-    await newPage.goto(indexPage.navigator_data.navigatorUrl_createdata1, {
-      timeout: parseInt(process.env.pageload_timeout)
-    });
+    await newPage.waitForTimeout(parseInt(process.env.default_timeout));
     if (await createDataPage.reloadErrorMsg.isVisible()) {
       await newPage.reload();
     }
-    await createDataPage.searchWithJobId();
-    await executeStep(this.jobLink(newPage,indexPage.navigator_data.second_job_no), 'click', 'Click on the job Link');
+    await this.updateNavigatorLocation(newPage);
+    await executeStep(this.jobSearchSpan(newPage), 'click', 'click on job search button');
+    await executeStep(this.jobNumberSearchInput(newPage), 'fill', 'enter the valid job number', [
+      indexPage.navigator_data.second_job_no
+    ]);
+    if (await this.userDateRangeCheckBox(newPage).isChecked()) {
+      await this.userDateRangeCheckBox(newPage).uncheck();
+    }
+    await newPage.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.searchBtn(newPage), 'click', 'click on search button');
+    await executeStep(this.jobLink(newPage, indexPage.navigator_data.second_job_no), 'click', 'Click on the job Link');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
-    if (! await this.viewDiagram(newPage,indexPage.navigator_data.second_job_no).isVisible()) {
-      await executeStep(this.uploadDiagram(newPage,indexPage.navigator_data.second_job_no), 'click', 'Click on Upload Diagram icon');
+    if (! await this.viewDiagram(newPage, indexPage.navigator_data.second_job_no).isVisible()) {
+      await executeStep(this.uploadDiagram(newPage, indexPage.navigator_data.second_job_no), 'click', 'Click on Upload Diagram icon');
       const user1Image = process.cwd() + '//images//lighthouse.png';
       await this.chooseFile(newPage).setInputFiles(user1Image);
       await executeStep(this.attachBtn(newPage), 'click', 'Click on the Attach Button');
     }
-    await assertElementVisible(this.viewDiagram(newPage,indexPage.navigator_data.second_job_no), 'Verify the Diagram is attached');
+    await assertElementVisible(this.viewDiagram(newPage, indexPage.navigator_data.second_job_no), 'Verify the Diagram is attached');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await newPage.close();
   }
 
-  async verifyDiagramInLighthouse(){
+  async verifyDiagramInLighthouse() {
     await this.page.reload();
     await this.searchFunction(indexPage.navigator_data.second_job_no);
     await this.clickOnJob(indexPage.navigator_data.second_job_no);
