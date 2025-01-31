@@ -229,6 +229,12 @@ exports.FlowSheetPage = class FlowSheetPage {
     this.flowsheetredBordered=this.page.locator("(//div[contains(@class,'pulsing-border-red')])[1]");
     this.getJobId=this.page.locator("(//div[contains(@class,'pulsing-border-red')][1]/../..//div[1]//div//div//span)[1]");
     this.flowsheetgreyBordered=this.page.locator("(//div[contains(@class,'border-gray')][1])[2]");
+    this.transferManifestTab = this.page.locator("//div[normalize-space()='Transfer Manifest']").first();
+    this.transferManifestCount = this.page.locator("//div[normalize-space()='Transfer Manifest']/following-sibling::div");
+    this.internalTrasferCards = this.page.locator("//app-internal-transfer-card/div");
+    this.PickUpCards = this.page.locator("//div[contains(text(),'1137')]/preceding-sibling::div/div[2]/span[text()='PU']");
+    this.locationNumAndJobNumDiv = this.page.locator("//app-internal-transfer-card/div[1]/div[2]/div[2]");
+    this.DeliveryCard = this.page.locator("//div[contains(text(),'1137')]/preceding-sibling::div/div[2]/span[text()='DEL']");
   }
 
   async changeLocation(locationId, locationName) {
@@ -931,4 +937,43 @@ exports.FlowSheetPage = class FlowSheetPage {
       await assertElementVisible(this.orderNameElement(transferOrderName),"Verify that transfer card is visbile in destination location");
     }
 
+    async assertTransferManifestTab() {
+      await executeStep(await this.transfersTab,"click","Click on transfer tab");
+      await executeStep(await this.transferManifestTab,"click","Click on transfer manifest tab");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      if(await this.transferManifestCount.isVisible()) {
+        await assertElementVisible(await this.transferManifestCount,"Verify that the Transfer Manifest tab will have a counter of equipment");
+        const countOfEquipments = await this.transferManifestCount.textContent();
+        const countOfInternalTransferTab = await this.internalTrasferCards.count();
+        await assertEqualValues(parseInt(countOfEquipments),parseInt(countOfInternalTransferTab),"Verify that there should be a card for each transferred item");
+        await assertElementVisible(await this.PickUpCards.first(), "Verify the cards will have PU which stands for Pick Up text")
+        await assertElementVisible(await this.locationNumAndJobNumDiv,"Verify that  the source location number and job number.");
+      } else {
+        await test.step("There are no transfer manifest tabs for source location" , async () => {
+          console.error("No transfer manifest tabs");
+        })
+      }
+     
+    }
+
+    async assertTransferManifestIndestinationLocation() {
+      await executeStep(await this.transfersTab,"click","Click on transfer tab");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout))
+      await executeStep(await this.transferManifestTab,"click","Click on transfer manifest tab");
+      await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+      if(await this.transferManifestCount) {
+        await assertElementVisible(await this.transferManifestCount,"Verify that the Transfer Manifest tab will have a counter of equipment");
+        const countOfEquipments = await this.transferManifestCount.textContent();
+        const countOfInternalTransferTab = await this.internalTrasferCards.count();
+        await assertEqualValues(parseInt(countOfEquipments),parseInt(countOfInternalTransferTab),"Verify that there should be a card for each transferred item");
+        await assertElementVisible(this.DeliveryCard.first(),"Verify the cards will have DEL which stands for Delivery text");
+      } else {
+        await test.step("There are no transfer manifest tabs for destination location" , async () => {
+          console.error("No transfer manifest tabs");
+        })
+      }
+      
+    }
+
 };
+ 
