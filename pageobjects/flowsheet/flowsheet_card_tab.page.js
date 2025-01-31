@@ -270,13 +270,6 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     this.greenNotificationMsg = this.page.locator(
       "//span[normalize-space()='Please remain on this page while we are generating a document for you. This usually takes up to a minute.']"
     );
-    this.jobLink = (page, jobId) => page.locator(`//a[normalize-space()='` + jobId + `']/parent::div`);
-    this.uploadDiagram = (page, jobId) => page.locator(`//span[normalize-space()='` + jobId + `']/parent::div/following-sibling::div/child::span[@title='Add a Room Diagram']`);
-    this.chooseFile = (page) => page.locator("//input[@type='file']");
-    this.attachBtn = (page) => page.locator("//button[normalize-space()='Attach']");
-    this.viewDiagram = (page, jobId) => page.locator(`//span[text()='` + jobId + `']/parent::div/following-sibling::div/child::span[@title='View Room Diagram']`);
-    this.diagramTab = this.page.locator("(//div[normalize-space()='Diagram'])[1]");
-    this.diagramImg = this.page.locator("//img[contains(@src,'png')]");
     this.locationLink = (page) => page.locator("//input[@id='locationLink']");
     this.locationSearchFiled = (page) => page.locator('//input[@id="txtLocationSearch"]');
     this.selectLocation = (page, locationNum) => page.locator(`//div[text()='` + locationNum + `']`);
@@ -287,6 +280,14 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
     this.searchBtn = (page) => page.locator("(//input[@title='Search'])[2]");
     this.userDateRangeCheckBox = (page) => page.locator("//input[@id='job-search_ApplyDates']");
+    this.jobLink = (page,jobId) => page.locator(`//a[normalize-space()='` + jobId + `']/parent::div`);
+    this.uploadDiagram = (page,jobId) => page.locator(`//span[normalize-space()='` + jobId + `']/parent::div/following-sibling::div/child::span[@title='Add a Room Diagram']`);
+    this.chooseFile = (page) =>page.locator("//input[@type='file']");
+    this.attachBtn = (page) =>page.locator("//button[normalize-space()='Attach']");
+    this.viewDiagram = (page,jobId) => page.locator(`//span[text()='` + jobId + `']/parent::div/following-sibling::div/child::span[@title='View Room Diagram']`);
+    this.diagramTab = this.page.locator("(//div[normalize-space()='Diagram'])[1]");
+    this.diagramImg = this.page.locator("//img[contains(@src,'png')]");
+
   }
 
   async searchFunction(searchText) {
@@ -1330,12 +1331,13 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       await this.chooseFile(newPage).setInputFiles(user1Image);
       await executeStep(this.attachBtn(newPage), 'click', 'Click on the Attach Button');
     }
-    await assertElementVisible(this.viewDiagram(newPage, indexPage.navigator_data.second_job_no), 'Verify the Diagram is attached');
+    await assertElementVisible(this.viewDiagram(newPage,indexPage.navigator_data.second_job_no), 'Verify the Diagram is attached');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await newPage.close();
   }
 
-  async verifyDiagramInLighthouse() {
+
+  async verifyDiagramInLighthouse(){
     await this.page.reload();
     await this.searchFunction(indexPage.navigator_data.second_job_no);
     await this.clickOnJob(indexPage.navigator_data.second_job_no);

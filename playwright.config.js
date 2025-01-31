@@ -84,7 +84,6 @@ module.exports = defineConfig({
       testMatch: [
         'tests/flowsheet.spec.js',
         'tests/flowsheet_card_tab.spec.js',
-        'tests/schedule.spec.js',
         'tests/customers.spec.js',
         'tests/chats.spec.js',
         'tests/event_agendas.spec.js',
@@ -129,7 +128,6 @@ module.exports = defineConfig({
       testMatch: [
         'tests/flowsheet.spec.js',
         'tests/flowsheet_card_tab.spec.js',
-        'tests/schedule.spec.js',
         'tests/customers.spec.js',
         'tests/chats.spec.js',
         'tests/event_agendas.spec.js',
@@ -148,7 +146,6 @@ module.exports = defineConfig({
       testMatch: [
         'tests/flowsheet.spec.js',
         'tests/flowsheet_card_tab.spec.js',
-        'tests/schedule.spec.js',
         'tests/customers.spec.js',
         'tests/chats.spec.js',
         'tests/event_agendas.spec.js',

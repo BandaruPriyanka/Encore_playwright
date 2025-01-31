@@ -745,7 +745,13 @@ function getFutureDateFromToday(days) {
       futureDate.getFullYear();
   return formattedDate;
 }
+function formatFutureDate(daysToAdd){
+  const futureDate = new Date();
+  futureDate.setDate(futureDate.getDate() + daysToAdd);
 
+  const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+  return futureDate.toLocaleDateString('en-US', options);
+}
 
 module.exports = {
   getTodayDate,
@@ -838,5 +844,6 @@ module.exports = {
   getRandomDateFromRange,
   formatTimeTo12Hour,
   getPreviousDateFromToday,
-  getFutureDateFromToday
+  getFutureDateFromToday,
+  formatFutureDate
 };
