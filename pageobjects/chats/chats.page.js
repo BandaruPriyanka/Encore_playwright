@@ -66,7 +66,7 @@ exports.ChatPage = class ChatPage {
     this.user1TimeStamp = this.page.locator("(//div[contains(@class,'e2e_message_card_time')])[1]");
     this.menuLine = this.page.locator("(//icon[@name='menu_line'])[1]");
     this.logOut = this.page.locator("//icon[@name='log_out_line']");
-    this.selectLogOutMail = this.page.locator(" //div[@id='tilesHolder']");
+    this.selectLogOutMail = this.page.locator("//div[@id='tilesHolder']");
     this.addAccount = this.page.locator("//div[@id='otherTile']");
     this.enterUserName = this.page.locator("//input[@type='email']");
     this.selectMail = this.page.locator("//div[text()='s-tst-navi-crm@psav.com']");
@@ -78,7 +78,7 @@ exports.ChatPage = class ChatPage {
     this.user2TimeStamp = this.page.locator("(//div[contains(@class,'e2e_message_card_time')])[2]");
     this.alertImportant = this.page.locator("//icon[@name='alert_important_undraw']");
     this.notification = this.page.locator(" //icon[@name='bell_notification_line']");
-    this.validateAlertMsgNotification = this.page.locator(' (//app-notification)[1]');
+    this.validateAlertMsgNotification = this.page.locator("//div[contains(@class,'e2e_notification')]").first();
     this.closeNotifications = this.page.locator("//icon[@name='cross_line']");
     this.insertFile = this.page.locator("//input[@type='file']");
     this.clickOnImg = this.page.locator("(//img[contains(@class,'object-scale-down')])[1]");
@@ -284,12 +284,15 @@ exports.ChatPage = class ChatPage {
     );
   }
   async selectUser2() {
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.medium_timeout));
     await this.page.reload();
     await executeStep(this.selectLogOutMail, 'click', 'Select mail to logout');
     await this.page.waitForTimeout(parseInt(process.env.large_timeout));
     await this.loginUser(process.env.email, process.env.password);
     await this.selectRecentChat();
+    await executeStep(this.notification,'click','Click on Notification Icon');
+    await assertElementVisible(this.validateAlertMsgNotification,'User1 should get both in-app & push notifications for the important message');
+    await executeStep(this.closeNotifications,'click','Close the In-App Notifications');
     await assertElementVisible(
       this.user1TimeStamp,
       'Verify that the message is received by User-2 successfully with all valid information.'
@@ -319,6 +322,9 @@ exports.ChatPage = class ChatPage {
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.chatGrp, 'click', 'Select chat from list');
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await executeStep(this.notification,'click','Click on Notification Icon');
+    await assertElementVisible(this.validateAlertMsgNotification,'User1 should get both in-app & push notifications for the important message');
+    await executeStep(this.closeNotifications,'click','Close the In-App Notifications');
     await assertElementVisible(
       this.user2TimeStamp,
       'Verify that the message is received by User-1 successfully with all valid information.'
@@ -361,6 +367,9 @@ exports.ChatPage = class ChatPage {
       this.user1TimeStamp,
       'Verify that the important message is sent successfully, including information about the timestamp and author. The image should be displayed properly'
     );
+    await executeStep(this.notification,'click','Click on Notification Icon');
+    await assertElementVisible(this.validateAlertMsgNotification,'User1 should get both in-app & push notifications for the important message');
+    await executeStep(this.closeNotifications,'click','Close the In-App Notifications');
     await this.profileLogout();
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(this.selectLogOutMail, 'click', 'Select mail to logout');
@@ -372,6 +381,7 @@ exports.ChatPage = class ChatPage {
       'Verify that the important message should be received by User2 successfully with all the valid information.'
     );
     await executeStep(this.clickOnImg, 'click', 'Click on image to check');
+    await executeStep(this.groupIcon,'click',"Click On Participants");
   }
   async selectUserToLogOut(){
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
