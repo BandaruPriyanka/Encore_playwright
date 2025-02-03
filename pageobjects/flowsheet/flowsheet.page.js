@@ -86,7 +86,7 @@ exports.FlowSheetPage = class FlowSheetPage {
       this.page.locator(`//div[contains(text(),${name})]//icon[@name='trah_bin_line']`);
     this.clickOnYes = this.page.locator("//span[text()='Yes']");
     this.statusSetRefreshComplete = this.page.locator(
-      "//app-select-status-sheet//li[.//span[text()='Set Refresh - Complete']]"
+      "//app-select-status-sheet//li[.//span[contains(text(),'Complete')]]"
     );
     this.cancelButton = this.page.locator("//span[text()=' Close ']");
     this.timeLine = this.page.locator('app-flowsheet-action-timeline');
@@ -812,14 +812,6 @@ exports.FlowSheetPage = class FlowSheetPage {
   }
 
   async removeFilter() {
-    const setText = await this.flowsheetStatusText(1).textContent();
-    const strikeText = await this.flowsheetStatusText(4).textContent();
-    await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
-    await executeStep(this.selectStatusButton(strikeText.trim().replace(/(?<!^)(?=[A-Z])/g, ' ')),"click","Click on select for set refresh");
-    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
-    await executeStep(this.flowsheetTimeLine,"click","Click Flowsheet Time line to set Status");
-    await executeStep(this.selectStatusButton(setText.trim().replace(/(?<!^)(?=[A-Z])/g, ' ')),"click","Click on select for carry over");
-    await this.page.waitForTimeout(parseInt(process.env.medium_min_timeout));
     await executeStep(this.filterIcon,"click","Click on filter icon");
     await executeStep(this.clearFilter,"click","Click on clear filter");
   }
