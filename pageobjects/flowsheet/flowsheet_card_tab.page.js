@@ -139,8 +139,9 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
     );
     this.notificationIcon = this.page.locator("//icon[@name='bell_notification_line']");
     this.backArrowBtnInPage = this.page.locator("//app-flowsheet-detail//icon[@name='arrow_line']");
-    this.notificationMsg = msg =>
-      this.page.locator(`//app-notification[1]//div[contains(text(),'` + msg + `')]`);
+    // this.notificationMsg = msg =>
+    //   this.page.locator(`//app-notification[1]//div[contains(text(),'` + msg + `')]`);/
+    this.notificationMsg = msg => this.page.locator(`//app-knock-notification[1]//div/blockquote/p[contains(text(),'${msg}')]`)
     this.notificationCloseBtn = this.page.locator("//icon[@name='cross_line']");
     this.logMsgCount = this.page.locator("//div[contains(text(),'Log')]/following-sibling::div");
     this.logCommentInput = this.page.locator("//input[@name='add-note-field']");
@@ -679,7 +680,7 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       'click',
       'Click on log in flowsheet tab'
     );
-    await this.page.waitForTimeout(parseInt(process.env.small_timeout));
+    await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await assertElementVisible(
       this.logMsg(utilConst.Const.neutralLogMsg),
       `Verify the appropriate log record is created , log msg : "${utilConst.Const.neutralLogMsg}"`
@@ -704,9 +705,10 @@ exports.FlowsheetCardAndTab = class FlowsheetCardAndTab {
       'click',
       'Click on neutral icon'
     );
+    await this.page.waitForTimeout(parseInt(process.env.small_timeout))
     await executeStep(
       this.moodChangeIconInModal(utilConst.Const.redIconText),
-      'Click',
+      'click',
       'click on angry icon in modal'
     );
     await this.page.waitForTimeout(parseInt(process.env.small_max_timeout));

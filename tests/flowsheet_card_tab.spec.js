@@ -56,11 +56,12 @@ test.describe('Performing actions on Flowsheet card and tab operations', () => {
       `Verify the modal contains the text: "${indexPage.lighthouse_data.contactModalText}"`
     );
   });
-  test('Test_C56891: Verify Test Mood change logic', async () => {
+  test('Test_C56891: Verify Test Mood change logic', async ({ page }) => {
     await flowsheetCardAndTab.assertMoodChangeHappyIcon(
       indexPage.navigator_data.second_job_no,
       indexPage.navigator_data.second_job_no
     );
+    await page.waitForTimeout(parseInt(process.env.small_max_timeout));
     await assertElementVisible(
       flowsheetCardAndTab.logMsg(utilConst.Const.happyLogMsg),
       `Verify the appropriate log record was created. log msg : "${utilConst.Const.happyLogMsg}" `
