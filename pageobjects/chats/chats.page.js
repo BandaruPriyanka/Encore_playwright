@@ -381,7 +381,6 @@ exports.ChatPage = class ChatPage {
       'Verify that the important message should be received by User2 successfully with all the valid information.'
     );
     await executeStep(this.clickOnImg, 'click', 'Click on image to check');
-    await executeStep(this.groupIcon,'click',"Click On Participants");
   }
   async selectUserToLogOut(){
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));

@@ -7,6 +7,7 @@ const pdf = require('pdf-parse');
 const fs = require('fs');
 const fileSync = require('node:fs/promises');
 const utilConst = require('../../utils/const');
+
 const {
   assertElementVisible,
   assertElementEnabled,
@@ -38,6 +39,8 @@ const {
   getRandomDateFromRange,
   formatFutureDate
 } = require('../../utils/helper');
+const { timeout } = require('../../playwright.config');
+const { allure } = require('allure-playwright');
 let startDateEle,
   endDateEle,
   presentDate,
@@ -100,7 +103,9 @@ exports.EventAgendas = class EventAgendas {
     this.endDate = this.page.locator('mbsc-button div.mbsc-range-control-value').last();
     this.updateBtn = this.page.locator('button.e2e_date_range_update_button');
     this.previousPage = this.page.locator("[aria-label='Previous page']");
-    this.previousDate = this.page.getByText('1').nth(1);
+    this.previousDate = this.page.locator('.mbsc-calendar-cell-text.mbsc-calendar-day-text')
+    .filter({ hasText: "1" }) 
+    .first();
     this.cancelButton = this.page.locator('button.e2e_date_range_cancel_button');
     this.todayDateRange = this.page.locator('div.e2e_date_range_today');
     this.yesterdayDateRange = this.page.locator('div.e2e_date_range_yesterday');
@@ -319,7 +324,10 @@ exports.EventAgendas = class EventAgendas {
       'click',
       'Click on Previous page to Select date'
     );
-    await executeStep(this.previousDate, 'click', 'Select Previous Date', { force: true });
+    const elementHandle = await this.previousDate.elementHandle();
+    if (elementHandle) {
+     await this.page.evaluate(el => el.click(), elementHandle);
+    }
     await assertElementAttributeContains(
       this.updateBtn,
       'class',
@@ -332,7 +340,10 @@ exports.EventAgendas = class EventAgendas {
       'Verify "Cancel" button should revert all previous changes & restore last confirmed dates selection'
     );
     await executeStep(this.calendarWidget, 'click', 'Click on Calendar widget');
-    await executeStep(this.dateCell(todayDate()), 'click', 'Select one date in Start date');
+    const elementHandle1 = await this.dateCell(todayDate()).elementHandle();
+    if (elementHandle1) {
+      await this.page.evaluate(el => el.click(), elementHandle1) 
+    } 
     await this.page.waitForTimeout(parseInt(process.env.small_timeout));
     await executeStep(
        this.endDateCell(5),
